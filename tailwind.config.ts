@@ -54,6 +54,7 @@ export default {
         coral: "hsl(8, 78%, 64%)",
         cyan: "hsl(180, 100%, 50%)",
         slate: "hsl(213, 10%, 47%)",
+        success: "hsl(142, 71%, 45%)",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
