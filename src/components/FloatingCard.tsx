@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, TrendingUp } from "lucide-react";
 
 interface FloatingCardProps {
-  title: string;
+  title?: string;
   subtitle?: string;
   metric?: string;
   trend?: string;
@@ -25,22 +25,22 @@ const FloatingCard = ({
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={`floating-card flex items-center gap-3 ${className}`}
+      className={`bg-card border border-border/60 rounded-xl px-4 py-3 shadow-lg backdrop-blur-sm flex items-center gap-3 ${className}`}
     >
       {variant === "default" && (
         <>
           <span className="text-sm font-medium text-foreground">{title}</span>
-          <span className="connection-dot" />
+          <span className="w-3 h-3 rounded-full bg-muted border-2 border-background shadow-sm" />
         </>
       )}
 
       {variant === "metric" && (
         <div className="flex flex-col">
-          <span className="text-lg font-bold text-foreground">{metric}</span>
+          <span className="text-base font-bold text-foreground">{metric}</span>
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground">{subtitle}</span>
             {trend && (
-              <span className="flex items-center gap-1 text-xs font-medium text-accent">
+              <span className="flex items-center gap-1 text-xs font-semibold text-success">
                 {trend}
                 <TrendingUp className="w-3 h-3" />
               </span>
@@ -77,16 +77,16 @@ export const FloatingCardCTA = ({
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={`floating-card group cursor-pointer ${className}`}
+      className={`bg-card border border-border/60 rounded-xl p-5 shadow-lg backdrop-blur-sm group cursor-pointer hover:border-foreground/30 transition-colors ${className}`}
     >
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex flex-col gap-1">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col gap-2">
           <span className="text-xs text-muted-foreground">•</span>
-          <span className="text-sm font-semibold text-foreground uppercase tracking-wide leading-tight max-w-[160px]">
+          <span className="text-xs font-bold text-foreground uppercase tracking-wide leading-tight max-w-[160px]">
             {text}
           </span>
         </div>
-        <ArrowUpRight className="w-5 h-5 text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+        <ArrowUpRight className="w-5 h-5 text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform flex-shrink-0" />
       </div>
     </motion.div>
   );

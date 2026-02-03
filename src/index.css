@@ -9,13 +9,13 @@
 
 @layer base {
   :root {
-    /* Canvas & Background */
-    --background: 210 11% 95%; /* Anti-Flash White #F2F3F4 */
+    /* Canvas & Background - Anti-Flash White */
+    --background: 220 14% 96%; /* #F2F3F4 */
     --foreground: 249 31% 24%; /* Deep Blue-Violet #2E2A4F */
 
     /* Primary - Deep Blue-Violet */
     --primary: 249 31% 24%;
-    --primary-foreground: 210 11% 95%;
+    --primary-foreground: 220 14% 96%;
 
     /* Secondary - Coral/Salmon Accent */
     --secondary: 8 78% 64%; /* Coral #E87461 */
