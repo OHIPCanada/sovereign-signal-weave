@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import FloatingCard, { FloatingCardCTA } from "./FloatingCard";
-import heroBlob from "@/assets/hero-blob-final.png";
+import heroBlob from "@/assets/blob-seamless.png";
 
 const HeroSection = () => {
   return (
@@ -91,34 +91,34 @@ const HeroSection = () => {
             <img
               src={heroBlob}
               alt="AI Cognitive Visualization"
-              className="w-[340px] md:w-[480px] lg:w-[580px] xl:w-[680px] h-auto object-contain float-gentle"
-            />
-            
-            {/* Floating Cards positioned relative to the blob */}
-            <FloatingCard
-              title="CollaborationTool"
-              variant="default"
-              className="absolute -top-4 left-1/2 -translate-x-1/2 z-30"
-              delay={1}
-            />
-
-            <FloatingCard
-              metric="65 Downloads"
-              subtitle="12 Jan, 2023"
-              trend="55%"
-              variant="metric"
-              className="absolute top-1/2 -right-20 md:-right-32 z-30"
-              delay={1.2}
-            />
-
-            <FloatingCard
-              title="CloudStorageHub"
-              variant="default"
-              className="absolute bottom-1/4 -left-16 md:-left-24 z-30"
-              delay={1.4}
+              className="w-[320px] md:w-[450px] lg:w-[550px] xl:w-[650px] h-auto object-contain float-gentle"
             />
           </motion.div>
         </div>
+
+        {/* Floating Cards - positioned around the viewport */}
+        <FloatingCard
+          title="CollaborationTool"
+          variant="default"
+          className="absolute top-[42%] left-[42%] z-30 hidden lg:flex pointer-events-auto"
+          delay={1}
+        />
+
+        <FloatingCard
+          metric="65 Downloads"
+          subtitle="12 Jan, 2023"
+          trend="55%"
+          variant="metric"
+          className="absolute top-[52%] right-[22%] z-30 hidden lg:flex pointer-events-auto"
+          delay={1.2}
+        />
+
+        <FloatingCard
+          title="CloudStorageHub"
+          variant="default"
+          className="absolute top-[62%] left-[38%] z-30 hidden lg:flex pointer-events-auto"
+          delay={1.4}
+        />
 
         {/* Right Content - Stats */}
         <motion.div
