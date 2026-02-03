@@ -1,150 +1,216 @@
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import FloatingCard, { FloatingCardCTA } from "./FloatingCard";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import heroBlob from "@/assets/blob-seamless.png";
 
 const HeroSection = () => {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
-      {/* Coral Stripes - Left */}
-      <div className="absolute left-4 md:left-8 lg:left-16 top-0 bottom-0 w-14 md:w-20 lg:w-24 bg-gradient-coral" />
-      
-      {/* Coral Stripes - Right */}
-      <div className="absolute right-4 md:right-8 lg:right-16 top-0 bottom-0 w-14 md:w-20 lg:w-24 bg-gradient-coral opacity-70" />
+  const [isBooted, setIsBooted] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Mouse tracking for blob rotation
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  const springConfig = { damping: 25, stiffness: 150 };
+  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [5, -5]), springConfig);
+  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-5, 5]), springConfig);
 
-      {/* Super-Graphic Background Text - MASSIVE cropped typography */}
+  // Boot sequence
+  useEffect(() => {
+    const bootTimer = setTimeout(() => setIsBooted(true), 100);
+    const contentTimer = setTimeout(() => setShowContent(true), 1500);
+    return () => {
+      clearTimeout(bootTimer);
+      clearTimeout(contentTimer);
+    };
+  }, []);
+
+  // Mouse move handler
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    mouseX.set(e.clientX - centerX);
+    mouseY.set(e.clientY - centerY);
+  };
+
+  return (
+    <section 
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ backgroundColor: "#F2F3F4" }}
+    >
+      {/* Boot Animation Overlay */}
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={{ opacity: isBooted ? 0 : 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+        style={{ backgroundColor: "#2E2A4F" }}
+      >
+        {/* Cyan Pulse Dot */}
+        <motion.div
+          initial={{ scale: 0, opacity: 1 }}
+          animate={{ 
+            scale: isBooted ? 50 : 1,
+            opacity: isBooted ? 0 : 1 
+          }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="w-4 h-4 rounded-full"
+          style={{ backgroundColor: "#00FFFF", boxShadow: "0 0 40px #00FFFF" }}
+        />
+      </motion.div>
+
+      {/* Layer 1: Super-Graphic Background Text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
         <motion.h1
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-foreground font-black uppercase leading-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: showContent ? 0.08 : 0 }}
+          transition={{ duration: 2, ease: "easeOut" }}
+          className="font-black uppercase leading-none text-center"
           style={{
-            fontSize: "clamp(180px, 28vw, 600px)",
-            letterSpacing: "-0.04em",
-            lineHeight: 0.82,
-            opacity: 0.07,
+            fontSize: "15vw",
+            letterSpacing: "-0.03em",
+            lineHeight: 0.9,
+            color: "#2E2A4F",
           }}
         >
-          SHARE
+          INTELLIGENCE
         </motion.h1>
       </div>
 
-      {/* Main Content Container */}
-      <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-24 min-h-screen flex items-center">
-        
-        {/* Left Content - Positioned */}
+      {/* Layer 2: Central Visual - Breathing Nebula */}
+      <div className="relative z-10 flex items-center justify-center">
         <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="absolute left-6 md:left-12 lg:left-28 top-1/2 -translate-y-1/2 max-w-[260px] md:max-w-[320px] z-20"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ 
+            opacity: showContent ? 1 : 0, 
+            scale: showContent ? 1 : 0.8,
+          }}
+          transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          style={{ 
+            rotateX, 
+            rotateY,
+            perspective: 1000,
+          }}
+          className="relative"
         >
-          <p className="text-xs md:text-sm font-bold text-foreground uppercase tracking-wide leading-relaxed">
-            A PLATFORM WHERE YOU CAN SEAMLESSLY SHARE MEDIA, LINKS, AND CONNECT WITH OTHERS ACROSS THE DIGITAL LANDSCAPE.
-          </p>
-
-          <div className="flex flex-wrap gap-3 mt-6 md:mt-8">
-            <Button variant="primary" size="lg" className="text-xs md:text-sm">
-              GET STARTED
-            </Button>
-            <Button variant="outline" size="lg" className="text-xs md:text-sm">
-              MORE
-            </Button>
-          </div>
-
-          {/* Stats - Bottom Left */}
+          {/* The Breathing Blob */}
+          <motion.img
+            src={heroBlob}
+            alt="Cognitive Nebula"
+            animate={{
+              scale: [1, 1.05, 1],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="w-[300px] md:w-[420px] lg:w-[520px] xl:w-[600px] h-auto object-contain"
+            style={{
+              filter: "drop-shadow(0 0 60px rgba(0, 255, 255, 0.15))",
+            }}
+          />
+          
+          {/* Floating Labels around Nebula */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
-            className="flex items-center gap-3 mt-12 md:mt-20"
+            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
+            transition={{ delay: 1.5, duration: 0.6 }}
+            className="absolute -top-8 left-1/2 -translate-x-1/2"
           >
-            <div className="flex -space-x-2">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-background overflow-hidden"
-                  style={{
-                    backgroundImage: `linear-gradient(135deg, hsl(30 20% 75%) 0%, hsl(30 15% 55%) 100%)`,
-                  }}
-                />
-              ))}
-            </div>
-            <div>
-              <p className="text-xl md:text-2xl lg:text-3xl font-bold text-foreground tracking-tight">245K+</p>
-              <p className="text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider leading-tight">
-                PEOPLE JOINED US AND<br />CHOOSE SIMPLICITY
-              </p>
-            </div>
+            <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase px-3 py-1.5 rounded-full border"
+              style={{ color: "#2E2A4F", borderColor: "rgba(46, 42, 79, 0.2)", backgroundColor: "rgba(255,255,255,0.8)" }}>
+              [ NEURAL_CORTEX ]
+            </span>
           </motion.div>
-        </motion.div>
 
-        {/* Central 3D Blob - The hero visual */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <motion.div
-            initial={{ opacity: 0, scale: 0.85, y: 40 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 1.4, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: showContent ? 1 : 0, x: showContent ? 0 : -20 }}
+            transition={{ delay: 1.7, duration: 0.6 }}
+            className="absolute top-1/2 -left-24 md:-left-32 -translate-y-1/2"
           >
-            <img
-              src={heroBlob}
-              alt="AI Cognitive Visualization"
-              className="w-[320px] md:w-[450px] lg:w-[550px] xl:w-[650px] h-auto object-contain float-gentle"
-            />
+            <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase px-3 py-1.5 rounded-full border"
+              style={{ color: "#2E2A4F", borderColor: "rgba(46, 42, 79, 0.2)", backgroundColor: "rgba(255,255,255,0.8)" }}>
+              [ CLINICAL_LOGIC ]
+            </span>
           </motion.div>
-        </div>
 
-        {/* Floating Cards - positioned around the viewport */}
-        <FloatingCard
-          title="CollaborationTool"
-          variant="default"
-          className="absolute top-[42%] left-[42%] z-30 hidden lg:flex pointer-events-auto"
-          delay={1}
-        />
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: showContent ? 1 : 0, x: showContent ? 0 : 20 }}
+            transition={{ delay: 1.9, duration: 0.6 }}
+            className="absolute top-1/2 -right-24 md:-right-32 -translate-y-1/2"
+          >
+            <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase px-3 py-1.5 rounded-full border"
+              style={{ color: "#2E2A4F", borderColor: "rgba(46, 42, 79, 0.2)", backgroundColor: "rgba(255,255,255,0.8)" }}>
+              [ DATA_SOVEREIGNTY ]
+            </span>
+          </motion.div>
 
-        <FloatingCard
-          metric="65 Downloads"
-          subtitle="12 Jan, 2023"
-          trend="55%"
-          variant="metric"
-          className="absolute top-[52%] right-[22%] z-30 hidden lg:flex pointer-events-auto"
-          delay={1.2}
-        />
-
-        <FloatingCard
-          title="CloudStorageHub"
-          variant="default"
-          className="absolute top-[62%] left-[38%] z-30 hidden lg:flex pointer-events-auto"
-          delay={1.4}
-        />
-
-        {/* Right Content - Stats */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="absolute right-6 md:right-12 lg:right-28 top-[35%] text-right z-20 hidden md:block"
-        >
-          <p className="text-[10px] md:text-[11px] text-muted-foreground uppercase tracking-wider leading-relaxed max-w-[180px] ml-auto">
-            OVER 5 MILLION GIGABYTES OF INFORMATION HAVE BEEN SHARED WORLDWIDE
-          </p>
-        </motion.div>
-
-        {/* Bottom Right CTA Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 1.5 }}
-          className="absolute bottom-16 right-6 md:right-12 lg:right-28 z-20 hidden lg:block"
-        >
-          <FloatingCardCTA
-            text="FIND OUT MORE ABOUT THE POSSIBILITIES"
-            delay={1.5}
+          {/* Cyan Pulse Ring */}
+          <motion.div
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.1, 0.3],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="absolute inset-0 rounded-full pointer-events-none"
+            style={{
+              border: "1px solid #00FFFF",
+              boxShadow: "0 0 30px rgba(0, 255, 255, 0.2)",
+            }}
           />
         </motion.div>
       </div>
+
+      {/* Layer 3: The Narrative - Bottom */}
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 40 }}
+        transition={{ delay: 2, duration: 0.8 }}
+        className="absolute bottom-12 md:bottom-16 lg:bottom-20 left-6 md:left-12 lg:left-20 max-w-lg z-20"
+      >
+        <h2 
+          className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight"
+          style={{ color: "#2E2A4F" }}
+        >
+          Sovereign AI Infrastructure for Healthcare Systems.
+        </h2>
+        
+        <div className="mt-6 flex flex-wrap gap-4 md:gap-6">
+          <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase" style={{ color: "#5F6368" }}>
+            REGION: <span style={{ color: "#2E2A4F" }}>CANADA</span>
+          </span>
+          <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase" style={{ color: "#5F6368" }}>
+            STATUS: <span style={{ color: "#00FFFF" }}>AUDIT_READY</span>
+          </span>
+          <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase" style={{ color: "#5F6368" }}>
+            ENCRYPTION: <span style={{ color: "#2E2A4F" }}>AES-256</span>
+          </span>
+        </div>
+      </motion.div>
+
+      {/* Top Right Stats */}
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: showContent ? 1 : 0, x: showContent ? 0 : 20 }}
+        transition={{ delay: 2.2, duration: 0.6 }}
+        className="absolute top-28 md:top-32 right-6 md:right-12 lg:right-20 text-right z-20 hidden md:block"
+      >
+        <p className="font-mono text-[10px] md:text-xs tracking-widest uppercase leading-relaxed max-w-[200px]"
+          style={{ color: "#5F6368" }}>
+          PROCESSING 5M+ PATIENT RECORDS WITH JURISDICTIONAL PERMANENCE
+        </p>
+      </motion.div>
     </section>
   );
 };
