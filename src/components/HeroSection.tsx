@@ -39,8 +39,7 @@ const HeroSection = () => {
     <section 
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{ backgroundColor: "#F2F3F4" }}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden hero-fog-bg"
     >
       {/* Boot Animation Overlay */}
       <motion.div
@@ -48,7 +47,7 @@ const HeroSection = () => {
         animate={{ opacity: isBooted ? 0 : 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
-        style={{ backgroundColor: "#2E2A4F" }}
+        style={{ backgroundColor: "#181443" }}
       >
         {/* Cyan Pulse Dot */}
         <motion.div
@@ -63,26 +62,35 @@ const HeroSection = () => {
         />
       </motion.div>
 
-      {/* Layer 1: Super-Graphic Background Text */}
+      {/* Left Coral Band - Narrow, soft fade */}
+      <div 
+        className="absolute left-0 top-0 w-12 md:w-20 lg:w-24 h-full coral-band-left opacity-80 pointer-events-none"
+      />
+
+      {/* Right Coral Band - Wider, semi-transparent */}
+      <div 
+        className="absolute right-0 top-0 w-24 md:w-40 lg:w-56 h-full coral-band-right pointer-events-none"
+      />
+
+      {/* Layer 1: Super-Graphic Background Text - SHARE */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
         <motion.h1
           initial={{ opacity: 0 }}
-          animate={{ opacity: showContent ? 0.08 : 0 }}
+          animate={{ opacity: showContent ? 1 : 0 }}
           transition={{ duration: 2, ease: "easeOut" }}
-          className="font-black uppercase leading-none text-center"
+          className="font-black uppercase leading-none text-center headline-gradient"
           style={{
-            fontSize: "15vw",
-            letterSpacing: "-0.03em",
-            lineHeight: 0.9,
-            color: "#2E2A4F",
+            fontSize: "clamp(8rem, 20vw, 28rem)",
+            letterSpacing: "-0.04em",
+            lineHeight: 0.85,
           }}
         >
-          INTELLIGENCE
+          SHARE
         </motion.h1>
       </div>
 
       {/* Layer 2: Central Visual - Breathing Nebula */}
-      <div className="relative z-10 flex items-center justify-center">
+      <div className="relative z-10 flex items-center justify-center mt-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ 
@@ -109,54 +117,30 @@ const HeroSection = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="w-[300px] md:w-[420px] lg:w-[520px] xl:w-[600px] h-auto object-contain"
+            className="w-[280px] md:w-[380px] lg:w-[480px] xl:w-[560px] h-auto object-contain"
             style={{
-              filter: "drop-shadow(0 0 60px rgba(0, 255, 255, 0.15))",
+              filter: "drop-shadow(0 0 80px rgba(0, 255, 255, 0.12))",
             }}
           />
           
-          {/* Floating Labels around Nebula */}
+          {/* Minimal floating labels - just 2 subtle chips */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
-            transition={{ delay: 1.5, duration: 0.6 }}
-            className="absolute -top-8 left-1/2 -translate-x-1/2"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: showContent ? 0.7 : 0, y: showContent ? 0 : 10 }}
+            transition={{ delay: 2, duration: 0.6 }}
+            className="absolute -bottom-4 left-1/2 -translate-x-1/2"
           >
-            <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase px-3 py-1.5 rounded-full border"
-              style={{ color: "#2E2A4F", borderColor: "rgba(46, 42, 79, 0.2)", backgroundColor: "rgba(255,255,255,0.8)" }}>
-              [ NEURAL_CORTEX ]
+            <span className="font-mono text-[9px] tracking-widest uppercase px-2 py-1 rounded"
+              style={{ color: "#5F6368" }}>
+              NEURAL_CORTEX
             </span>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: showContent ? 1 : 0, x: showContent ? 0 : -20 }}
-            transition={{ delay: 1.7, duration: 0.6 }}
-            className="absolute top-1/2 -left-24 md:-left-32 -translate-y-1/2"
-          >
-            <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase px-3 py-1.5 rounded-full border"
-              style={{ color: "#2E2A4F", borderColor: "rgba(46, 42, 79, 0.2)", backgroundColor: "rgba(255,255,255,0.8)" }}>
-              [ CLINICAL_LOGIC ]
-            </span>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: showContent ? 1 : 0, x: showContent ? 0 : 20 }}
-            transition={{ delay: 1.9, duration: 0.6 }}
-            className="absolute top-1/2 -right-24 md:-right-32 -translate-y-1/2"
-          >
-            <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase px-3 py-1.5 rounded-full border"
-              style={{ color: "#2E2A4F", borderColor: "rgba(46, 42, 79, 0.2)", backgroundColor: "rgba(255,255,255,0.8)" }}>
-              [ DATA_SOVEREIGNTY ]
-            </span>
-          </motion.div>
-
-          {/* Cyan Pulse Ring */}
+          {/* Cyan Pulse Ring - subtle */}
           <motion.div
             animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.1, 0.3],
+              scale: [1, 1.15, 1],
+              opacity: [0.2, 0.05, 0.2],
             }}
             transition={{
               duration: 4,
@@ -166,49 +150,43 @@ const HeroSection = () => {
             className="absolute inset-0 rounded-full pointer-events-none"
             style={{
               border: "1px solid #00FFFF",
-              boxShadow: "0 0 30px rgba(0, 255, 255, 0.2)",
             }}
           />
         </motion.div>
       </div>
 
-      {/* Layer 3: The Narrative - Bottom */}
+      {/* Layer 3: The Narrative - Bottom Left (minimal) */}
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 40 }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 30 }}
         transition={{ delay: 2, duration: 0.8 }}
-        className="absolute bottom-12 md:bottom-16 lg:bottom-20 left-6 md:left-12 lg:left-20 max-w-lg z-20"
+        className="absolute bottom-16 md:bottom-20 lg:bottom-24 left-8 md:left-16 lg:left-24 max-w-md z-20"
       >
         <h2 
-          className="text-2xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight"
-          style={{ color: "#2E2A4F" }}
+          className="text-xl md:text-2xl lg:text-3xl font-semibold leading-snug tracking-tight"
+          style={{ color: "#181443" }}
         >
-          Sovereign AI Infrastructure for Healthcare Systems.
+          Sovereign AI Infrastructure<br />for Healthcare Systems.
         </h2>
         
-        <div className="mt-6 flex flex-wrap gap-4 md:gap-6">
-          <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase" style={{ color: "#5F6368" }}>
-            REGION: <span style={{ color: "#2E2A4F" }}>CANADA</span>
-          </span>
-          <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase" style={{ color: "#5F6368" }}>
-            STATUS: <span style={{ color: "#00FFFF" }}>AUDIT_READY</span>
-          </span>
-          <span className="font-mono text-[10px] md:text-xs tracking-widest uppercase" style={{ color: "#5F6368" }}>
-            ENCRYPTION: <span style={{ color: "#2E2A4F" }}>AES-256</span>
-          </span>
-        </div>
+        <p 
+          className="mt-3 text-sm md:text-base font-normal"
+          style={{ color: "#5F6368" }}
+        >
+          Built in Canada. Designed for regulated healthcare.
+        </p>
       </motion.div>
 
-      {/* Top Right Stats */}
+      {/* Minimal top-right annotation */}
       <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: showContent ? 1 : 0, x: showContent ? 0 : 20 }}
-        transition={{ delay: 2.2, duration: 0.6 }}
-        className="absolute top-28 md:top-32 right-6 md:right-12 lg:right-20 text-right z-20 hidden md:block"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: showContent ? 0.6 : 0 }}
+        transition={{ delay: 2.5, duration: 0.6 }}
+        className="absolute top-28 md:top-32 right-8 md:right-16 lg:right-24 z-20 hidden md:block"
       >
-        <p className="font-mono text-[10px] md:text-xs tracking-widest uppercase leading-relaxed max-w-[200px]"
+        <p className="font-mono text-[10px] tracking-widest uppercase text-right"
           style={{ color: "#5F6368" }}>
-          PROCESSING 5M+ PATIENT RECORDS WITH JURISDICTIONAL PERMANENCE
+          5M+ PATIENT RECORDS
         </p>
       </motion.div>
     </section>

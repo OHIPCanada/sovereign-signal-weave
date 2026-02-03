@@ -9,17 +9,30 @@
 
 @layer base {
   :root {
-    /* Canvas & Background - Anti-Flash White */
-    --background: 220 14% 96%; /* #F2F3F4 */
+    /* Canvas & Background - Cool Gray-Blue Mist (SpaceCloud) */
+    --background: 200 18% 92%; /* #EAEFF0 base */
+    --background-deep: 210 16% 85%; /* #D1D9E2 deeper tone */
     --foreground: 249 31% 24%; /* Deep Blue-Violet #2E2A4F */
 
-    /* Primary - Deep Blue-Violet */
-    --primary: 249 31% 24%;
-    --primary-foreground: 220 14% 96%;
+    /* Primary - Deep Navy (buttons, UI surfaces) */
+    --primary: 250 70% 14%; /* #120D39 - #181443 range */
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Coral/Salmon Accent */
-    --secondary: 8 78% 64%; /* Coral #E87461 */
+    /* Secondary - Muted Coral */
+    --secondary: 2 60% 68%; /* #E67A77 soft coral */
     --secondary-foreground: 0 0% 100%;
+
+    /* Coral Band Colors */
+    --coral-start: 2 60% 68%; /* #E67A77 */
+    --coral-mid: 2 30% 85%; /* #E7C8CA pale blush */
+    --coral-end: 195 28% 95%; /* #EEF3F5 fades to base */
+    --coral-deep: 3 55% 65%; /* #E3726F */
+    --coral-deep-light: 358 45% 71%; /* #D88C90 */
+
+    /* Headline Gradient - Navy to Purple */
+    --headline-navy: 250 65% 17%; /* #181443 */
+    --headline-purple: 250 50% 39%; /* #3A3292 */
+    --headline-plum: 276 45% 24%; /* #392554 */
 
     /* Accent - Electric Cyan */
     --accent: 180 100% 50%; /* #00FFFF */
@@ -47,9 +60,9 @@
     /* Radius */
     --radius: 0.75rem;
 
-    /* Custom gradients */
-    --gradient-coral: linear-gradient(180deg, hsl(8 78% 64%) 0%, hsl(8 78% 54%) 100%);
-    --gradient-glow: radial-gradient(circle, hsl(180 100% 50% / 0.2) 0%, transparent 70%);
+    /* Fog background gradient */
+    --bg-fog-1: rgba(255,255,255,0.85);
+    --bg-fog-2: rgba(203,214,225,0.65);
     
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
@@ -109,6 +122,32 @@
 }
 
 @layer components {
+  /* SpaceCloud-style fog background */
+  .hero-fog-bg {
+    background:
+      radial-gradient(1200px 700px at 20% 15%, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.0) 60%),
+      radial-gradient(900px 600px at 70% 30%, rgba(203,214,225,0.65) 0%, rgba(203,214,225,0.0) 55%),
+      linear-gradient(180deg, #EAEFF0 0%, #D1D9E2 100%);
+  }
+
+  /* Left coral band - narrow, soft fade */
+  .coral-band-left {
+    background: linear-gradient(180deg, #E67A77 0%, #E7C8CA 45%, #EEF3F5 100%);
+  }
+
+  /* Right coral band - wider, semi-transparent */
+  .coral-band-right {
+    background: linear-gradient(180deg, rgba(216,140,144,0.55) 0%, rgba(227,114,111,0.75) 100%);
+  }
+
+  /* Headline gradient text - navy to purple */
+  .headline-gradient {
+    background: linear-gradient(90deg, #181443 0%, #3A3292 45%, #392554 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
   /* Super-Graphic Typography */
   .super-graphic {
     @apply font-black uppercase tracking-tighter leading-none;
@@ -126,7 +165,7 @@
   /* Coral Stripe Accent */
   .coral-stripe {
     @apply absolute w-16 md:w-24 h-full;
-    background: var(--gradient-coral);
+    background: linear-gradient(180deg, #E67A77 0%, #E7C8CA 45%, #EEF3F5 100%);
   }
 
   /* Floating Card */
