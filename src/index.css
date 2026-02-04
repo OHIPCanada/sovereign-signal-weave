@@ -123,26 +123,63 @@
 }
 
 @layer components {
-  /* ===== Hero Background - Clean Two-Glow Style ===== */
+  /* ===== Hero Background - Animated Two-Glow Style ===== */
   .hero-bg {
     position: relative;
     overflow: hidden;
     background-color: #f8f9fa;
-    background-image:
-      /* Left Blue/Purple Glow - softer, wider spread */
-      radial-gradient(
-        ellipse 60% 90% at 0% 45%,
-        rgba(165, 180, 240, 0.45) 0%,
-        transparent 75%
-      ),
-      /* Right Coral/Pink Glow - softer, wider spread */
-      radial-gradient(
-        ellipse 60% 90% at 100% 55%,
-        rgba(250, 195, 175, 0.45) 0%,
-        transparent 75%
-      );
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
+  }
+
+  /* Animated glow layers using pseudo-elements */
+  .hero-bg::before,
+  .hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* Left Blue/Purple Glow - breathing animation */
+  .hero-bg::before {
+    background: radial-gradient(
+      ellipse 65% 95% at 0% 45%,
+      rgba(140, 160, 235, 0.4) 0%,
+      transparent 70%
+    );
+    animation: glowPulseLeft 8s ease-in-out infinite;
+  }
+
+  /* Right Coral/Pink Glow - offset breathing animation */
+  .hero-bg::after {
+    background: radial-gradient(
+      ellipse 65% 95% at 100% 55%,
+      rgba(245, 180, 155, 0.38) 0%,
+      transparent 70%
+    );
+    animation: glowPulseRight 8s ease-in-out infinite;
+    animation-delay: -4s; /* Offset for natural feel */
+  }
+
+  @keyframes glowPulseLeft {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1) translateX(0);
+    }
+    50% {
+      opacity: 0.75;
+      transform: scale(1.05) translateX(2%);
+    }
+  }
+
+  @keyframes glowPulseRight {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1) translateX(0);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.08) translateX(-2%);
+    }
   }
 
   /* Super-Graphic Typography for INTELLIGENCE */
