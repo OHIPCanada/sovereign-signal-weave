@@ -130,55 +130,63 @@
     background-color: #f8f9fa;
   }
 
-  /* Animated glow layers using pseudo-elements */
-  .hero-bg::before,
-  .hero-bg::after {
+  /* Animated glow layers */
+  .hero-bg::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
+    background: 
+      /* Left Blue/Purple Glow */
+      radial-gradient(
+        ellipse 65% 95% at 0% 45%,
+        rgba(140, 160, 235, 0.4) 0%,
+        transparent 70%
+      ),
+      /* Right Coral/Pink Glow */
+      radial-gradient(
+        ellipse 65% 95% at 100% 55%,
+        rgba(245, 180, 155, 0.38) 0%,
+        transparent 70%
+      );
+    animation: glowPulse 8s ease-in-out infinite;
   }
 
-  /* Left Blue/Purple Glow - breathing animation */
-  .hero-bg::before {
-    background: radial-gradient(
-      ellipse 65% 95% at 0% 45%,
-      rgba(140, 160, 235, 0.4) 0%,
-      transparent 70%
-    );
-    animation: glowPulseLeft 8s ease-in-out infinite;
-  }
-
-  /* Right Coral/Pink Glow - offset breathing animation */
+  /* Right vertical coral stripe - full color at top, fades down */
   .hero-bg::after {
-    background: radial-gradient(
-      ellipse 65% 95% at 100% 55%,
-      rgba(245, 180, 155, 0.38) 0%,
-      transparent 70%
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 48px;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      #D4736B 0%,
+      #E08B7F 25%,
+      #E9A89E 50%,
+      rgba(245, 195, 185, 0.4) 75%,
+      transparent 100%
     );
-    animation: glowPulseRight 8s ease-in-out infinite;
-    animation-delay: -4s; /* Offset for natural feel */
+    pointer-events: none;
+    z-index: 1;
   }
 
-  @keyframes glowPulseLeft {
+  @keyframes glowPulse {
     0%, 100% {
       opacity: 1;
-      transform: scale(1) translateX(0);
+      transform: scale(1);
     }
     50% {
-      opacity: 0.75;
-      transform: scale(1.05) translateX(2%);
+      opacity: 0.8;
+      transform: scale(1.02);
     }
   }
 
-  @keyframes glowPulseRight {
-    0%, 100% {
-      opacity: 1;
-      transform: scale(1) translateX(0);
-    }
-    50% {
-      opacity: 0.7;
-      transform: scale(1.08) translateX(-2%);
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    .hero-bg::after {
+      width: 24px;
     }
   }
 
