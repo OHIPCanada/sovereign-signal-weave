@@ -18,7 +18,7 @@ const HeroSection = () => {
       </div>
 
       {/* Central Brain Image with Glow */}
-      <div className="absolute inset-0 flex items-end justify-center pointer-events-none pb-0 z-20 overflow-visible">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none z-20">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -43,7 +43,7 @@ const HeroSection = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="hero-brain relative z-10 w-[1400px] sm:w-[2000px] md:w-[2500px] lg:w-[3000px] xl:w-[3500px] h-auto"
+            className="hero-brain relative z-10 w-[500px] sm:w-[700px] md:w-[900px] lg:w-[1100px] xl:w-[1300px] h-auto translate-y-[15%]"
           />
         </motion.div>
       </div>
