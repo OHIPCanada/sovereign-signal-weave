@@ -1,207 +1,6 @@
 import { motion } from "framer-motion";
-import { useMemo } from "react";
-
-// Generate cortex nodes in a structured neural plexus pattern
-const generateCortexNodes = () => {
-  const nodes: Array<{ id: number; x: number; y: number; layer: number; size: number }> = [];
-  
-  // Core cluster - central reasoning hub
-  const coreNodes = [
-    { x: 600, y: 450, layer: 0, size: 8 },
-    { x: 560, y: 420, layer: 0, size: 6 },
-    { x: 640, y: 420, layer: 0, size: 6 },
-    { x: 580, y: 480, layer: 0, size: 5 },
-    { x: 620, y: 480, layer: 0, size: 5 },
-    { x: 600, y: 400, layer: 0, size: 7 },
-  ];
-
-  // Inner ring - processing layer
-  const innerRing = [
-    { x: 500, y: 400, layer: 1, size: 5 },
-    { x: 520, y: 350, layer: 1, size: 4 },
-    { x: 580, y: 330, layer: 1, size: 5 },
-    { x: 650, y: 340, layer: 1, size: 4 },
-    { x: 700, y: 380, layer: 1, size: 5 },
-    { x: 720, y: 440, layer: 1, size: 4 },
-    { x: 700, y: 500, layer: 1, size: 5 },
-    { x: 650, y: 540, layer: 1, size: 4 },
-    { x: 580, y: 550, layer: 1, size: 5 },
-    { x: 520, y: 530, layer: 1, size: 4 },
-    { x: 490, y: 480, layer: 1, size: 5 },
-    { x: 480, y: 430, layer: 1, size: 4 },
-  ];
-
-  // Outer ring - governance layer
-  const outerRing = [
-    { x: 420, y: 350, layer: 2, size: 3 },
-    { x: 460, y: 290, layer: 2, size: 4 },
-    { x: 540, y: 260, layer: 2, size: 3 },
-    { x: 620, y: 250, layer: 2, size: 4 },
-    { x: 700, y: 280, layer: 2, size: 3 },
-    { x: 760, y: 340, layer: 2, size: 4 },
-    { x: 790, y: 420, layer: 2, size: 3 },
-    { x: 780, y: 500, layer: 2, size: 4 },
-    { x: 740, y: 570, layer: 2, size: 3 },
-    { x: 670, y: 610, layer: 2, size: 4 },
-    { x: 580, y: 620, layer: 2, size: 3 },
-    { x: 500, y: 600, layer: 2, size: 4 },
-    { x: 440, y: 550, layer: 2, size: 3 },
-    { x: 400, y: 480, layer: 2, size: 4 },
-    { x: 400, y: 400, layer: 2, size: 3 },
-  ];
-
-  // Peripheral nodes - extended network
-  const peripheralNodes = [
-    { x: 350, y: 300, layer: 3, size: 2 },
-    { x: 380, y: 240, layer: 3, size: 2 },
-    { x: 480, y: 200, layer: 3, size: 3 },
-    { x: 600, y: 180, layer: 3, size: 2 },
-    { x: 720, y: 200, layer: 3, size: 3 },
-    { x: 820, y: 280, layer: 3, size: 2 },
-    { x: 860, y: 380, layer: 3, size: 2 },
-    { x: 860, y: 480, layer: 3, size: 3 },
-    { x: 820, y: 580, layer: 3, size: 2 },
-    { x: 740, y: 660, layer: 3, size: 2 },
-    { x: 620, y: 690, layer: 3, size: 3 },
-    { x: 500, y: 670, layer: 3, size: 2 },
-    { x: 400, y: 620, layer: 3, size: 2 },
-    { x: 340, y: 540, layer: 3, size: 3 },
-    { x: 320, y: 440, layer: 3, size: 2 },
-    { x: 330, y: 360, layer: 3, size: 2 },
-  ];
-
-  let id = 0;
-  [...coreNodes, ...innerRing, ...outerRing, ...peripheralNodes].forEach((node) => {
-    nodes.push({ ...node, id: id++ });
-  });
-
-  return nodes;
-};
-
-// Generate connections between nodes (filaments)
-const generateFilaments = (nodes: ReturnType<typeof generateCortexNodes>) => {
-  const filaments: Array<{ from: number; to: number; opacity: number }> = [];
-  
-  // Connect nodes based on proximity and layer relationships
-  nodes.forEach((node, i) => {
-    nodes.forEach((other, j) => {
-      if (i >= j) return;
-      
-      const dx = node.x - other.x;
-      const dy = node.y - other.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      
-      // Connect if within range, closer connections are more opaque
-      const maxDist = node.layer === 0 || other.layer === 0 ? 120 : 100;
-      if (distance < maxDist && distance > 20) {
-        const opacity = Math.max(0.08, 0.25 - (distance / maxDist) * 0.2);
-        filaments.push({ from: i, to: j, opacity });
-      }
-    });
-  });
-
-  return filaments;
-};
-
-// Cortex Node component
-const CortexNode = ({
-  x,
-  y,
-  size,
-  layer,
-  delay,
-}: {
-  x: number;
-  y: number;
-  size: number;
-  layer: number;
-  delay: number;
-}) => {
-  const baseOpacity = layer === 0 ? 0.6 : layer === 1 ? 0.45 : layer === 2 ? 0.3 : 0.2;
-  const glowIntensity = layer === 0 ? 12 : layer === 1 ? 8 : 5;
-
-  return (
-    <motion.g>
-      {/* Outer glow */}
-      <motion.circle
-        cx={x}
-        cy={y}
-        r={size * 2.5}
-        fill={`rgba(180, 160, 220, ${baseOpacity * 0.3})`}
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ 
-          opacity: [baseOpacity * 0.2, baseOpacity * 0.4, baseOpacity * 0.2],
-          scale: [0.9, 1.1, 0.9]
-        }}
-        transition={{
-          opacity: { duration: 8, delay: delay + 1, repeat: Infinity, ease: "easeInOut" },
-          scale: { duration: 8, delay: delay + 1, repeat: Infinity, ease: "easeInOut" }
-        }}
-        style={{ filter: `blur(${glowIntensity}px)` }}
-      />
-      {/* Core node */}
-      <motion.circle
-        cx={x}
-        cy={y}
-        r={size}
-        fill={`rgba(190, 175, 230, ${baseOpacity})`}
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: baseOpacity, scale: 1 }}
-        transition={{ duration: 1.2, delay, ease: [0.16, 1, 0.3, 1] }}
-      />
-      {/* Inner highlight */}
-      <motion.circle
-        cx={x - size * 0.2}
-        cy={y - size * 0.2}
-        r={size * 0.4}
-        fill={`rgba(220, 210, 250, ${baseOpacity * 0.8})`}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: baseOpacity * 0.6 }}
-        transition={{ duration: 1.5, delay: delay + 0.3 }}
-      />
-    </motion.g>
-  );
-};
-
-// Filament component
-const Filament = ({
-  x1,
-  y1,
-  x2,
-  y2,
-  opacity,
-  delay,
-}: {
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-  opacity: number;
-  delay: number;
-}) => {
-  // Create a slight curve for organic feel
-  const midX = (x1 + x2) / 2 + (Math.random() - 0.5) * 20;
-  const midY = (y1 + y2) / 2 + (Math.random() - 0.5) * 20;
-  const path = `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`;
-
-  return (
-    <motion.path
-      d={path}
-      fill="none"
-      stroke={`rgba(170, 155, 210, ${opacity})`}
-      strokeWidth={1}
-      strokeLinecap="round"
-      initial={{ pathLength: 0, opacity: 0 }}
-      animate={{ pathLength: 1, opacity: opacity }}
-      transition={{ duration: 2, delay, ease: "easeOut" }}
-    />
-  );
-};
 
 const HeroSection = () => {
-  const nodes = useMemo(() => generateCortexNodes(), []);
-  const filaments = useMemo(() => generateFilaments(nodes), [nodes]);
-
   return (
     <section className="relative min-h-screen overflow-hidden">
       
@@ -264,104 +63,330 @@ const HeroSection = () => {
         </motion.h1>
       </div>
 
-      {/* Glass Cortex - Neural Plexus */}
+      {/* Abstract Intelligence Blob - Central volumetric form */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.svg
-          viewBox="0 0 1200 900"
-          className="w-[900px] md:w-[1100px] lg:w-[1400px] h-auto"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5, delay: 0.8 }}
+          viewBox="0 0 800 700"
+          className="w-[500px] md:w-[650px] lg:w-[800px] h-auto"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
           style={{ overflow: "visible" }}
         >
           <defs>
-            {/* Central glow filter */}
-            <filter id="cortexGlow" x="-100%" y="-100%" width="300%" height="300%">
-              <feGaussianBlur stdDeviation="20" result="blur" />
+            {/* Main blob gradient - deep violet core to lavender edge */}
+            <radialGradient id="blobCore" cx="45%" cy="40%" r="55%">
+              <stop offset="0%" stopColor="rgba(75, 55, 130, 0.85)" />
+              <stop offset="35%" stopColor="rgba(100, 80, 160, 0.65)" />
+              <stop offset="60%" stopColor="rgba(140, 120, 190, 0.45)" />
+              <stop offset="85%" stopColor="rgba(180, 165, 220, 0.25)" />
+              <stop offset="100%" stopColor="rgba(200, 190, 235, 0.1)" />
+            </radialGradient>
+
+            {/* Inner depth layer - creates volumetric feel */}
+            <radialGradient id="blobInner" cx="55%" cy="55%" r="50%">
+              <stop offset="0%" stopColor="rgba(90, 70, 150, 0.7)" />
+              <stop offset="50%" stopColor="rgba(120, 100, 175, 0.35)" />
+              <stop offset="100%" stopColor="rgba(160, 145, 200, 0)" />
+            </radialGradient>
+
+            {/* Cool blue highlight */}
+            <radialGradient id="blueHighlight" cx="30%" cy="30%" r="40%">
+              <stop offset="0%" stopColor="rgba(140, 160, 210, 0.4)" />
+              <stop offset="60%" stopColor="rgba(140, 160, 210, 0.1)" />
+              <stop offset="100%" stopColor="rgba(140, 160, 210, 0)" />
+            </radialGradient>
+
+            {/* Subtle coral warmth - very minimal */}
+            <radialGradient id="coralWarmth" cx="65%" cy="60%" r="35%">
+              <stop offset="0%" stopColor="rgba(220, 170, 160, 0.15)" />
+              <stop offset="100%" stopColor="rgba(220, 170, 160, 0)" />
+            </radialGradient>
+
+            {/* Soft internal glow filter */}
+            <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="15" result="blur" />
               <feMerge>
                 <feMergeNode in="blur" />
                 <feMergeNode in="SourceGraphic" />
               </feMerge>
             </filter>
-            
-            {/* Inner illumination gradient */}
-            <radialGradient id="innerGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="rgba(200, 180, 240, 0.4)" />
-              <stop offset="40%" stopColor="rgba(190, 170, 230, 0.2)" />
-              <stop offset="100%" stopColor="rgba(180, 160, 220, 0)" />
-            </radialGradient>
+
+            {/* Glass surface blur */}
+            <filter id="glassBlur" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" />
+            </filter>
           </defs>
 
-          {/* Central inner glow - intelligence illuminating from within */}
+          {/* Outer glow - soft internal illumination */}
           <motion.ellipse
-            cx={600}
-            cy={450}
-            rx={180}
-            ry={160}
-            fill="url(#innerGlow)"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ 
-              opacity: [0.6, 0.8, 0.6],
-              scale: [0.95, 1.05, 0.95]
+            cx={400}
+            cy={370}
+            rx={220}
+            ry={200}
+            fill="rgba(160, 145, 210, 0.2)"
+            filter="url(#softGlow)"
+            animate={{
+              rx: [220, 230, 220],
+              ry: [200, 210, 200],
+              opacity: [0.2, 0.3, 0.2]
             }}
             transition={{
-              duration: 10,
+              duration: 12,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+
+          {/* Main blob shape - organic but controlled */}
+          <motion.path
+            d="M400 120
+               C520 120, 620 180, 660 280
+               C700 380, 680 480, 620 550
+               C560 620, 480 660, 400 660
+               C320 660, 240 620, 180 550
+               C120 480, 100 380, 140 280
+               C180 180, 280 120, 400 120Z"
+            fill="url(#blobCore)"
+            animate={{
+              d: [
+                "M400 120 C520 120, 620 180, 660 280 C700 380, 680 480, 620 550 C560 620, 480 660, 400 660 C320 660, 240 620, 180 550 C120 480, 100 380, 140 280 C180 180, 280 120, 400 120Z",
+                "M400 115 C525 118, 625 185, 665 285 C705 385, 685 485, 625 555 C565 625, 485 665, 400 665 C315 665, 235 625, 175 555 C115 485, 95 385, 135 285 C175 185, 275 118, 400 115Z",
+                "M400 120 C520 120, 620 180, 660 280 C700 380, 680 480, 620 550 C560 620, 480 660, 400 660 C320 660, 240 620, 180 550 C120 480, 100 380, 140 280 C180 180, 280 120, 400 120Z"
+              ]
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+
+          {/* Inner depth layer - layered fold effect */}
+          <motion.path
+            d="M400 160
+               C500 165, 580 210, 610 290
+               C640 370, 625 450, 580 510
+               C535 570, 470 600, 400 600
+               C330 600, 265 570, 220 510
+               C175 450, 160 370, 190 290
+               C220 210, 300 165, 400 160Z"
+            fill="url(#blobInner)"
+            animate={{
+              d: [
+                "M400 160 C500 165, 580 210, 610 290 C640 370, 625 450, 580 510 C535 570, 470 600, 400 600 C330 600, 265 570, 220 510 C175 450, 160 370, 190 290 C220 210, 300 165, 400 160Z",
+                "M400 165 C495 168, 575 215, 605 295 C635 375, 620 455, 575 515 C530 575, 465 605, 400 605 C335 605, 270 575, 225 515 C180 455, 165 375, 195 295 C225 215, 305 168, 400 165Z",
+                "M400 160 C500 165, 580 210, 610 290 C640 370, 625 450, 580 510 C535 570, 470 600, 400 600 C330 600, 265 570, 220 510 C175 450, 160 370, 190 290 C220 210, 300 165, 400 160Z"
+              ]
+            }}
+            transition={{
+              duration: 15,
+              delay: 0.5,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+
+          {/* Cool blue highlight region */}
+          <motion.ellipse
+            cx={320}
+            cy={280}
+            rx={120}
+            ry={100}
+            fill="url(#blueHighlight)"
+            animate={{
+              cx: [320, 330, 320],
+              cy: [280, 290, 280],
+              opacity: [0.6, 0.8, 0.6]
+            }}
+            transition={{
+              duration: 12,
               delay: 1,
               repeat: Infinity,
               ease: "easeInOut"
             }}
           />
 
-          {/* Filaments - connecting lines */}
-          <g>
-            {filaments.map((f, i) => (
-              <Filament
-                key={`filament-${i}`}
-                x1={nodes[f.from].x}
-                y1={nodes[f.from].y}
-                x2={nodes[f.to].x}
-                y2={nodes[f.to].y}
-                opacity={f.opacity}
-                delay={0.8 + i * 0.015}
-              />
-            ))}
+          {/* Coral warmth - very subtle */}
+          <motion.ellipse
+            cx={480}
+            cy={450}
+            rx={90}
+            ry={80}
+            fill="url(#coralWarmth)"
+            animate={{
+              opacity: [0.5, 0.7, 0.5]
+            }}
+            transition={{
+              duration: 14,
+              delay: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+
+          {/* Internal flow lines - data processing currents */}
+          <g opacity={0.35}>
+            {/* Flow line 1 */}
+            <motion.path
+              d="M280 300 Q350 280, 420 320 Q490 360, 520 420"
+              fill="none"
+              stroke="rgba(140, 120, 180, 0.5)"
+              strokeWidth={2}
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ 
+                pathLength: [0, 1, 1, 0],
+                opacity: [0, 0.5, 0.5, 0]
+              }}
+              transition={{
+                duration: 10,
+                delay: 1,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            
+            {/* Flow line 2 */}
+            <motion.path
+              d="M500 250 Q450 300, 380 340 Q310 380, 280 450"
+              fill="none"
+              stroke="rgba(130, 110, 170, 0.4)"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ 
+                pathLength: [0, 1, 1, 0],
+                opacity: [0, 0.4, 0.4, 0]
+              }}
+              transition={{
+                duration: 12,
+                delay: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            
+            {/* Flow line 3 */}
+            <motion.path
+              d="M320 420 Q380 400, 440 430 Q500 460, 530 520"
+              fill="none"
+              stroke="rgba(150, 130, 190, 0.45)"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ 
+                pathLength: [0, 1, 1, 0],
+                opacity: [0, 0.45, 0.45, 0]
+              }}
+              transition={{
+                duration: 11,
+                delay: 5,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+
+            {/* Flow line 4 - crossing current */}
+            <motion.path
+              d="M250 380 Q320 360, 400 380 Q480 400, 550 370"
+              fill="none"
+              stroke="rgba(145, 125, 185, 0.35)"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ 
+                pathLength: [0, 1, 1, 0],
+                opacity: [0, 0.35, 0.35, 0]
+              }}
+              transition={{
+                duration: 13,
+                delay: 7,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+
+            {/* Flow line 5 - vertical current */}
+            <motion.path
+              d="M400 200 Q420 280, 400 360 Q380 440, 400 520"
+              fill="none"
+              stroke="rgba(135, 115, 175, 0.3)"
+              strokeWidth={2}
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ 
+                pathLength: [0, 1, 1, 0],
+                opacity: [0, 0.3, 0.3, 0]
+              }}
+              transition={{
+                duration: 14,
+                delay: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
           </g>
 
-          {/* Nodes - neural plexus points */}
-          <g>
-            {nodes.map((node, i) => (
-              <CortexNode
-                key={`node-${node.id}`}
-                x={node.x}
-                y={node.y}
-                size={node.size}
-                layer={node.layer}
-                delay={1 + i * 0.03}
-              />
-            ))}
-          </g>
+          {/* Glass surface highlight - top edge reflection */}
+          <motion.ellipse
+            cx={360}
+            cy={200}
+            rx={100}
+            ry={40}
+            fill="rgba(220, 215, 240, 0.25)"
+            filter="url(#glassBlur)"
+            animate={{
+              opacity: [0.2, 0.35, 0.2],
+              ry: [40, 45, 40]
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
+
+          {/* Deep core - innermost layer for depth */}
+          <motion.ellipse
+            cx={400}
+            cy={380}
+            rx={80}
+            ry={70}
+            fill="rgba(70, 50, 120, 0.5)"
+            animate={{
+              rx: [80, 85, 80],
+              ry: [70, 75, 70],
+              opacity: [0.5, 0.6, 0.5]
+            }}
+            transition={{
+              duration: 12,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          />
         </motion.svg>
       </div>
 
-      {/* Breathing glow overlay for the cortex center - subtle illumination */}
+      {/* Breathing internal glow - soft illumination from within */}
       <motion.div
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 2, delay: 1.5 }}
+        transition={{ duration: 2, delay: 1.2 }}
       >
         <motion.div
-          className="w-[300px] h-[260px] md:w-[400px] md:h-[350px] rounded-full"
+          className="w-[280px] h-[260px] md:w-[380px] md:h-[350px] rounded-full"
           style={{
-            background: "radial-gradient(ellipse at center, rgba(195, 175, 235, 0.2) 0%, rgba(185, 165, 225, 0.08) 40%, transparent 70%)",
-            filter: "blur(40px)"
+            background: "radial-gradient(ellipse at center, rgba(130, 110, 180, 0.2) 0%, rgba(150, 130, 200, 0.08) 50%, transparent 75%)",
+            filter: "blur(50px)"
           }}
           animate={{
-            scale: [1, 1.08, 1],
-            opacity: [0.4, 0.6, 0.4]
+            scale: [1, 1.06, 1],
+            opacity: [0.35, 0.5, 0.35]
           }}
           transition={{
-            duration: 10,
+            duration: 12,
             repeat: Infinity,
             ease: "easeInOut"
           }}
