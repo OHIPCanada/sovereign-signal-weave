@@ -120,22 +120,20 @@
     position: relative;
     overflow: hidden;
     background:
-      /* top-left soft white bloom */
+      /* soft white bloom (top-left) */
       radial-gradient(1200px 700px at 18% 12%,
-        var(--mist-1) 0%,
+        rgba(255,255,255,0.85) 0%,
         rgba(255,255,255,0) 62%),
-      /* right-side cool haze */
+      /* cool haze (right) */
       radial-gradient(900px 650px at 72% 28%,
-        var(--mist-2) 0%,
+        rgba(203,214,225,0.60) 0%,
         rgba(203,214,225,0) 58%),
-      /* gentle lavender wash (very subtle) */
+      /* subtle lavender wash */
       radial-gradient(900px 650px at 55% 70%,
-        var(--lavender) 0%,
+        rgba(216,210,236,0.28) 0%,
         rgba(216,210,236,0) 60%),
-      /* base vertical mist gradient */
-      linear-gradient(180deg,
-        var(--bg-top) 0%,
-        var(--bg-bottom) 100%);
+      /* base vertical mist */
+      linear-gradient(180deg, #EAEFF0 0%, #D1D9E2 100%);
   }
 
   /* Left coral structural band */
@@ -179,9 +177,19 @@
     color: transparent;
   }
 
-  /* Hero brain styling */
+  /* Hero brain styling - NO container, floats directly on background */
   .hero-brain {
     filter: drop-shadow(0 30px 60px rgba(26,20,67,0.16));
+    background: transparent !important;
+    display: block;
+  }
+
+  /* Force any wrapper to be invisible */
+  .hero-brain-wrap {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
   }
 
   /* Floating label card - glass morphism style */
