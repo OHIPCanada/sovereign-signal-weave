@@ -25,11 +25,11 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="relative"
         >
-          {/* Subtle glow behind brain */}
+          {/* Enhanced glow behind brain */}
           <div 
-            className="absolute inset-0 -inset-x-20 -inset-y-20 blur-3xl opacity-40"
+            className="absolute -inset-x-40 -inset-y-40 blur-[80px] opacity-70"
             style={{
-              background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(150, 130, 210, 0.5) 0%, rgba(229, 115, 111, 0.25) 50%, transparent 80%)',
+              background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(150, 130, 210, 0.7) 0%, rgba(229, 115, 111, 0.4) 40%, rgba(216, 210, 236, 0.2) 70%, transparent 90%)',
             }}
           />
           <motion.img
@@ -43,7 +43,7 @@ const HeroSection = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="hero-brain relative z-10 w-[1400px] sm:w-[2000px] md:w-[2500px] lg:w-[3000px] xl:w-[3500px] h-auto translate-y-[40%]"
+            className="hero-brain relative z-10 w-[800px] sm:w-[1200px] md:w-[1500px] lg:w-[1800px] xl:w-[2100px] h-auto translate-y-[30%]"
           />
         </motion.div>
       </div>
