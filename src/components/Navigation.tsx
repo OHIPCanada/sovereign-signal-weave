@@ -23,10 +23,7 @@ const Navigation = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex items-center"
         >
-          <span 
-            className="text-lg md:text-xl font-bold tracking-[0.15em] uppercase"
-            style={{ color: "#1A1A4E" }}
-          >
+          <span className="text-[14px] md:text-[16px] font-bold tracking-[0.12em] uppercase text-[#2B2F3A]">
             DOCG AI
           </span>
         </motion.a>
@@ -42,8 +39,7 @@ const Navigation = () => {
             <a
               key={link.label}
               href={link.href}
-              className="text-sm font-medium tracking-[0.1em] transition-opacity hover:opacity-60"
-              style={{ color: "#1A1A4E" }}
+              className="nav-item"
             >
               {link.label}
             </a>
@@ -60,9 +56,9 @@ const Navigation = () => {
           aria-label="Toggle menu"
         >
           {isMenuOpen ? (
-            <X className="w-6 h-6" style={{ color: "#1A1A4E" }} />
+            <X className="w-6 h-6 text-[#2B2F3A]" />
           ) : (
-            <Menu className="w-6 h-6" style={{ color: "#1A1A4E" }} />
+            <Menu className="w-6 h-6 text-[#2B2F3A]" />
           )}
         </motion.button>
       </nav>
@@ -83,8 +79,7 @@ const Navigation = () => {
                   key={link.label}
                   href={link.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="text-base font-medium py-2 tracking-[0.1em]"
-                  style={{ color: "#1A1A4E" }}
+                  className="nav-item py-2"
                 >
                   {link.label}
                 </a>
