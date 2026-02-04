@@ -1,142 +1,84 @@
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
-import heroBlob from "@/assets/blob-seamless.png";
+import { motion } from "framer-motion";
+import heroBrain from "@/assets/hero-brain.png";
 
 const HeroSection = () => {
-  const [isBooted, setIsBooted] = useState(false);
-  const [showContent, setShowContent] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  // Mouse tracking for blob rotation
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  
-  const springConfig = { damping: 25, stiffness: 150 };
-  const rotateX = useSpring(useTransform(mouseY, [-300, 300], [5, -5]), springConfig);
-  const rotateY = useSpring(useTransform(mouseX, [-300, 300], [-5, 5]), springConfig);
-
-  // Boot sequence
-  useEffect(() => {
-    const bootTimer = setTimeout(() => setIsBooted(true), 100);
-    const contentTimer = setTimeout(() => setShowContent(true), 1500);
-    return () => {
-      clearTimeout(bootTimer);
-      clearTimeout(contentTimer);
-    };
-  }, []);
-
-  // Mouse move handler
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    mouseX.set(e.clientX - centerX);
-    mouseY.set(e.clientY - centerY);
-  };
-
   return (
-    <section 
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      className="relative min-h-screen overflow-hidden hero-fog-bg"
-    >
-      {/* Boot Animation Overlay */}
-      <motion.div
-        initial={{ opacity: 1 }}
-        animate={{ opacity: isBooted ? 0 : 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
-        style={{ backgroundColor: "#181443" }}
-      >
-        <motion.div
-          initial={{ scale: 0, opacity: 1 }}
-          animate={{ 
-            scale: isBooted ? 50 : 1,
-            opacity: isBooted ? 0 : 1 
-          }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="w-4 h-4 rounded-full"
-          style={{ backgroundColor: "#00FFFF", boxShadow: "0 0 40px #00FFFF" }}
-        />
-      </motion.div>
-
-      {/* Single Coral Band - Left, structural */}
-      <div 
-        className="absolute left-0 top-0 w-16 md:w-24 lg:w-28 h-full coral-band-left opacity-70 pointer-events-none"
-      />
-
-      {/* Layer 1: INTELLIGENCE - The Environment */}
-      <div className="absolute inset-0 flex items-end justify-center pointer-events-none select-none overflow-hidden pb-[8vh] md:pb-[12vh]">
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: showContent ? 0.08 : 0 }}
-          transition={{ duration: 2.5, ease: "easeOut" }}
-          className="font-black uppercase text-center headline-gradient whitespace-nowrap"
-          style={{
-            fontSize: "clamp(6rem, 18vw, 22rem)",
-            letterSpacing: "-0.03em",
-            lineHeight: 0.85,
-          }}
+    <section className="relative min-h-screen overflow-hidden hero-gradient-bg">
+      {/* INTELLIGENCE - Large Background Text */}
+      <div className="absolute inset-0 flex items-start justify-center pt-20 md:pt-24 lg:pt-28 pointer-events-none select-none overflow-hidden">
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="super-graphic text-center"
         >
           INTELLIGENCE
-        </motion.span>
+        </motion.h1>
       </div>
 
-      {/* Layer 2: Abstract Intelligence Form - Floating, No Container */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ paddingBottom: "5vh" }}>
+      {/* Central Brain Image */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ 
-            opacity: showContent ? 1 : 0, 
-            scale: showContent ? 1 : 0.9,
-          }}
-          transition={{ duration: 1.4, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          style={{ 
-            rotateX, 
-            rotateY,
-            perspective: 1000,
-          }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="relative"
         >
           <motion.img
-            src={heroBlob}
-            alt=""
+            src={heroBrain}
+            alt="AI Brain - Clinical Systems and Virtual Care"
             animate={{
-              scale: [1, 1.05, 1],
+              y: [0, -15, 0],
             }}
             transition={{
-              duration: 8,
+              duration: 6,
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="w-[300px] md:w-[420px] lg:w-[520px] xl:w-[600px] h-auto"
+            className="w-[320px] md:w-[480px] lg:w-[600px] xl:w-[700px] h-auto"
             style={{
-              filter: "drop-shadow(0 0 60px rgba(0, 255, 255, 0.08))",
+              filter: "drop-shadow(0 30px 60px rgba(100, 80, 150, 0.3))",
             }}
           />
         </motion.div>
       </div>
 
-      {/* Layer 3: The Narrative - One Quiet Sentence */}
+      {/* Floating Labels */}
+      {/* AI Cortex - Top Right */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
-        transition={{ delay: 2.2, duration: 0.8 }}
-        className="absolute bottom-16 md:bottom-20 lg:bottom-24 left-8 md:left-16 lg:left-24 z-20"
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 1.4 }}
+        className="absolute top-[35%] right-[8%] md:right-[12%] lg:right-[18%] pointer-events-none"
       >
-        <h1 
-          className="text-xl md:text-2xl lg:text-[1.75rem] font-semibold leading-snug tracking-tight max-w-sm"
-          style={{ color: "#181443" }}
-        >
-          Sovereign AI Infrastructure<br />for Healthcare Systems.
-        </h1>
-        
-        <p 
-          className="mt-3 text-sm font-normal"
-          style={{ color: "#5F6368" }}
-        >
-          Built in Canada. Designed for regulated healthcare.
-        </p>
+        <div className="floating-label">
+          <span className="floating-label-text">AI Cortex</span>
+        </div>
+      </motion.div>
+
+      {/* Clinical Systems - Bottom Left */}
+      <motion.div
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 1.6 }}
+        className="absolute bottom-[32%] left-[5%] md:left-[10%] lg:left-[15%] pointer-events-none"
+      >
+        <div className="floating-label">
+          <span className="floating-label-text">Clinical Systems</span>
+        </div>
+      </motion.div>
+
+      {/* Virtual Care & Patient Access - Bottom Right */}
+      <motion.div
+        initial={{ opacity: 0, x: 30, y: 20 }}
+        animate={{ opacity: 1, x: 0, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.8 }}
+        className="absolute bottom-[22%] right-[5%] md:right-[8%] lg:right-[12%] pointer-events-none"
+      >
+        <div className="floating-label text-right">
+          <span className="floating-label-text block">Virtual Care</span>
+          <span className="floating-label-subtext">& Patient Access</span>
+        </div>
       </motion.div>
     </section>
   );

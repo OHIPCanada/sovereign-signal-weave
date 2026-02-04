@@ -51,10 +51,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        coral: "hsl(8, 78%, 64%)",
-        cyan: "hsl(180, 100%, 50%)",
-        slate: "hsl(213, 10%, 47%)",
-        success: "hsl(142, 71%, 45%)",
+        navy: "hsl(248, 50%, 20%)",
+        lavender: "hsl(270, 30%, 96%)",
+        purple: {
+          light: "hsl(270, 40%, 85%)",
+          DEFAULT: "hsl(270, 60%, 60%)",
+          dark: "hsl(270, 50%, 40%)",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
