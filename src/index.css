@@ -123,64 +123,52 @@
 }
 
 @layer components {
-  /* ===== Hero Background - Creative Ambient Glow Style ===== */
+  /* ===== Hero Background - Soft Ambient Glow Style ===== */
   .hero-bg {
     position: relative;
     overflow: hidden;
     background-color: #f8f9fa;
   }
 
-  /* Layered ambient glows - organic and integrated */
+  /* Layered ambient glows */
   .hero-bg::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
     background: 
-      /* Left Blue/Lavender ambient glow - upper area */
+      /* Left Blue/Lavender ambient glow */
       radial-gradient(
-        ellipse 70% 80% at 5% 35%,
-        rgba(160, 150, 220, 0.35) 0%,
-        transparent 65%
+        ellipse 60% 80% at 0% 40%,
+        rgba(170, 160, 220, 0.35) 0%,
+        transparent 60%
       ),
       /* Central subtle lavender wash */
       radial-gradient(
-        ellipse 80% 60% at 40% 50%,
-        rgba(180, 170, 230, 0.15) 0%,
-        transparent 60%
-      ),
-      /* Right coral ambient - organic curved flow */
-      radial-gradient(
-        ellipse 60% 100% at 95% 70%,
-        rgba(235, 165, 145, 0.45) 0%,
+        ellipse 70% 50% at 45% 55%,
+        rgba(190, 180, 235, 0.12) 0%,
         transparent 55%
-      ),
-      /* Bottom-right warm wash - creates depth */
-      radial-gradient(
-        ellipse 70% 50% at 80% 95%,
-        rgba(245, 190, 170, 0.5) 0%,
-        transparent 60%
       );
     animation: ambientFlow 12s ease-in-out infinite;
   }
 
-  /* Accent coral curve - organic shape, not rigid stripe */
+  /* Right side soft coral vertical wash - diffused band */
   .hero-bg::after {
     content: "";
     position: absolute;
-    bottom: 0;
-    right: -10%;
-    width: 45%;
-    height: 70%;
-    background: radial-gradient(
-      ellipse 100% 100% at 100% 100%,
-      rgba(225, 140, 120, 0.4) 0%,
-      rgba(240, 175, 155, 0.25) 35%,
-      transparent 65%
+    top: 0;
+    right: 0;
+    width: 35%;
+    height: 100%;
+    background: linear-gradient(
+      to left,
+      rgba(240, 180, 165, 0.5) 0%,
+      rgba(245, 195, 180, 0.35) 25%,
+      rgba(250, 210, 195, 0.18) 50%,
+      transparent 100%
     );
     pointer-events: none;
     z-index: 1;
-    border-radius: 50% 0 0 0;
   }
 
   @keyframes ambientFlow {
@@ -194,10 +182,10 @@
     }
   }
 
-  /* Mobile adjustments - softer, smaller */
+  /* Mobile adjustments */
   @media (max-width: 768px) {
     .hero-bg::after {
-      width: 60%;
+      width: 45%;
       height: 50%;
       right: -15%;
     }
