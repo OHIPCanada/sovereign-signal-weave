@@ -1,20 +1,9 @@
 import { motion } from "framer-motion";
 import heroBrain from "@/assets/hero-brain.png";
-import heroBackground from "@/assets/hero-background-clean.png";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen overflow-hidden">
-      {/* Premium Background Image */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ 
-          backgroundImage: `url(${heroBackground})`,
-        }}
-      />
-      
-      {/* Subtle overlay for depth */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/10" />
+    <section className="hero-bg min-h-screen">
 
       {/* INTELLIGENCE - Large Background Text */}
       <div className="absolute inset-0 flex items-start justify-center pt-20 md:pt-24 lg:pt-28 pointer-events-none select-none overflow-hidden">
@@ -47,10 +36,7 @@ const HeroSection = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="w-[320px] md:w-[480px] lg:w-[600px] xl:w-[700px] h-auto"
-            style={{
-              filter: "drop-shadow(0 30px 60px rgba(100, 80, 150, 0.3))",
-            }}
+            className="hero-brain w-[320px] md:w-[480px] lg:w-[600px] xl:w-[700px] h-auto"
           />
         </motion.div>
       </div>
