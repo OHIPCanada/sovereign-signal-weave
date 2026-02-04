@@ -17,26 +17,33 @@ const HeroSection = () => {
         </motion.h1>
       </div>
 
-      {/* Central Brain Image */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none pt-24 md:pt-32 lg:pt-40 z-20">
+      {/* Central Brain Image with Glow */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none pt-32 md:pt-40 lg:pt-48 z-20 overflow-visible">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="relative"
         >
+          {/* Subtle glow behind brain */}
+          <div 
+            className="absolute inset-0 -inset-x-20 -inset-y-20 blur-3xl opacity-40"
+            style={{
+              background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(150, 130, 210, 0.5) 0%, rgba(229, 115, 111, 0.25) 50%, transparent 80%)',
+            }}
+          />
           <motion.img
             src={heroBrain}
             alt="AI Brain - Clinical Systems and Virtual Care"
             animate={{
-              y: [0, -15, 0],
+              y: [0, -20, 0],
             }}
             transition={{
               duration: 6,
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="hero-brain w-[280px] sm:w-[400px] md:w-[500px] lg:w-[600px] xl:w-[700px] h-auto max-w-[90vw]"
+            className="hero-brain relative z-10 w-[1400px] sm:w-[2000px] md:w-[2500px] lg:w-[3000px] xl:w-[3500px] h-auto"
           />
         </motion.div>
       </div>
