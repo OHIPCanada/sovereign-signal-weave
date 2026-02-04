@@ -18,7 +18,7 @@ const HeroSection = () => {
       </div>
 
       {/* Central Brain Image with Glow */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none pt-32 md:pt-40 lg:pt-48 z-20 overflow-visible">
+      <div className="absolute inset-0 flex items-end justify-center pointer-events-none pb-0 z-20 overflow-visible">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
