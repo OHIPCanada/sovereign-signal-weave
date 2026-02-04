@@ -259,10 +259,10 @@
   /* Hero brain styling - NO container, floats directly on background */
   .hero-brain {
     filter: 
-      drop-shadow(0 0 60px rgba(170, 160, 220, 0.2))
-      drop-shadow(0 0 100px rgba(229, 140, 130, 0.65))
-      drop-shadow(0 0 160px rgba(240, 160, 145, 0.55))
-      drop-shadow(0 0 220px rgba(245, 180, 165, 0.45))
+      drop-shadow(0 0 80px rgba(170, 160, 220, 0.35))
+      drop-shadow(0 0 140px rgba(180, 150, 210, 0.3))
+      drop-shadow(0 0 100px rgba(229, 140, 130, 0.6))
+      drop-shadow(0 0 180px rgba(240, 160, 145, 0.5))
       drop-shadow(0 50px 100px rgba(26, 20, 67, 0.2));
     background: transparent !important;
     display: block;
@@ -272,18 +272,18 @@
   @keyframes brainGlow {
     0%, 100% {
       filter: 
-        drop-shadow(0 0 60px rgba(170, 160, 220, 0.2))
-        drop-shadow(0 0 100px rgba(229, 140, 130, 0.65))
-        drop-shadow(0 0 160px rgba(240, 160, 145, 0.55))
-        drop-shadow(0 0 220px rgba(245, 180, 165, 0.45))
+        drop-shadow(0 0 80px rgba(170, 160, 220, 0.35))
+        drop-shadow(0 0 140px rgba(180, 150, 210, 0.3))
+        drop-shadow(0 0 100px rgba(229, 140, 130, 0.6))
+        drop-shadow(0 0 180px rgba(240, 160, 145, 0.5))
         drop-shadow(0 50px 100px rgba(26, 20, 67, 0.2));
     }
     50% {
       filter: 
-        drop-shadow(0 0 80px rgba(170, 160, 220, 0.28))
-        drop-shadow(0 0 120px rgba(229, 140, 130, 0.8))
-        drop-shadow(0 0 180px rgba(240, 160, 145, 0.7))
-        drop-shadow(0 0 260px rgba(245, 180, 165, 0.55))
+        drop-shadow(0 0 100px rgba(170, 160, 220, 0.45))
+        drop-shadow(0 0 160px rgba(180, 150, 210, 0.4))
+        drop-shadow(0 0 120px rgba(229, 140, 130, 0.75))
+        drop-shadow(0 0 200px rgba(240, 160, 145, 0.65))
         drop-shadow(0 50px 100px rgba(26, 20, 67, 0.2));
     }
   }
