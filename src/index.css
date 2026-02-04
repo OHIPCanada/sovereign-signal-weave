@@ -4,13 +4,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* DocG AI - Lavender-Purple Intelligence Theme */
+/* DocG AI - SpaceCloud-Inspired Intelligence Theme */
 
 @layer base {
   :root {
-    /* Background - Soft lavender to light purple gradient base */
-    --background: 270 30% 96%; /* Light lavender #F5F0FA */
-    --background-deep: 260 25% 92%; /* Deeper lavender #E8E0F0 */
+    /* Hero background tokens */
+    --bg-top: #EAEFF0;
+    --bg-bottom: #D1D9E2;
+    --mist-1: rgba(255,255,255,0.85);
+    --mist-2: rgba(203,214,225,0.60);
+    --coral-strong: #E5736F;
+    --coral-mid: #E39A96;
+    --coral-soft: #EBC6C4;
+    --lavender: rgba(216,210,236,0.35);
+
+    /* Background - Cool grey-blue mist base */
+    --background: 210 20% 93%;
+    --background-deep: 210 18% 88%;
     --foreground: 248 50% 20%; /* Deep navy-purple #1A1A4E */
 
     /* Primary - Deep Navy Purple (text, UI surfaces) */
@@ -18,15 +28,15 @@
     --primary-foreground: 0 0% 100%;
 
     /* Secondary - Soft Pink/Coral accent */
-    --secondary: 340 50% 75%; /* Soft pink */
+    --secondary: 340 50% 75%;
     --secondary-foreground: 248 50% 20%;
 
     /* Accent - Purple glow */
-    --accent: 270 60% 60%; /* Medium purple */
+    --accent: 270 60% 60%;
     --accent-foreground: 0 0% 100%;
 
     /* Muted tones */
-    --muted: 270 20% 90%;
+    --muted: 210 15% 90%;
     --muted-foreground: 248 30% 40%;
 
     /* Card & Popover - Glass effect base */
@@ -36,8 +46,8 @@
     --popover-foreground: 248 50% 20%;
 
     /* Borders & Inputs */
-    --border: 270 20% 85%;
-    --input: 270 20% 90%;
+    --border: 210 15% 85%;
+    --input: 210 15% 90%;
     --ring: 270 60% 60%;
 
     /* Destructive */
@@ -105,30 +115,73 @@
 }
 
 @layer components {
-  /* Hero gradient background - matches reference image */
-  .hero-gradient-bg {
-    background: linear-gradient(
-      135deg,
-      #F8E8F0 0%,
-      #E8D8F0 25%,
-      #D8D0F8 50%,
-      #E0D8F0 75%,
-      #F0E8F8 100%
-    );
+  /* ===== Hero Background (SpaceCloud-style CSS only) ===== */
+  .hero-bg {
+    position: relative;
+    overflow: hidden;
+    background:
+      /* top-left soft white bloom */
+      radial-gradient(1200px 700px at 18% 12%,
+        var(--mist-1) 0%,
+        rgba(255,255,255,0) 62%),
+      /* right-side cool haze */
+      radial-gradient(900px 650px at 72% 28%,
+        var(--mist-2) 0%,
+        rgba(203,214,225,0) 58%),
+      /* gentle lavender wash (very subtle) */
+      radial-gradient(900px 650px at 55% 70%,
+        var(--lavender) 0%,
+        rgba(216,210,236,0) 60%),
+      /* base vertical mist gradient */
+      linear-gradient(180deg,
+        var(--bg-top) 0%,
+        var(--bg-bottom) 100%);
   }
 
-  /* Headline text color - deep navy purple */
-  .headline-navy {
-    color: #1A1A4E;
+  /* Left coral structural band */
+  .hero-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 64px;
+    height: 100%;
+    background: linear-gradient(180deg,
+      var(--coral-strong) 0%,
+      var(--coral-mid) 42%,
+      var(--coral-soft) 72%,
+      rgba(235,198,196,0) 100%);
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  /* Ultra-subtle grain texture */
+  .hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+    pointer-events: none;
   }
 
   /* Super-Graphic Typography for INTELLIGENCE */
   .super-graphic {
-    @apply font-black uppercase tracking-tighter leading-none;
-    font-size: clamp(3rem, 12vw, 10rem);
+    font-weight: 800;
+    text-transform: uppercase;
     letter-spacing: -0.02em;
     line-height: 0.9;
-    color: #1A1A4E;
+    font-size: clamp(3rem, 12vw, 10rem);
+    background: linear-gradient(90deg, #181443 0%, #3A3292 45%, #392554 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Hero brain styling */
+  .hero-brain {
+    filter: drop-shadow(0 30px 60px rgba(26,20,67,0.16));
   }
 
   /* Floating label card - glass morphism style */
@@ -151,6 +204,17 @@
   .mono-label {
     @apply font-mono text-xs uppercase tracking-widest text-muted-foreground;
     letter-spacing: 0.1em;
+  }
+}
+
+/* Mobile adjustments for hero */
+@media (max-width: 768px) {
+  .hero-bg::before {
+    width: 22px;
+    opacity: 0.75;
+  }
+  .hero-bg::after {
+    opacity: 0.03;
   }
 }
 
