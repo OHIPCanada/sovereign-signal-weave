@@ -258,7 +258,10 @@
 
   /* Hero brain styling - NO container, floats directly on background */
   .hero-brain {
-    filter: drop-shadow(0 30px 60px rgba(26,20,67,0.16));
+    filter: 
+      drop-shadow(0 0 80px rgba(170, 160, 220, 0.5))
+      drop-shadow(0 0 120px rgba(190, 140, 180, 0.4))
+      drop-shadow(0 40px 80px rgba(26, 20, 67, 0.2));
     background: transparent !important;
     display: block;
   }
