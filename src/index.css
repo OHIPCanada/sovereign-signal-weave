@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -119,11 +119,6 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
-
-  /* Monospace for technical labels */
-  .font-mono {
-    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
   }
 }
 
@@ -301,20 +296,26 @@
     padding: 0 !important;
   }
 
-  /* Technical Annotation line */
-  .tech-annotation-line {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, #00FFFF 50%, #00FFFF);
+  /* Floating label card - glass morphism style */
+  .floating-label {
+    @apply bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .floating-label-text {
+    @apply font-semibold text-sm;
+    color: #1A1A4E;
+  }
+
+  .floating-label-subtext {
+    @apply text-xs;
+    color: #6B5B95;
   }
 
   /* Mono/Data Typography */
   .mono-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: rgba(46, 42, 79, 0.7);
+    @apply font-mono text-xs uppercase tracking-widest text-muted-foreground;
+    letter-spacing: 0.1em;
   }
 }
 
