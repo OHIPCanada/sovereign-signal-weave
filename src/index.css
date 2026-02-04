@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -189,7 +189,7 @@
   /* Hero Title - INTELLIGENCE */
   .hero-title {
     font-family: Inter, sans-serif;
-    font-weight: 800;
+    font-weight: 900;
     text-transform: uppercase;
     letter-spacing: -0.02em;
     line-height: 0.92;
