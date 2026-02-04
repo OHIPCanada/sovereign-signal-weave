@@ -129,17 +129,17 @@
     overflow: hidden;
     background-color: #f8f9fa;
     background-image:
-      /* Left Blue/Purple Glow */
+      /* Left Blue/Purple Glow - softer, wider spread */
       radial-gradient(
-        ellipse 50% 90% at 0% 50%,
-        rgba(190, 200, 240, 0.5) 0%,
-        transparent 70%
+        ellipse 60% 90% at 0% 45%,
+        rgba(165, 180, 240, 0.45) 0%,
+        transparent 75%
       ),
-      /* Right Coral/Pink Glow */
+      /* Right Coral/Pink Glow - softer, wider spread */
       radial-gradient(
-        ellipse 50% 90% at 100% 50%,
-        rgba(255, 210, 190, 0.5) 0%,
-        transparent 70%
+        ellipse 60% 90% at 100% 55%,
+        rgba(250, 195, 175, 0.45) 0%,
+        transparent 75%
       );
     background-size: 100% 100%;
     background-repeat: no-repeat;
