@@ -203,17 +203,40 @@ const HeroSection = () => {
   const filaments = useMemo(() => generateFilaments(nodes), [nodes]);
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-to-b from-[#f8f5fc] via-[#f4f0fa] to-[#faf9fc]">
+    <section className="relative min-h-screen overflow-hidden">
       
-      {/* Subtle ambient lavender wash */}
+      {/* CSS-Only Atmospheric Background */}
+      {/* Layer 1: Base - Soft lavender intelligence glow fading to clean white */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `radial-gradient(60% 50% at 50% 40%, rgba(230, 230, 250, 0.6) 0%, rgba(248, 249, 252, 1) 65%)`
+        }}
+      />
+      
+      {/* Layer 2: Left ambient wash - intelligence presence */}
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: `
-            radial-gradient(ellipse 80% 60% at 50% 50%, rgba(190, 175, 230, 0.15) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 80% at 30% 40%, rgba(200, 185, 240, 0.1) 0%, transparent 50%),
-            radial-gradient(ellipse 50% 60% at 70% 60%, rgba(195, 180, 235, 0.08) 0%, transparent 45%)
-          `
+          background: `linear-gradient(90deg, rgba(170, 160, 220, 0.25) 0%, rgba(170, 160, 220, 0.0) 35%)`
+        }}
+      />
+      
+      {/* Layer 3: Right coral wash - warmth + humanity (extremely restrained) */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `linear-gradient(270deg, rgba(245, 195, 175, 0.35) 0%, rgba(245, 195, 175, 0.0) 40%)`
+        }}
+      />
+      
+      {/* Layer 4: Dotted signal field - NOT particles, soft and static */}
+      <div 
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `radial-gradient(rgba(180, 170, 220, 0.15) 1px, transparent 1px)`,
+          backgroundSize: '48px 48px',
+          backgroundPosition: 'center'
         }}
       />
 
@@ -223,7 +246,19 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="hero-title text-center text-[clamp(110px,16vw,200px)]"
+          style={{
+            fontFamily: 'Inter, sans-serif',
+            fontWeight: 900,
+            fontSize: 'clamp(110px, 16vw, 200px)',
+            letterSpacing: '-0.02em',
+            textTransform: 'uppercase',
+            lineHeight: 0.92,
+            background: 'linear-gradient(180deg, #2E1A6B 0%, #3C2A8E 50%, #4B5ED7 100%)',
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            color: 'transparent'
+          }}
         >
           INTELLIGENCE
         </motion.h1>
@@ -308,7 +343,7 @@ const HeroSection = () => {
         </motion.svg>
       </div>
 
-      {/* Breathing glow overlay for the cortex center */}
+      {/* Breathing glow overlay for the cortex center - subtle illumination */}
       <motion.div
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         initial={{ opacity: 0 }}
@@ -318,12 +353,12 @@ const HeroSection = () => {
         <motion.div
           className="w-[300px] h-[260px] md:w-[400px] md:h-[350px] rounded-full"
           style={{
-            background: "radial-gradient(ellipse at center, rgba(195, 175, 235, 0.25) 0%, rgba(185, 165, 225, 0.1) 40%, transparent 70%)",
+            background: "radial-gradient(ellipse at center, rgba(195, 175, 235, 0.2) 0%, rgba(185, 165, 225, 0.08) 40%, transparent 70%)",
             filter: "blur(40px)"
           }}
           animate={{
             scale: [1, 1.08, 1],
-            opacity: [0.5, 0.7, 0.5]
+            opacity: [0.4, 0.6, 0.4]
           }}
           transition={{
             duration: 10,
