@@ -43,7 +43,7 @@ const HeroSection = () => {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="hero-brain relative z-10 w-[800px] sm:w-[1200px] md:w-[1500px] lg:w-[1800px] xl:w-[2100px] h-auto translate-y-[30%]"
+            className="hero-brain relative z-10 w-[2400px] sm:w-[3600px] md:w-[4500px] lg:w-[5400px] xl:w-[6300px] h-auto translate-y-[30%]"
           />
         </motion.div>
       </div>
