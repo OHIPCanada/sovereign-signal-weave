@@ -6,12 +6,12 @@ const HeroSection = () => {
     <section className="hero-bg min-h-screen">
 
       {/* INTELLIGENCE - Large Background Text */}
-      <div className="absolute inset-0 flex items-start justify-center pt-20 md:pt-24 lg:pt-28 pointer-events-none select-none overflow-hidden">
+      <div className="absolute inset-0 flex items-start justify-center pt-32 md:pt-40 lg:pt-48 pointer-events-none select-none overflow-hidden">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="hero-title text-center"
+          className="hero-title text-center text-[clamp(110px,16vw,200px)]"
         >
           INTELLIGENCE
         </motion.h1>
