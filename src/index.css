@@ -123,58 +123,26 @@
 }
 
 @layer components {
-  /* ===== Hero Background (SpaceCloud-style CSS only) ===== */
+  /* ===== Hero Background - Clean Two-Glow Style ===== */
   .hero-bg {
     position: relative;
     overflow: hidden;
-    background:
-      /* subtle cool bloom left-middle */
-      radial-gradient(900px 700px at 28% 55%,
-        var(--cool1) 0%,
-        rgba(120,150,210,0) 60%),
-      /* subtle lavender bloom */
-      radial-gradient(900px 700px at 45% 70%,
-        var(--cool2) 0%,
-        rgba(150,130,210,0) 62%),
-      /* warm coral haze right side */
-      radial-gradient(850px 650px at 78% 45%,
-        var(--warm1) 0%,
-        rgba(229,115,111,0) 58%),
-      /* soft warm wash bottom-right */
-      radial-gradient(900px 700px at 85% 80%,
-        var(--warm2) 0%,
-        rgba(235,198,196,0) 70%),
-      /* main vertical mist */
-      linear-gradient(180deg,
-        var(--mistTop) 0%,
-        var(--mistMid) 45%,
-        var(--mistBot) 100%);
-  }
-
-  /* Left vertical coral band (SpaceCloud signature) */
-  .hero-bg::before {
-    content: "";
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 64px;
-    background: linear-gradient(180deg,
-      var(--coralStrong) 0%,
-      var(--coralMid) 42%,
-      var(--coralSoft) 72%,
-      rgba(235,198,196,0) 100%);
-    opacity: 0.85;
-    pointer-events: none;
-  }
-
-  /* Optional micro-grain (premium print finish, not sparkles) */
-  .hero-bg::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.04;
-    mix-blend-mode: multiply;
-    pointer-events: none;
+    background-color: #f8f9fa;
+    background-image:
+      /* Left Blue/Purple Glow */
+      radial-gradient(
+        ellipse 50% 90% at 0% 50%,
+        rgba(190, 200, 240, 0.5) 0%,
+        transparent 70%
+      ),
+      /* Right Coral/Pink Glow */
+      radial-gradient(
+        ellipse 50% 90% at 100% 50%,
+        rgba(255, 210, 190, 0.5) 0%,
+        transparent 70%
+      );
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
   }
 
   /* Super-Graphic Typography for INTELLIGENCE */
