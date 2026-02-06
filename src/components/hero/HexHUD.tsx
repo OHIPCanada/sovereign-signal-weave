@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 /* ═══════════════════════════════════════════════
    Design tokens — dark glass with electric cyan
    ═══════════════════════════════════════════════ */
-const DARK_CORE = "#2E1A6B";
-const DARK_MID = "#3D2A8A";
-const ACCENT_CYAN = "#7B61FF";
+const DARK_CORE = "#C45E5E";
+const DARK_MID = "#D4856A";
+const ACCENT = "#E8A87C";
 const ICON_WHITE = "#FFFFFF";
 
 /* ═══════════════════════════════════════════════
@@ -115,21 +115,21 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
       >
         {/* Orb container */}
         <div className="relative" style={{ width: size, height: size }}>
-          {/* Outer glow — cyan aura */}
+          {/* Outer glow — warm aura */}
           <div
             className="absolute rounded-full pointer-events-none"
             style={{
               inset: -16,
-              background: `radial-gradient(circle, ${ACCENT_CYAN}22 0%, ${ACCENT_CYAN}08 50%, transparent 70%)`,
+              background: `radial-gradient(circle, ${ACCENT}22 0%, ${ACCENT}08 50%, transparent 70%)`,
             }}
           />
 
-          {/* Cyan rim ring */}
+          {/* Warm rim ring */}
           <motion.div
             className="absolute rounded-full"
             style={{
               inset: -2,
-              background: `conic-gradient(from 0deg, ${ACCENT_CYAN}66, ${ACCENT_CYAN}22, ${ACCENT_CYAN}55, ${ACCENT_CYAN}11, ${ACCENT_CYAN}66)`,
+              background: `conic-gradient(from 0deg, ${ACCENT}66, ${DARK_CORE}44, ${ACCENT}55, ${DARK_MID}33, ${ACCENT}66)`,
               filter: "blur(2px)",
             }}
             animate={isActive
@@ -142,21 +142,22 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
             }
           />
 
-          {/* Dark glass body */}
+          {/* Gradient glass body — coral to gold swirl */}
           <div
             className="absolute inset-0 rounded-full overflow-hidden"
             style={{
               background: `radial-gradient(ellipse at 35% 25%,
-                ${DARK_MID} 0%,
-                ${DARK_CORE} 60%,
-                #080620 100%
+                #E8A87C 0%,
+                #D4856A 30%,
+                #C45E5E 60%,
+                #A04050 100%
               )`,
               boxShadow: `
-                inset 0 2px 8px rgba(46, 230, 214, 0.12),
-                inset 0 -4px 12px rgba(0, 0, 0, 0.5),
-                0 8px 32px rgba(15, 11, 46, 0.5),
-                0 2px 8px rgba(0, 0, 0, 0.15),
-                0 0 20px ${ACCENT_CYAN}15
+                inset 0 2px 8px rgba(232, 168, 124, 0.25),
+                inset 0 -4px 12px rgba(160, 64, 80, 0.4),
+                0 8px 32px rgba(196, 94, 94, 0.35),
+                0 2px 8px rgba(0, 0, 0, 0.1),
+                0 0 20px ${ACCENT}15
               `,
             }}
           >
@@ -166,19 +167,19 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
               style={{
                 width: "55%", height: "30%",
                 top: "6%", left: "18%",
-                background: `linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.02) 100%)`,
+                background: `linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.04) 100%)`,
                 borderRadius: "50%",
                 filter: "blur(1px)",
               }}
             />
 
-            {/* Bottom cyan reflection */}
+            {/* Bottom warm reflection */}
             <div
               className="absolute"
               style={{
                 width: "70%", height: "20%",
                 bottom: "8%", left: "15%",
-                background: `linear-gradient(0deg, ${ACCENT_CYAN}18 0%, transparent 100%)`,
+                background: `linear-gradient(0deg, ${ACCENT}22 0%, transparent 100%)`,
                 borderRadius: "50%",
               }}
             />
@@ -188,7 +189,7 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
           <div
             className="absolute inset-0 rounded-full pointer-events-none"
             style={{
-              border: `1px solid ${isActive ? `${ACCENT_CYAN}88` : "rgba(46, 230, 214, 0.2)"}`,
+              border: `1px solid ${isActive ? `${ACCENT}88` : "rgba(232, 168, 124, 0.25)"}`,
             }}
           />
 
@@ -198,8 +199,8 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
               className="absolute rounded-full pointer-events-none"
               style={{
                 inset: -8,
-                border: `1px solid ${ACCENT_CYAN}33`,
-                boxShadow: `0 0 20px ${ACCENT_CYAN}22`,
+                border: `1px solid ${ACCENT}33`,
+                boxShadow: `0 0 20px ${ACCENT}22`,
               }}
               animate={{ opacity: [0, 0.8, 0], scale: [0.96, 1.06, 0.96] }}
               transition={{ duration: 2, ease: "easeInOut", repeat: Infinity }}
@@ -210,14 +211,14 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
           <div className="absolute inset-0 flex items-center justify-center z-10">
             <motion.div
               style={{
-                filter: `drop-shadow(0 0 8px ${ACCENT_CYAN}88)`,
+                filter: `drop-shadow(0 0 8px rgba(255,255,255,0.5))`,
               }}
               animate={isActive
                 ? {
                     filter: [
-                      `drop-shadow(0 0 8px ${ACCENT_CYAN}66)`,
-                      `drop-shadow(0 0 20px ${ACCENT_CYAN}CC)`,
-                      `drop-shadow(0 0 8px ${ACCENT_CYAN}66)`,
+                      `drop-shadow(0 0 8px rgba(255,255,255,0.4))`,
+                      `drop-shadow(0 0 20px rgba(255,255,255,0.7))`,
+                      `drop-shadow(0 0 8px rgba(255,255,255,0.4))`,
                     ],
                     scale: [1, 1.08, 1],
                   }
@@ -230,12 +231,12 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
           </div>
         </div>
 
-        {/* Label — dark text, high contrast */}
+        {/* Label */}
         <motion.span
           className="text-[10px] tracking-[0.14em] uppercase font-semibold whitespace-nowrap"
           style={{
-            color: isActive ? ACCENT_CYAN : DARK_MID,
-            textShadow: isActive ? `0 0 10px ${ACCENT_CYAN}55` : "none",
+            color: isActive ? DARK_CORE : DARK_MID,
+            textShadow: isActive ? `0 0 10px ${ACCENT}55` : "none",
             transition: "color 0.4s, text-shadow 0.4s",
           }}
         >
