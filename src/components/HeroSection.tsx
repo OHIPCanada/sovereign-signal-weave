@@ -37,41 +37,59 @@ const HeroSection = () => {
               transition: "transform 0.4s ease-out",
             }}
           >
-            {/* Internal brain glow - positioned at brain area */}
+            {/* Wide ambient brain glow */}
             <motion.div
-              className="absolute pointer-events-none"
+              className="absolute pointer-events-none z-0"
               style={{
-                top: "12%",
-                left: "30%",
-                width: "40%",
-                height: "30%",
+                top: "8%",
+                left: "25%",
+                width: "50%",
+                height: "35%",
                 borderRadius: "50%",
-                background: "radial-gradient(ellipse at center, rgba(123, 97, 255, 0.45) 0%, rgba(180, 140, 255, 0.25) 35%, rgba(230, 230, 250, 0.12) 60%, transparent 85%)",
+                background: "radial-gradient(ellipse at center, rgba(200, 170, 255, 0.5) 0%, rgba(160, 130, 255, 0.3) 30%, rgba(230, 230, 250, 0.15) 55%, transparent 80%)",
+                mixBlendMode: "screen",
+              }}
+              animate={{
+                opacity: [0.5, 0.9, 0.5],
+                scale: [0.95, 1.06, 0.95],
+              }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Hot brain core - intense lavender-pink */}
+            <motion.div
+              className="absolute pointer-events-none z-0"
+              style={{
+                top: "13%",
+                left: "33%",
+                width: "30%",
+                height: "22%",
+                borderRadius: "50%",
+                background: "radial-gradient(ellipse at center, rgba(255, 255, 255, 0.7) 0%, rgba(220, 180, 255, 0.65) 20%, rgba(180, 140, 255, 0.45) 40%, rgba(123, 97, 255, 0.25) 60%, transparent 80%)",
                 mixBlendMode: "screen",
               }}
               animate={{
                 opacity: [0.6, 1, 0.6],
-                scale: [0.95, 1.08, 0.95],
+                scale: [0.97, 1.1, 0.97],
               }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 3.5, delay: 0.3, repeat: Infinity, ease: "easeInOut" }}
             />
-            {/* Secondary deeper glow core */}
+            {/* Tight white-hot nucleus */}
             <motion.div
-              className="absolute pointer-events-none"
+              className="absolute pointer-events-none z-0"
               style={{
-                top: "16%",
-                left: "36%",
-                width: "25%",
-                height: "18%",
+                top: "17%",
+                left: "38%",
+                width: "18%",
+                height: "13%",
                 borderRadius: "50%",
-                background: "radial-gradient(ellipse at center, rgba(123, 97, 255, 0.6) 0%, rgba(160, 130, 255, 0.3) 40%, transparent 75%)",
+                background: "radial-gradient(ellipse at center, rgba(255, 255, 255, 0.85) 0%, rgba(230, 200, 255, 0.6) 30%, rgba(180, 150, 255, 0.3) 55%, transparent 75%)",
                 mixBlendMode: "screen",
               }}
               animate={{
                 opacity: [0.5, 1, 0.5],
-                scale: [1, 1.12, 1],
+                scale: [1, 1.15, 1],
               }}
-              transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 2.5, delay: 0.7, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.img
               src={neuralProfile}
