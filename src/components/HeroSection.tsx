@@ -133,7 +133,7 @@ const HeroSection = () => {
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="text-center mt-3"
+          className="text-center -mt-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.5 }}
