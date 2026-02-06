@@ -39,8 +39,19 @@ const HeroSection = () => {
             <motion.img
               src={neuralProfile}
               alt="Neural Intelligence Profile"
-              className="w-[420px] md:w-[520px] lg:w-[620px] h-auto drop-shadow-[0_0_80px_rgba(123,97,255,0.15)]"
-              animate={{ y: [0, -12, 0], scale: [1, 1.015, 1] }}
+              className="w-[900px] md:w-[1200px] lg:w-[1600px] h-auto"
+              style={{
+                filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
+              }}
+              animate={{
+                y: [0, -20, 0],
+                scale: [1, 1.025, 1],
+                filter: [
+                  "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
+                  "drop-shadow(0 0 160px rgba(123, 97, 255, 0.5)) drop-shadow(0 0 250px rgba(180, 160, 230, 0.45)) drop-shadow(0 0 120px rgba(230, 230, 250, 0.35))",
+                  "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
+                ],
+              }}
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
             />
           </motion.div>
