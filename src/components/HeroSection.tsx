@@ -24,7 +24,7 @@ const HeroSection = () => {
       </div>
 
       {/* Main Composition: Neural Profile Image + HUD */}
-      <div className="absolute inset-0 flex items-center justify-center pt-32 md:pt-40 lg:pt-48">
+      <div className="absolute inset-0 flex items-center justify-center pt-56 md:pt-64 lg:pt-72">
         <div className="relative flex items-center gap-4 md:gap-8 lg:gap-12">
           {/* Neural Profile Image */}
           <motion.div
