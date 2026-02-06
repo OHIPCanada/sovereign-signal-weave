@@ -23,9 +23,9 @@ const HeroSection = () => {
         </motion.h1>
       </div>
 
-      {/* Main Composition: Neural Profile Image + HUD */}
+      {/* Main Composition: Neural Profile + Connected Orb */}
       <div className="absolute inset-0 flex items-center justify-center pt-64 md:pt-80 lg:pt-96">
-        <div className="relative flex items-center gap-4 md:gap-8 lg:gap-12">
+        <div className="relative">
           {/* Human image + organic neural plexus overlay */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -66,42 +66,74 @@ const HeroSection = () => {
             />
           </motion.div>
 
-          {/* Traveling pulse dot between brain and orb */}
-          <div className="hidden md:flex items-center -mx-12 lg:-mx-16 z-30">
-            <svg width="160" height="20" className="overflow-visible">
-              <motion.circle
-                r="5"
-                fill="rgba(46, 230, 214, 1)"
-                style={{ filter: "drop-shadow(0 0 8px rgba(46, 230, 214, 0.8))" }}
-                animate={{ cx: [0, 160, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                cy="10"
+          {/* Curved connection line from brain to orb */}
+          <svg
+            className="hidden md:block absolute z-30 pointer-events-none"
+            style={{
+              top: "15%",
+              right: "-2%",
+              width: "300px",
+              height: "200px",
+            }}
+          >
+            <defs>
+              <linearGradient id="synapse-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(180, 160, 255, 0.6)" />
+                <stop offset="50%" stopColor="rgba(200, 190, 255, 0.4)" />
+                <stop offset="100%" stopColor="rgba(180, 160, 255, 0.3)" />
+              </linearGradient>
+            </defs>
+            {/* Thin curved line */}
+            <motion.path
+              d="M 0,140 C 60,130 120,40 280,30"
+              fill="none"
+              stroke="url(#synapse-gradient)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ duration: 2, delay: 1.5, ease: "easeInOut" }}
+            />
+            {/* Traveling glow dot */}
+            <motion.circle
+              r="3"
+              fill="rgba(200, 180, 255, 0.9)"
+              style={{ filter: "drop-shadow(0 0 6px rgba(180, 160, 255, 0.8))" }}
+            >
+              <animateMotion
+                dur="4s"
+                repeatCount="indefinite"
+                path="M 0,140 C 60,130 120,40 280,30"
               />
-            </svg>
-          </div>
+            </motion.circle>
+          </svg>
 
-          {/* AI Cortex Orb */}
+          {/* AI Cortex Orb — positioned near the brain */}
           <motion.div
-            className="hidden md:block relative z-20 -ml-16 lg:-ml-20"
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
+            className="hidden md:block absolute z-20"
+            style={{
+              top: "2%",
+              right: "-8%",
+            }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, delay: 1.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <motion.img
               src={aiCortexOrb}
               alt="AI Cortex"
-              className="w-[180px] lg:w-[240px] h-auto"
+              className="w-[140px] lg:w-[180px] h-auto"
               style={{
                 filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))",
               }}
               animate={{
-                y: [0, -12, 0],
-                scale: [1, 1.03, 1],
+                y: [0, -10, 0],
+                scale: [1, 1.02, 1],
               }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.p
-              className="text-center mt-3 text-xs font-mono tracking-widest uppercase text-foreground"
+              className="text-center mt-2 text-xs font-mono tracking-widest uppercase text-foreground font-semibold"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 2.5 }}
