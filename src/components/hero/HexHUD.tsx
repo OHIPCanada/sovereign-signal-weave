@@ -2,18 +2,19 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
 /* ═══════════════════════════════════════════════
-   Design tokens — frosted clinical glass
+   Design tokens — dark glass with electric cyan
    ═══════════════════════════════════════════════ */
-const GLASS_BASE = "#E9F4F5";
-const CLINICAL_CYAN = "#2EE6D6";
+const DARK_CORE = "#0F0B2E";
+const DARK_MID = "#1A1545";
+const ACCENT_CYAN = "#2EE6D6";
 const ICON_WHITE = "#FFFFFF";
 
 /* ═══════════════════════════════════════════════
-   Bold clinical icons — white with cyan halo
+   Bold clinical icons — white
    ═══════════════════════════════════════════════ */
 const icons = {
   cortex: (
-    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
       <path d="M32 12 C25 12 21 17 21 22 C17 22 14 26 14 31 C14 36 17 39 21 40 C22 45 26 48 31 48" />
       <path d="M32 12 C39 12 43 17 43 22 C47 22 50 26 50 31 C50 36 47 39 43 40 C42 45 38 48 33 48" />
       <circle cx="32" cy="20" r="2.5" fill={ICON_WHITE} stroke="none" />
@@ -27,7 +28,7 @@ const icons = {
     </svg>
   ),
   clinical: (
-    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
       <circle cx="32" cy="17" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
       <circle cx="15" cy="32" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
       <circle cx="49" cy="32" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
@@ -40,7 +41,7 @@ const icons = {
     </svg>
   ),
   virtualCare: (
-    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
       <path d="M22 27 C22 19 27 17 32 17 C37 17 40 20 40 25" />
       <path d="M24 37 C24 45 29 47 34 47 C39 47 42 44 42 39" />
       <path d="M40 25 L40 33 C40 36 37 38 34 38 L24 37" />
@@ -51,7 +52,7 @@ const icons = {
     </svg>
   ),
   sovereign: (
-    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
       <path d="M32 7 L52 17 V37 C52 46 42 54 32 58 C22 54 12 46 12 37 V17 L32 7Z" fill={ICON_WHITE} fillOpacity="0.05" />
       <rect x="24" y="30" width="16" height="14" rx="3" fill={ICON_WHITE} fillOpacity="0.12" />
       <path d="M27 30 V25 C27 21 29 19 32 19 C35 19 37 21 37 25 V30" />
@@ -60,7 +61,7 @@ const icons = {
     </svg>
   ),
   audit: (
-    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
       <path d="M15 7 H39 L49 17 V57 H15 V7Z" fill={ICON_WHITE} fillOpacity="0.05" />
       <polyline points="39,7 39,17 49,17" />
       <line x1="22" y1="25" x2="42" y2="25" strokeOpacity="0.45" />
@@ -74,37 +75,7 @@ const icons = {
 };
 
 /* ═══════════════════════════════════════════════
-   Internal shimmer particles inside each orb
-   ═══════════════════════════════════════════════ */
-const OrbShimmer = () => {
-  const pts = [
-    { x: 30, y: 25, s: 1.2, d: 0 },
-    { x: 70, y: 30, s: 1, d: 1.2 },
-    { x: 40, y: 65, s: 1.4, d: 0.6 },
-    { x: 75, y: 60, s: 0.8, d: 2.0 },
-    { x: 55, y: 20, s: 1.1, d: 0.4 },
-  ];
-  return (
-    <>
-      {pts.map((p, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full"
-          style={{
-            width: p.s * 2, height: p.s * 2,
-            left: `${p.x}%`, top: `${p.y}%`,
-            background: `radial-gradient(circle, rgba(255,255,255,0.85) 0%, ${CLINICAL_CYAN}33 100%)`,
-          }}
-          animate={{ opacity: [0, 0.5, 0], scale: [0.5, 1.3, 0.5] }}
-          transition={{ duration: 3.5, delay: p.d, repeat: Infinity, ease: "easeInOut" }}
-        />
-      ))}
-    </>
-  );
-};
-
-/* ═══════════════════════════════════════════════
-   Single Glass Orb
+   Single Glass Orb — dark, bold, high-contrast
    ═══════════════════════════════════════════════ */
 interface OrbProps {
   icon: React.ReactNode;
@@ -140,104 +111,115 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
       <motion.div
         animate={{ y: [0, floatY, 0] }}
         transition={{ duration: floatDuration, repeat: Infinity, ease: "easeInOut" }}
-        className="relative flex flex-col items-center gap-2"
+        className="relative flex flex-col items-center gap-3"
       >
-        <div
-          className="relative rounded-full overflow-hidden"
-          style={{ width: size, height: size }}
-        >
-          {/* Ambient glow behind orb */}
+        {/* Orb container */}
+        <div className="relative" style={{ width: size, height: size }}>
+          {/* Outer glow — cyan aura */}
           <div
-            className="absolute inset-[-40%] pointer-events-none rounded-full"
+            className="absolute rounded-full pointer-events-none"
             style={{
-              background: `radial-gradient(circle, ${CLINICAL_CYAN}18 0%, transparent 65%)`,
+              inset: -16,
+              background: `radial-gradient(circle, ${ACCENT_CYAN}22 0%, ${ACCENT_CYAN}08 50%, transparent 70%)`,
             }}
           />
 
-          {/* Cyan rim glow */}
+          {/* Cyan rim ring */}
           <motion.div
-            className="absolute inset-[-3px] rounded-full"
+            className="absolute rounded-full"
             style={{
-              background: `linear-gradient(135deg, ${CLINICAL_CYAN}55, ${CLINICAL_CYAN}15, ${CLINICAL_CYAN}40)`,
-              filter: "blur(5px)",
+              inset: -2,
+              background: `conic-gradient(from 0deg, ${ACCENT_CYAN}66, ${ACCENT_CYAN}22, ${ACCENT_CYAN}55, ${ACCENT_CYAN}11, ${ACCENT_CYAN}66)`,
+              filter: "blur(2px)",
             }}
             animate={isActive
-              ? { opacity: [0.4, 1, 0.4], scale: [1, 1.06, 1] }
-              : { opacity: 0.35 }
+              ? { opacity: [0.5, 1, 0.5], rotate: [0, 360] }
+              : { opacity: 0.4 }
             }
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            transition={isActive
+              ? { opacity: { duration: 2, repeat: Infinity }, rotate: { duration: 8, repeat: Infinity, ease: "linear" } }
+              : { duration: 0.4 }
+            }
           />
 
-          {/* Glass body — frosted clinical mint */}
+          {/* Dark glass body */}
           <div
             className="absolute inset-0 rounded-full overflow-hidden"
             style={{
-              background: `linear-gradient(155deg,
-                rgba(233, 244, 245, 0.82) 0%,
-                rgba(220, 240, 238, 0.72) 35%,
-                rgba(210, 235, 233, 0.62) 65%,
-                rgba(225, 242, 241, 0.78) 100%
+              background: `radial-gradient(ellipse at 35% 25%,
+                ${DARK_MID} 0%,
+                ${DARK_CORE} 60%,
+                #080620 100%
               )`,
-              backdropFilter: "blur(20px) saturate(1.2)",
-              WebkitBackdropFilter: "blur(20px) saturate(1.2)",
               boxShadow: `
-                inset 0 1px 2px rgba(255,255,255,0.5),
-                inset 0 -1px 3px rgba(46,230,214,0.08),
-                0 4px 24px rgba(46,230,214,0.12),
-                0 1px 4px rgba(0,0,0,0.04)
+                inset 0 2px 8px rgba(46, 230, 214, 0.12),
+                inset 0 -4px 12px rgba(0, 0, 0, 0.5),
+                0 8px 32px rgba(15, 11, 46, 0.5),
+                0 2px 8px rgba(0, 0, 0, 0.15),
+                0 0 20px ${ACCENT_CYAN}15
               `,
             }}
           >
-            {/* Glass refraction highlight */}
+            {/* Top specular highlight */}
             <div
-              className="absolute rounded-full"
+              className="absolute"
               style={{
-                width: "60%", height: "35%",
-                top: "8%", left: "15%",
-                background: "linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.05) 100%)",
+                width: "55%", height: "30%",
+                top: "6%", left: "18%",
+                background: `linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.02) 100%)`,
                 borderRadius: "50%",
+                filter: "blur(1px)",
               }}
             />
 
-            {/* Internal shimmer */}
-            <OrbShimmer />
+            {/* Bottom cyan reflection */}
+            <div
+              className="absolute"
+              style={{
+                width: "70%", height: "20%",
+                bottom: "8%", left: "15%",
+                background: `linear-gradient(0deg, ${ACCENT_CYAN}18 0%, transparent 100%)`,
+                borderRadius: "50%",
+              }}
+            />
           </div>
 
-          {/* Orb border ring */}
+          {/* Border ring */}
           <div
             className="absolute inset-0 rounded-full pointer-events-none"
             style={{
-              border: isActive
-                ? `1.5px solid ${CLINICAL_CYAN}99`
-                : `1px solid ${GLASS_BASE}`,
+              border: `1px solid ${isActive ? `${ACCENT_CYAN}88` : "rgba(46, 230, 214, 0.2)"}`,
             }}
           />
 
-          {/* Active pulse ring */}
+          {/* Active outer pulse */}
           {isActive && (
             <motion.div
-              className="absolute inset-[-6px] rounded-full pointer-events-none"
-              style={{ border: `1.5px solid ${CLINICAL_CYAN}44` }}
-              animate={{ opacity: [0, 0.7, 0], scale: [0.95, 1.08, 0.95] }}
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                inset: -8,
+                border: `1px solid ${ACCENT_CYAN}33`,
+                boxShadow: `0 0 20px ${ACCENT_CYAN}22`,
+              }}
+              animate={{ opacity: [0, 0.8, 0], scale: [0.96, 1.06, 0.96] }}
               transition={{ duration: 2, ease: "easeInOut", repeat: Infinity }}
             />
           )}
 
-          {/* Icon — white with cyan halo */}
+          {/* Icon */}
           <div className="absolute inset-0 flex items-center justify-center z-10">
             <motion.div
               style={{
-                color: ICON_WHITE,
-                filter: `drop-shadow(0 0 6px ${CLINICAL_CYAN}66)`,
+                filter: `drop-shadow(0 0 8px ${ACCENT_CYAN}88)`,
               }}
               animate={isActive
                 ? {
                     filter: [
-                      `drop-shadow(0 0 6px ${CLINICAL_CYAN}55)`,
-                      `drop-shadow(0 0 16px ${CLINICAL_CYAN}AA)`,
-                      `drop-shadow(0 0 6px ${CLINICAL_CYAN}55)`,
+                      `drop-shadow(0 0 8px ${ACCENT_CYAN}66)`,
+                      `drop-shadow(0 0 20px ${ACCENT_CYAN}CC)`,
+                      `drop-shadow(0 0 8px ${ACCENT_CYAN}66)`,
                     ],
-                    scale: [1, 1.06, 1],
+                    scale: [1, 1.08, 1],
                   }
                 : {}
               }
@@ -248,12 +230,12 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
           </div>
         </div>
 
-        {/* Label */}
+        {/* Label — dark text, high contrast */}
         <motion.span
-          className="text-[10px] tracking-[0.14em] uppercase font-medium whitespace-nowrap"
+          className="text-[10px] tracking-[0.14em] uppercase font-semibold whitespace-nowrap"
           style={{
-            color: isActive ? CLINICAL_CYAN : "rgba(60, 80, 90, 0.55)",
-            textShadow: isActive ? `0 0 8px ${CLINICAL_CYAN}44` : "none",
+            color: isActive ? ACCENT_CYAN : DARK_MID,
+            textShadow: isActive ? `0 0 10px ${ACCENT_CYAN}55` : "none",
             transition: "color 0.4s, text-shadow 0.4s",
           }}
         >
@@ -265,7 +247,7 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
 };
 
 /* ═══════════════════════════════════════════════
-   Main HexHUD — constellation of floating orbs
+   Main — constellation of floating dark orbs
    ═══════════════════════════════════════════════ */
 interface HexHUDProps {
   mouseX: number;
@@ -273,11 +255,11 @@ interface HexHUDProps {
 }
 
 const orbs = [
-  { icon: icons.cortex, label: "AI Cortex", size: 90, x: 40, y: 0, floatY: -12, floatDur: 5.5 },
-  { icon: icons.clinical, label: "Clinical OS", size: 78, x: 150, y: 60, floatY: -9, floatDur: 6.2 },
-  { icon: icons.virtualCare, label: "Virtual Care", size: 84, x: 20, y: 140, floatY: -14, floatDur: 5.0 },
-  { icon: icons.sovereign, label: "Sovereign Data", size: 72, x: 140, y: 200, floatY: -8, floatDur: 6.8 },
-  { icon: icons.audit, label: "Audit Integrity", size: 80, x: 70, y: 280, floatY: -11, floatDur: 5.8 },
+  { icon: icons.cortex, label: "AI Cortex", size: 88, x: 30, y: 0, floatY: -12, floatDur: 5.5 },
+  { icon: icons.clinical, label: "Clinical OS", size: 76, x: 155, y: 55, floatY: -9, floatDur: 6.2 },
+  { icon: icons.virtualCare, label: "Virtual Care", size: 82, x: 10, y: 130, floatY: -14, floatDur: 5.0 },
+  { icon: icons.sovereign, label: "Sovereign Data", size: 70, x: 145, y: 195, floatY: -8, floatDur: 6.8 },
+  { icon: icons.audit, label: "Audit Integrity", size: 78, x: 55, y: 275, floatY: -11, floatDur: 5.8 },
 ];
 
 const HexHUD = ({ mouseX, mouseY }: HexHUDProps) => {
@@ -294,7 +276,7 @@ const HexHUD = ({ mouseX, mouseY }: HexHUDProps) => {
   }, []);
 
   return (
-    <div className="relative" style={{ width: 260, height: 380 }}>
+    <div className="relative" style={{ width: 280, height: 390 }}>
       {orbs.map((orb, i) => (
         <GlassOrb
           key={i}
