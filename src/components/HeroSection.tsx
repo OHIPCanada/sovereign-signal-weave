@@ -74,7 +74,7 @@ const HeroSection = () => {
         viewBox="0 0 200 200"
         preserveAspectRatio="none"
         style={{
-          top: "28%",
+          top: "52%",
           left: "52%",
           width: "12vw",
           height: "16vh",
@@ -117,7 +117,7 @@ const HeroSection = () => {
       <motion.div
         className="hidden md:block absolute z-20"
         style={{
-          top: "20%",
+          top: "42%",
           left: "62%",
         }}
         initial={{ opacity: 0, scale: 0.8 }}
