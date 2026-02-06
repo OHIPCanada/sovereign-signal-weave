@@ -65,90 +65,87 @@ const HeroSection = () => {
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
             />
           </motion.div>
-
-          {/* Curved connection line from brain to orb */}
-          <svg
-            className="hidden md:block absolute z-30 pointer-events-none"
-            viewBox="0 0 200 200"
-            preserveAspectRatio="none"
-            style={{
-              top: "5%",
-              left: "52%",
-              width: "22%",
-              height: "25%",
-            }}
-          >
-            <defs>
-              <linearGradient id="synapse-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="rgba(180, 160, 255, 0.7)" />
-                <stop offset="50%" stopColor="rgba(200, 190, 255, 0.5)" />
-                <stop offset="100%" stopColor="rgba(180, 160, 255, 0.3)" />
-              </linearGradient>
-            </defs>
-            <motion.path
-              d="M 5,185 C 50,160 120,40 190,15"
-              fill="none"
-              stroke="url(#synapse-gradient)"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 2, delay: 1.5, ease: "easeInOut" }}
-            />
-            <circle
-              r="3"
-              fill="rgba(200, 180, 255, 0.9)"
-              filter="url(#dot-glow)"
-            >
-              <animateMotion
-                dur="4s"
-                repeatCount="indefinite"
-                path="M 5,185 C 50,160 120,40 190,15"
-              />
-            </circle>
-            <defs>
-              <filter id="dot-glow">
-                <feGaussianBlur stdDeviation="2" />
-              </filter>
-            </defs>
-          </svg>
-
-          {/* AI Cortex Orb — positioned near the brain top-right */}
-          <motion.div
-            className="hidden md:block absolute z-20"
-            style={{
-              top: "-2%",
-              left: "68%",
-            }}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, delay: 1.8, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <motion.img
-              src={aiCortexOrb}
-              alt="AI Cortex"
-              className="w-[140px] lg:w-[180px] h-auto"
-              style={{
-                filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))",
-              }}
-              animate={{
-                y: [0, -10, 0],
-                scale: [1, 1.02, 1],
-              }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.p
-              className="text-center mt-2 text-xs font-mono tracking-widest uppercase text-foreground font-semibold"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2.5 }}
-            >
-              AI Cortex
-            </motion.p>
-          </motion.div>
-
         </div>
       </div>
+
+      {/* Curved connection line — positioned in viewport space */}
+      <svg
+        className="hidden md:block absolute z-30 pointer-events-none"
+        viewBox="0 0 200 200"
+        preserveAspectRatio="none"
+        style={{
+          top: "28%",
+          left: "52%",
+          width: "12vw",
+          height: "16vh",
+        }}
+      >
+        <defs>
+          <linearGradient id="synapse-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(180, 160, 255, 0.8)" />
+            <stop offset="50%" stopColor="rgba(200, 190, 255, 0.5)" />
+            <stop offset="100%" stopColor="rgba(180, 160, 255, 0.4)" />
+          </linearGradient>
+          <filter id="dot-glow">
+            <feGaussianBlur stdDeviation="2" />
+          </filter>
+        </defs>
+        <motion.path
+          d="M 5,190 C 40,170 140,30 195,10"
+          fill="none"
+          stroke="url(#synapse-gradient)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 2, delay: 1.5, ease: "easeInOut" }}
+        />
+        <circle
+          r="3"
+          fill="rgba(200, 180, 255, 0.9)"
+          filter="url(#dot-glow)"
+        >
+          <animateMotion
+            dur="4s"
+            repeatCount="indefinite"
+            path="M 5,190 C 40,170 140,30 195,10"
+          />
+        </circle>
+      </svg>
+
+      {/* AI Cortex Orb — positioned in viewport space near brain */}
+      <motion.div
+        className="hidden md:block absolute z-20"
+        style={{
+          top: "20%",
+          left: "62%",
+        }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.2, delay: 1.8, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <motion.img
+          src={aiCortexOrb}
+          alt="AI Cortex"
+          className="w-[140px] lg:w-[180px] h-auto"
+          style={{
+            filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))",
+          }}
+          animate={{
+            y: [0, -10, 0],
+            scale: [1, 1.02, 1],
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.p
+          className="text-center mt-2 text-xs font-mono tracking-widest uppercase text-foreground font-semibold"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.5 }}
+        >
+          AI Cortex
+        </motion.p>
+      </motion.div>
 
       {/* Narrative sentence - lower left */}
       <motion.div
