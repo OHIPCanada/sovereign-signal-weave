@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useMouseFollow } from "@/hooks/useMouseFollow";
 import neuralProfile from "@/assets/neural-profile.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
-import CapabilityOrbit from "@/components/hero/CapabilityOrbit";
+import HexHUD from "@/components/hero/HexHUD";
 
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
@@ -13,7 +13,7 @@ const HeroSection = () => {
   return (
     <section className="hero-bg min-h-screen relative overflow-hidden">
       {/* INTELLIGENCE - Large Background Text */}
-      <div className="absolute inset-0 flex items-start justify-center pt-16 md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden">
+      <div className="absolute inset-0 flex items-start justify-center pt-32 md:pt-40 lg:pt-48 pointer-events-none select-none overflow-hidden">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -24,9 +24,9 @@ const HeroSection = () => {
         </motion.h1>
       </div>
 
-      {/* Main Composition: Neural Profile Image */}
+      {/* Main Composition: Neural Profile Image + HUD */}
       <div className="absolute inset-0 flex items-center justify-center pt-64 md:pt-80 lg:pt-96">
-        <div className="relative">
+        <div className="relative flex items-center gap-4 md:gap-8 lg:gap-12">
           {/* Human image + organic neural plexus overlay */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -66,12 +66,9 @@ const HeroSection = () => {
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
             />
           </motion.div>
-        </div>
-      </div>
 
-      {/* Five Capabilities — bold typographic stack, right side */}
-      <div className="hidden md:flex absolute right-8 lg:right-16 top-[55%] -translate-y-1/2 z-30 items-center">
-        <CapabilityOrbit />
+          {/* Services HUD removed */}
+        </div>
       </div>
 
       {/* Narrative sentence - lower left */}
