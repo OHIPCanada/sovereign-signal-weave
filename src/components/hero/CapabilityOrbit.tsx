@@ -54,7 +54,7 @@ const CapabilityOrbit = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1.5, delay: 1.8 }}
-      className="flex flex-col gap-1 md:gap-2"
+      className="flex flex-col gap-3 md:gap-4"
     >
       {capabilities.map((cap, i) => {
         const isActive = activeIndex === i;

@@ -70,7 +70,7 @@ const HeroSection = () => {
       </div>
 
       {/* Five Capabilities — bold typographic stack, right side */}
-      <div className="hidden md:flex absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 z-30 items-center">
+      <div className="hidden md:flex absolute right-8 lg:right-16 top-[55%] -translate-y-1/2 z-30 items-center">
         <CapabilityOrbit />
       </div>
 
