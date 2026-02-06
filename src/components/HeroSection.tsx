@@ -31,15 +31,52 @@ const HeroSection = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="relative"
             style={{
               transform: `perspective(1200px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`,
               transition: "transform 0.4s ease-out",
             }}
           >
+            {/* Internal brain glow - positioned at brain area */}
+            <motion.div
+              className="absolute pointer-events-none"
+              style={{
+                top: "12%",
+                left: "30%",
+                width: "40%",
+                height: "30%",
+                borderRadius: "50%",
+                background: "radial-gradient(ellipse at center, rgba(123, 97, 255, 0.45) 0%, rgba(180, 140, 255, 0.25) 35%, rgba(230, 230, 250, 0.12) 60%, transparent 85%)",
+                mixBlendMode: "screen",
+              }}
+              animate={{
+                opacity: [0.6, 1, 0.6],
+                scale: [0.95, 1.08, 0.95],
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
+            {/* Secondary deeper glow core */}
+            <motion.div
+              className="absolute pointer-events-none"
+              style={{
+                top: "16%",
+                left: "36%",
+                width: "25%",
+                height: "18%",
+                borderRadius: "50%",
+                background: "radial-gradient(ellipse at center, rgba(123, 97, 255, 0.6) 0%, rgba(160, 130, 255, 0.3) 40%, transparent 75%)",
+                mixBlendMode: "screen",
+              }}
+              animate={{
+                opacity: [0.5, 1, 0.5],
+                scale: [1, 1.12, 1],
+              }}
+              transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }}
+            />
             <motion.img
               src={neuralProfile}
               alt="Neural Intelligence Profile"
-              className="w-[900px] md:w-[1200px] lg:w-[1600px] h-auto"
+              className="w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"
               style={{
                 filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
               }}
