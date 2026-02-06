@@ -142,23 +142,22 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
             }
           />
 
-          {/* Transparent glass body — frosted with coral tint */}
+          {/* Solid gradient body — coral to gold */}
           <div
             className="absolute inset-0 rounded-full overflow-hidden"
             style={{
               background: `radial-gradient(ellipse at 35% 25%,
-                rgba(232, 168, 124, 0.18) 0%,
-                rgba(212, 133, 106, 0.12) 30%,
-                rgba(196, 94, 94, 0.1) 60%,
-                rgba(160, 64, 80, 0.08) 100%
+                #E8A87C 0%,
+                #D4856A 30%,
+                #C45E5E 60%,
+                #A04050 100%
               )`,
-              backdropFilter: "blur(16px) saturate(1.3)",
-              WebkitBackdropFilter: "blur(16px) saturate(1.3)",
               boxShadow: `
-                inset 0 1px 3px rgba(255, 255, 255, 0.3),
-                inset 0 -2px 6px rgba(196, 94, 94, 0.1),
-                0 8px 32px rgba(196, 94, 94, 0.15),
-                0 2px 8px rgba(0, 0, 0, 0.06)
+                inset 0 2px 8px rgba(232, 168, 124, 0.25),
+                inset 0 -4px 12px rgba(160, 64, 80, 0.4),
+                0 8px 32px rgba(196, 94, 94, 0.35),
+                0 2px 8px rgba(0, 0, 0, 0.1),
+                0 0 20px ${ACCENT}15
               `,
             }}
           >
@@ -166,9 +165,9 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
             <div
               className="absolute"
               style={{
-                width: "60%", height: "35%",
-                top: "5%", left: "15%",
-                background: `linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.05) 100%)`,
+                width: "55%", height: "30%",
+                top: "6%", left: "18%",
+                background: `linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.04) 100%)`,
                 borderRadius: "50%",
                 filter: "blur(1px)",
               }}
@@ -180,7 +179,7 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
               style={{
                 width: "70%", height: "20%",
                 bottom: "8%", left: "15%",
-                background: `linear-gradient(0deg, rgba(232, 168, 124, 0.12) 0%, transparent 100%)`,
+                background: `linear-gradient(0deg, ${ACCENT}22 0%, transparent 100%)`,
                 borderRadius: "50%",
               }}
             />
