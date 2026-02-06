@@ -69,23 +69,24 @@ const HeroSection = () => {
           {/* Curved connection line from brain to orb */}
           <svg
             className="hidden md:block absolute z-30 pointer-events-none"
+            viewBox="0 0 200 200"
+            preserveAspectRatio="none"
             style={{
-              top: "15%",
-              right: "-2%",
-              width: "300px",
-              height: "200px",
+              top: "5%",
+              left: "52%",
+              width: "22%",
+              height: "25%",
             }}
           >
             <defs>
-              <linearGradient id="synapse-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="rgba(180, 160, 255, 0.6)" />
-                <stop offset="50%" stopColor="rgba(200, 190, 255, 0.4)" />
+              <linearGradient id="synapse-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="rgba(180, 160, 255, 0.7)" />
+                <stop offset="50%" stopColor="rgba(200, 190, 255, 0.5)" />
                 <stop offset="100%" stopColor="rgba(180, 160, 255, 0.3)" />
               </linearGradient>
             </defs>
-            {/* Thin curved line */}
             <motion.path
-              d="M 0,140 C 60,130 120,40 280,30"
+              d="M 5,185 C 50,160 120,40 190,15"
               fill="none"
               stroke="url(#synapse-gradient)"
               strokeWidth="1.5"
@@ -94,26 +95,30 @@ const HeroSection = () => {
               animate={{ pathLength: 1, opacity: 1 }}
               transition={{ duration: 2, delay: 1.5, ease: "easeInOut" }}
             />
-            {/* Traveling glow dot */}
-            <motion.circle
+            <circle
               r="3"
               fill="rgba(200, 180, 255, 0.9)"
-              style={{ filter: "drop-shadow(0 0 6px rgba(180, 160, 255, 0.8))" }}
+              filter="url(#dot-glow)"
             >
               <animateMotion
                 dur="4s"
                 repeatCount="indefinite"
-                path="M 0,140 C 60,130 120,40 280,30"
+                path="M 5,185 C 50,160 120,40 190,15"
               />
-            </motion.circle>
+            </circle>
+            <defs>
+              <filter id="dot-glow">
+                <feGaussianBlur stdDeviation="2" />
+              </filter>
+            </defs>
           </svg>
 
-          {/* AI Cortex Orb — positioned near the brain */}
+          {/* AI Cortex Orb — positioned near the brain top-right */}
           <motion.div
             className="hidden md:block absolute z-20"
             style={{
-              top: "2%",
-              right: "-8%",
+              top: "-2%",
+              left: "68%",
             }}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
