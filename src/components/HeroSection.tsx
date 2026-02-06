@@ -40,7 +40,7 @@ const HeroSection = () => {
           >
             {/* Neural Plexus SVG — overlaid on the head */}
             <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
-              style={{ marginTop: "-8%", marginLeft: "-5%" }}
+              style={{ marginTop: "-15%", marginLeft: "-5%" }}
             >
               <NeuralPlexus mouseX={mouseX} mouseY={mouseY} />
             </div>
