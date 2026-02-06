@@ -123,7 +123,68 @@
 }
 
 @layer components {
-  /* Hero Title - INTELLIGENCE - No background needed, handled in component */
+  /* ===== Hero Background - Soft Ambient Glow Style ===== */
+  .hero-bg {
+    position: relative;
+    overflow: hidden;
+    background-color: #f8f9fa;
+  }
+
+  /* Layered ambient glows */
+  .hero-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: 
+      /* Left Blue/Lavender ambient glow */
+      radial-gradient(
+        ellipse 60% 80% at 0% 40%,
+        rgba(170, 160, 220, 0.35) 0%,
+        transparent 60%
+      ),
+      /* Central subtle lavender wash */
+      radial-gradient(
+        ellipse 70% 50% at 45% 55%,
+        rgba(190, 180, 235, 0.12) 0%,
+        transparent 55%
+      );
+    animation: ambientFlow 12s ease-in-out infinite;
+  }
+
+  /* Right side soft coral wash - concentrated bottom-right, fades up and left */
+  .hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background: 
+      /* Bottom-right coral concentration */
+      radial-gradient(
+        ellipse 80% 70% at 100% 100%,
+        rgba(245, 195, 175, 0.55) 0%,
+        rgba(250, 210, 190, 0.3) 40%,
+        transparent 70%
+      ),
+      /* Right edge soft wash extending upward */
+      radial-gradient(
+        ellipse 40% 90% at 100% 60%,
+        rgba(248, 200, 185, 0.35) 0%,
+        transparent 60%
+      );
+  }
+
+  @keyframes ambientFlow {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.85;
+      transform: scale(1.01);
+    }
+  }
 
   /* Hero Title - INTELLIGENCE */
   .hero-title {
