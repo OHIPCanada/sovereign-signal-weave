@@ -70,28 +70,28 @@ const ServiceTile = ({ label, icon, delay, mouseX, mouseY, index }: ServiceTileP
       className="group cursor-default"
     >
       <div
-        className="relative flex items-center gap-3 px-5 py-3 rounded-xl overflow-hidden"
+        className="relative flex items-center gap-3 px-5 py-3.5 rounded-xl overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, rgba(120, 90, 220, 0.15) 0%, rgba(80, 50, 180, 0.08) 100%)",
+          background: "linear-gradient(135deg, rgba(75, 40, 160, 0.35) 0%, rgba(55, 25, 140, 0.25) 100%)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(180, 160, 255, 0.15)",
-          boxShadow: "0 4px 24px -4px rgba(100, 70, 200, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
+          border: "1px solid rgba(120, 90, 220, 0.4)",
+          boxShadow: "0 4px 24px -4px rgba(80, 50, 180, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12)",
         }}
       >
         {/* Shimmer on hover */}
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
           style={{
-            background: "linear-gradient(135deg, rgba(180, 160, 255, 0.1) 0%, transparent 50%, rgba(123, 97, 255, 0.06) 100%)",
+            background: "linear-gradient(135deg, rgba(140, 110, 255, 0.15) 0%, transparent 50%, rgba(123, 97, 255, 0.1) 100%)",
           }}
         />
 
         {/* Left accent line */}
         <div
-          className="absolute left-0 top-[20%] bottom-[20%] w-[2px] rounded-full"
+          className="absolute left-0 top-[15%] bottom-[15%] w-[2px] rounded-full"
           style={{
-            background: "linear-gradient(180deg, transparent, rgba(160, 130, 255, 0.6), transparent)",
+            background: "linear-gradient(180deg, transparent, rgba(130, 100, 255, 0.8), transparent)",
           }}
         />
 
@@ -99,15 +99,15 @@ const ServiceTile = ({ label, icon, delay, mouseX, mouseY, index }: ServiceTileP
         <div
           className="relative z-10 flex items-center justify-center w-8 h-8 rounded-lg"
           style={{
-            background: "linear-gradient(135deg, rgba(140, 110, 255, 0.2) 0%, rgba(100, 70, 220, 0.1) 100%)",
-            border: "1px solid rgba(180, 160, 255, 0.12)",
+            background: "linear-gradient(135deg, rgba(100, 60, 220, 0.4) 0%, rgba(75, 40, 180, 0.25) 100%)",
+            border: "1px solid rgba(140, 110, 255, 0.3)",
           }}
         >
-          <span className="text-[rgba(210,195,255,0.9)]">{icon}</span>
+          <span className="text-[rgba(200,180,255,1)]">{icon}</span>
         </div>
 
         {/* Label */}
-        <span className="relative z-10 text-[11px] font-medium tracking-[0.12em] uppercase text-[rgba(220,210,255,0.85)]">
+        <span className="relative z-10 text-[11px] font-semibold tracking-[0.14em] uppercase" style={{ color: "rgba(50, 30, 100, 0.85)" }}>
           {label}
         </span>
       </div>
