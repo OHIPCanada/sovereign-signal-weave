@@ -77,8 +77,8 @@ const CapabilityOrbit = () => {
                 letterSpacing: "-0.01em",
                 color: "#FFFFFF",
                 background: isActive
-                  ? "linear-gradient(135deg, #6B3FA0 0%, #E5736F 40%, #E8A87C 70%, #F0C27F 100%)"
-                  : "linear-gradient(135deg, rgba(107,63,160,0.35) 0%, rgba(229,115,111,0.3) 40%, rgba(232,168,124,0.25) 70%, rgba(240,194,127,0.2) 100%)",
+                  ? "linear-gradient(135deg, #D4856A 0%, #E5736F 35%, #E39A96 65%, #EBC6C4 100%)"
+                  : "linear-gradient(135deg, rgba(212,133,106,0.3) 0%, rgba(229,115,111,0.25) 35%, rgba(227,154,150,0.2) 65%, rgba(235,198,196,0.15) 100%)",
                 transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
               }}
               animate={isActive ? { scale: 1 } : { scale: 0.97 }}
