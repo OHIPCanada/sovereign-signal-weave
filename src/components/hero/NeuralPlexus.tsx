@@ -146,25 +146,18 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
         style={{ overflow: "visible" }}
       >
         <defs>
-          {/* Warm lavender-coral brain core glow — intensified for luminous consciousness */}
+          {/* Warm lavender-coral brain core glow */}
           <radialGradient id="brainCoreGlow" cx="48%" cy="35%" r="22%">
-            <stop offset="0%" stopColor="rgba(255,250,240,0.95)" />
-            <stop offset="25%" stopColor="rgba(255,245,230,0.6)" />
-            <stop offset="55%" stopColor="rgba(255,235,210,0.25)" />
-            <stop offset="100%" stopColor="transparent" />
-          </radialGradient>
-
-          {/* Extended consciousness field — outer awareness */}
-          <radialGradient id="consciousnessField" cx="48%" cy="40%" r="55%">
-            <stop offset="0%" stopColor="rgba(255,245,235,0.15)" />
-            <stop offset="40%" stopColor="rgba(235,200,180,0.06)" />
+            <stop offset="0%" stopColor="rgba(255,245,230,0.9)" />
+            <stop offset="35%" stopColor="rgba(255,235,210,0.4)" />
+            <stop offset="70%" stopColor="rgba(255,240,220,0.1)" />
             <stop offset="100%" stopColor="transparent" />
           </radialGradient>
 
           {/* Outer warm aura */}
           <radialGradient id="warmAura" cx="48%" cy="40%" r="45%">
-            <stop offset="0%" stopColor="rgba(255,240,220,0.25)" />
-            <stop offset="50%" stopColor="rgba(255,235,210,0.08)" />
+            <stop offset="0%" stopColor="rgba(255,240,220,0.2)" />
+            <stop offset="50%" stopColor="rgba(255,235,210,0.05)" />
             <stop offset="100%" stopColor="transparent" />
           </radialGradient>
 
@@ -177,7 +170,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
             </feMerge>
           </filter>
 
-          {/* Thinking spark glow — Bio-Electric warmth */}
+          {/* Thinking spark glow — Bio-Electric Blue */}
           <filter id="sparkGlow" x="-200%" y="-200%" width="500%" height="500%">
             <feGaussianBlur stdDeviation="6" result="blur" />
             <feMerge>
@@ -194,58 +187,18 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
-
-          {/* Consciousness pulse glow */}
-          <filter id="pulseGlow" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
-
-        {/* Extended consciousness field — "a system quietly forming around it" */}
-        <motion.ellipse
-          cx="400"
-          cy="400"
-          rx="380"
-          ry="430"
-          fill="url(#consciousnessField)"
-          animate={{ opacity: [0.4, 0.7, 0.4], scale: [1, 1.03, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
 
         {/* Warm outer aura */}
         <ellipse cx="400" cy="400" rx="320" ry="380" fill="url(#warmAura)" />
 
-        {/* Brain core — intensified luminous bloom, "white-hot center of thought" */}
-        <motion.ellipse
+        {/* Brain core lavender-coral bloom */}
+        <ellipse
           cx={brainRegion.cx}
           cy={brainRegion.cy}
-          rx={brainRegion.rx * 1.4}
-          ry={brainRegion.ry * 1.4}
+          rx={brainRegion.rx * 1.2}
+          ry={brainRegion.ry * 1.2}
           fill="url(#brainCoreGlow)"
-          animate={{
-            opacity: [0.7, 1, 0.7],
-            scale: [1, 1.05, 1],
-          }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* Inner consciousness pulse — the "quiet intelligence" heartbeat */}
-        <motion.ellipse
-          cx={brainRegion.cx}
-          cy={brainRegion.cy}
-          rx={brainRegion.rx * 0.6}
-          ry={brainRegion.ry * 0.6}
-          fill="rgba(255, 252, 245, 0.4)"
-          filter="url(#pulseGlow)"
-          animate={{
-            scale: [0.8, 1.2, 0.8],
-            opacity: [0.3, 0.7, 0.3],
-          }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         />
 
         {/* Filaments — organic axons in Sovereign Lavender */}
