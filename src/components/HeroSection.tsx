@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useMouseFollow } from "@/hooks/useMouseFollow";
 import neuralProfile from "@/assets/neural-profile.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
-import HexHUD from "@/components/hero/HexHUD";
+import RadiatingAura from "@/components/hero/RadiatingAura";
 
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
@@ -24,9 +24,20 @@ const HeroSection = () => {
         </motion.h1>
       </div>
 
-      {/* Main Composition: Neural Profile Image + HUD */}
+      {/* Main Composition: Neural Profile Image + Radiating Aura */}
       <div className="absolute inset-0 flex items-center justify-center pt-64 md:pt-80 lg:pt-96">
-        <div className="relative flex items-center gap-4 md:gap-8 lg:gap-12">
+        <div className="relative flex items-center justify-center">
+          {/* Radiating consciousness aura — light rings + rays emanating outward */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2, delay: 1.5 }}
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ marginTop: "-10%" }}
+          >
+            <RadiatingAura />
+          </motion.div>
+
           {/* Human image + organic neural plexus overlay */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -51,7 +62,7 @@ const HeroSection = () => {
               <NeuralPlexus mouseX={mouseX} mouseY={mouseY} />
             </motion.div>
 
-            {/* Human profile image */}
+            {/* Human profile image — "made not of flesh, but of light" */}
             <motion.img
               src={neuralProfile}
               alt="Neural Intelligence Profile"
@@ -66,8 +77,6 @@ const HeroSection = () => {
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
             />
           </motion.div>
-
-          {/* Services HUD removed */}
         </div>
       </div>
 
