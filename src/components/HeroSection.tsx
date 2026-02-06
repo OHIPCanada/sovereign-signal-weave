@@ -24,9 +24,9 @@ const HeroSection = () => {
         </motion.h1>
       </div>
 
-      {/* Main Composition: Neural Profile + Capabilities */}
+      {/* Main Composition: Neural Profile Image */}
       <div className="absolute inset-0 flex items-center justify-center pt-64 md:pt-80 lg:pt-96">
-        <div className="relative flex items-center gap-8 md:gap-16 lg:gap-24">
+        <div className="relative">
           {/* Human image + organic neural plexus overlay */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -66,12 +66,12 @@ const HeroSection = () => {
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
             />
           </motion.div>
-
-          {/* Five Capabilities — bold typographic stack */}
-          <div className="hidden md:block relative z-30">
-            <CapabilityOrbit />
-          </div>
         </div>
+      </div>
+
+      {/* Five Capabilities — bold typographic stack, right side */}
+      <div className="hidden md:flex absolute right-8 lg:right-16 top-1/2 -translate-y-1/2 z-30 items-center">
+        <CapabilityOrbit />
       </div>
 
       {/* Narrative sentence - lower left */}
