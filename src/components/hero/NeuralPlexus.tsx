@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 
-// Seeded random for deterministic node placement
 function seededRandom(seed: number): number {
   const x = Math.sin(seed * 9301 + 49297) * 233280;
   return x - Math.floor(x);
@@ -24,13 +23,12 @@ interface Filament {
   cy: number;
 }
 
-// Right-facing head profile regions (viewBox 0 0 800 900)
 const headRegions = [
-  { cx: 360, cy: 380, rx: 200, ry: 260, weight: 0.4 }, // back of head
-  { cx: 480, cy: 400, rx: 140, ry: 200, weight: 0.25 }, // face front
-  { cx: 420, cy: 260, rx: 160, ry: 100, weight: 0.15 }, // forehead
-  { cx: 440, cy: 560, rx: 80, ry: 80, weight: 0.1 },   // jaw
-  { cx: 390, cy: 660, rx: 60, ry: 100, weight: 0.1 },   // neck
+  { cx: 360, cy: 380, rx: 200, ry: 260, weight: 0.4 },
+  { cx: 480, cy: 400, rx: 140, ry: 200, weight: 0.25 },
+  { cx: 420, cy: 260, rx: 160, ry: 100, weight: 0.15 },
+  { cx: 440, cy: 560, rx: 80, ry: 80, weight: 0.1 },
+  { cx: 390, cy: 660, rx: 60, ry: 100, weight: 0.1 },
 ];
 
 const brainRegion = { cx: 380, cy: 310, rx: 130, ry: 110 };
@@ -63,14 +61,13 @@ function generateNodes(count: number): Node[] {
     if (!isInHead(x, y)) continue;
 
     const inBrain = isInBrain(x, y);
+    if (!inBrain && seededRandom(seed + 2000) > 0.55) continue;
 
-    // Higher acceptance rate in brain region for density
-    if (!inBrain && seededRandom(seed + 2000) > 0.6) continue;
-
-    const isActive = inBrain && seededRandom(seed + 3000) > 0.65;
+    // Sparse thinking sparks — only in brain, rare
+    const isActive = inBrain && seededRandom(seed + 3000) > 0.82;
     const size = inBrain
-      ? 1.5 + seededRandom(seed + 4000) * 2.5
-      : 0.8 + seededRandom(seed + 4000) * 1.8;
+      ? 1.2 + seededRandom(seed + 4000) * 2.8
+      : 0.6 + seededRandom(seed + 4000) * 1.6;
 
     nodes.push({ x, y, size, isBrain: inBrain, isActive });
   }
@@ -80,7 +77,7 @@ function generateNodes(count: number): Node[] {
 
 function generateFilaments(nodes: Node[], maxDist: number): Filament[] {
   const filaments: Filament[] = [];
-  const maxConnections = 400;
+  const maxConnections = 500;
 
   for (let i = 0; i < nodes.length && filaments.length < maxConnections; i++) {
     for (let j = i + 1; j < nodes.length && filaments.length < maxConnections; j++) {
@@ -90,24 +87,25 @@ function generateFilaments(nodes: Node[], maxDist: number): Filament[] {
 
       if (dist > maxDist) continue;
 
-      // Connect more densely in brain region
       const bothBrain = nodes[i].isBrain && nodes[j].isBrain;
-      const threshold = bothBrain ? 0.3 : 0.7;
-
+      const threshold = bothBrain ? 0.25 : 0.65;
       if (seededRandom(i * 1000 + j) > threshold) continue;
 
-      // Curved midpoint (slight organic bend)
+      // Organic curved midpoint — perpendicular bend like biological axons
       const mx = (nodes[i].x + nodes[j].x) / 2;
       const my = (nodes[i].y + nodes[j].y) / 2;
-      const offset = (seededRandom(i + j * 500) - 0.5) * 30;
+      const bendStrength = dist * 0.4;
+      const offset = (seededRandom(i + j * 500) - 0.5) * bendStrength;
+      const perpX = -(nodes[j].y - nodes[i].y) / dist;
+      const perpY = (nodes[j].x - nodes[i].x) / dist;
 
       filaments.push({
         x1: nodes[i].x,
         y1: nodes[i].y,
         x2: nodes[j].x,
         y2: nodes[j].y,
-        cx: mx + offset,
-        cy: my + offset,
+        cx: mx + perpX * offset,
+        cy: my + perpY * offset,
       });
     }
   }
@@ -122,12 +120,11 @@ interface NeuralPlexusProps {
 
 const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
   const { nodes, filaments } = useMemo(() => {
-    const n = generateNodes(280);
-    const f = generateFilaments(n, 80);
+    const n = generateNodes(320);
+    const f = generateFilaments(n, 85);
     return { nodes: n, filaments: f };
   }, []);
 
-  // Subtle rotation based on mouse (2-6 degrees)
   const rotateY = (mouseX - 0.5) * 6;
   const rotateX = (mouseY - 0.5) * -3;
 
@@ -144,43 +141,47 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
       <motion.svg
         viewBox="0 0 800 900"
         className="w-[500px] md:w-[600px] lg:w-[700px] h-auto"
-        animate={{
-          scale: [1, 1.015, 1],
-        }}
-        transition={{
-          duration: 7,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+        animate={{ scale: [1, 1.015, 1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
         style={{ overflow: "visible" }}
       >
         <defs>
-          {/* Brain core glow */}
-          <radialGradient id="brainCoreGlow" cx="48%" cy="35%" r="20%">
-            <stop offset="0%" stopColor="#7B61FF" stopOpacity="0.5" />
-            <stop offset="40%" stopColor="#E6E6FA" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#E6E6FA" stopOpacity="0" />
+          {/* Warm lavender-coral brain core glow */}
+          <radialGradient id="brainCoreGlow" cx="48%" cy="35%" r="22%">
+            <stop offset="0%" stopColor="rgba(200,170,255,0.8)" />
+            <stop offset="35%" stopColor="rgba(229,115,111,0.3)" />
+            <stop offset="70%" stopColor="rgba(200,170,255,0.12)" />
+            <stop offset="100%" stopColor="transparent" />
           </radialGradient>
 
-          {/* Fresnel rim glow */}
-          <radialGradient id="rimGlow" cx="50%" cy="50%" r="55%">
-            <stop offset="70%" stopColor="transparent" />
-            <stop offset="90%" stopColor="#E6E6FA" stopOpacity="0.12" />
-            <stop offset="100%" stopColor="#E6E6FA" stopOpacity="0.06" />
+          {/* Outer warm aura */}
+          <radialGradient id="warmAura" cx="48%" cy="40%" r="45%">
+            <stop offset="0%" stopColor="rgba(200,170,255,0.15)" />
+            <stop offset="50%" stopColor="rgba(229,115,111,0.06)" />
+            <stop offset="100%" stopColor="transparent" />
           </radialGradient>
 
-          {/* Filament glow filter */}
+          {/* Filament glow */}
           <filter id="filamentGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="1.5" result="blur" />
+            <feGaussianBlur stdDeviation="1.2" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
 
-          {/* Active node glow */}
-          <filter id="activeGlow" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
+          {/* Thinking spark glow — Bio-Electric Blue */}
+          <filter id="sparkGlow" x="-150%" y="-150%" width="400%" height="400%">
+            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          {/* Coral node glow */}
+          <filter id="coralGlow" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -188,110 +189,127 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
           </filter>
         </defs>
 
-        {/* Brain core internal glow */}
+        {/* Warm outer aura */}
+        <ellipse cx="400" cy="400" rx="320" ry="380" fill="url(#warmAura)" />
+
+        {/* Brain core lavender-coral bloom */}
         <ellipse
           cx={brainRegion.cx}
           cy={brainRegion.cy}
-          rx={brainRegion.rx}
-          ry={brainRegion.ry}
+          rx={brainRegion.rx * 1.2}
+          ry={brainRegion.ry * 1.2}
           fill="url(#brainCoreGlow)"
         />
 
-        {/* Rim glow for silhouette edge */}
-        <ellipse cx="400" cy="400" rx="280" ry="340" fill="url(#rimGlow)" />
-
-        {/* Filaments - ultra-thin curved connections */}
+        {/* Filaments — organic axons in Sovereign Lavender */}
         <g filter="url(#filamentGlow)">
-          {filaments.map((f, i) => (
-            <motion.path
-              key={`f-${i}`}
-              d={`M ${f.x1} ${f.y1} Q ${f.cx} ${f.cy} ${f.x2} ${f.y2}`}
-              fill="none"
-              stroke="#800080"
-              strokeWidth="0.6"
-              strokeOpacity="0.15"
-              strokeLinecap="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: 1 }}
-              transition={{
-                duration: 2 + (i % 3) * 0.5,
-                delay: 0.8 + (i % 20) * 0.05,
-                ease: "easeOut",
-              }}
-            />
-          ))}
+          {filaments.map((f, i) => {
+            const isBrainFilament =
+              isInBrain(f.x1, f.y1) && isInBrain(f.x2, f.y2);
+            return (
+              <motion.path
+                key={`f-${i}`}
+                d={`M ${f.x1} ${f.y1} Q ${f.cx} ${f.cy} ${f.x2} ${f.y2}`}
+                fill="none"
+                stroke={
+                  isBrainFilament
+                    ? "rgba(200,170,255,0.35)"
+                    : "rgba(200,170,255,0.15)"
+                }
+                strokeWidth={isBrainFilament ? "0.8" : "0.5"}
+                strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{
+                  duration: 2 + (i % 4) * 0.4,
+                  delay: 0.5 + (i % 25) * 0.04,
+                  ease: "easeOut",
+                }}
+              />
+            );
+          })}
         </g>
 
-        {/* Nodes - tiny glass spheres */}
-        {nodes.map((node, i) => (
-          <g key={`n-${i}`}>
-            {node.isActive ? (
+        {/* Nodes — lavender luminous points with coral accents */}
+        {nodes.map((node, i) => {
+          if (node.isActive) {
+            // Rare "thinking sparks" in Bio-Electric Blue
+            return (
               <motion.circle
+                key={`n-${i}`}
                 cx={node.x}
                 cy={node.y}
                 r={node.size}
                 fill="#7B61FF"
-                filter="url(#activeGlow)"
+                filter="url(#sparkGlow)"
                 animate={{
-                  opacity: [0.1, 1, 0.1],
-                  r: [node.size * 0.8, node.size * 1.3, node.size * 0.8],
+                  opacity: [0, 0.9, 0],
+                  r: [node.size * 0.5, node.size * 1.6, node.size * 0.5],
                 }}
                 transition={{
-                  duration: 2 + seededRandom(i * 77) * 3,
-                  delay: seededRandom(i * 33) * 4,
+                  duration: 1.5 + seededRandom(i * 77) * 2,
+                  delay: seededRandom(i * 33) * 6,
                   repeat: Infinity,
+                  repeatDelay: 2 + seededRandom(i * 111) * 5,
                   ease: "easeInOut",
                 }}
               />
-            ) : (
-              <motion.circle
-                cx={node.x}
-                cy={node.y}
-                r={node.size}
-                fill="#E6E6FA"
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: node.isBrain
-                    ? [0.3, 0.7, 0.3]
-                    : [0.15, 0.4, 0.15],
-                }}
-                transition={{
-                  duration: 3 + seededRandom(i * 99) * 2,
-                  delay: seededRandom(i * 55) * 3,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-            )}
-          </g>
-        ))}
+            );
+          }
 
-        {/* Energy arcs between active brain nodes */}
+          // ~30% of brain nodes get coral tint for warmth
+          const isCoral = node.isBrain && seededRandom(i * 222) > 0.7;
+
+          return (
+            <motion.circle
+              key={`n-${i}`}
+              cx={node.x}
+              cy={node.y}
+              r={node.size}
+              fill={isCoral ? "rgba(229,115,111,0.7)" : "rgba(200,170,255,0.7)"}
+              filter={isCoral && node.isBrain ? "url(#coralGlow)" : undefined}
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: node.isBrain
+                  ? [0.3, 0.8, 0.3]
+                  : [0.1, 0.4, 0.1],
+              }}
+              transition={{
+                duration: 3 + seededRandom(i * 99) * 2.5,
+                delay: seededRandom(i * 55) * 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          );
+        })}
+
+        {/* Rare energy arcs between thinking sparks */}
         {nodes
           .filter((n) => n.isActive)
-          .slice(0, 15)
+          .slice(0, 8)
           .map((node, i, arr) => {
             const next = arr[(i + 1) % arr.length];
-            const mx = (node.x + next.x) / 2 + (seededRandom(i * 777) - 0.5) * 40;
-            const my = (node.y + next.y) / 2 + (seededRandom(i * 888) - 0.5) * 40;
+            const mx = (node.x + next.x) / 2 + (seededRandom(i * 777) - 0.5) * 50;
+            const my = (node.y + next.y) / 2 + (seededRandom(i * 888) - 0.5) * 50;
             return (
               <motion.path
                 key={`arc-${i}`}
                 d={`M ${node.x} ${node.y} Q ${mx} ${my} ${next.x} ${next.y}`}
                 fill="none"
                 stroke="#7B61FF"
-                strokeWidth="0.8"
+                strokeWidth="0.6"
                 strokeLinecap="round"
-                filter="url(#activeGlow)"
+                filter="url(#sparkGlow)"
                 animate={{
-                  opacity: [0, 0.6, 0],
+                  opacity: [0, 0.5, 0],
                   pathLength: [0, 1, 1],
                 }}
                 transition={{
-                  duration: 2.5,
-                  delay: i * 0.4,
+                  duration: 2,
+                  delay: i * 0.6,
                   repeat: Infinity,
-                  repeatDelay: 3 + seededRandom(i * 444) * 4,
+                  repeatDelay: 4 + seededRandom(i * 444) * 6,
                   ease: "easeInOut",
                 }}
               />
