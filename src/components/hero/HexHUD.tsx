@@ -90,20 +90,20 @@ const HexTile = ({ label, sublabel, icon, delay, mouseX, mouseY, index }: HexTil
         className="relative w-[110px] h-[120px] flex flex-col items-center justify-center"
         style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
       >
-        {/* Frosted glass background */}
+        {/* Frosted glass background - lavender/purple */}
         <div
           className="absolute inset-0"
           style={{
-            background: "rgba(230, 230, 250, 0.12)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
+            background: "linear-gradient(160deg, rgba(160, 130, 255, 0.25) 0%, rgba(100, 60, 200, 0.2) 50%, rgba(75, 40, 180, 0.15) 100%)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
           }}
         />
-        {/* Subtle edge glow */}
+        {/* Inner highlight edge */}
         <div
           className="absolute inset-0"
           style={{
-            background: "linear-gradient(135deg, rgba(230, 230, 250, 0.15) 0%, transparent 50%, rgba(123, 97, 255, 0.08) 100%)",
+            background: "linear-gradient(135deg, rgba(230, 220, 255, 0.25) 0%, transparent 40%, rgba(123, 97, 255, 0.12) 100%)",
           }}
         />
         {/* Content */}
