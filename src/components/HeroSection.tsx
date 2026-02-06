@@ -122,7 +122,7 @@ const HeroSection = () => {
         <motion.img
           src={aiCortexOrb}
           alt="AI Cortex"
-          className="w-[140px] lg:w-[180px] h-auto"
+          className="w-[220px] lg:w-[280px] h-auto"
           style={{
             filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))",
           }}
@@ -132,14 +132,19 @@ const HeroSection = () => {
           }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         />
-        <motion.p
-          className="text-center mt-2 text-xs font-mono tracking-widest uppercase text-foreground font-semibold"
+        <motion.div
+          className="text-center mt-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.5 }}
         >
-          AI Cortex
-        </motion.p>
+          <p className="text-sm font-bold tracking-[0.2em] uppercase text-white">
+            AI CORTEX
+          </p>
+          <p className="text-xs font-normal tracking-wide text-white/70 mt-0.5">
+            Thought, amplified
+          </p>
+        </motion.div>
       </motion.div>
 
       {/* Narrative sentence - lower left */}
