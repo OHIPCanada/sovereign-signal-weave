@@ -2,107 +2,98 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 
 /* ═══════════════════════════════════════════════
-   Design tokens from brief
+   Design tokens — cool clinical mint/cyan world
    ═══════════════════════════════════════════════ */
-const CORTEX_VIOLET = "#800080";
-const BIO_ELECTRIC_BLUE = "#7B61FF";
-const SOVEREIGN_LAVENDER = "#E6E6FA";
-const HEX_CORE = "#D8C9FF";
+const CLINICAL_BASE = "#E7F3F2";
+const CLINICAL_CYAN = "#2EE6D6";
+const CLINICAL_CYAN_DIM = "rgba(46, 230, 214, 0.25)";
+const ICON_WHITE = "#FFFFFF";
 
 /* ═══════════════════════════════════════════════
-   Premium SVG Icons — bold, white, clinical
+   Bold clinical icons — thick strokes, white
    ═══════════════════════════════════════════════ */
 const icons = {
   cortex: (
-    <svg viewBox="0 0 64 64" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12">
-      <path d="M32 14 C26 14 22 18 22 22 C18 22 16 26 16 30 C16 34 18 37 22 38 C22 42 26 46 30 46" />
-      <path d="M32 14 C38 14 42 18 42 22 C46 22 48 26 48 30 C48 34 46 37 42 38 C42 42 38 46 34 46" />
-      <circle cx="32" cy="20" r="2.5" fill="white" stroke="none" />
-      <circle cx="24" cy="28" r="2" fill="white" stroke="none" />
-      <circle cx="40" cy="28" r="2" fill="white" stroke="none" />
-      <circle cx="26" cy="38" r="2" fill="white" stroke="none" />
-      <circle cx="38" cy="38" r="2" fill="white" stroke="none" />
-      <circle cx="32" cy="32" r="3" fill="white" stroke="none" />
-      <line x1="32" y1="20" x2="24" y2="28" strokeOpacity="0.6" />
-      <line x1="32" y1="20" x2="40" y2="28" strokeOpacity="0.6" />
-      <line x1="24" y1="28" x2="32" y2="32" strokeOpacity="0.5" />
-      <line x1="40" y1="28" x2="32" y2="32" strokeOpacity="0.5" />
-      <line x1="26" y1="38" x2="32" y2="32" strokeOpacity="0.5" />
-      <line x1="38" y1="38" x2="32" y2="32" strokeOpacity="0.5" />
-      <line x1="24" y1="28" x2="14" y2="26" strokeOpacity="0.5" />
-      <circle cx="12" cy="25" r="1.5" fill="white" stroke="none" opacity="0.6" />
-      <line x1="40" y1="28" x2="50" y2="26" strokeOpacity="0.5" />
-      <circle cx="52" cy="25" r="1.5" fill="white" stroke="none" opacity="0.6" />
-      <line x1="32" y1="20" x2="32" y2="10" strokeOpacity="0.5" />
-      <circle cx="32" cy="8" r="1.5" fill="white" stroke="none" opacity="0.6" />
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="w-11 h-11">
+      <path d="M32 12 C25 12 21 17 21 22 C17 22 14 26 14 31 C14 36 17 39 21 40 C22 45 26 48 31 48" />
+      <path d="M32 12 C39 12 43 17 43 22 C47 22 50 26 50 31 C50 36 47 39 43 40 C42 45 38 48 33 48" />
+      <circle cx="32" cy="20" r="2.5" fill={ICON_WHITE} stroke="none" />
+      <circle cx="23" cy="29" r="2" fill={ICON_WHITE} stroke="none" />
+      <circle cx="41" cy="29" r="2" fill={ICON_WHITE} stroke="none" />
+      <circle cx="25" cy="40" r="2" fill={ICON_WHITE} stroke="none" />
+      <circle cx="39" cy="40" r="2" fill={ICON_WHITE} stroke="none" />
+      <circle cx="32" cy="32" r="3" fill={ICON_WHITE} stroke="none" />
+      <line x1="32" y1="20" x2="23" y2="29" strokeOpacity="0.55" />
+      <line x1="32" y1="20" x2="41" y2="29" strokeOpacity="0.55" />
+      <line x1="23" y1="29" x2="32" y2="32" strokeOpacity="0.45" />
+      <line x1="41" y1="29" x2="32" y2="32" strokeOpacity="0.45" />
+      <line x1="25" y1="40" x2="32" y2="32" strokeOpacity="0.45" />
+      <line x1="39" y1="40" x2="32" y2="32" strokeOpacity="0.45" />
+      <line x1="23" y1="29" x2="12" y2="27" strokeOpacity="0.4" />
+      <circle cx="10" cy="26" r="1.5" fill={ICON_WHITE} stroke="none" opacity="0.5" />
+      <line x1="41" y1="29" x2="52" y2="27" strokeOpacity="0.4" />
+      <circle cx="54" cy="26" r="1.5" fill={ICON_WHITE} stroke="none" opacity="0.5" />
     </svg>
   ),
   clinical: (
-    <svg viewBox="0 0 64 64" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12">
-      <circle cx="32" cy="18" r="3.5" fill="white" fillOpacity="0.25" />
-      <circle cx="16" cy="32" r="3.5" fill="white" fillOpacity="0.25" />
-      <circle cx="48" cy="32" r="3.5" fill="white" fillOpacity="0.25" />
-      <circle cx="22" cy="48" r="3.5" fill="white" fillOpacity="0.25" />
-      <circle cx="42" cy="48" r="3.5" fill="white" fillOpacity="0.25" />
-      <line x1="32" y1="21.5" x2="16" y2="28.5" />
-      <line x1="32" y1="21.5" x2="48" y2="28.5" />
-      <line x1="16" y1="35.5" x2="22" y2="44.5" />
-      <line x1="48" y1="35.5" x2="42" y2="44.5" />
-      <line x1="22" y1="48" x2="42" y2="48" strokeOpacity="0.4" />
-      <line x1="16" y1="32" x2="48" y2="32" strokeOpacity="0.3" />
-      <line x1="32" y1="21.5" x2="22" y2="44.5" strokeOpacity="0.2" />
-      <line x1="32" y1="21.5" x2="42" y2="44.5" strokeOpacity="0.2" />
-      <line x1="48" y1="32" x2="56" y2="32" strokeOpacity="0.5" />
-      <line x1="56" y1="32" x2="56" y2="22" strokeOpacity="0.5" />
-      <rect x="54" y="18" width="5" height="5" rx="1" fill="white" fillOpacity="0.2" />
-      <line x1="56" y1="32" x2="56" y2="44" strokeOpacity="0.5" />
-      <rect x="54" y="44" width="5" height="5" rx="1" fill="white" fillOpacity="0.2" />
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-11 h-11">
+      <circle cx="32" cy="17" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
+      <circle cx="15" cy="32" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
+      <circle cx="49" cy="32" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
+      <circle cx="21" cy="49" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
+      <circle cx="43" cy="49" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
+      <line x1="32" y1="21" x2="15" y2="28" />
+      <line x1="32" y1="21" x2="49" y2="28" />
+      <line x1="15" y1="36" x2="21" y2="45" />
+      <line x1="49" y1="36" x2="43" y2="45" />
+      <line x1="21" y1="49" x2="43" y2="49" strokeOpacity="0.35" />
+      <line x1="15" y1="32" x2="49" y2="32" strokeOpacity="0.25" />
+      <line x1="49" y1="32" x2="57" y2="32" strokeOpacity="0.4" />
+      <line x1="57" y1="32" x2="57" y2="22" strokeOpacity="0.4" />
+      <rect x="55" y="17" width="5" height="5" rx="1" fill={ICON_WHITE} fillOpacity="0.2" />
     </svg>
   ),
   virtualCare: (
-    <svg viewBox="0 0 64 64" fill="none" stroke="white" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12">
-      <path d="M22 28 C22 20 27 18 32 18 C37 18 40 21 40 26" />
-      <path d="M24 38 C24 44 29 46 34 46 C39 46 42 43 42 38" />
-      <path d="M40 26 L40 33 C40 36 37 38 34 38 L24 38" />
-      <path d="M24 38 L24 31 C24 28 27 26 30 26 L22 28" />
-      <circle cx="32" cy="11" r="3.5" fill="white" fillOpacity="0.35" />
-      <circle cx="32" cy="11" r="1.8" fill="white" stroke="none" />
-      <circle cx="32" cy="53" r="3.5" fill="white" fillOpacity="0.35" />
-      <circle cx="32" cy="53" r="1.8" fill="white" stroke="none" />
-      <line x1="32" y1="14.5" x2="32" y2="18" strokeOpacity="0.5" />
-      <line x1="34" y1="46" x2="34" y2="49.5" strokeOpacity="0.5" />
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-11 h-11">
+      <path d="M22 27 C22 19 27 17 32 17 C37 17 40 20 40 25" />
+      <path d="M24 37 C24 45 29 47 34 47 C39 47 42 44 42 39" />
+      <path d="M40 25 L40 33 C40 36 37 38 34 38 L24 37" />
+      <path d="M24 37 L24 29 C24 26 27 25 30 25 L22 27" />
+      <circle cx="32" cy="10" r="4" fill={ICON_WHITE} fillOpacity="0.3" />
+      <circle cx="32" cy="10" r="2" fill={ICON_WHITE} stroke="none" />
+      <circle cx="32" cy="54" r="4" fill={ICON_WHITE} fillOpacity="0.3" />
+      <circle cx="32" cy="54" r="2" fill={ICON_WHITE} stroke="none" />
+      <line x1="32" y1="14" x2="32" y2="17" strokeOpacity="0.5" />
+      <line x1="34" y1="47" x2="34" y2="50" strokeOpacity="0.5" />
     </svg>
   ),
   sovereign: (
-    <svg viewBox="0 0 64 64" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12">
-      <path d="M32 8 L50 17 V36 C50 44 42 52 32 56 C22 52 14 44 14 36 V17 L32 8Z" fill="white" fillOpacity="0.06" />
-      <rect x="25" y="31" width="14" height="12" rx="2.5" fill="white" fillOpacity="0.15" />
-      <path d="M28 31 V27 C28 23 30 21 32 21 C34 21 36 23 36 27 V31" />
-      <circle cx="32" cy="36" r="2" fill="white" stroke="none" />
-      <line x1="32" y1="38" x2="32" y2="41" strokeWidth="2.5" />
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-11 h-11">
+      <path d="M32 7 L52 17 V37 C52 46 42 54 32 58 C22 54 12 46 12 37 V17 L32 7Z" fill={ICON_WHITE} fillOpacity="0.05" />
+      <rect x="24" y="30" width="16" height="14" rx="3" fill={ICON_WHITE} fillOpacity="0.12" />
+      <path d="M27 30 V25 C27 21 29 19 32 19 C35 19 37 21 37 25 V30" />
+      <circle cx="32" cy="36" r="2.2" fill={ICON_WHITE} stroke="none" />
+      <line x1="32" y1="38.2" x2="32" y2="42" strokeWidth="2.5" />
     </svg>
   ),
   audit: (
-    <svg viewBox="0 0 64 64" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="w-12 h-12">
-      <path d="M16 8 H38 L48 18 V56 H16 V8Z" fill="white" fillOpacity="0.06" />
-      <polyline points="38,8 38,18 48,18" />
-      <line x1="22" y1="26" x2="40" y2="26" strokeOpacity="0.5" />
-      <line x1="22" y1="32" x2="36" y2="32" strokeOpacity="0.5" />
-      <line x1="22" y1="38" x2="32" y2="38" strokeOpacity="0.5" />
-      <circle cx="41" cy="45" r="8" fill="white" fillOpacity="0.12" />
-      <line x1="47" y1="51" x2="53" y2="57" strokeWidth="2.8" />
-      <polyline points="37,45 40,48 46,42" strokeWidth="2.2" />
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-11 h-11">
+      <path d="M15 7 H39 L49 17 V57 H15 V7Z" fill={ICON_WHITE} fillOpacity="0.05" />
+      <polyline points="39,7 39,17 49,17" />
+      <line x1="22" y1="25" x2="42" y2="25" strokeOpacity="0.45" />
+      <line x1="22" y1="31" x2="38" y2="31" strokeOpacity="0.45" />
+      <line x1="22" y1="37" x2="34" y2="37" strokeOpacity="0.45" />
+      <circle cx="42" cy="46" r="9" fill={ICON_WHITE} fillOpacity="0.1" />
+      <line x1="49" y1="53" x2="55" y2="59" strokeWidth="3" />
+      <polyline points="38,46 41,49 47,43" strokeWidth="2.5" />
     </svg>
   ),
 };
 
 /* ═══════════════════════════════════════════════
-   Neural Data Threads — emanate from brain (left)
+   Neural data filaments — electric cyan
    ═══════════════════════════════════════════════ */
-interface ThreadTarget {
-  x: number;
-  y: number;
-}
+interface ThreadTarget { x: number; y: number; }
 
 const NeuralThreads = ({ targets, activeIndex, mouseX, mouseY }: {
   targets: ThreadTarget[];
@@ -110,79 +101,77 @@ const NeuralThreads = ({ targets, activeIndex, mouseX, mouseY }: {
   mouseX: number;
   mouseY: number;
 }) => {
-  const svgW = 160;
-  const svgH = 380;
-  const originX = -20;
+  const svgW = 180;
+  const svgH = 420;
+  const originX = -30;
 
   const threads = useMemo(() => targets.map((t, i) => {
-    const originY = svgH * 0.4 + (i - 2) * 25; // spread origins vertically from brain center
-    const cp1x = originX + 40 + i * 8;
-    const cp1y = originY + (i % 2 === 0 ? -20 : 20);
-    const cp2x = t.x - 40;
-    const cp2y = t.y + (i % 2 === 0 ? 10 : -10);
+    const originY = svgH * 0.42 + (i - 2) * 30;
+    const cp1x = originX + 50 + i * 6;
+    const cp1y = originY + (i % 2 === 0 ? -25 : 25);
+    const cp2x = t.x - 50;
+    const cp2y = t.y + (i % 2 === 0 ? 12 : -12);
     return {
       path: `M ${originX} ${originY} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${t.x} ${t.y}`,
-      originY,
     };
   }), [targets]);
 
-  const offsetX = (mouseX - 0.5) * 3;
-  const offsetY = (mouseY - 0.5) * 2;
+  const ox = (mouseX - 0.5) * 3;
+  const oy = (mouseY - 0.5) * 2;
 
   return (
     <svg
       className="absolute pointer-events-none z-0"
       style={{
-        left: -svgW + 20,
-        top: 0,
+        left: -svgW + 30,
+        top: -10,
         width: svgW,
         height: svgH,
-        transform: `translate(${offsetX}px, ${offsetY}px)`,
+        transform: `translate(${ox}px, ${oy}px)`,
         transition: "transform 0.5s ease-out",
       }}
-      viewBox={`${originX - 10} 0 ${svgW + 20} ${svgH}`}
+      viewBox={`${originX - 15} -10 ${svgW + 30} ${svgH + 20}`}
       fill="none"
     >
       <defs>
-        <linearGradient id="threadFill" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor={CORTEX_VIOLET} stopOpacity="0" />
-          <stop offset="30%" stopColor={CORTEX_VIOLET} stopOpacity="0.12" />
-          <stop offset="70%" stopColor={CORTEX_VIOLET} stopOpacity="0.18" />
-          <stop offset="100%" stopColor={SOVEREIGN_LAVENDER} stopOpacity="0.25" />
+        <linearGradient id="cyanThread" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor={CLINICAL_CYAN} stopOpacity="0" />
+          <stop offset="25%" stopColor={CLINICAL_CYAN} stopOpacity="0.2" />
+          <stop offset="75%" stopColor={CLINICAL_CYAN} stopOpacity="0.35" />
+          <stop offset="100%" stopColor={CLINICAL_CYAN} stopOpacity="0.5" />
         </linearGradient>
-        <filter id="tGlow">
-          <feGaussianBlur stdDeviation="3" result="b" />
+        <filter id="cGlow">
+          <feGaussianBlur stdDeviation="2.5" result="b" />
           <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
-        <radialGradient id="pulseGrad">
-          <stop offset="0%" stopColor={BIO_ELECTRIC_BLUE} stopOpacity="0.9" />
-          <stop offset="100%" stopColor={BIO_ELECTRIC_BLUE} stopOpacity="0" />
+        <radialGradient id="pulseDot">
+          <stop offset="0%" stopColor={CLINICAL_CYAN} stopOpacity="1" />
+          <stop offset="60%" stopColor={CLINICAL_CYAN} stopOpacity="0.5" />
+          <stop offset="100%" stopColor={CLINICAL_CYAN} stopOpacity="0" />
         </radialGradient>
       </defs>
 
       {threads.map((t, i) => (
         <g key={i}>
-          {/* Base thread line */}
           <motion.path
             d={t.path}
-            stroke="url(#threadFill)"
-            strokeWidth="1.8"
+            stroke="url(#cyanThread)"
+            strokeWidth="1.6"
             strokeLinecap="round"
-            filter="url(#tGlow)"
+            filter="url(#cGlow)"
             initial={{ pathLength: 0, opacity: 0 }}
             animate={{ pathLength: 1, opacity: 1 }}
-            transition={{ duration: 1.4, delay: 1.5 + i * 0.2, ease: "easeOut" }}
+            transition={{ duration: 1.5, delay: 1.4 + i * 0.18, ease: "easeOut" }}
           />
-
-          {/* Traveling pulse */}
+          {/* Traveling pulse dot */}
           <motion.circle
-            r="4"
-            fill="url(#pulseGrad)"
-            animate={{ opacity: activeIndex === i ? [0, 1, 0.8, 0] : 0 }}
-            transition={{ duration: 2.2, ease: "easeInOut" }}
+            r="5"
+            fill="url(#pulseDot)"
+            animate={{ opacity: activeIndex === i ? [0, 1, 0.9, 0] : 0 }}
+            transition={{ duration: 2, ease: "easeInOut" }}
           >
             <animateMotion
-              dur="2.2s"
+              dur="2s"
               begin={activeIndex === i ? "0s" : "indefinite"}
               fill="freeze"
               path={t.path}
@@ -197,31 +186,32 @@ const NeuralThreads = ({ targets, activeIndex, mouseX, mouseY }: {
 };
 
 /* ═══════════════════════════════════════════════
-   Sparkle micro-particles inside hex glass
+   Internal shimmer particles
    ═══════════════════════════════════════════════ */
-const Sparkles = () => {
-  const dots = [
-    { cx: 22, cy: 28, r: 1.2, d: 0 },
-    { cx: 78, cy: 22, r: 1, d: 1.4 },
-    { cx: 38, cy: 72, r: 1.4, d: 0.7 },
-    { cx: 82, cy: 62, r: 0.8, d: 2 },
-    { cx: 52, cy: 18, r: 1, d: 0.4 },
-    { cx: 28, cy: 58, r: 0.9, d: 2.3 },
-    { cx: 68, cy: 78, r: 1.1, d: 1.6 },
-    { cx: 88, cy: 38, r: 0.7, d: 1 },
-    { cx: 45, cy: 45, r: 1.3, d: 0.2 },
-    { cx: 60, cy: 55, r: 0.9, d: 1.8 },
+const GlassParticles = () => {
+  const pts = [
+    { x: 20, y: 25, s: 1.3, d: 0 },
+    { x: 75, y: 20, s: 1, d: 1.5 },
+    { x: 35, y: 70, s: 1.5, d: 0.8 },
+    { x: 80, y: 65, s: 0.9, d: 2.2 },
+    { x: 50, y: 15, s: 1.1, d: 0.3 },
+    { x: 25, y: 55, s: 0.8, d: 2.5 },
+    { x: 65, y: 80, s: 1.2, d: 1.8 },
+    { x: 90, y: 35, s: 0.7, d: 1.1 },
   ];
-
   return (
     <>
-      {dots.map((d, i) => (
+      {pts.map((p, i) => (
         <motion.div
           key={i}
-          className="absolute rounded-full bg-white"
-          style={{ width: d.r * 2, height: d.r * 2, left: `${d.cx}%`, top: `${d.cy}%` }}
-          animate={{ opacity: [0, 0.7, 0], scale: [0.5, 1.3, 0.5] }}
-          transition={{ duration: 3, delay: d.d, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute rounded-full"
+          style={{
+            width: p.s * 2, height: p.s * 2,
+            left: `${p.x}%`, top: `${p.y}%`,
+            background: `radial-gradient(circle, rgba(255,255,255,0.9) 0%, ${CLINICAL_CYAN}44 100%)`,
+          }}
+          animate={{ opacity: [0, 0.6, 0], scale: [0.5, 1.4, 0.5] }}
+          transition={{ duration: 3.5, delay: p.d, repeat: Infinity, ease: "easeInOut" }}
         />
       ))}
     </>
@@ -229,7 +219,7 @@ const Sparkles = () => {
 };
 
 /* ═══════════════════════════════════════════════
-   Single Hex Tile — frosted glass hologram
+   Single Hex Tile — cool clinical glass crystal
    ═══════════════════════════════════════════════ */
 const hexClip = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
 
@@ -243,127 +233,136 @@ interface HexTileProps {
 }
 
 const HexTile = ({ icon, delay, mouseX, mouseY, index, isActive }: HexTileProps) => {
-  const px = (mouseX - 0.5) * 8 * (1 + index * 0.06);
-  const py = (mouseY - 0.5) * 4 * (1 + index * 0.06);
+  const px = (mouseX - 0.5) * 8 * (1 + index * 0.05);
+  const py = (mouseY - 0.5) * 4 * (1 + index * 0.05);
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.65, filter: "blur(14px)" }}
+      initial={{ opacity: 0, scale: 0.6, filter: "blur(16px)" }}
       animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-      transition={{ duration: 1, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 1.1, delay, ease: [0.16, 1, 0.3, 1] }}
       style={{
         transform: `translate(${px}px, ${py}px)`,
         transition: "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
       }}
       className="group cursor-default"
     >
-      <div className="relative w-[130px] h-[114px]">
-        {/* Soft radial vignette behind tile — helps it pop on white bg */}
+      <div className="relative w-[140px] h-[122px]">
+        {/* Soft vignette behind tile */}
         <div
-          className="absolute inset-[-30px] pointer-events-none"
+          className="absolute inset-[-35px] pointer-events-none"
           style={{
-            background: `radial-gradient(ellipse at center, rgba(216, 201, 255, 0.18) 0%, transparent 65%)`,
+            background: `radial-gradient(ellipse at center, rgba(46, 230, 214, 0.08) 0%, transparent 60%)`,
           }}
         />
 
-        {/* Rim glow — Sovereign Lavender */}
+        {/* Cyan rim glow */}
         <motion.div
-          className="absolute inset-[-6px]"
+          className="absolute inset-[-7px]"
           style={{
             clipPath: hexClip,
-            background: `linear-gradient(135deg, ${SOVEREIGN_LAVENDER}66, ${SOVEREIGN_LAVENDER}33, ${SOVEREIGN_LAVENDER}55)`,
-            filter: "blur(5px)",
+            background: `linear-gradient(135deg, ${CLINICAL_CYAN}55, ${CLINICAL_CYAN}22, ${CLINICAL_CYAN}44)`,
+            filter: "blur(6px)",
           }}
           animate={isActive
-            ? { opacity: [0.4, 0.9, 0.4], scale: [1, 1.04, 1] }
-            : { opacity: 0.35 }
+            ? { opacity: [0.3, 1, 0.3], scale: [1, 1.05, 1] }
+            : { opacity: 0.3 }
           }
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        {/* Glass hex body — darker lavender core */}
+        {/* Glass body — cool clinical mint */}
         <div
           className="absolute inset-0 overflow-hidden"
           style={{
             clipPath: hexClip,
             background: `linear-gradient(155deg,
-              rgba(220, 212, 255, 0.7) 0%,
-              ${HEX_CORE}AA 35%,
-              ${HEX_CORE}88 60%,
-              rgba(230, 225, 255, 0.65) 100%
+              rgba(231, 243, 242, 0.8) 0%,
+              rgba(220, 240, 238, 0.7) 30%,
+              rgba(210, 235, 233, 0.6) 60%,
+              rgba(225, 242, 241, 0.75) 100%
             )`,
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
+            backdropFilter: "blur(24px) saturate(1.2)",
+            WebkitBackdropFilter: "blur(24px) saturate(1.2)",
           }}
         >
-          {/* Internal light refraction streaks */}
+          {/* Glass refraction streaks */}
           <div
             className="absolute inset-0"
             style={{
               background: `
-                linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.2) 15%, transparent 30%),
-                linear-gradient(250deg, transparent 50%, rgba(255,255,255,0.12) 70%, transparent 85%)
+                linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.3) 12%, transparent 25%),
+                linear-gradient(255deg, transparent 45%, rgba(255,255,255,0.15) 65%, transparent 80%),
+                linear-gradient(180deg, rgba(46,230,214,0.06) 0%, transparent 40%, rgba(46,230,214,0.04) 100%)
               `,
             }}
           />
 
-          {/* Sparkle micro-particles */}
-          <Sparkles />
+          {/* Micro particles */}
+          <GlassParticles />
 
-          {/* Hover shimmer sweep */}
-          <motion.div
+          {/* Hover sweep */}
+          <div
             className="absolute inset-0 opacity-0 group-hover:opacity-100"
             style={{
-              background: "linear-gradient(120deg, rgba(255,255,255,0.35) 0%, transparent 40%, rgba(200,185,255,0.15) 80%, transparent 100%)",
-              transition: "opacity 0.6s ease",
+              background: "linear-gradient(120deg, rgba(255,255,255,0.4) 0%, transparent 35%, rgba(46,230,214,0.12) 75%, transparent 100%)",
+              transition: "opacity 0.5s ease",
             }}
           />
         </div>
 
-        {/* Hex border SVG */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 130 114" fill="none">
+        {/* Hex border */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 140 122" fill="none">
           <polygon
-            points="65,2 128,29.5 128,84.5 65,112 2,84.5 2,29.5"
-            stroke={isActive ? BIO_ELECTRIC_BLUE : `${SOVEREIGN_LAVENDER}88`}
-            strokeWidth={isActive ? "2" : "1"}
+            points="70,2 138,32 138,90 70,120 2,90 2,32"
+            stroke={isActive ? CLINICAL_CYAN : `${CLINICAL_BASE}`}
+            strokeWidth={isActive ? "2.5" : "1.2"}
             fill="none"
-            opacity={isActive ? 0.8 : 0.5}
+            opacity={isActive ? 0.9 : 0.6}
+          />
+          {/* Double border for thickness */}
+          <polygon
+            points="70,5 135,33.5 135,88.5 70,117 5,88.5 5,33.5"
+            stroke={isActive ? `${CLINICAL_CYAN}88` : `rgba(200, 230, 228, 0.3)`}
+            strokeWidth="0.8"
+            fill="none"
           />
         </svg>
 
         {/* Active pulse ring */}
         {isActive && (
           <motion.div
-            className="absolute inset-[-3px]"
-            style={{
+            className="absolute inset-[-4px] pointer-events-none"
+            style={{ clipPath: hexClip }}
+            animate={{ opacity: [0, 0.6, 0] }}
+            transition={{ duration: 1.6, ease: "easeInOut" }}
+          >
+            <div className="w-full h-full" style={{
+              boxShadow: `inset 0 0 20px ${CLINICAL_CYAN}44, 0 0 25px ${CLINICAL_CYAN}33`,
               clipPath: hexClip,
-              border: `2px solid ${BIO_ELECTRIC_BLUE}`,
-              boxShadow: `0 0 20px ${BIO_ELECTRIC_BLUE}44, inset 0 0 15px ${BIO_ELECTRIC_BLUE}22`,
-            }}
-            animate={{ opacity: [0, 0.7, 0] }}
-            transition={{ duration: 1.8, ease: "easeInOut" }}
-          />
+            }} />
+          </motion.div>
         )}
 
-        {/* Icon — white with lavender glow */}
+        {/* Icon — white with thin cyan halo */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <motion.div
             style={{
-              color: "white",
-              filter: `drop-shadow(0 0 10px rgba(200, 185, 255, 0.5))`,
+              color: ICON_WHITE,
+              filter: `drop-shadow(0 0 8px ${CLINICAL_CYAN}66)`,
             }}
             animate={isActive
               ? {
                   filter: [
-                    `drop-shadow(0 0 8px rgba(123, 97, 255, 0.4))`,
-                    `drop-shadow(0 0 20px rgba(123, 97, 255, 0.8))`,
-                    `drop-shadow(0 0 8px rgba(123, 97, 255, 0.4))`,
+                    `drop-shadow(0 0 6px ${CLINICAL_CYAN}55)`,
+                    `drop-shadow(0 0 18px ${CLINICAL_CYAN}AA)`,
+                    `drop-shadow(0 0 6px ${CLINICAL_CYAN}55)`,
                   ],
-                  scale: [1, 1.1, 1],
+                  scale: [1, 1.08, 1],
                 }
               : {}
             }
-            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           >
             {icon}
           </motion.div>
@@ -374,7 +373,7 @@ const HexTile = ({ icon, delay, mouseX, mouseY, index, isActive }: HexTileProps)
 };
 
 /* ═══════════════════════════════════════════════
-   Main HexHUD — 2-1-2 diamond layout + threads
+   Main HexHUD — 2-1-2 diamond + data threads
    ═══════════════════════════════════════════════ */
 interface HexHUDProps {
   mouseX: number;
@@ -390,61 +389,50 @@ const HexHUD = ({ mouseX, mouseY }: HexHUDProps) => {
     { icon: icons.audit },
   ];
 
-  // Cycle active tile for pulse animation (2.5s per tile)
   const [activeIndex, setActiveIndex] = useState(-1);
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      const interval = setInterval(() => {
-        setActiveIndex((prev) => {
-          if (prev >= tiles.length - 1) return -1; // brief pause
-          return prev + 1;
-        });
-      }, 2500);
-      return () => clearInterval(interval);
-    }, 3000); // initial delay for entrance animations
-    return () => clearTimeout(timeout);
+    const t = setTimeout(() => {
+      const iv = setInterval(() => {
+        setActiveIndex((p) => (p >= tiles.length - 1 ? -1 : p + 1));
+      }, 2800);
+      return () => clearInterval(iv);
+    }, 3200);
+    return () => clearTimeout(t);
   }, [tiles.length]);
 
-  // Thread target positions relative to the HexHUD container
-  // Corresponds to center of each hex in the 2-1-2 layout
-  const tileH = 114;
-  const gap = 8;
-  const row1Y = tileH / 2;
-  const row2Y = tileH + gap + tileH / 2 - 10;
-  const row3Y = 2 * (tileH + gap) + tileH / 2 - 20;
+  // Thread targets — approximate centers of each hex in layout
+  const tH = 122;
+  const gapY = 4;
+  const r1Y = tH / 2;
+  const r2Y = tH + gapY + tH / 2 - 14;
+  const r3Y = 2 * (tH + gapY) + tH / 2 - 28;
   const threadTargets: ThreadTarget[] = [
-    { x: 140, y: row1Y - 5 },       // top-left
-    { x: 140 + 130 + 24, y: row1Y - 5 }, // top-right
-    { x: 140 + 77, y: row2Y },      // center
-    { x: 140, y: row3Y + 5 },       // bottom-left
-    { x: 140 + 130 + 24, y: row3Y + 5 }, // bottom-right
+    { x: 155, y: r1Y },
+    { x: 155 + 140 + 24, y: r1Y },
+    { x: 155 + 82, y: r2Y },
+    { x: 155, y: r3Y },
+    { x: 155 + 140 + 24, y: r3Y },
   ];
 
   return (
     <div className="relative">
-      {/* Neural data threads from brain */}
       <NeuralThreads
         targets={threadTargets}
         activeIndex={activeIndex}
         mouseX={mouseX}
         mouseY={mouseY}
       />
-
-      {/* Hex tile diamond grid */}
-      <div className="flex flex-col items-center" style={{ gap: `${gap}px` }}>
-        {/* Row 1: 2 hexagons */}
+      <div className="flex flex-col items-center" style={{ gap: `${gapY}px` }}>
         <div className="flex gap-6">
-          <HexTile icon={tiles[0].icon} delay={1.7} mouseX={mouseX} mouseY={mouseY} index={0} isActive={activeIndex === 0} />
-          <HexTile icon={tiles[1].icon} delay={1.85} mouseX={mouseX} mouseY={mouseY} index={1} isActive={activeIndex === 1} />
+          <HexTile icon={tiles[0].icon} delay={1.6} mouseX={mouseX} mouseY={mouseY} index={0} isActive={activeIndex === 0} />
+          <HexTile icon={tiles[1].icon} delay={1.75} mouseX={mouseX} mouseY={mouseY} index={1} isActive={activeIndex === 1} />
         </div>
-        {/* Row 2: 1 centered */}
-        <div className="flex justify-center -mt-3">
-          <HexTile icon={tiles[2].icon} delay={2.0} mouseX={mouseX} mouseY={mouseY} index={2} isActive={activeIndex === 2} />
+        <div className="flex justify-center -mt-4">
+          <HexTile icon={tiles[2].icon} delay={1.9} mouseX={mouseX} mouseY={mouseY} index={2} isActive={activeIndex === 2} />
         </div>
-        {/* Row 3: 2 hexagons */}
-        <div className="flex gap-6 -mt-3">
-          <HexTile icon={tiles[3].icon} delay={2.15} mouseX={mouseX} mouseY={mouseY} index={3} isActive={activeIndex === 3} />
-          <HexTile icon={tiles[4].icon} delay={2.3} mouseX={mouseX} mouseY={mouseY} index={4} isActive={activeIndex === 4} />
+        <div className="flex gap-6 -mt-4">
+          <HexTile icon={tiles[3].icon} delay={2.05} mouseX={mouseX} mouseY={mouseY} index={3} isActive={activeIndex === 3} />
+          <HexTile icon={tiles[4].icon} delay={2.2} mouseX={mouseX} mouseY={mouseY} index={4} isActive={activeIndex === 4} />
         </div>
       </div>
     </div>
