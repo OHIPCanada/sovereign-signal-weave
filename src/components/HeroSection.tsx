@@ -71,41 +71,40 @@ const HeroSection = () => {
             className="hidden md:block absolute z-30 pointer-events-none"
             style={{
               top: "38%",
-              left: "58%",
-              width: "280px",
-              height: "4px",
+              left: "52%",
+              width: "160px",
+              height: "6px",
             }}
           >
             <defs>
               <linearGradient id="brain-link-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="rgba(123, 97, 255, 0.6)" />
-                <stop offset="50%" stopColor="rgba(46, 230, 214, 0.8)" />
-                <stop offset="100%" stopColor="rgba(180, 160, 255, 0.4)" />
+                <stop offset="0%" stopColor="rgba(123, 97, 255, 0.9)" />
+                <stop offset="50%" stopColor="rgba(46, 230, 214, 1)" />
+                <stop offset="100%" stopColor="rgba(180, 160, 255, 0.7)" />
               </linearGradient>
             </defs>
             <motion.line
-              x1="0" y1="2" x2="280" y2="2"
+              x1="0" y1="3" x2="160" y2="3"
               stroke="url(#brain-link-gradient)"
-              strokeWidth="2"
+              strokeWidth="3"
               strokeLinecap="round"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{ pathLength: 1, opacity: 1 }}
               transition={{ duration: 1.5, delay: 1.5, ease: "easeInOut" }}
             />
-            {/* Shimmer pulse */}
             <motion.circle
-              r="4"
-              fill="rgba(46, 230, 214, 0.9)"
+              r="5"
+              fill="rgba(46, 230, 214, 1)"
               filter="blur(2px)"
-              animate={{ cx: [0, 280, 0] }}
+              animate={{ cx: [0, 160, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-              cy="2"
+              cy="3"
             />
           </svg>
 
           {/* AI Cortex Orb */}
           <motion.div
-            className="hidden md:block relative z-20"
+            className="hidden md:block relative z-20 -ml-16 lg:-ml-20"
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.2, delay: 1.8, ease: [0.16, 1, 0.3, 1] }}
@@ -124,8 +123,7 @@ const HeroSection = () => {
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.p
-              className="text-center mt-3 text-xs font-mono tracking-widest uppercase"
-              style={{ color: "rgba(123, 97, 255, 0.7)" }}
+              className="text-center mt-3 text-xs font-mono tracking-widest uppercase text-foreground"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 2.5 }}
