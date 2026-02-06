@@ -68,30 +68,25 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Curved connection line — positioned in viewport space */}
+      {/* Full-viewport SVG overlay for precise line from brain to orb */}
       <svg
-        className="hidden md:block absolute z-30 pointer-events-none"
-        viewBox="0 0 200 200"
-        preserveAspectRatio="none"
-        style={{
-          top: "38%",
-          left: "55%",
-          width: "16vw",
-          height: "14vh",
-        }}
+        className="hidden md:block absolute inset-0 w-full h-full z-30 pointer-events-none"
+        viewBox="0 0 1920 1080"
+        preserveAspectRatio="xMidYMid slice"
       >
         <defs>
-          <linearGradient id="synapse-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+          <linearGradient id="synapse-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="rgba(180, 160, 255, 0.8)" />
             <stop offset="50%" stopColor="rgba(200, 190, 255, 0.5)" />
             <stop offset="100%" stopColor="rgba(180, 160, 255, 0.4)" />
           </linearGradient>
           <filter id="dot-glow">
-            <feGaussianBlur stdDeviation="2" />
+            <feGaussianBlur stdDeviation="3" />
           </filter>
         </defs>
+        {/* Line from brain (~55%, 42%) to orb center (~75%, 35%) */}
         <motion.path
-          d="M 5,190 C 40,170 140,30 195,10"
+          d="M 1060,450 C 1150,420 1300,370 1440,380"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="1.5"
@@ -101,24 +96,24 @@ const HeroSection = () => {
           transition={{ duration: 2, delay: 1.5, ease: "easeInOut" }}
         />
         <circle
-          r="3"
+          r="4"
           fill="rgba(200, 180, 255, 0.9)"
           filter="url(#dot-glow)"
         >
           <animateMotion
             dur="4s"
             repeatCount="indefinite"
-            path="M 5,190 C 40,170 140,30 195,10"
+            path="M 1060,450 C 1150,420 1300,370 1440,380"
           />
         </circle>
       </svg>
 
-      {/* AI Cortex Orb — positioned in viewport space near brain */}
+      {/* AI Cortex Orb */}
       <motion.div
         className="hidden md:block absolute z-20"
         style={{
-          top: "30%",
-          left: "70%",
+          top: "32%",
+          left: "72%",
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
