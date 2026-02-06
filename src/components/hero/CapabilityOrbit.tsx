@@ -75,14 +75,8 @@ const CapabilityOrbit = () => {
                 fontFamily: "Inter, sans-serif",
                 fontSize: "clamp(24px, 3.5vw, 52px)",
                 letterSpacing: "-0.02em",
-                background: isActive
-                  ? "linear-gradient(135deg, #2E1A6B 0%, #4B5ED7 60%, #7B61FF 100%)"
-                  : "linear-gradient(180deg, #2E1A6B 0%, #4B5ED7 100%)",
-                opacity: isActive ? 1 : 0.25,
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+                color: isActive ? "#2E1A6B" : "#8B85A8",
+                transition: "color 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
               }}
               animate={isActive ? { scale: 1 } : { scale: 0.97 }}
               transition={{ duration: 0.4 }}
