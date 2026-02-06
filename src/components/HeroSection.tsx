@@ -66,41 +66,15 @@ const HeroSection = () => {
             />
           </motion.div>
 
-          {/* Gradient Connection Line - flows between brain and orb */}
+          {/* Traveling pulse dot between brain and orb */}
           <div className="hidden md:flex items-center -mx-12 lg:-mx-16 z-30">
             <svg width="160" height="20" className="overflow-visible">
-              <defs>
-                <linearGradient id="brain-link-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="rgba(123, 97, 255, 0.9)" />
-                  <stop offset="50%" stopColor="rgba(46, 230, 214, 1)" />
-                  <stop offset="100%" stopColor="rgba(180, 160, 255, 0.7)" />
-                </linearGradient>
-                <filter id="line-glow">
-                  <feGaussianBlur stdDeviation="3" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
-              {/* Glow layer */}
-              <motion.line
-                x1="0" y1="10" x2="160" y2="10"
-                stroke="url(#brain-link-gradient)"
-                strokeWidth="4"
-                strokeLinecap="round"
-                filter="url(#line-glow)"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 1.5, delay: 1.5, ease: "easeInOut" }}
-              />
-              {/* Traveling pulse */}
               <motion.circle
-                r="6"
+                r="5"
                 fill="rgba(46, 230, 214, 1)"
-                style={{ filter: "blur(2px)" }}
+                style={{ filter: "drop-shadow(0 0 8px rgba(46, 230, 214, 0.8))" }}
                 animate={{ cx: [0, 160, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 cy="10"
               />
             </svg>
