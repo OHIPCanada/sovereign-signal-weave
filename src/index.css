@@ -123,66 +123,93 @@
 }
 
 @layer components {
-  /* ===== Hero Background - Soft Ambient Glow Style ===== */
+  /* ===== Hero Background - Cinematic Aura Style ===== */
   .hero-bg {
     position: relative;
     overflow: hidden;
-    background-color: #f8f9fa;
+    background: linear-gradient(
+      165deg,
+      #EEF2F6 0%,
+      #E8EDF3 35%,
+      #E2E7EF 55%,
+      #D7DEE8 100%
+    );
   }
 
-  /* Layered ambient glows */
+  /* Left-side warm brain aura — lavender + coral bloom */
   .hero-bg::before {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: 
-      /* Left Blue/Lavender ambient glow */
+    background:
+      /* Deep lavender aura behind brain — "materializing from light" */
       radial-gradient(
-        ellipse 60% 80% at 0% 40%,
-        rgba(170, 160, 220, 0.35) 0%,
-        transparent 60%
+        ellipse 55% 70% at 30% 50%,
+        rgba(180, 155, 235, 0.4) 0%,
+        rgba(170, 150, 220, 0.25) 30%,
+        transparent 65%
       ),
-      /* Central subtle lavender wash */
+      /* Warm coral inner bloom — human warmth */
       radial-gradient(
-        ellipse 70% 50% at 45% 55%,
-        rgba(190, 180, 235, 0.12) 0%,
+        ellipse 35% 45% at 25% 55%,
+        rgba(235, 170, 155, 0.3) 0%,
+        rgba(229, 140, 130, 0.15) 40%,
+        transparent 70%
+      ),
+      /* Soft white-hot center behind brain core */
+      radial-gradient(
+        ellipse 20% 25% at 28% 45%,
+        rgba(255, 255, 255, 0.5) 0%,
+        rgba(230, 220, 250, 0.2) 50%,
+        transparent 75%
+      ),
+      /* Upper-left cool blue mist */
+      radial-gradient(
+        ellipse 50% 60% at 0% 20%,
+        rgba(120, 150, 210, 0.2) 0%,
         transparent 55%
       );
-    animation: ambientFlow 12s ease-in-out infinite;
+    animation: auraBreath 8s ease-in-out infinite;
   }
 
-  /* Right side soft coral wash - concentrated bottom-right, fades up and left */
+  /* Right-side coral wash + clinical cool separation */
   .hero-bg::after {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
     z-index: 1;
-    background: 
-      /* Bottom-right coral concentration */
+    background:
+      /* Bottom-right peach-coral cinematic wash */
       radial-gradient(
-        ellipse 80% 70% at 100% 100%,
-        rgba(245, 195, 175, 0.55) 0%,
-        rgba(250, 210, 190, 0.3) 40%,
+        ellipse 75% 65% at 100% 100%,
+        rgba(245, 195, 175, 0.5) 0%,
+        rgba(250, 210, 190, 0.25) 40%,
         transparent 70%
       ),
-      /* Right edge soft wash extending upward */
+      /* Right edge soft coral extending up */
       radial-gradient(
-        ellipse 40% 90% at 100% 60%,
-        rgba(248, 200, 185, 0.35) 0%,
+        ellipse 35% 80% at 100% 65%,
+        rgba(248, 200, 185, 0.3) 0%,
+        transparent 55%
+      ),
+      /* Cool clinical vignette — right side feels different from left */
+      radial-gradient(
+        ellipse 60% 50% at 80% 45%,
+        rgba(200, 215, 235, 0.15) 0%,
         transparent 60%
       );
   }
 
-  @keyframes ambientFlow {
+  @keyframes auraBreath {
     0%, 100% {
       opacity: 1;
       transform: scale(1);
     }
     50% {
-      opacity: 0.85;
-      transform: scale(1.01);
+      opacity: 0.88;
+      transform: scale(1.012);
     }
   }
 
