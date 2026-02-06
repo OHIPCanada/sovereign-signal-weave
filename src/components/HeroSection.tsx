@@ -138,10 +138,10 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 2.5 }}
         >
-          <p className="text-sm font-bold tracking-[0.2em] uppercase text-white">
+          <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">
             AI CORTEX
           </p>
-          <p className="text-xs font-normal tracking-wide text-white/70 mt-0.5">
+          <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">
             Thought, amplified
           </p>
         </motion.div>
