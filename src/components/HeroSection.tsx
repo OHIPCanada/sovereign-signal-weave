@@ -41,10 +41,10 @@ const HeroSection = () => {
             <motion.div
               className="absolute pointer-events-none z-0"
               style={{
-                top: "8%",
-                left: "25%",
-                width: "50%",
-                height: "35%",
+                top: "5%",
+                left: "20%",
+                width: "45%",
+                height: "32%",
                 borderRadius: "50%",
                 background: "radial-gradient(ellipse at center, rgba(200, 170, 255, 0.5) 0%, rgba(160, 130, 255, 0.3) 30%, rgba(230, 230, 250, 0.15) 55%, transparent 80%)",
                 mixBlendMode: "screen",
@@ -59,10 +59,10 @@ const HeroSection = () => {
             <motion.div
               className="absolute pointer-events-none z-0"
               style={{
-                top: "13%",
-                left: "33%",
-                width: "30%",
-                height: "22%",
+                top: "9%",
+                left: "28%",
+                width: "28%",
+                height: "20%",
                 borderRadius: "50%",
                 background: "radial-gradient(ellipse at center, rgba(255, 255, 255, 0.7) 0%, rgba(220, 180, 255, 0.65) 20%, rgba(180, 140, 255, 0.45) 40%, rgba(123, 97, 255, 0.25) 60%, transparent 80%)",
                 mixBlendMode: "screen",
@@ -77,10 +77,10 @@ const HeroSection = () => {
             <motion.div
               className="absolute pointer-events-none z-0"
               style={{
-                top: "17%",
-                left: "38%",
-                width: "18%",
-                height: "13%",
+                top: "13%",
+                left: "33%",
+                width: "16%",
+                height: "12%",
                 borderRadius: "50%",
                 background: "radial-gradient(ellipse at center, rgba(255, 255, 255, 0.85) 0%, rgba(230, 200, 255, 0.6) 30%, rgba(180, 150, 255, 0.3) 55%, transparent 75%)",
                 mixBlendMode: "screen",
