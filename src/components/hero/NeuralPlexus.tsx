@@ -148,22 +148,22 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
         <defs>
           {/* Warm lavender-coral brain core glow */}
           <radialGradient id="brainCoreGlow" cx="48%" cy="35%" r="22%">
-            <stop offset="0%" stopColor="rgba(200,170,255,0.8)" />
-            <stop offset="35%" stopColor="rgba(229,115,111,0.3)" />
-            <stop offset="70%" stopColor="rgba(200,170,255,0.12)" />
+            <stop offset="0%" stopColor="rgba(255,255,255,0.9)" />
+            <stop offset="35%" stopColor="rgba(255,255,255,0.4)" />
+            <stop offset="70%" stopColor="rgba(255,255,255,0.1)" />
             <stop offset="100%" stopColor="transparent" />
           </radialGradient>
 
           {/* Outer warm aura */}
           <radialGradient id="warmAura" cx="48%" cy="40%" r="45%">
-            <stop offset="0%" stopColor="rgba(200,170,255,0.15)" />
-            <stop offset="50%" stopColor="rgba(229,115,111,0.06)" />
+            <stop offset="0%" stopColor="rgba(255,255,255,0.2)" />
+            <stop offset="50%" stopColor="rgba(255,255,255,0.05)" />
             <stop offset="100%" stopColor="transparent" />
           </radialGradient>
 
           {/* Filament glow */}
           <filter id="filamentGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="1.2" result="blur" />
+            <feGaussianBlur stdDeviation="1.5" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -171,8 +171,8 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
           </filter>
 
           {/* Thinking spark glow — Bio-Electric Blue */}
-          <filter id="sparkGlow" x="-150%" y="-150%" width="400%" height="400%">
-            <feGaussianBlur stdDeviation="5" result="blur" />
+          <filter id="sparkGlow" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur stdDeviation="6" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -213,8 +213,8 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
                 fill="none"
                 stroke={
                   isBrainFilament
-                    ? "rgba(200,170,255,0.35)"
-                    : "rgba(200,170,255,0.15)"
+                    ? "rgba(255,255,255,0.45)"
+                    : "rgba(255,255,255,0.18)"
                 }
                 strokeWidth={isBrainFilament ? "0.8" : "0.5"}
                 strokeLinecap="round"
@@ -240,7 +240,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
                 cx={node.x}
                 cy={node.y}
                 r={node.size}
-                fill="#7B61FF"
+                fill="#FFFFFF"
                 filter="url(#sparkGlow)"
                 animate={{
                   opacity: [0, 0.9, 0],
@@ -266,7 +266,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
               cx={node.x}
               cy={node.y}
               r={node.size}
-              fill={isCoral ? "rgba(229,115,111,0.7)" : "rgba(200,170,255,0.7)"}
+              fill={isCoral ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.8)"}
               filter={isCoral && node.isBrain ? "url(#coralGlow)" : undefined}
               initial={{ opacity: 0 }}
               animate={{
@@ -297,7 +297,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
                 key={`arc-${i}`}
                 d={`M ${node.x} ${node.y} Q ${mx} ${my} ${next.x} ${next.y}`}
                 fill="none"
-                stroke="#7B61FF"
+                stroke="#FFFFFF"
                 strokeWidth="0.6"
                 strokeLinecap="round"
                 filter="url(#sparkGlow)"
