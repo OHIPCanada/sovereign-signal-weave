@@ -39,11 +39,17 @@ const HeroSection = () => {
             }}
           >
             {/* Neural Plexus SVG — overlaid on the head */}
-            <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
+            <motion.div
+              className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
               style={{ marginTop: "-15%", marginLeft: "-5%" }}
+              animate={{
+                y: [0, -20, 0],
+                scale: [1, 1.025, 1],
+              }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
             >
               <NeuralPlexus mouseX={mouseX} mouseY={mouseY} />
-            </div>
+            </motion.div>
 
             {/* Human profile image */}
             <motion.img
