@@ -37,7 +37,7 @@ const HeroSection = () => {
               transition: "transform 0.4s ease-out",
             }}
           >
-            {/* Wide ambient brain glow */}
+            {/* Wide ambient brain glow - lavender/coral cycle */}
             <motion.div
               className="absolute pointer-events-none z-0"
               style={{
@@ -46,16 +46,20 @@ const HeroSection = () => {
                 width: "45%",
                 height: "32%",
                 borderRadius: "50%",
-                background: "radial-gradient(ellipse at center, rgba(200, 170, 255, 0.5) 0%, rgba(160, 130, 255, 0.3) 30%, rgba(230, 230, 250, 0.15) 55%, transparent 80%)",
                 mixBlendMode: "screen",
               }}
               animate={{
-                opacity: [0.5, 0.9, 0.5],
-                scale: [0.95, 1.06, 0.95],
+                opacity: [0.6, 1, 0.6],
+                scale: [0.95, 1.1, 0.95],
+                background: [
+                  "radial-gradient(ellipse at center, rgba(200, 170, 255, 0.7) 0%, rgba(160, 130, 255, 0.4) 30%, rgba(230, 230, 250, 0.2) 55%, transparent 80%)",
+                  "radial-gradient(ellipse at center, rgba(229, 115, 111, 0.6) 0%, rgba(227, 154, 150, 0.35) 30%, rgba(235, 198, 196, 0.18) 55%, transparent 80%)",
+                  "radial-gradient(ellipse at center, rgba(200, 170, 255, 0.7) 0%, rgba(160, 130, 255, 0.4) 30%, rgba(230, 230, 250, 0.2) 55%, transparent 80%)",
+                ]
               }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             />
-            {/* Hot brain core - intense lavender-pink */}
+            {/* Hot brain core - intense with color shift */}
             <motion.div
               className="absolute pointer-events-none z-0"
               style={{
@@ -64,14 +68,18 @@ const HeroSection = () => {
                 width: "28%",
                 height: "20%",
                 borderRadius: "50%",
-                background: "radial-gradient(ellipse at center, rgba(255, 255, 255, 0.7) 0%, rgba(220, 180, 255, 0.65) 20%, rgba(180, 140, 255, 0.45) 40%, rgba(123, 97, 255, 0.25) 60%, transparent 80%)",
                 mixBlendMode: "screen",
               }}
               animate={{
-                opacity: [0.6, 1, 0.6],
-                scale: [0.97, 1.1, 0.97],
+                opacity: [0.7, 1, 0.7],
+                scale: [0.97, 1.15, 0.97],
+                background: [
+                  "radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, rgba(220, 180, 255, 0.7) 20%, rgba(180, 140, 255, 0.5) 40%, rgba(123, 97, 255, 0.3) 60%, transparent 80%)",
+                  "radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, rgba(229, 155, 150, 0.65) 20%, rgba(229, 115, 111, 0.4) 40%, rgba(200, 100, 95, 0.25) 60%, transparent 80%)",
+                  "radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, rgba(220, 180, 255, 0.7) 20%, rgba(180, 140, 255, 0.5) 40%, rgba(123, 97, 255, 0.3) 60%, transparent 80%)",
+                ]
               }}
-              transition={{ duration: 3.5, delay: 0.3, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 4, delay: 0.3, repeat: Infinity, ease: "easeInOut" }}
             />
             {/* Tight white-hot nucleus */}
             <motion.div
@@ -82,12 +90,12 @@ const HeroSection = () => {
                 width: "16%",
                 height: "12%",
                 borderRadius: "50%",
-                background: "radial-gradient(ellipse at center, rgba(255, 255, 255, 0.85) 0%, rgba(230, 200, 255, 0.6) 30%, rgba(180, 150, 255, 0.3) 55%, transparent 75%)",
+                background: "radial-gradient(ellipse at center, rgba(255, 255, 255, 0.95) 0%, rgba(230, 200, 255, 0.7) 30%, rgba(180, 150, 255, 0.4) 55%, transparent 75%)",
                 mixBlendMode: "screen",
               }}
               animate={{
-                opacity: [0.5, 1, 0.5],
-                scale: [1, 1.15, 1],
+                opacity: [0.6, 1, 0.6],
+                scale: [1, 1.2, 1],
               }}
               transition={{ duration: 2.5, delay: 0.7, repeat: Infinity, ease: "easeInOut" }}
             />
