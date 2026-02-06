@@ -77,7 +77,8 @@ const CapabilityOrbit = () => {
                 letterSpacing: "-0.02em",
                 background: isActive
                   ? "linear-gradient(135deg, #2E1A6B 0%, #4B5ED7 60%, #7B61FF 100%)"
-                  : "linear-gradient(180deg, rgba(46,26,107,0.15) 0%, rgba(75,94,215,0.12) 100%)",
+                  : "linear-gradient(180deg, #2E1A6B 0%, #4B5ED7 100%)",
+                opacity: isActive ? 1 : 0.25,
                 WebkitBackgroundClip: "text",
                 backgroundClip: "text",
                 WebkitTextFillColor: "transparent",
