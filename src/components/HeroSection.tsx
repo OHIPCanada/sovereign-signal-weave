@@ -1,10 +1,13 @@
 import { motion } from "framer-motion";
 import { useMouseFollow } from "@/hooks/useMouseFollow";
-import NeuralPlexus from "@/components/hero/NeuralPlexus";
+import neuralProfile from "@/assets/neural-profile.png";
 import HexHUD from "@/components/hero/HexHUD";
 
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
+
+  const rotateY = (mouseX - 0.5) * 5;
+  const rotateX = (mouseY - 0.5) * -3;
 
   return (
     <section className="hero-bg min-h-screen relative overflow-hidden">
@@ -20,13 +23,27 @@ const HeroSection = () => {
         </motion.h1>
       </div>
 
-      {/* Main Composition: Neural Profile + HUD */}
+      {/* Main Composition: Neural Profile Image + HUD */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative flex items-center gap-4 md:gap-8 lg:gap-12">
-          {/* Neural Profile - Crystalline Plexus Head */}
-          <div className="relative">
-            <NeuralPlexus mouseX={mouseX} mouseY={mouseY} />
-          </div>
+          {/* Neural Profile Image */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              transform: `perspective(1200px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`,
+              transition: "transform 0.4s ease-out",
+            }}
+          >
+            <motion.img
+              src={neuralProfile}
+              alt="Neural Intelligence Profile"
+              className="w-[420px] md:w-[520px] lg:w-[620px] h-auto drop-shadow-[0_0_80px_rgba(123,97,255,0.15)]"
+              animate={{ y: [0, -12, 0], scale: [1, 1.015, 1] }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.div>
 
           {/* Services HUD - Hexagon Stack */}
           <div className="hidden md:block">
