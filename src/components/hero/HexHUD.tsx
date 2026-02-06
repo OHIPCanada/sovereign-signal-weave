@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 /* ═══════════════════════════════════════════════
    Design tokens — dark glass with electric cyan
    ═══════════════════════════════════════════════ */
-const DARK_CORE = "#0F0B2E";
-const DARK_MID = "#1A1545";
-const ACCENT_CYAN = "#2EE6D6";
+const DARK_CORE = "#2E1A6B";
+const DARK_MID = "#3D2A8A";
+const ACCENT_CYAN = "#7B61FF";
 const ICON_WHITE = "#FFFFFF";
 
 /* ═══════════════════════════════════════════════
@@ -14,7 +14,7 @@ const ICON_WHITE = "#FFFFFF";
    ═══════════════════════════════════════════════ */
 const icons = {
   cortex: (
-    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
       <path d="M32 12 C25 12 21 17 21 22 C17 22 14 26 14 31 C14 36 17 39 21 40 C22 45 26 48 31 48" />
       <path d="M32 12 C39 12 43 17 43 22 C47 22 50 26 50 31 C50 36 47 39 43 40 C42 45 38 48 33 48" />
       <circle cx="32" cy="20" r="2.5" fill={ICON_WHITE} stroke="none" />
@@ -28,7 +28,7 @@ const icons = {
     </svg>
   ),
   clinical: (
-    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
       <circle cx="32" cy="17" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
       <circle cx="15" cy="32" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
       <circle cx="49" cy="32" r="4" fill={ICON_WHITE} fillOpacity="0.2" />
@@ -41,7 +41,7 @@ const icons = {
     </svg>
   ),
   virtualCare: (
-    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
       <path d="M22 27 C22 19 27 17 32 17 C37 17 40 20 40 25" />
       <path d="M24 37 C24 45 29 47 34 47 C39 47 42 44 42 39" />
       <path d="M40 25 L40 33 C40 36 37 38 34 38 L24 37" />
@@ -52,7 +52,7 @@ const icons = {
     </svg>
   ),
   sovereign: (
-    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
       <path d="M32 7 L52 17 V37 C52 46 42 54 32 58 C22 54 12 46 12 37 V17 L32 7Z" fill={ICON_WHITE} fillOpacity="0.05" />
       <rect x="24" y="30" width="16" height="14" rx="3" fill={ICON_WHITE} fillOpacity="0.12" />
       <path d="M27 30 V25 C27 21 29 19 32 19 C35 19 37 21 37 25 V30" />
@@ -61,7 +61,7 @@ const icons = {
     </svg>
   ),
   audit: (
-    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+    <svg viewBox="0 0 64 64" fill="none" stroke={ICON_WHITE} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10">
       <path d="M15 7 H39 L49 17 V57 H15 V7Z" fill={ICON_WHITE} fillOpacity="0.05" />
       <polyline points="39,7 39,17 49,17" />
       <line x1="22" y1="25" x2="42" y2="25" strokeOpacity="0.45" />
