@@ -67,7 +67,10 @@ const HeroSection = () => {
             />
           </motion.div>
 
-          {/* Services HUD removed */}
+          {/* Services HUD - Hexagon Stack */}
+          <div className="hidden md:block">
+            <HexHUD mouseX={mouseX} mouseY={mouseY} />
+          </div>
         </div>
       </div>
 
