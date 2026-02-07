@@ -25,7 +25,7 @@ const HeroSection = () => {
       </div>
 
       {/* Main Composition: Neural Profile + Connected Orb */}
-      <div className="absolute inset-0 flex items-center justify-center pt-64 md:pt-80 lg:pt-96 -ml-12 md:-ml-20 lg:-ml-28">
+      <div className="absolute inset-0 flex items-center justify-center pt-64 md:pt-80 lg:pt-96 -ml-24 md:-ml-40 lg:-ml-56">
         <div className="relative">
           {/* Human image + organic neural plexus overlay */}
           <motion.div
