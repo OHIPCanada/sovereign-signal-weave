@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useMouseFollow } from "@/hooks/useMouseFollow";
 import neuralProfile from "@/assets/neural-profile.png";
 import aiCortexOrb from "@/assets/ai-cortex-orb.png";
+import clinicOsOrb from "@/assets/clinic-os-orb.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
@@ -84,7 +85,7 @@ const HeroSection = () => {
             <feGaussianBlur stdDeviation="3" />
           </filter>
         </defs>
-        {/* Line from brain (~55%, 42%) to orb center (~75%, 35%) */}
+        {/* Line from brain to AI Cortex orb */}
         <motion.path
           d="M 1060,450 C 1150,420 1300,370 1440,380"
           fill="none"
@@ -104,6 +105,28 @@ const HeroSection = () => {
             dur="4s"
             repeatCount="indefinite"
             path="M 1060,450 C 1150,420 1300,370 1440,380"
+          />
+        </circle>
+        {/* Line from brain to Clinic OS orb */}
+        <motion.path
+          d="M 860,450 C 750,420 600,370 480,390"
+          fill="none"
+          stroke="url(#synapse-gradient)"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 2, delay: 2, ease: "easeInOut" }}
+        />
+        <circle
+          r="4"
+          fill="rgba(200, 180, 255, 0.9)"
+          filter="url(#dot-glow)"
+        >
+          <animateMotion
+            dur="4s"
+            repeatCount="indefinite"
+            path="M 860,450 C 750,420 600,370 480,390"
           />
         </circle>
       </svg>
@@ -143,6 +166,46 @@ const HeroSection = () => {
           </p>
           <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">
             Thought, amplified
+          </p>
+        </motion.div>
+      </motion.div>
+
+      {/* Clinic OS Orb */}
+      <motion.div
+        className="hidden md:block absolute z-20"
+        style={{
+          top: "32%",
+          left: "18%",
+          transform: "translateX(-50%)",
+        }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.2, delay: 2.2, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <motion.img
+          src={clinicOsOrb}
+          alt="Clinic OS"
+          className="w-[220px] lg:w-[280px] h-auto"
+          style={{
+            filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))",
+          }}
+          animate={{
+            y: [0, -10, 0],
+            scale: [1, 1.02, 1],
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        />
+        <motion.div
+          className="text-center -mt-1"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 3 }}
+        >
+          <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">
+            CLINIC OS
+          </p>
+          <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">
+            Operations, orchestrated
           </p>
         </motion.div>
       </motion.div>
