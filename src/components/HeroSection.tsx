@@ -109,7 +109,7 @@ const HeroSection = () => {
         </circle>
         {/* Line from brain to Clinic OS orb */}
         <motion.path
-          d="M 860,450 C 750,420 600,370 480,390"
+          d="M 1060,500 C 1150,530 1300,570 1420,580"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="1.5"
@@ -126,7 +126,7 @@ const HeroSection = () => {
           <animateMotion
             dur="4s"
             repeatCount="indefinite"
-            path="M 860,450 C 750,420 600,370 480,390"
+            path="M 1060,500 C 1150,530 1300,570 1420,580"
           />
         </circle>
       </svg>
@@ -174,9 +174,8 @@ const HeroSection = () => {
       <motion.div
         className="hidden md:block absolute z-20"
         style={{
-          top: "32%",
-          left: "18%",
-          transform: "translateX(-50%)",
+          top: "50%",
+          left: "71%",
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -185,7 +184,7 @@ const HeroSection = () => {
         <motion.img
           src={clinicOsOrb}
           alt="Clinic OS"
-          className="w-[220px] lg:w-[280px] h-auto"
+          className="w-[160px] lg:w-[200px] h-auto"
           style={{
             filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))",
           }}
