@@ -154,7 +154,7 @@ const HeroSection = () => {
         <motion.img
           src={aiCortexOrb}
           alt="AI Cortex"
-          className="w-[220px] lg:w-[280px] h-auto"
+          className="w-[180px] lg:w-[220px] h-auto"
           style={{
             filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))",
           }}
@@ -193,7 +193,7 @@ const HeroSection = () => {
         <motion.img
           src={clinicOsOrb}
           alt="Clinic OS"
-          className="w-[130px] lg:w-[160px] h-auto"
+          className="w-[150px] lg:w-[180px] h-auto"
           style={{
             filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))",
           }}
