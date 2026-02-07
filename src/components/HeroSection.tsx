@@ -94,7 +94,7 @@ const HeroSection = () => {
         </defs>
         {/* Line from brain to AI Cortex orb */}
         <motion.path
-          d="M 1060,450 C 1150,420 1300,370 1440,380"
+          d="M 860,450 C 1000,420 1250,370 1440,380"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -112,12 +112,12 @@ const HeroSection = () => {
           <animateMotion
             dur="4s"
             repeatCount="indefinite"
-            path="M 1060,450 C 1150,420 1300,370 1440,380"
+            path="M 860,450 C 1000,420 1250,370 1440,380"
           />
         </circle>
         {/* Line from brain to Clinic OS orb */}
         <motion.path
-          d="M 1060,500 C 1150,530 1300,570 1420,580"
+          d="M 860,500 C 1000,530 1250,570 1420,580"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -135,7 +135,7 @@ const HeroSection = () => {
           <animateMotion
             dur="4s"
             repeatCount="indefinite"
-            path="M 1060,500 C 1150,530 1300,570 1420,580"
+            path="M 860,500 C 1000,530 1250,570 1420,580"
           />
         </circle>
       </svg>
