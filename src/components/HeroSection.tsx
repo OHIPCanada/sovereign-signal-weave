@@ -184,7 +184,7 @@ const HeroSection = () => {
         <motion.img
           src={clinicOsOrb}
           alt="Clinic OS"
-          className="w-[160px] lg:w-[200px] h-auto"
+          className="w-[130px] lg:w-[160px] h-auto"
           style={{
             filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))",
           }}
