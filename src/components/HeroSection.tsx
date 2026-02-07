@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useMouseFollow } from "@/hooks/useMouseFollow";
 import neuralProfile from "@/assets/neural-profile.png";
-import aiCortexOrb from "@/assets/ai-cortex-orb.png";
+import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
 import clinicOsOrb from "@/assets/clinic-os-orb-new.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
 const HeroSection = () => {
