@@ -71,7 +71,7 @@ const HeroSection = () => {
 
       {/* Full-viewport SVG overlay for precise line from brain to orb */}
       <svg
-        className="hidden md:block absolute inset-0 w-full h-full z-30 pointer-events-none"
+        className="hidden md:block absolute inset-0 w-full h-full z-[5] pointer-events-none"
         viewBox="0 0 1920 1080"
         preserveAspectRatio="xMidYMid slice"
       >
