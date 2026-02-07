@@ -93,9 +93,9 @@ const HeroSection = () => {
             </feMerge>
           </filter>
         </defs>
-        {/* Line from brain to AI Cortex orb */}
+        {/* Line from brain to AI Cortex orb (top-right) */}
         <motion.path
-          d="M 860,450 C 1000,420 1250,370 1440,380"
+          d="M 860,440 C 1020,390 1250,310 1420,300"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -113,12 +113,12 @@ const HeroSection = () => {
           <animateMotion
             dur="4s"
             repeatCount="indefinite"
-            path="M 860,450 C 1000,420 1250,370 1440,380"
+            path="M 860,440 C 1020,390 1250,310 1420,300"
           />
         </circle>
-        {/* Line from brain to Clinic OS orb */}
+        {/* Line from brain to Virtual Care orb (middle-right) */}
         <motion.path
-          d="M 860,500 C 1000,530 1250,570 1420,580"
+          d="M 860,470 C 1050,470 1350,480 1540,490"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -136,12 +136,12 @@ const HeroSection = () => {
           <animateMotion
             dur="4s"
             repeatCount="indefinite"
-            path="M 860,500 C 1000,530 1250,570 1420,580"
+            path="M 860,470 C 1050,470 1350,480 1540,490"
           />
         </circle>
-        {/* Line from brain to Virtual Care orb */}
+        {/* Line from brain to Clinic OS orb (bottom-right) */}
         <motion.path
-          d="M 860,470 C 1000,460 1300,440 1500,500"
+          d="M 860,500 C 1020,550 1250,620 1420,660"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -159,7 +159,7 @@ const HeroSection = () => {
           <animateMotion
             dur="4s"
             repeatCount="indefinite"
-            path="M 860,470 C 1000,460 1300,440 1500,500"
+            path="M 860,500 C 1020,550 1250,620 1420,660"
           />
         </circle>
       </svg>
@@ -168,8 +168,8 @@ const HeroSection = () => {
       <motion.div
         className="hidden md:block absolute z-20"
         style={{
-          top: "32%",
-          left: "72%",
+          top: "22%",
+          left: "70%",
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -207,8 +207,8 @@ const HeroSection = () => {
       <motion.div
         className="hidden md:block absolute z-20"
         style={{
-          top: "50%",
-          left: "71%",
+          top: "58%",
+          left: "70%",
         }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -246,7 +246,7 @@ const HeroSection = () => {
       <motion.div
         className="hidden md:block absolute z-20"
         style={{
-          top: "42%",
+          top: "40%",
           left: "78%",
         }}
         initial={{ opacity: 0, scale: 0.8 }}
