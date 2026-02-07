@@ -210,10 +210,10 @@ const HeroSection = () => {
           transition={{ delay: 3 }}
         >
           <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">
-           AI CORTEX
+           CLINIC OS
            </p>
            <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">
-             Thought, amplified
+             Operations, orchestrated
           </p>
         </motion.div>
       </motion.div>
