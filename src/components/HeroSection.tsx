@@ -77,12 +77,19 @@ const HeroSection = () => {
       >
         <defs>
           <linearGradient id="synapse-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(180, 160, 255, 0.8)" />
-            <stop offset="50%" stopColor="rgba(200, 190, 255, 0.5)" />
-            <stop offset="100%" stopColor="rgba(180, 160, 255, 0.4)" />
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 1)" />
+            <stop offset="50%" stopColor="rgba(255, 255, 255, 0.9)" />
+            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.7)" />
           </linearGradient>
           <filter id="dot-glow">
-            <feGaussianBlur stdDeviation="3" />
+            <feGaussianBlur stdDeviation="4" />
+          </filter>
+          <filter id="line-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
           </filter>
         </defs>
         {/* Line from brain to AI Cortex orb */}
@@ -90,15 +97,16 @@ const HeroSection = () => {
           d="M 1060,450 C 1150,420 1300,370 1440,380"
           fill="none"
           stroke="url(#synapse-gradient)"
-          strokeWidth="1.5"
+          strokeWidth="2"
           strokeLinecap="round"
+          filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 2, delay: 1.5, ease: "easeInOut" }}
         />
         <circle
-          r="4"
-          fill="rgba(200, 180, 255, 0.9)"
+          r="5"
+          fill="rgba(255, 255, 255, 1)"
           filter="url(#dot-glow)"
         >
           <animateMotion
@@ -112,15 +120,16 @@ const HeroSection = () => {
           d="M 1060,500 C 1150,530 1300,570 1420,580"
           fill="none"
           stroke="url(#synapse-gradient)"
-          strokeWidth="1.5"
+          strokeWidth="2"
           strokeLinecap="round"
+          filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 2, delay: 2, ease: "easeInOut" }}
         />
         <circle
-          r="4"
-          fill="rgba(200, 180, 255, 0.9)"
+          r="5"
+          fill="rgba(255, 255, 255, 1)"
           filter="url(#dot-glow)"
         >
           <animateMotion
