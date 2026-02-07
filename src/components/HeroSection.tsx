@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useMouseFollow } from "@/hooks/useMouseFollow";
 import neuralProfile from "@/assets/neural-profile.png";
 import aiCortexOrb from "@/assets/ai-cortex-orb.png";
-import clinicOsOrb from "@/assets/clinic-os-orb.png";
+import clinicOsOrb from "@/assets/clinic-os-orb-new.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
@@ -210,10 +210,10 @@ const HeroSection = () => {
           transition={{ delay: 3 }}
         >
           <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">
-            CLINIC OS
-          </p>
-          <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">
-            Operations, orchestrated
+           AI CORTEX
+           </p>
+           <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">
+             Thought, amplified
           </p>
         </motion.div>
       </motion.div>
