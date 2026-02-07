@@ -3,6 +3,7 @@ import { useMouseFollow } from "@/hooks/useMouseFollow";
 import neuralProfile from "@/assets/neural-profile.png";
 import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
 import clinicOsOrb from "@/assets/clinic-os-orb-new.png";
+import virtualCareOrb from "@/assets/virtual-care-orb.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
@@ -138,6 +139,29 @@ const HeroSection = () => {
             path="M 860,500 C 1000,530 1250,570 1420,580"
           />
         </circle>
+        {/* Line from brain to Virtual Care orb */}
+        <motion.path
+          d="M 860,470 C 1000,460 1300,440 1500,500"
+          fill="none"
+          stroke="url(#synapse-gradient)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          filter="url(#line-glow)"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 2, delay: 2.5, ease: "easeInOut" }}
+        />
+        <circle
+          r="5"
+          fill="rgba(255, 255, 255, 1)"
+          filter="url(#dot-glow)"
+        >
+          <animateMotion
+            dur="4s"
+            repeatCount="indefinite"
+            path="M 860,470 C 1000,460 1300,440 1500,500"
+          />
+        </circle>
       </svg>
 
       {/* AI Cortex Orb */}
@@ -214,6 +238,45 @@ const HeroSection = () => {
            </p>
            <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">
              Operations, orchestrated
+          </p>
+        </motion.div>
+      </motion.div>
+
+      {/* Virtual Care Orb */}
+      <motion.div
+        className="hidden md:block absolute z-20"
+        style={{
+          top: "42%",
+          left: "78%",
+        }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.2, delay: 2.6, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <motion.img
+          src={virtualCareOrb}
+          alt="Virtual Care"
+          className="w-[150px] lg:w-[180px] h-auto"
+          style={{
+            filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))",
+          }}
+          animate={{
+            y: [0, -10, 0],
+            scale: [1, 1.02, 1],
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+        <motion.div
+          className="text-center -mt-1"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 3.5 }}
+        >
+          <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">
+            VIRTUAL CARE
+          </p>
+          <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">
+            Connection, redefined
           </p>
         </motion.div>
       </motion.div>
