@@ -95,9 +95,23 @@ const HeroSection = () => {
             </feMerge>
           </filter>
         </defs>
-        {/* Line from brain to AI Cortex orb (top) */}
+        {/* Single trunk from brain, branching midway to each orb */}
+        {/* Trunk: brain origin to midpoint */}
         <motion.path
-          d="M 860,440 C 1020,390 1250,280 1400,260"
+          d="M 860,470 C 960,470 1050,470 1150,470"
+          fill="none"
+          stroke="url(#synapse-gradient)"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          filter="url(#line-glow)"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 1.2, delay: 1.5, ease: "easeInOut" }}
+        />
+
+        {/* Branch to AI Cortex (top) */}
+        <motion.path
+          d="M 1150,470 C 1220,420 1300,300 1400,260"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -105,14 +119,15 @@ const HeroSection = () => {
           filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 2, delay: 1.5, ease: "easeInOut" }}
+          transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,440 C 1020,390 1250,280 1400,260" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,470 C 960,470 1050,470 1150,470 C 1220,420 1300,300 1400,260" />
         </circle>
-        {/* Line from brain to Sovereign Data orb (upper-right) */}
+
+        {/* Branch to Sovereign Data (upper-right) */}
         <motion.path
-          d="M 860,455 C 1050,430 1350,390 1560,380"
+          d="M 1150,470 C 1250,460 1400,410 1530,390"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -120,14 +135,15 @@ const HeroSection = () => {
           filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 2, delay: 1.8, ease: "easeInOut" }}
+          transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,455 C 1050,430 1350,390 1560,380" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,470 C 960,470 1050,470 1150,470 C 1250,460 1400,410 1530,390" />
         </circle>
-        {/* Line from brain to Virtual Care orb (lower-right) */}
+
+        {/* Branch to Virtual Care (middle-right) */}
         <motion.path
-          d="M 860,485 C 1050,500 1350,530 1560,550"
+          d="M 1150,470 C 1250,475 1400,490 1530,500"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -135,14 +151,15 @@ const HeroSection = () => {
           filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 2, delay: 2.1, ease: "easeInOut" }}
+          transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,485 C 1050,500 1350,530 1560,550" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,470 C 960,470 1050,470 1150,470 C 1250,475 1400,490 1530,500" />
         </circle>
-        {/* Line from brain to Audit Integrity orb (mid-lower-right) */}
+
+        {/* Branch to Audit Integrity (lower-right) */}
         <motion.path
-          d="M 860,495 C 1050,510 1350,560 1560,580"
+          d="M 1150,470 C 1250,490 1400,560 1530,600"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -150,14 +167,15 @@ const HeroSection = () => {
           filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 2, delay: 2.3, ease: "easeInOut" }}
+          transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,495 C 1050,510 1350,560 1560,580" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,470 C 960,470 1050,470 1150,470 C 1250,490 1400,560 1530,600" />
         </circle>
-        {/* Line from brain to Clinic OS orb (bottom) */}
+
+        {/* Branch to Clinic OS (bottom) */}
         <motion.path
-          d="M 860,520 C 1020,570 1250,670 1400,710"
+          d="M 1150,470 C 1220,520 1300,630 1400,700"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -165,10 +183,10 @@ const HeroSection = () => {
           filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 2, delay: 2.6, ease: "easeInOut" }}
+          transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,520 C 1020,570 1250,670 1400,710" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,470 C 960,470 1050,470 1150,470 C 1220,520 1300,630 1400,700" />
         </circle>
       </svg>
 
@@ -183,7 +201,7 @@ const HeroSection = () => {
         <motion.img
           src={aiCortexOrb}
           alt="AI Cortex"
-          className="w-[160px] lg:w-[200px] h-auto"
+          className="w-[140px] lg:w-[170px] h-auto"
           style={{ filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))" }}
           animate={{ y: [0, -10, 0], scale: [1, 1.02, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
