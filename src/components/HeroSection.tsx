@@ -95,73 +95,61 @@ const HeroSection = () => {
             </feMerge>
           </filter>
         </defs>
-        {/* Single trunk from brain, branching midway to each orb */}
-        {/* Trunk: brain origin to midpoint */}
-        <motion.path
-          d="M 480,380 C 600,390 800,420 1050,460"
-          fill="none"
-          stroke="url(#synapse-gradient)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 1.5, ease: "easeInOut" }}
-        />
+        {/* All branches radiate from brain center (350, 420) */}
 
-        {/* Branch to AI Cortex — top: 28%, left: 72% → ~1440,360 */}
+        {/* Branch to AI Cortex */}
         <motion.path
-          d="M 1050,460 C 1100,430 1200,370 1300,360 C 1360,355 1400,358 1440,360"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
+          d="M 350,420 C 550,400 900,350 1200,340 C 1320,336 1400,350 1440,360"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.8" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
+          transition={{ duration: 1.5, delay: 1.8, ease: "easeInOut" }}
         />
         <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 480,380 C 600,390 800,420 1050,460 C 1100,430 1200,370 1300,360 C 1360,355 1400,358 1440,360" />
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 350,420 C 550,400 900,350 1200,340 C 1320,336 1400,350 1440,360" />
         </circle>
 
-        {/* Branch to Sovereign Data — top: 40%, left: 80% → ~1600,490 */}
+        {/* Branch to Sovereign Data */}
         <motion.path
-          d="M 1050,460 C 1150,455 1300,470 1440,480 C 1520,486 1570,489 1600,490"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
+          d="M 350,420 C 600,425 950,450 1300,470 C 1450,478 1550,485 1600,490"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.8" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
+          transition={{ duration: 1.5, delay: 2.0, ease: "easeInOut" }}
         />
         <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 480,380 C 600,390 800,420 1050,460 C 1150,455 1300,470 1440,480 C 1520,486 1570,489 1600,490" />
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 350,420 C 600,425 950,450 1300,470 C 1450,478 1550,485 1600,490" />
         </circle>
 
-        {/* Branch to Virtual Care — top: 52%, left: 82% → ~1640,620 */}
+        {/* Branch to Virtual Care */}
         <motion.path
-          d="M 1050,460 C 1150,480 1300,540 1440,580 C 1530,605 1590,615 1640,620"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
+          d="M 350,420 C 580,450 950,530 1300,580 C 1450,600 1570,615 1640,620"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.8" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
+          transition={{ duration: 1.5, delay: 2.2, ease: "easeInOut" }}
         />
         <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 480,380 C 600,390 800,420 1050,460 C 1150,480 1300,540 1440,580 C 1530,605 1590,615 1640,620" />
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 350,420 C 580,450 950,530 1300,580 C 1450,600 1570,615 1640,620" />
         </circle>
 
-        {/* Branch to Audit Integrity — top: 64%, left: 80% → ~1600,750 */}
+        {/* Branch to Audit Integrity */}
         <motion.path
-          d="M 1050,460 C 1120,500 1250,620 1380,700 C 1460,740 1550,748 1600,750"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
+          d="M 350,420 C 550,470 900,620 1200,700 C 1380,740 1520,748 1600,750"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.8" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
+          transition={{ duration: 1.5, delay: 2.4, ease: "easeInOut" }}
         />
         <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 480,380 C 600,390 800,420 1050,460 C 1120,500 1250,620 1380,700 C 1460,740 1550,748 1600,750" />
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 350,420 C 550,470 900,620 1200,700 C 1380,740 1520,748 1600,750" />
         </circle>
 
-        {/* Branch to Clinic OS — top: 76%, left: 72% → ~1440,880 */}
+        {/* Branch to Clinic OS */}
         <motion.path
-          d="M 1050,460 C 1080,530 1150,700 1260,800 C 1330,850 1390,875 1440,880"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
+          d="M 350,420 C 500,500 850,720 1100,810 C 1260,860 1370,878 1440,880"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.8" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
+          transition={{ duration: 1.5, delay: 2.6, ease: "easeInOut" }}
         />
         <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 480,380 C 600,390 800,420 1050,460 C 1080,530 1150,700 1260,800 C 1330,850 1390,875 1440,880" />
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 350,420 C 500,500 850,720 1100,810 C 1260,860 1370,878 1440,880" />
         </circle>
       </svg>
 
