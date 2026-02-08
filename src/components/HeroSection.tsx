@@ -98,7 +98,7 @@ const HeroSection = () => {
         {/* Single trunk from brain, branching midway to each orb */}
         {/* Trunk: brain origin to midpoint */}
         <motion.path
-          d="M 700,430 C 800,440 950,460 1100,465"
+          d="M 630,400 C 750,420 950,455 1100,465"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2.5"
@@ -122,7 +122,7 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 700,430 C 800,440 950,460 1100,465 C 1180,410 1280,300 1400,260" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1180,410 1280,300 1400,260" />
         </circle>
 
         {/* Branch to Sovereign Data (upper-right) */}
@@ -138,7 +138,7 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 700,430 C 800,440 950,460 1100,465 C 1220,455 1380,410 1530,390" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,455 1380,410 1530,390" />
         </circle>
 
         {/* Branch to Virtual Care (middle-right) */}
@@ -154,7 +154,7 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 700,430 C 800,440 950,460 1100,465 C 1220,470 1380,490 1530,500" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,470 1380,490 1530,500" />
         </circle>
 
         {/* Branch to Audit Integrity (lower-right) */}
@@ -170,7 +170,7 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 700,430 C 800,440 950,460 1100,465 C 1220,490 1380,560 1530,600" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,490 1380,560 1530,600" />
         </circle>
 
         {/* Branch to Clinic OS (bottom) */}
@@ -186,7 +186,7 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 700,430 C 800,440 950,460 1100,465 C 1180,520 1280,640 1400,700" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1180,520 1280,640 1400,700" />
         </circle>
       </svg>
 
