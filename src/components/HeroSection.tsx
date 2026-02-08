@@ -92,11 +92,11 @@ const HeroSection = () => {
               <stop offset="100%" stopColor="rgba(255, 255, 255, 0.7)" />
             </linearGradient>
             <filter id="dot-glow">
-              <feGaussianBlur stdDeviation="0.4" />
+              <feGaussianBlur stdDeviation="0.8" />
             </filter>
             <filter id="line-glow">
-              <feGaussianBlur stdDeviation="0.3" result="blur1" />
-              <feGaussianBlur in="SourceGraphic" stdDeviation="0.15" result="blur2" />
+              <feGaussianBlur stdDeviation="0.6" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="0.25" result="blur2" />
               <feMerge>
                 <feMergeNode in="blur1" />
                 <feMergeNode in="blur2" />
@@ -110,7 +110,7 @@ const HeroSection = () => {
             d={`M ${BRAIN.x},${BRAIN.y} Q ${(BRAIN.x + TRUNK_MID.x) / 2},${BRAIN.y + 1} ${TRUNK_MID.x},${TRUNK_MID.y}`}
             fill="none"
             stroke="url(#synapse-gradient)"
-            strokeWidth="0.25"
+            strokeWidth="0.45"
             strokeLinecap="round"
             filter="url(#line-glow)"
             initial={{ pathLength: 0, opacity: 0 }}
@@ -130,14 +130,14 @@ const HeroSection = () => {
                   d={branchPath}
                   fill="none"
                   stroke="url(#synapse-gradient)"
-                  strokeWidth="0.18"
+                  strokeWidth="0.3"
                   strokeLinecap="round"
                   filter="url(#line-glow)"
                   initial={{ pathLength: 0, opacity: 0 }}
                   animate={{ pathLength: 1, opacity: 1 }}
                   transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
                 />
-                <circle r="0.3" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
+                <circle r="0.5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
                   <animateMotion dur="5s" repeatCount="indefinite" path={fullPath} />
                 </circle>
               </g>
