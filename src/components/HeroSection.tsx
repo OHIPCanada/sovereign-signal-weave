@@ -109,66 +109,66 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 1.5, ease: "easeInOut" }}
         />
 
-        {/* Branch to AI Cortex — curvy arc up to top: 10%, left: 72% → ~1440,170 */}
+        {/* Branch to AI Cortex — top: 28%, left: 72% → ~1440,360 */}
         <motion.path
-          d="M 1050,460 C 1100,400 1150,280 1250,200 C 1320,150 1380,160 1440,170"
+          d="M 1050,460 C 1100,430 1200,370 1300,360 C 1360,355 1400,358 1440,360"
           fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1100,400 1150,280 1250,200 C 1320,150 1380,160 1440,170" />
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1100,430 1200,370 1300,360 C 1360,355 1400,358 1440,360" />
         </circle>
 
-        {/* Branch to Sovereign Data — gentle curve to top: 28%, left: 80% → ~1600,360 */}
+        {/* Branch to Sovereign Data — top: 40%, left: 80% → ~1600,490 */}
         <motion.path
-          d="M 1050,460 C 1120,440 1250,380 1380,360 C 1450,350 1540,350 1600,360"
+          d="M 1050,460 C 1150,455 1300,470 1440,480 C 1520,486 1570,489 1600,490"
           fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1120,440 1250,380 1380,360 C 1450,350 1540,350 1600,360" />
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1150,455 1300,470 1440,480 C 1520,486 1570,489 1600,490" />
         </circle>
 
-        {/* Branch to Virtual Care — near-horizontal wave to top: 44%, left: 82% → ~1640,530 */}
+        {/* Branch to Virtual Care — top: 52%, left: 82% → ~1640,620 */}
         <motion.path
-          d="M 1050,460 C 1150,470 1300,500 1440,520 C 1530,530 1590,530 1640,530"
+          d="M 1050,460 C 1150,480 1300,540 1440,580 C 1530,605 1590,615 1640,620"
           fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1150,470 1300,500 1440,520 C 1530,530 1590,530 1640,530" />
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1150,480 1300,540 1440,580 C 1530,605 1590,615 1640,620" />
         </circle>
 
-        {/* Branch to Audit Integrity — curve down to top: 60%, left: 80% → ~1600,700 */}
+        {/* Branch to Audit Integrity — top: 64%, left: 80% → ~1600,750 */}
         <motion.path
-          d="M 1050,460 C 1120,490 1250,580 1380,650 C 1450,685 1540,700 1600,700"
+          d="M 1050,460 C 1120,500 1250,620 1380,700 C 1460,740 1550,748 1600,750"
           fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1120,490 1250,580 1380,650 C 1450,685 1540,700 1600,700" />
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1120,500 1250,620 1380,700 C 1460,740 1550,748 1600,750" />
         </circle>
 
-        {/* Branch to Clinic OS — deep curve down to top: 76%, left: 72% → ~1440,870 */}
+        {/* Branch to Clinic OS — top: 76%, left: 72% → ~1440,880 */}
         <motion.path
-          d="M 1050,460 C 1080,520 1150,660 1250,770 C 1320,840 1380,865 1440,870"
+          d="M 1050,460 C 1080,530 1150,700 1260,800 C 1330,850 1390,875 1440,880"
           fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1080,520 1150,660 1250,770 C 1320,840 1380,865 1440,870" />
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1080,530 1150,700 1260,800 C 1330,850 1390,875 1440,880" />
         </circle>
       </svg>
 
       {/* AI Cortex Orb (top) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "10%", left: "72%" }}
+        style={{ top: "28%", left: "72%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 1.8, ease: [0.16, 1, 0.3, 1] }}
@@ -190,7 +190,7 @@ const HeroSection = () => {
       {/* Sovereign Data Orb (upper-right) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "28%", left: "80%" }}
+        style={{ top: "40%", left: "80%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.0, ease: [0.16, 1, 0.3, 1] }}
@@ -212,7 +212,7 @@ const HeroSection = () => {
       {/* Virtual Care Orb (middle-right) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "44%", left: "82%" }}
+        style={{ top: "52%", left: "82%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.4, ease: [0.16, 1, 0.3, 1] }}
@@ -234,7 +234,7 @@ const HeroSection = () => {
       {/* Audit Integrity Orb (lower-right) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "60%", left: "80%" }}
+        style={{ top: "64%", left: "80%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.5, ease: [0.16, 1, 0.3, 1] }}
