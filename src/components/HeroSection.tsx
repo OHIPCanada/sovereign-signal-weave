@@ -98,7 +98,7 @@ const HeroSection = () => {
         {/* Single trunk from brain, branching midway to each orb */}
         {/* Trunk: brain origin to midpoint */}
         <motion.path
-          d="M 630,400 C 750,420 950,455 1100,465"
+          d="M 630,400 C 780,410 920,440 1050,460"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2.5"
@@ -109,66 +109,66 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 1.5, ease: "easeInOut" }}
         />
 
-        {/* Branch to AI Cortex — top: 12%, left: 72% → center ~1440,190 */}
+        {/* Branch to AI Cortex — curvy arc up to top: 10%, left: 72% → ~1440,170 */}
         <motion.path
-          d="M 1100,465 C 1200,380 1300,250 1440,190"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)"
+          d="M 1050,460 C 1100,400 1150,280 1250,200 C 1320,150 1380,160 1440,170"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
-        <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1200,380 1300,250 1440,190" />
+        <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1100,400 1150,280 1250,200 C 1320,150 1380,160 1440,170" />
         </circle>
 
-        {/* Branch to Sovereign Data — top: 27%, left: 78% → center ~1560,350 */}
+        {/* Branch to Sovereign Data — gentle curve to top: 28%, left: 80% → ~1600,360 */}
         <motion.path
-          d="M 1100,465 C 1220,450 1400,390 1560,350"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)"
+          d="M 1050,460 C 1120,440 1250,380 1380,360 C 1450,350 1540,350 1600,360"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
-        <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,450 1400,390 1560,350" />
+        <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1120,440 1250,380 1380,360 C 1450,350 1540,350 1600,360" />
         </circle>
 
-        {/* Branch to Virtual Care — top: 42%, left: 78% → center ~1560,510 */}
+        {/* Branch to Virtual Care — near-horizontal wave to top: 44%, left: 82% → ~1640,530 */}
         <motion.path
-          d="M 1100,465 C 1220,470 1400,490 1560,510"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)"
+          d="M 1050,460 C 1150,470 1300,500 1440,520 C 1530,530 1590,530 1640,530"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
-        <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,470 1400,490 1560,510" />
+        <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1150,470 1300,500 1440,520 C 1530,530 1590,530 1640,530" />
         </circle>
 
-        {/* Branch to Audit Integrity — top: 57%, left: 78% → center ~1560,670 */}
+        {/* Branch to Audit Integrity — curve down to top: 60%, left: 80% → ~1600,700 */}
         <motion.path
-          d="M 1100,465 C 1220,500 1400,600 1560,670"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)"
+          d="M 1050,460 C 1120,490 1250,580 1380,650 C 1450,685 1540,700 1600,700"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
-        <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,500 1400,600 1560,670" />
+        <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1120,490 1250,580 1380,650 C 1450,685 1540,700 1600,700" />
         </circle>
 
-        {/* Branch to Clinic OS — top: 72%, left: 72% → center ~1440,830 */}
+        {/* Branch to Clinic OS — deep curve down to top: 76%, left: 72% → ~1440,870 */}
         <motion.path
-          d="M 1100,465 C 1200,540 1300,720 1440,830"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)"
+          d="M 1050,460 C 1080,520 1150,660 1250,770 C 1320,840 1380,865 1440,870"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
-        <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1200,540 1300,720 1440,830" />
+        <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 C 780,410 920,440 1050,460 C 1080,520 1150,660 1250,770 C 1320,840 1380,865 1440,870" />
         </circle>
       </svg>
 
       {/* AI Cortex Orb (top) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "12%", left: "72%" }}
+        style={{ top: "10%", left: "72%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 1.8, ease: [0.16, 1, 0.3, 1] }}
@@ -190,7 +190,7 @@ const HeroSection = () => {
       {/* Sovereign Data Orb (upper-right) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "27%", left: "78%" }}
+        style={{ top: "28%", left: "80%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.0, ease: [0.16, 1, 0.3, 1] }}
@@ -212,7 +212,7 @@ const HeroSection = () => {
       {/* Virtual Care Orb (middle-right) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "42%", left: "78%" }}
+        style={{ top: "44%", left: "82%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.4, ease: [0.16, 1, 0.3, 1] }}
@@ -234,7 +234,7 @@ const HeroSection = () => {
       {/* Audit Integrity Orb (lower-right) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "57%", left: "78%" }}
+        style={{ top: "60%", left: "80%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.5, ease: [0.16, 1, 0.3, 1] }}
@@ -256,7 +256,7 @@ const HeroSection = () => {
       {/* Clinic OS Orb (bottom) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "72%", left: "72%" }}
+        style={{ top: "76%", left: "72%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.8, ease: [0.16, 1, 0.3, 1] }}
