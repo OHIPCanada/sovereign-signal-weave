@@ -16,7 +16,7 @@ const HeroSection = () => {
   return (
     <section className="hero-bg min-h-screen relative overflow-hidden">
       {/* INTELLIGENCE - Large Background Text */}
-      <div className="absolute inset-0 flex items-start justify-center pt-32 md:pt-40 lg:pt-48 pointer-events-none select-none overflow-hidden">
+      <div className="absolute inset-0 flex items-start justify-center pt-32 md:pt-40 lg:pt-48 pointer-events-none select-none overflow-hidden z-30">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -74,14 +74,14 @@ const HeroSection = () => {
 
       {/* SVG lines from brain center to each orb — subtle, infrastructural */}
       <svg
-        className="hidden md:block absolute inset-0 w-full h-full z-[5] pointer-events-none"
+        className="hidden md:block absolute inset-0 w-full h-full z-[3] pointer-events-none"
         viewBox="0 0 1920 1080"
         preserveAspectRatio="xMidYMid slice"
       >
         <defs>
           <linearGradient id="synapse-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.25)" />
-            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.08)" />
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.15)" />
+            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.04)" />
           </linearGradient>
           <filter id="dot-glow">
             <feGaussianBlur stdDeviation="3" />
@@ -97,15 +97,15 @@ const HeroSection = () => {
               d={`M 630,480 Q ${1060 + i * 10},${380 + (y - 550) * 0.3} 1500,${y}`}
               fill="none"
               stroke="url(#synapse-gradient)"
-              strokeWidth="1"
+              strokeWidth="0.75"
               strokeLinecap="round"
               initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 0.4 }}
+              animate={{ pathLength: 1, opacity: 0.25 }}
               transition={{ duration: 1.5, delay: 1.8 + i * 0.15, ease: "easeInOut" }}
             />
-            <circle r="2.5" fill="rgba(255, 255, 255, 0.5)" filter="url(#dot-glow)">
+            <circle r="1.5" fill="rgba(255, 255, 255, 0.3)" filter="url(#dot-glow)">
               <animateMotion
-                dur={`${6 + i}s`}
+                dur={`${7 + i}s`}
                 repeatCount="indefinite"
                 path={`M 630,480 Q ${1060 + i * 10},${380 + (y - 550) * 0.3} 1500,${y}`}
               />
@@ -124,23 +124,23 @@ const HeroSection = () => {
       ].map((orb, i) => (
         <motion.div
           key={orb.label}
-          className="hidden md:block absolute z-20"
+          className="hidden md:block absolute z-10"
           style={{ top: orb.top, left: "78%" }}
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, delay: 2 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
         >
           <motion.img
             src={orb.src}
             alt={orb.alt}
-            className="w-[80px] lg:w-[100px] h-auto mx-auto"
-            style={{ filter: "drop-shadow(0 0 20px rgba(123, 97, 255, 0.15))" }}
-            animate={{ y: [0, -5, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
+            className="w-[60px] lg:w-[80px] h-auto mx-auto opacity-70"
+            style={{ filter: "drop-shadow(0 0 12px rgba(123, 97, 255, 0.08))" }}
+            animate={{ y: [0, -3, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: i * 0.5 }}
           />
-          <motion.div className="text-center mt-1" initial={{ opacity: 0 }} animate={{ opacity: 0.7 }} transition={{ delay: 2.5 + i * 0.15 }}>
-            <p className="text-[11px] font-semibold tracking-[0.15em] uppercase text-foreground/70">{orb.label}</p>
-            <p className="text-[10px] tracking-wide text-foreground/40 mt-0.5">{orb.tag}</p>
+          <motion.div className="text-center mt-1" initial={{ opacity: 0 }} animate={{ opacity: 0.5 }} transition={{ delay: 2.5 + i * 0.15 }}>
+            <p className="text-[10px] font-medium tracking-[0.15em] uppercase text-foreground/50">{orb.label}</p>
+            <p className="text-[9px] tracking-wide text-foreground/30 mt-0.5">{orb.tag}</p>
           </motion.div>
         </motion.div>
       ))}
