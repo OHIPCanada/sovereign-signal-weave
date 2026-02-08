@@ -98,7 +98,7 @@ const HeroSection = () => {
         {/* Single trunk from brain, branching midway to each orb */}
         {/* Trunk: brain origin to midpoint */}
         <motion.path
-          d="M 860,470 C 960,470 1050,470 1150,470"
+          d="M 700,430 C 800,440 950,460 1100,465"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2.5"
@@ -111,7 +111,7 @@ const HeroSection = () => {
 
         {/* Branch to AI Cortex (top) */}
         <motion.path
-          d="M 1150,470 C 1220,420 1300,300 1400,260"
+          d="M 1100,465 C 1180,410 1280,300 1400,260"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -122,12 +122,12 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,470 C 960,470 1050,470 1150,470 C 1220,420 1300,300 1400,260" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 700,430 C 800,440 950,460 1100,465 C 1180,410 1280,300 1400,260" />
         </circle>
 
         {/* Branch to Sovereign Data (upper-right) */}
         <motion.path
-          d="M 1150,470 C 1250,460 1400,410 1530,390"
+          d="M 1100,465 C 1220,455 1380,410 1530,390"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -138,12 +138,12 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,470 C 960,470 1050,470 1150,470 C 1250,460 1400,410 1530,390" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 700,430 C 800,440 950,460 1100,465 C 1220,455 1380,410 1530,390" />
         </circle>
 
         {/* Branch to Virtual Care (middle-right) */}
         <motion.path
-          d="M 1150,470 C 1250,475 1400,490 1530,500"
+          d="M 1100,465 C 1220,470 1380,490 1530,500"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -154,12 +154,12 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,470 C 960,470 1050,470 1150,470 C 1250,475 1400,490 1530,500" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 700,430 C 800,440 950,460 1100,465 C 1220,470 1380,490 1530,500" />
         </circle>
 
         {/* Branch to Audit Integrity (lower-right) */}
         <motion.path
-          d="M 1150,470 C 1250,490 1400,560 1530,600"
+          d="M 1100,465 C 1220,490 1380,560 1530,600"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -170,12 +170,12 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,470 C 960,470 1050,470 1150,470 C 1250,490 1400,560 1530,600" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 700,430 C 800,440 950,460 1100,465 C 1220,490 1380,560 1530,600" />
         </circle>
 
         {/* Branch to Clinic OS (bottom) */}
         <motion.path
-          d="M 1150,470 C 1220,520 1300,630 1400,700"
+          d="M 1100,465 C 1180,520 1280,640 1400,700"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -186,7 +186,7 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,470 C 960,470 1050,470 1150,470 C 1220,520 1300,630 1400,700" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 700,430 C 800,440 950,460 1100,465 C 1180,520 1280,640 1400,700" />
         </circle>
       </svg>
 
