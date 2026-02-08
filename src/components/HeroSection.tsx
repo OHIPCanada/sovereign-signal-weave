@@ -7,286 +7,181 @@ import virtualCareOrb from "@/assets/virtual-care-orb.png";
 import sovereignDataOrb from "@/assets/sovereign-data-orb.png";
 import auditIntegrityOrb from "@/assets/audit-integrity-orb.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
+
+/* ─── Orb data ─── */
+const orbs = [
+  { id: "ai-cortex", src: aiCortexOrb, alt: "AI Cortex", label: "AI CORTEX", tagline: "Thought, amplified", top: "30%", left: "73%", delay: 1.8, floatDelay: 0, cx: 73, cy: 32 },
+  { id: "sovereign-data", src: sovereignDataOrb, alt: "Sovereign Data", label: "SOVEREIGN DATA", tagline: "Trust, embedded", top: "42%", left: "80%", delay: 2.0, floatDelay: 0.7, cx: 80, cy: 44 },
+  { id: "virtual-care", src: virtualCareOrb, alt: "Virtual Care", label: "VIRTUAL CARE", tagline: "Connection, redefined", top: "53%", left: "84%", delay: 2.4, floatDelay: 1, cx: 84, cy: 55 },
+  { id: "audit-integrity", src: auditIntegrityOrb, alt: "Audit Integrity", label: "AUDIT INTEGRITY", tagline: "Compliance, assured", top: "64%", left: "80%", delay: 2.5, floatDelay: 1.3, cx: 80, cy: 66 },
+  { id: "clinic-os", src: clinicOsOrb, alt: "Clinic OS", label: "CLINIC OS", tagline: "Operations, orchestrated", top: "76%", left: "73%", delay: 2.8, floatDelay: 0.5, cx: 73, cy: 78 },
+] as const;
+
+/* Brain center & trunk midpoint in % coordinates (viewBox 0 0 100 100) */
+const BRAIN = { x: 33, y: 45 };
+const TRUNK_MID = { x: 55, y: 47 };
+
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
-
   const rotateY = (mouseX - 0.5) * 5;
   const rotateX = (mouseY - 0.5) * -3;
 
   return (
-    <section className="hero-bg min-h-screen relative overflow-hidden">
-      {/* INTELLIGENCE - Large Background Text */}
-      <div className="absolute inset-0 flex items-start justify-center pt-32 md:pt-40 lg:pt-48 pointer-events-none select-none overflow-hidden">
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="hero-title text-center text-[clamp(110px,16vw,200px)]"
-        >
-          INTELLIGENCE
-        </motion.h1>
-      </div>
+    <section className="hero-bg min-h-screen relative overflow-hidden flex items-center justify-center">
+      {/* ═══ SINGLE COORDINATE CONTAINER ═══ */}
+      <div className="relative w-full aspect-[16/9] max-h-screen">
 
-      {/* Main Composition: Neural Profile + Connected Orb */}
-      <div className="absolute inset-0 flex items-center justify-center pt-64 md:pt-80 lg:pt-96 -ml-48 md:-ml-72 lg:-ml-96">
-        <div className="relative">
-          {/* Human image + organic neural plexus overlay */}
+        {/* Layer 1 — INTELLIGENCE headline */}
+        <div className="absolute inset-0 flex items-start justify-center pt-[12%] pointer-events-none select-none z-[1]">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="hero-title text-center text-[clamp(110px,16vw,200px)]"
+          >
+            INTELLIGENCE
+          </motion.h1>
+        </div>
+
+        {/* Layer 2 — Neural Profile (head) */}
+        <div className="absolute z-10" style={{ top: "10%", left: "2%", width: "65%", height: "90%" }}>
           <motion.div
+            className="relative w-full h-full"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="relative"
             style={{
               transform: `perspective(1200px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`,
               transition: "transform 0.4s ease-out",
             }}
           >
-            {/* Neural Plexus SVG — overlaid on the head */}
+            {/* Neural Plexus overlay */}
             <motion.div
               className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none"
-              style={{ marginTop: "-15%", marginLeft: "-5%" }}
-              animate={{
-                y: [0, -20, 0],
-                scale: [1, 1.025, 1],
-              }}
+              style={{ marginTop: "-10%", marginLeft: "-5%" }}
+              animate={{ y: [0, -20, 0], scale: [1, 1.025, 1] }}
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
             >
               <NeuralPlexus mouseX={mouseX} mouseY={mouseY} />
             </motion.div>
 
-            {/* Human profile image */}
+            {/* Profile image */}
             <motion.img
               src={neuralProfile}
               alt="Neural Intelligence Profile"
-              className="w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"
+              className="w-full h-full object-contain relative z-10"
               style={{
                 filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
               }}
-              animate={{
-                y: [0, -20, 0],
-                scale: [1, 1.025, 1],
-              }}
+              animate={{ y: [0, -20, 0], scale: [1, 1.025, 1] }}
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
             />
           </motion.div>
         </div>
+
+        {/* Layer 3 — SVG connector lines (same coordinate system as orbs) */}
+        <svg
+          className="hidden md:block absolute inset-0 w-full h-full z-[5] pointer-events-none"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="synapse-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgba(255, 255, 255, 1)" />
+              <stop offset="50%" stopColor="rgba(255, 255, 255, 0.9)" />
+              <stop offset="100%" stopColor="rgba(255, 255, 255, 0.7)" />
+            </linearGradient>
+            <filter id="dot-glow">
+              <feGaussianBlur stdDeviation="0.4" />
+            </filter>
+            <filter id="line-glow">
+              <feGaussianBlur stdDeviation="0.3" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="0.15" result="blur2" />
+              <feMerge>
+                <feMergeNode in="blur1" />
+                <feMergeNode in="blur2" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Trunk from brain center to fan-out midpoint */}
+          <motion.path
+            d={`M ${BRAIN.x},${BRAIN.y} Q ${(BRAIN.x + TRUNK_MID.x) / 2},${BRAIN.y + 1} ${TRUNK_MID.x},${TRUNK_MID.y}`}
+            fill="none"
+            stroke="url(#synapse-gradient)"
+            strokeWidth="0.25"
+            strokeLinecap="round"
+            filter="url(#line-glow)"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 1.2, delay: 1.5, ease: "easeInOut" }}
+          />
+
+          {/* Branches to each orb */}
+          {orbs.map((orb) => {
+            const qx = (TRUNK_MID.x + orb.cx) / 2;
+            const qy = (TRUNK_MID.y + orb.cy) / 2 + (orb.cy > TRUNK_MID.y ? 2 : -2);
+            const branchPath = `M ${TRUNK_MID.x},${TRUNK_MID.y} Q ${qx},${qy} ${orb.cx},${orb.cy}`;
+            const fullPath = `M ${BRAIN.x},${BRAIN.y} Q ${(BRAIN.x + TRUNK_MID.x) / 2},${BRAIN.y + 1} ${TRUNK_MID.x},${TRUNK_MID.y} Q ${qx},${qy} ${orb.cx},${orb.cy}`;
+            return (
+              <g key={orb.id}>
+                <motion.path
+                  d={branchPath}
+                  fill="none"
+                  stroke="url(#synapse-gradient)"
+                  strokeWidth="0.18"
+                  strokeLinecap="round"
+                  filter="url(#line-glow)"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
+                />
+                <circle r="0.3" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
+                  <animateMotion dur="5s" repeatCount="indefinite" path={fullPath} />
+                </circle>
+              </g>
+            );
+          })}
+        </svg>
+
+        {/* Layer 4 — Capability Orbs */}
+        {orbs.map((orb) => (
+          <motion.div
+            key={orb.id}
+            className="hidden md:block absolute z-20"
+            style={{ top: orb.top, left: orb.left, transform: "translate(-50%, -50%)" }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, delay: orb.delay, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.img
+              src={orb.src}
+              alt={orb.alt}
+              className="w-[100px] lg:w-[120px] h-auto"
+              style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
+              animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: orb.floatDelay }}
+            />
+            <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: orb.delay + 0.7 }}>
+              <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">{orb.label}</p>
+              <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">{orb.tagline}</p>
+            </motion.div>
+          </motion.div>
+        ))}
+
+        {/* Narrative sentence — bottom-left of container */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 2.5 }}
+          className="absolute bottom-[8%] left-[4%] pointer-events-none z-20"
+        >
+          <p className="hero-subhead max-w-md">
+            Sovereign AI infrastructure for healthcare systems
+          </p>
+        </motion.div>
       </div>
-
-      {/* Full-viewport SVG overlay for precise line from brain to orb */}
-      <svg
-        className="hidden md:block absolute inset-0 w-full h-full z-[5] pointer-events-none"
-        viewBox="0 0 1920 1080"
-        preserveAspectRatio="xMidYMid slice"
-      >
-        <defs>
-          <linearGradient id="synapse-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(255, 255, 255, 1)" />
-            <stop offset="50%" stopColor="rgba(255, 255, 255, 0.9)" />
-            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.7)" />
-          </linearGradient>
-          <filter id="dot-glow">
-            <feGaussianBlur stdDeviation="6" />
-          </filter>
-          <filter id="line-glow">
-            <feGaussianBlur stdDeviation="5" result="blur1" />
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur2" />
-            <feMerge>
-              <feMergeNode in="blur1" />
-              <feMergeNode in="blur2" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        {/* Single trunk from brain to fan-out point */}
-        <motion.path
-          d="M 630,400 Q 850,430 1050,450"
-          fill="none"
-          stroke="url(#synapse-gradient)"
-          strokeWidth="3.5"
-          strokeLinecap="round"
-          filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 1.5, ease: "easeInOut" }}
-        />
-
-        {/* Branch to AI Cortex — pos: top 30%, left 70% → SVG center: 1404, 384 */}
-        <motion.path
-          d="M 1050,450 Q 1200,380 1404,384"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
-        />
-        <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 Q 850,430 1050,450 Q 1200,380 1404,384" />
-        </circle>
-
-        {/* Branch to Sovereign Data — pos: top 42%, left 78% → SVG center: 1558, 514 */}
-        <motion.path
-          d="M 1050,450 Q 1280,460 1558,514"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
-        />
-        <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 Q 850,430 1050,450 Q 1280,460 1558,514" />
-        </circle>
-
-        {/* Branch to Virtual Care — pos: top 53%, left 82% → SVG center: 1634, 632 */}
-        <motion.path
-          d="M 1050,450 Q 1300,530 1634,632"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
-        />
-        <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 Q 850,430 1050,450 Q 1300,530 1634,632" />
-        </circle>
-
-        {/* Branch to Audit Integrity — pos: top 64%, left 78% → SVG center: 1558, 751 */}
-        <motion.path
-          d="M 1050,450 Q 1250,600 1558,751"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
-        />
-        <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 Q 850,430 1050,450 Q 1250,600 1558,751" />
-        </circle>
-
-        {/* Branch to Clinic OS — pos: top 76%, left 70% → SVG center: 1404, 881 */}
-        <motion.path
-          d="M 1050,450 Q 1150,680 1404,881"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
-        />
-        <circle r="4" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="5s" repeatCount="indefinite" path="M 630,400 Q 850,430 1050,450 Q 1150,680 1404,881" />
-        </circle>
-      </svg>
-
-      {/* AI Cortex Orb (top) */}
-      <motion.div
-        className="hidden md:block absolute z-20"
-        style={{ top: "30%", left: "70%" }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, delay: 1.8, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <motion.img
-          src={aiCortexOrb}
-          alt="AI Cortex"
-          className="w-[100px] lg:w-[120px] h-auto"
-          style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
-          animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}>
-          <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">AI CORTEX</p>
-          <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">Thought, amplified</p>
-        </motion.div>
-      </motion.div>
-
-      {/* Sovereign Data Orb (upper-right) */}
-      <motion.div
-        className="hidden md:block absolute z-20"
-        style={{ top: "42%", left: "78%" }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, delay: 2.0, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <motion.img
-          src={sovereignDataOrb}
-          alt="Sovereign Data"
-          className="w-[100px] lg:w-[120px] h-auto"
-          style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
-          animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.7 }}
-        />
-        <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.8 }}>
-          <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">SOVEREIGN DATA</p>
-          <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">Trust, embedded</p>
-        </motion.div>
-      </motion.div>
-
-      {/* Virtual Care Orb (middle-right) */}
-      <motion.div
-        className="hidden md:block absolute z-20"
-        style={{ top: "53%", left: "82%" }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, delay: 2.4, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <motion.img
-          src={virtualCareOrb}
-          alt="Virtual Care"
-          className="w-[100px] lg:w-[120px] h-auto"
-          style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
-          animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        />
-        <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.2 }}>
-          <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">VIRTUAL CARE</p>
-          <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">Connection, redefined</p>
-        </motion.div>
-      </motion.div>
-
-      {/* Audit Integrity Orb (lower-right) */}
-      <motion.div
-        className="hidden md:block absolute z-20"
-        style={{ top: "64%", left: "78%" }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, delay: 2.5, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <motion.img
-          src={auditIntegrityOrb}
-          alt="Audit Integrity"
-          className="w-[100px] lg:w-[120px] h-auto"
-          style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
-          animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.3 }}
-        />
-        <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.3 }}>
-          <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">AUDIT INTEGRITY</p>
-          <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">Compliance, assured</p>
-        </motion.div>
-      </motion.div>
-
-      {/* Clinic OS Orb (bottom) */}
-      <motion.div
-        className="hidden md:block absolute z-20"
-        style={{ top: "76%", left: "70%" }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, delay: 2.8, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <motion.img
-          src={clinicOsOrb}
-          alt="Clinic OS"
-          className="w-[100px] lg:w-[120px] h-auto"
-          style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
-          animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-        />
-        <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.6 }}>
-          <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">CLINIC OS</p>
-          <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">Operations, orchestrated</p>
-        </motion.div>
-      </motion.div>
-
-      {/* Narrative sentence - lower left */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 2.5 }}
-        className="absolute bottom-12 left-8 md:left-16 lg:left-24 pointer-events-none"
-      >
-        <p className="hero-subhead max-w-md">
-          Sovereign AI infrastructure for healthcare systems
-        </p>
-      </motion.div>
     </section>
   );
 };
