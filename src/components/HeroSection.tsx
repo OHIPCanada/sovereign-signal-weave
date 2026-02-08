@@ -109,91 +109,66 @@ const HeroSection = () => {
           transition={{ duration: 1.2, delay: 1.5, ease: "easeInOut" }}
         />
 
-        {/* Branch to AI Cortex (top) */}
+        {/* Branch to AI Cortex — top: 12%, left: 72% → center ~1440,190 */}
         <motion.path
-          d="M 1100,465 C 1180,410 1280,300 1400,260"
-          fill="none"
-          stroke="url(#synapse-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
+          d="M 1100,465 C 1200,380 1300,250 1440,190"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)"
+          initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1180,410 1280,300 1400,260" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1200,380 1300,250 1440,190" />
         </circle>
 
-        {/* Branch to Sovereign Data (upper-right) */}
+        {/* Branch to Sovereign Data — top: 27%, left: 78% → center ~1560,350 */}
         <motion.path
-          d="M 1100,465 C 1220,455 1380,410 1530,390"
-          fill="none"
-          stroke="url(#synapse-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
+          d="M 1100,465 C 1220,450 1400,390 1560,350"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)"
+          initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,455 1380,410 1530,390" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,450 1400,390 1560,350" />
         </circle>
 
-        {/* Branch to Virtual Care (middle-right) */}
+        {/* Branch to Virtual Care — top: 42%, left: 78% → center ~1560,510 */}
         <motion.path
-          d="M 1100,465 C 1220,470 1380,490 1530,500"
-          fill="none"
-          stroke="url(#synapse-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
+          d="M 1100,465 C 1220,470 1400,490 1560,510"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)"
+          initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,470 1380,490 1530,500" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,470 1400,490 1560,510" />
         </circle>
 
-        {/* Branch to Audit Integrity (lower-right) */}
+        {/* Branch to Audit Integrity — top: 57%, left: 78% → center ~1560,670 */}
         <motion.path
-          d="M 1100,465 C 1220,490 1380,560 1530,600"
-          fill="none"
-          stroke="url(#synapse-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
+          d="M 1100,465 C 1220,500 1400,600 1560,670"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)"
+          initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,490 1380,560 1530,600" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1220,500 1400,600 1560,670" />
         </circle>
 
-        {/* Branch to Clinic OS (bottom) */}
+        {/* Branch to Clinic OS — top: 72%, left: 72% → center ~1440,830 */}
         <motion.path
-          d="M 1100,465 C 1180,520 1280,640 1400,700"
-          fill="none"
-          stroke="url(#synapse-gradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          filter="url(#line-glow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 1 }}
+          d="M 1100,465 C 1200,540 1300,720 1440,830"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)"
+          initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1.2, delay: 2.7, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1180,520 1280,640 1400,700" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 630,400 C 750,420 950,455 1100,465 C 1200,540 1300,720 1440,830" />
         </circle>
       </svg>
 
       {/* AI Cortex Orb (top) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "18%", left: "69%" }}
+        style={{ top: "12%", left: "72%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 1.8, ease: [0.16, 1, 0.3, 1] }}
@@ -201,21 +176,21 @@ const HeroSection = () => {
         <motion.img
           src={aiCortexOrb}
           alt="AI Cortex"
-          className="w-[140px] lg:w-[170px] h-auto"
-          style={{ filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))" }}
-          animate={{ y: [0, -10, 0], scale: [1, 1.02, 1] }}
+          className="w-[100px] lg:w-[120px] h-auto"
+          style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
+          animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}>
-          <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">AI CORTEX</p>
-          <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">Thought, amplified</p>
+          <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">AI CORTEX</p>
+          <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">Thought, amplified</p>
         </motion.div>
       </motion.div>
 
       {/* Sovereign Data Orb (upper-right) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "30%", left: "79%" }}
+        style={{ top: "27%", left: "78%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.0, ease: [0.16, 1, 0.3, 1] }}
@@ -223,21 +198,21 @@ const HeroSection = () => {
         <motion.img
           src={sovereignDataOrb}
           alt="Sovereign Data"
-          className="w-[140px] lg:w-[170px] h-auto"
-          style={{ filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))" }}
-          animate={{ y: [0, -10, 0], scale: [1, 1.02, 1] }}
+          className="w-[100px] lg:w-[120px] h-auto"
+          style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
+          animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.7 }}
         />
         <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.8 }}>
-          <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">SOVEREIGN DATA</p>
-          <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">Trust, embedded</p>
+          <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">SOVEREIGN DATA</p>
+          <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">Trust, embedded</p>
         </motion.div>
       </motion.div>
 
-      {/* Virtual Care Orb (lower-right) */}
+      {/* Virtual Care Orb (middle-right) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "46%", left: "79%" }}
+        style={{ top: "42%", left: "78%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.4, ease: [0.16, 1, 0.3, 1] }}
@@ -245,21 +220,21 @@ const HeroSection = () => {
         <motion.img
           src={virtualCareOrb}
           alt="Virtual Care"
-          className="w-[140px] lg:w-[170px] h-auto"
-          style={{ filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))" }}
-          animate={{ y: [0, -10, 0], scale: [1, 1.02, 1] }}
+          className="w-[100px] lg:w-[120px] h-auto"
+          style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
+          animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
         />
         <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.2 }}>
-          <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">VIRTUAL CARE</p>
-          <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">Connection, redefined</p>
+          <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">VIRTUAL CARE</p>
+          <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">Connection, redefined</p>
         </motion.div>
       </motion.div>
 
-      {/* Audit Integrity Orb (mid-lower-right) */}
+      {/* Audit Integrity Orb (lower-right) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "50%", left: "79%" }}
+        style={{ top: "57%", left: "78%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.5, ease: [0.16, 1, 0.3, 1] }}
@@ -267,21 +242,21 @@ const HeroSection = () => {
         <motion.img
           src={auditIntegrityOrb}
           alt="Audit Integrity"
-          className="w-[140px] lg:w-[170px] h-auto"
-          style={{ filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))" }}
-          animate={{ y: [0, -10, 0], scale: [1, 1.02, 1] }}
+          className="w-[100px] lg:w-[120px] h-auto"
+          style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
+          animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.3 }}
         />
         <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.3 }}>
-          <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">AUDIT INTEGRITY</p>
-          <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">Compliance, assured</p>
+          <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">AUDIT INTEGRITY</p>
+          <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">Compliance, assured</p>
         </motion.div>
       </motion.div>
 
       {/* Clinic OS Orb (bottom) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "64%", left: "69%" }}
+        style={{ top: "72%", left: "72%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, delay: 2.8, ease: [0.16, 1, 0.3, 1] }}
@@ -289,14 +264,14 @@ const HeroSection = () => {
         <motion.img
           src={clinicOsOrb}
           alt="Clinic OS"
-          className="w-[140px] lg:w-[170px] h-auto"
-          style={{ filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))" }}
-          animate={{ y: [0, -10, 0], scale: [1, 1.02, 1] }}
+          className="w-[100px] lg:w-[120px] h-auto"
+          style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 60px rgba(46, 230, 214, 0.2))" }}
+          animate={{ y: [0, -8, 0], scale: [1, 1.02, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
         />
         <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.6 }}>
-          <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">CLINIC OS</p>
-          <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">Operations, orchestrated</p>
+          <p className="text-sm font-bold tracking-[0.2em] uppercase text-foreground">CLINIC OS</p>
+          <p className="text-xs font-normal tracking-wide text-foreground/60 mt-0.5">Operations, orchestrated</p>
         </motion.div>
       </motion.div>
 
