@@ -5,6 +5,7 @@ import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
 import clinicOsOrb from "@/assets/clinic-os-orb-new.png";
 import virtualCareOrb from "@/assets/virtual-care-orb.png";
 import sovereignDataOrb from "@/assets/sovereign-data-orb.png";
+import auditIntegrityOrb from "@/assets/audit-integrity-orb.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
@@ -139,9 +140,9 @@ const HeroSection = () => {
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
           <animateMotion dur="4s" repeatCount="indefinite" path="M 860,485 C 1050,500 1350,530 1560,550" />
         </circle>
-        {/* Line from brain to Clinic OS orb (bottom) */}
+        {/* Line from brain to Audit Integrity orb (mid-lower-right) */}
         <motion.path
-          d="M 860,510 C 1020,560 1250,650 1400,680"
+          d="M 860,495 C 1050,510 1350,560 1560,580"
           fill="none"
           stroke="url(#synapse-gradient)"
           strokeWidth="2"
@@ -149,10 +150,25 @@ const HeroSection = () => {
           filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 1 }}
-          transition={{ duration: 2, delay: 2.4, ease: "easeInOut" }}
+          transition={{ duration: 2, delay: 2.3, ease: "easeInOut" }}
         />
         <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
-          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,510 C 1020,560 1250,650 1400,680" />
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,495 C 1050,510 1350,560 1560,580" />
+        </circle>
+        {/* Line from brain to Clinic OS orb (bottom) */}
+        <motion.path
+          d="M 860,520 C 1020,570 1250,670 1400,710"
+          fill="none"
+          stroke="url(#synapse-gradient)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          filter="url(#line-glow)"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 2, delay: 2.6, ease: "easeInOut" }}
+        />
+        <circle r="5" fill="rgba(255, 255, 255, 1)" filter="url(#dot-glow)">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 860,520 C 1020,570 1250,670 1400,710" />
         </circle>
       </svg>
 
@@ -222,13 +238,35 @@ const HeroSection = () => {
         </motion.div>
       </motion.div>
 
+      {/* Audit Integrity Orb (mid-lower-right) */}
+      <motion.div
+        className="hidden md:block absolute z-20"
+        style={{ top: "50%", left: "79%" }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.2, delay: 2.5, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <motion.img
+          src={auditIntegrityOrb}
+          alt="Audit Integrity"
+          className="w-[140px] lg:w-[170px] h-auto"
+          style={{ filter: "drop-shadow(0 0 40px rgba(123, 97, 255, 0.3)) drop-shadow(0 0 80px rgba(46, 230, 214, 0.2))" }}
+          animate={{ y: [0, -10, 0], scale: [1, 1.02, 1] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1.3 }}
+        />
+        <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.3 }}>
+          <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">AUDIT INTEGRITY</p>
+          <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">Compliance, assured</p>
+        </motion.div>
+      </motion.div>
+
       {/* Clinic OS Orb (bottom) */}
       <motion.div
         className="hidden md:block absolute z-20"
-        style={{ top: "60%", left: "69%" }}
+        style={{ top: "64%", left: "69%" }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, delay: 2.6, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 1.2, delay: 2.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <motion.img
           src={clinicOsOrb}
@@ -238,7 +276,7 @@ const HeroSection = () => {
           animate={{ y: [0, -10, 0], scale: [1, 1.02, 1] }}
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
         />
-        <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.5 }}>
+        <motion.div className="text-center -mt-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 3.6 }}>
           <p className="text-base font-bold tracking-[0.2em] uppercase text-foreground">CLINIC OS</p>
           <p className="text-sm font-normal tracking-wide text-foreground/60 mt-0.5">Operations, orchestrated</p>
         </motion.div>
