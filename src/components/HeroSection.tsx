@@ -85,12 +85,14 @@ const HeroSection = () => {
             <stop offset="100%" stopColor="rgba(255, 255, 255, 0.7)" />
           </linearGradient>
           <filter id="dot-glow">
-            <feGaussianBlur stdDeviation="4" />
+            <feGaussianBlur stdDeviation="6" />
           </filter>
           <filter id="line-glow">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feGaussianBlur stdDeviation="5" result="blur1" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur2" />
             <feMerge>
-              <feMergeNode in="blur" />
+              <feMergeNode in="blur1" />
+              <feMergeNode in="blur2" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
@@ -100,7 +102,7 @@ const HeroSection = () => {
           d="M 630,400 Q 850,430 1050,450"
           fill="none"
           stroke="url(#synapse-gradient)"
-          strokeWidth="2.5"
+          strokeWidth="3.5"
           strokeLinecap="round"
           filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }}
@@ -111,7 +113,7 @@ const HeroSection = () => {
         {/* Branch to AI Cortex — pos: top 30%, left 70% → SVG center: 1404, 384 */}
         <motion.path
           d="M 1050,450 Q 1200,380 1404,384"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
         />
@@ -122,7 +124,7 @@ const HeroSection = () => {
         {/* Branch to Sovereign Data — pos: top 42%, left 78% → SVG center: 1558, 514 */}
         <motion.path
           d="M 1050,450 Q 1280,460 1558,514"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
         />
@@ -133,7 +135,7 @@ const HeroSection = () => {
         {/* Branch to Virtual Care — pos: top 53%, left 82% → SVG center: 1634, 632 */}
         <motion.path
           d="M 1050,450 Q 1300,530 1634,632"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
         />
@@ -144,7 +146,7 @@ const HeroSection = () => {
         {/* Branch to Audit Integrity — pos: top 64%, left 78% → SVG center: 1558, 751 */}
         <motion.path
           d="M 1050,450 Q 1250,600 1558,751"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
         />
@@ -155,7 +157,7 @@ const HeroSection = () => {
         {/* Branch to Clinic OS — pos: top 76%, left 70% → SVG center: 1404, 881 */}
         <motion.path
           d="M 1050,450 Q 1150,680 1404,881"
-          fill="none" stroke="url(#synapse-gradient)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)"
+          fill="none" stroke="url(#synapse-gradient)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)"
           initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }}
           transition={{ duration: 1, delay: 2.7, ease: "easeInOut" }}
         />
