@@ -17,7 +17,7 @@ const orbs = [
 ];
 
 // Place orbs in an arc from ~200° to ~340° (left arc around brain)
-const orbAngles = [-90, -45, 0, 45, 90]; // degrees, evenly spaced 45° apart
+const orbAngles = [180, 225, 270, 315, 0]; // AI Cortex at left-middle (180°), rest evenly spaced clockwise
 const orbRadius = 550; // distance from center — at glow edge
 
 const HeroSection = () => {
