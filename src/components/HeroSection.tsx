@@ -27,12 +27,12 @@ const HeroSection = () => {
   const rotateX = (mouseY - 0.5) * -3;
 
   // Responsive dimensions
-  const containerSize = isMobile ? 500 : 1200;
+  const containerSize = isMobile ? 360 : 1200;
   const center = containerSize / 2;
-  const orbRadiiSet = isMobile ? [185, 185, 185, 155, 155] : [450, 450, 450, 370, 370];
-  const bottomMargin = isMobile ? -130 : -320;
-  const orbImgSize = isMobile ? "w-[45px]" : "w-[70px] lg:w-[90px]";
-  const orbContainerWidth = isMobile ? 70 : 100;
+  const orbRadiiSet = isMobile ? [140, 140, 140, 120, 120] : [450, 450, 450, 370, 370];
+  const bottomMargin = isMobile ? -80 : -320;
+  const orbImgSize = isMobile ? "w-[36px]" : "w-[70px] lg:w-[90px]";
+  const orbContainerWidth = isMobile ? 60 : 100;
 
   return (
     <section className="hero-bg min-h-screen relative overflow-hidden">
@@ -79,7 +79,7 @@ const HeroSection = () => {
             <motion.img
               src={neuralProfile}
               alt="Neural Intelligence Profile"
-              className={isMobile ? "w-[380px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
+              className={isMobile ? "w-[280px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
               style={{
                 filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
               }}
