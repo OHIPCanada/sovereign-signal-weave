@@ -64,7 +64,7 @@ function generateNodes(count: number): Node[] {
     if (!inBrain && seededRandom(seed + 2000) > 0.55) continue;
 
     // Sparse thinking sparks — only in brain, rare
-    const isActive = inBrain && seededRandom(seed + 3000) > 0.82;
+    const isActive = inBrain && seededRandom(seed + 3000) > 0.65;
     const size = inBrain
       ? 1.2 + seededRandom(seed + 4000) * 2.8
       : 0.6 + seededRandom(seed + 4000) * 1.6;
@@ -247,10 +247,10 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
                   r: [node.size * 0.5, node.size * 2, node.size * 0.5],
                 }}
                 transition={{
-                  duration: 1.5 + seededRandom(i * 77) * 2,
-                  delay: seededRandom(i * 33) * 6,
+                  duration: 0.8 + seededRandom(i * 77) * 1,
+                  delay: seededRandom(i * 33) * 3,
                   repeat: Infinity,
-                  repeatDelay: 2 + seededRandom(i * 111) * 5,
+                  repeatDelay: 0.5 + seededRandom(i * 111) * 2,
                   ease: "easeInOut",
                 }}
               />
