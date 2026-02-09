@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,76 +13,65 @@ const Navigation = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-6 py-5 md:px-12 lg:px-20">
-      <nav className="flex items-center justify-between max-w-[1400px] mx-auto">
-        {/* Logo */}
-        <motion.a
-          href="/"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex items-center"
-        >
-          <span className="text-[14px] md:text-[16px] font-bold tracking-[0.12em] uppercase text-[#2B2F3A]">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-5">
+      <motion.nav
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        className="flex items-center justify-between w-full max-w-[520px] px-5 py-3 rounded-full bg-white/70 backdrop-blur-xl border border-white/50 shadow-[0_2px_20px_rgba(0,0,0,0.06)]"
+      >
+        {/* Brand */}
+        <a href="/" className="flex items-center">
+          <span className="text-[13px] font-bold tracking-[0.14em] uppercase text-foreground">
             DOCG AI
           </span>
-        </motion.a>
+        </a>
 
-        {/* Desktop Navigation - Centered */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="hidden md:flex items-center gap-10 lg:gap-14"
-        >
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="nav-item"
-            >
-              {link.label}
-            </a>
-          ))}
-        </motion.div>
+        {/* Utility */}
+        <div className="flex items-center gap-1">
+          <button
+            className="p-2 rounded-full transition-colors hover:bg-black/5"
+            aria-label="Search"
+          >
+            <Search className="w-[16px] h-[16px] text-foreground/70" />
+          </button>
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2 rounded-full transition-colors hover:bg-black/5"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? (
+              <X className="w-[16px] h-[16px] text-foreground/70" />
+            ) : (
+              <Menu className="w-[16px] h-[16px] text-foreground/70" />
+            )}
+          </button>
+        </div>
+      </motion.nav>
 
-        {/* Menu Button */}
-        <motion.button
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="p-2 transition-opacity hover:opacity-60 md:hidden"
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? (
-            <X className="w-6 h-6 text-[#2B2F3A]" />
-          ) : (
-            <Menu className="w-6 h-6 text-[#2B2F3A]" />
-          )}
-        </motion.button>
-      </nav>
-
-      {/* Mobile Menu */}
+      {/* Dropdown Menu */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-lg border-b border-border md:hidden"
+            initial={{ opacity: 0, y: -8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.96 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute top-[72px] w-full max-w-[520px] rounded-2xl bg-white/80 backdrop-blur-xl border border-white/50 shadow-[0_8px_32px_rgba(0,0,0,0.08)] overflow-hidden"
           >
-            <div className="flex flex-col p-6 gap-4 max-w-[1400px] mx-auto">
-              {navLinks.map((link) => (
-                <a
+            <div className="flex flex-col p-4 gap-1">
+              {navLinks.map((link, i) => (
+                <motion.a
                   key={link.label}
                   href={link.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="nav-item py-2"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="nav-item py-2.5 px-3 rounded-lg hover:bg-black/[0.03] transition-colors"
                 >
                   {link.label}
-                </a>
+                </motion.a>
               ))}
             </div>
           </motion.div>
