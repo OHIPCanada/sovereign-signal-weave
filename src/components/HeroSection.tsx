@@ -18,7 +18,7 @@ const orbs = [
 
 // Place orbs in an arc from ~200° to ~340° (left arc around brain)
 const orbAngles = [-130, -80, -30, 20, 70]; // degrees, spread evenly in arc
-const orbRadius = 320; // distance from center — at glow edge
+const orbRadius = 550; // distance from center — at glow edge
 
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
@@ -42,7 +42,7 @@ const HeroSection = () => {
 
       {/* Centered Brain Composition + Orbs */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="relative" style={{ width: 700, height: 700 }}>
+        <div className="relative" style={{ width: 1200, height: 1200 }}>
           {/* Human image + neural plexus — centered */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -68,7 +68,7 @@ const HeroSection = () => {
             <motion.img
               src={neuralProfile}
               alt="Neural Intelligence Profile"
-              className="w-[500px] md:w-[600px] lg:w-[700px] h-auto relative z-10"
+              className="w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"
               style={{
                 filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
               }}
@@ -80,8 +80,8 @@ const HeroSection = () => {
           {/* Orbs — equidistant around the glow edge */}
           {orbs.map((orb, i) => {
             const angle = orbAngles[i] * (Math.PI / 180);
-            const cx = 350 + Math.cos(angle) * orbRadius;
-            const cy = 350 + Math.sin(angle) * orbRadius;
+            const cx = 600 + Math.cos(angle) * orbRadius;
+            const cy = 600 + Math.sin(angle) * orbRadius;
             const floatDelay = i * 0.5;
 
             return (
