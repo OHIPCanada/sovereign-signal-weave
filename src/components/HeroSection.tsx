@@ -34,7 +34,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="hero-title text-center text-[clamp(110px,16vw,200px)]"
+          className="hero-title text-center text-[clamp(140px,20vw,260px)]"
         >
           INTELLIGENCE
         </motion.h1>
