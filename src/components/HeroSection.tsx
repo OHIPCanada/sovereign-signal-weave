@@ -44,7 +44,7 @@ const HeroSection = () => {
   const orbContainerWidth = isMobile ? 55 : isTablet ? 90 : 100;
 
   return (
-    <section className={`hero-bg relative overflow-hidden ${isMobile ? 'min-h-[50vh]' : isTablet ? 'min-h-[70vh]' : 'min-h-screen'}`}>
+    <section className={`hero-bg relative overflow-hidden ${isMobile ? 'min-h-[50vh]' : isTablet ? 'min-h-[80vh]' : 'min-h-screen'}`}>
       {/* INTELLIGENCE - Large Background Text */}
       <div className="absolute inset-0 flex items-start justify-center pt-[88px] md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-3 md:px-0">
         <motion.h1
