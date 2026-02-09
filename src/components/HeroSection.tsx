@@ -27,22 +27,22 @@ const HeroSection = () => {
   const rotateX = (mouseY - 0.5) * -3;
 
   // Responsive dimensions
-  const containerSize = isMobile ? 360 : 1200;
+  const containerSize = isMobile ? 340 : 1200;
   const center = containerSize / 2;
-  const orbRadiiSet = isMobile ? [140, 140, 140, 120, 120] : [450, 450, 450, 370, 370];
-  const bottomMargin = isMobile ? -80 : -320;
-  const orbImgSize = isMobile ? "w-[36px]" : "w-[70px] lg:w-[90px]";
-  const orbContainerWidth = isMobile ? 60 : 100;
+  const orbRadiiSet = isMobile ? [135, 135, 135, 115, 115] : [450, 450, 450, 370, 370];
+  const bottomMargin = isMobile ? -30 : -320;
+  const orbImgSize = isMobile ? "w-[32px]" : "w-[70px] lg:w-[90px]";
+  const orbContainerWidth = isMobile ? 55 : 100;
 
   return (
     <section className="hero-bg min-h-screen relative overflow-hidden">
       {/* INTELLIGENCE - Large Background Text */}
-      <div className="absolute inset-0 flex items-start justify-center pt-20 md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden">
+      <div className="absolute inset-0 flex items-start justify-center pt-16 md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-0">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="hero-title text-center text-[clamp(60px,18vw,260px)] md:text-[clamp(140px,20vw,260px)]"
+          className="hero-title text-center text-[clamp(44px,15vw,260px)] md:text-[clamp(140px,20vw,260px)] w-full"
         >
           INTELLIGENCE
         </motion.h1>
@@ -79,7 +79,7 @@ const HeroSection = () => {
             <motion.img
               src={neuralProfile}
               alt="Neural Intelligence Profile"
-              className={isMobile ? "w-[280px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
+              className={isMobile ? "w-[260px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
               style={{
                 filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
               }}
