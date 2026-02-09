@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /* ═══════════════════════════════════════════════
    Design tokens — frosted clinical glass
@@ -250,7 +251,7 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
 
         {/* Label */}
         <motion.span
-          className="text-[11px] tracking-[0.16em] uppercase whitespace-nowrap"
+          className="text-[9px] md:text-[11px] tracking-[0.16em] uppercase whitespace-nowrap"
           style={{
             fontFamily: "'JetBrains Mono', 'Geist Mono', monospace",
             fontWeight: 500,
@@ -274,7 +275,7 @@ interface HexHUDProps {
   mouseY: number;
 }
 
-const orbs = [
+const orbsDesktop = [
   { icon: icons.cortex, label: "AI Cortex", size: 90, x: 40, y: 0, floatY: -12, floatDur: 5.5 },
   { icon: icons.clinical, label: "Clinical OS", size: 78, x: 150, y: 60, floatY: -9, floatDur: 6.2 },
   { icon: icons.virtualCare, label: "Virtual Care", size: 84, x: 20, y: 140, floatY: -14, floatDur: 5.0 },
@@ -282,8 +283,21 @@ const orbs = [
   { icon: icons.audit, label: "Audit Integrity", size: 80, x: 70, y: 280, floatY: -11, floatDur: 5.8 },
 ];
 
+const orbsMobile = [
+  { icon: icons.cortex, label: "AI Cortex", size: 56, x: 25, y: 0, floatY: -6, floatDur: 5.5 },
+  { icon: icons.clinical, label: "Clinical OS", size: 50, x: 100, y: 35, floatY: -5, floatDur: 6.2 },
+  { icon: icons.virtualCare, label: "Virtual Care", size: 52, x: 10, y: 85, floatY: -7, floatDur: 5.0 },
+  { icon: icons.sovereign, label: "Sovereign Data", size: 48, x: 95, y: 125, floatY: -5, floatDur: 6.8 },
+  { icon: icons.audit, label: "Audit Integrity", size: 52, x: 45, y: 175, floatY: -6, floatDur: 5.8 },
+];
+
 const HexHUD = ({ mouseX, mouseY }: HexHUDProps) => {
   const [activeIndex, setActiveIndex] = useState(-1);
+  const isMobile = useIsMobile();
+
+  const orbs = isMobile ? orbsMobile : orbsDesktop;
+  const containerW = isMobile ? 165 : 260;
+  const containerH = isMobile ? 240 : 380;
 
   useEffect(() => {
     const t = setTimeout(() => {
@@ -293,18 +307,17 @@ const HexHUD = ({ mouseX, mouseY }: HexHUDProps) => {
       return () => clearInterval(iv);
     }, 3200);
     return () => clearTimeout(t);
-  }, []);
+  }, [orbs.length]);
 
-  // Center point of the constellation (approximate brain origin)
-  const centerX = 130;
-  const centerY = 190;
+  const centerX = containerW / 2;
+  const centerY = containerH / 2;
 
   return (
-    <div className="relative" style={{ width: 260, height: 380 }}>
+    <div className="relative" style={{ width: containerW, height: containerH }}>
       {/* Connecting lines from brain center to each orb */}
       <svg
         className="absolute inset-0 pointer-events-none"
-        style={{ width: 260, height: 380, overflow: "visible" }}
+        style={{ width: containerW, height: containerH, overflow: "visible" }}
       >
         <defs>
           {orbs.map((orb, i) => {
