@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useMouseFollow } from "@/hooks/useMouseFollow";
+import { useIsMobile } from "@/hooks/use-mobile";
 import neuralProfile from "@/assets/neural-profile.png";
 import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
 import clinicOsOrb from "@/assets/clinic-os-orb-new.png";
@@ -16,15 +17,22 @@ const orbs = [
   { src: clinicOsOrb, alt: "Clinic OS", label: "CLINIC OS", delay: 2.6 },
 ];
 
-// Place orbs in an arc from ~200° to ~340° (left arc around brain)
-const orbAngles = [180, 225, 270, 315, 0]; // AI Cortex at left-middle (180°), rest evenly spaced clockwise
-const orbRadii = [450, 450, 450, 370, 370]; // Audit Integrity & Clinic OS closer
+const orbAngles = [180, 225, 270, 315, 0];
 
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
+  const isMobile = useIsMobile();
 
   const rotateY = (mouseX - 0.5) * 5;
   const rotateX = (mouseY - 0.5) * -3;
+
+  // Responsive dimensions
+  const containerSize = isMobile ? 500 : 1200;
+  const center = containerSize / 2;
+  const orbRadiiSet = isMobile ? [185, 185, 185, 155, 155] : [450, 450, 450, 370, 370];
+  const bottomMargin = isMobile ? -130 : -320;
+  const orbImgSize = isMobile ? "w-[45px]" : "w-[70px] lg:w-[90px]";
+  const orbContainerWidth = isMobile ? 70 : 100;
 
   return (
     <section className="hero-bg min-h-screen relative overflow-hidden">
@@ -34,7 +42,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="hero-title text-center text-[clamp(140px,20vw,260px)]"
+          className="hero-title text-center text-[clamp(60px,18vw,260px)] md:text-[clamp(140px,20vw,260px)]"
         >
           INTELLIGENCE
         </motion.h1>
@@ -42,7 +50,10 @@ const HeroSection = () => {
 
       {/* Centered Brain Composition + Orbs */}
       <div className="absolute inset-0 flex items-end justify-center">
-        <div className="relative mb-[-320px]" style={{ width: 1200, height: 1200 }}>
+        <div
+          className="relative"
+          style={{ width: containerSize, height: containerSize, marginBottom: bottomMargin }}
+        >
           {/* Human image + neural plexus — centered */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -68,7 +79,7 @@ const HeroSection = () => {
             <motion.img
               src={neuralProfile}
               alt="Neural Intelligence Profile"
-              className="w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"
+              className={isMobile ? "w-[380px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
               style={{
                 filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
               }}
@@ -80,9 +91,9 @@ const HeroSection = () => {
           {/* Orbs — equidistant around the glow edge */}
           {orbs.map((orb, i) => {
             const angle = orbAngles[i] * (Math.PI / 180);
-            const r = orbRadii[i];
-            const cx = 600 + Math.cos(angle) * r;
-            const cy = 600 + Math.sin(angle) * r;
+            const r = orbRadiiSet[i];
+            const cx = center + Math.cos(angle) * r;
+            const cy = center + Math.sin(angle) * r;
             const floatDelay = i * 0.5;
 
             return (
@@ -90,9 +101,9 @@ const HeroSection = () => {
                 key={orb.label}
                 className="absolute z-30 flex flex-col items-center"
                 style={{
-                  left: cx - 50,
-                  top: cy - 50,
-                  width: 100,
+                  left: cx - orbContainerWidth / 2,
+                  top: cy - orbContainerWidth / 2,
+                  width: orbContainerWidth,
                 }}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -101,13 +112,13 @@ const HeroSection = () => {
                 <motion.img
                   src={orb.src}
                   alt={orb.alt}
-                  className="w-[70px] lg:w-[90px] h-auto"
+                  className={`${orbImgSize} h-auto`}
                   style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3))" }}
                   animate={{ y: [0, -6, 0], scale: [1, 1.02, 1] }}
                   transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: floatDelay }}
                 />
                 <motion.p
-                  className="text-[10px] font-bold tracking-[0.15em] uppercase text-foreground text-center mt-1 whitespace-nowrap"
+                  className={`${isMobile ? "text-[8px]" : "text-[10px]"} font-bold tracking-[0.15em] uppercase text-foreground text-center mt-1 whitespace-nowrap`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: orb.delay + 0.7 }}
