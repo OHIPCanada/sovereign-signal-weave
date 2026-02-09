@@ -30,14 +30,14 @@ const HeroSection = () => {
   const containerSize = isMobile ? 340 : 1200;
   const center = containerSize / 2;
   const orbRadiiSet = isMobile ? [135, 135, 135, 115, 115] : [450, 450, 450, 370, 370];
-  const bottomMargin = isMobile ? -60 : -320;
+  const bottomMargin = isMobile ? -120 : -320;
   const orbImgSize = isMobile ? "w-[32px]" : "w-[70px] lg:w-[90px]";
   const orbContainerWidth = isMobile ? 55 : 100;
 
   return (
     <section className="hero-bg min-h-[50vh] md:min-h-screen relative overflow-hidden">
       {/* INTELLIGENCE - Large Background Text */}
-      <div className="absolute inset-0 flex items-start justify-center pt-10 md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-0">
+      <div className="absolute inset-0 flex items-start justify-center pt-6 md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-0">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
