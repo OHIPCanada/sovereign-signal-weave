@@ -18,7 +18,7 @@ const orbs = [
 
 // Place orbs in an arc from ~200° to ~340° (left arc around brain)
 const orbAngles = [180, 225, 270, 315, 0]; // AI Cortex at left-middle (180°), rest evenly spaced clockwise
-const orbRadius = 450; // distance from center — just outside the glow edge
+const orbRadii = [450, 450, 450, 370, 370]; // Audit Integrity & Clinic OS closer
 
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
@@ -80,8 +80,9 @@ const HeroSection = () => {
           {/* Orbs — equidistant around the glow edge */}
           {orbs.map((orb, i) => {
             const angle = orbAngles[i] * (Math.PI / 180);
-            const cx = 600 + Math.cos(angle) * orbRadius;
-            const cy = 600 + Math.sin(angle) * orbRadius;
+            const r = orbRadii[i];
+            const cx = 600 + Math.cos(angle) * r;
+            const cy = 600 + Math.sin(angle) * r;
             const floatDelay = i * 0.5;
 
             return (
