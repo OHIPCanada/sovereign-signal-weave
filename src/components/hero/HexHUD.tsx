@@ -168,23 +168,23 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
 
-          {/* Glass body — frosted clinical mint */}
+          {/* Glass body — high-transmission frosted glass */}
           <div
             className="absolute inset-0 rounded-full overflow-hidden"
             style={{
               background: `linear-gradient(155deg,
-                rgba(233, 244, 245, 0.82) 0%,
-                rgba(220, 240, 238, 0.72) 35%,
-                rgba(210, 235, 233, 0.62) 65%,
-                rgba(225, 242, 241, 0.78) 100%
+                rgba(233, 244, 245, 0.35) 0%,
+                rgba(220, 240, 238, 0.25) 35%,
+                rgba(210, 235, 233, 0.18) 65%,
+                rgba(225, 242, 241, 0.30) 100%
               )`,
-              backdropFilter: "blur(20px) saturate(1.2)",
-              WebkitBackdropFilter: "blur(20px) saturate(1.2)",
+              backdropFilter: "blur(8px) saturate(1.4)",
+              WebkitBackdropFilter: "blur(8px) saturate(1.4)",
               boxShadow: `
-                inset 0 1px 2px rgba(255,255,255,0.5),
-                inset 0 -1px 3px rgba(46,230,214,0.08),
-                0 4px 24px rgba(46,230,214,0.12),
-                0 1px 4px rgba(0,0,0,0.04)
+                inset 0 1px 2px rgba(255,255,255,0.4),
+                inset 0 -1px 3px rgba(46,230,214,0.06),
+                0 4px 24px rgba(46,230,214,0.10),
+                0 1px 4px rgba(0,0,0,0.03)
               `,
             }}
           >
@@ -250,9 +250,11 @@ const GlassOrb = ({ icon, label, size, delay, mouseX, mouseY, left, top, index, 
 
         {/* Label */}
         <motion.span
-          className="text-[10px] tracking-[0.14em] uppercase font-medium whitespace-nowrap"
+          className="text-[11px] tracking-[0.16em] uppercase whitespace-nowrap"
           style={{
-            color: isActive ? CLINICAL_CYAN : "rgba(60, 80, 90, 0.55)",
+            fontFamily: "'JetBrains Mono', 'Geist Mono', monospace",
+            fontWeight: 500,
+            color: isActive ? CLINICAL_CYAN : "#2D1B4E",
             textShadow: isActive ? `0 0 8px ${CLINICAL_CYAN}44` : "none",
             transition: "color 0.4s, text-shadow 0.4s",
           }}
@@ -293,8 +295,63 @@ const HexHUD = ({ mouseX, mouseY }: HexHUDProps) => {
     return () => clearTimeout(t);
   }, []);
 
+  // Center point of the constellation (approximate brain origin)
+  const centerX = 130;
+  const centerY = 190;
+
   return (
     <div className="relative" style={{ width: 260, height: 380 }}>
+      {/* Connecting lines from brain center to each orb */}
+      <svg
+        className="absolute inset-0 pointer-events-none"
+        style={{ width: 260, height: 380, overflow: "visible" }}
+      >
+        <defs>
+          {orbs.map((orb, i) => {
+            const orbCenterX = orb.x + orb.size / 2;
+            const orbCenterY = orb.y + orb.size / 2;
+            const dx = orbCenterX - centerX;
+            const dy = orbCenterY - centerY;
+            const angle = Math.atan2(dy, dx);
+            const gradId = `line-grad-${i}`;
+            return (
+              <linearGradient
+                key={gradId}
+                id={gradId}
+                x1={centerX}
+                y1={centerY}
+                x2={orbCenterX}
+                y2={orbCenterY}
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop offset="0%" stopColor="#7B61FF" stopOpacity="0.6" />
+                <stop offset="40%" stopColor="#00FFFF" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#00FFFF" stopOpacity="0.08" />
+              </linearGradient>
+            );
+          })}
+        </defs>
+        {orbs.map((orb, i) => {
+          const orbCenterX = orb.x + orb.size / 2;
+          const orbCenterY = orb.y + orb.size / 2;
+          return (
+            <motion.line
+              key={`line-${i}`}
+              x1={centerX}
+              y1={centerY}
+              x2={orbCenterX}
+              y2={orbCenterY}
+              stroke={`url(#line-grad-${i})`}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: activeIndex === i ? 1 : 0.5 }}
+              transition={{ duration: 0.6 }}
+            />
+          );
+        })}
+      </svg>
+
       {orbs.map((orb, i) => (
         <GlassOrb
           key={i}

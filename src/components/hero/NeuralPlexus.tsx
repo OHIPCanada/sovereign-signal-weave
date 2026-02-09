@@ -146,18 +146,18 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
         style={{ overflow: "visible" }}
       >
         <defs>
-          {/* Warm lavender-coral brain core glow */}
+          {/* Bio-Electric Blue brain core glow */}
           <radialGradient id="brainCoreGlow" cx="48%" cy="35%" r="22%">
-            <stop offset="0%" stopColor="rgba(255,245,230,0.9)" />
-            <stop offset="35%" stopColor="rgba(255,235,210,0.4)" />
-            <stop offset="70%" stopColor="rgba(255,240,220,0.1)" />
+            <stop offset="0%" stopColor="rgba(123,97,255,0.7)" />
+            <stop offset="35%" stopColor="rgba(123,97,255,0.3)" />
+            <stop offset="70%" stopColor="rgba(123,97,255,0.08)" />
             <stop offset="100%" stopColor="transparent" />
           </radialGradient>
 
-          {/* Outer warm aura */}
+          {/* Outer blue-white aura */}
           <radialGradient id="warmAura" cx="48%" cy="40%" r="45%">
-            <stop offset="0%" stopColor="rgba(255,240,220,0.2)" />
-            <stop offset="50%" stopColor="rgba(255,235,210,0.05)" />
+            <stop offset="0%" stopColor="rgba(123,97,255,0.15)" />
+            <stop offset="50%" stopColor="rgba(200,200,255,0.05)" />
             <stop offset="100%" stopColor="transparent" />
           </radialGradient>
 
@@ -179,7 +179,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
             </feMerge>
           </filter>
 
-          {/* Coral node glow */}
+          {/* Blue node glow */}
           <filter id="coralGlow" x="-80%" y="-80%" width="260%" height="260%">
             <feGaussianBlur stdDeviation="3" result="blur" />
             <feMerge>
@@ -213,8 +213,8 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
                 fill="none"
                 stroke={
                   isBrainFilament
-                    ? "rgba(255,240,220,0.5)"
-                    : "rgba(255,235,210,0.2)"
+                    ? "rgba(123,97,255,0.45)"
+                    : "rgba(200,200,255,0.2)"
                 }
                 strokeWidth={isBrainFilament ? "0.8" : "0.5"}
                 strokeLinecap="round"
@@ -240,7 +240,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
                 cx={node.x}
                 cy={node.y}
                 r={node.size}
-                fill="#FFF5E6"
+                fill="#7B61FF"
                 filter="url(#sparkGlow)"
                 animate={{
                   opacity: [0, 0.9, 0],
@@ -257,8 +257,8 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
             );
           }
 
-          // ~30% of brain nodes get coral tint for warmth
-          const isCoral = node.isBrain && seededRandom(i * 222) > 0.7;
+          // ~30% of brain nodes get brighter blue accent
+          const isAccent = node.isBrain && seededRandom(i * 222) > 0.7;
 
           return (
             <motion.circle
@@ -266,8 +266,8 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
               cx={node.x}
               cy={node.y}
               r={node.size}
-              fill={isCoral ? "rgba(255,225,195,0.9)" : "rgba(255,240,220,0.85)"}
-              filter={isCoral && node.isBrain ? "url(#coralGlow)" : undefined}
+              fill={isAccent ? "rgba(123,97,255,0.8)" : "rgba(220,220,255,0.75)"}
+              filter={isAccent && node.isBrain ? "url(#coralGlow)" : undefined}
               initial={{ opacity: 0 }}
               animate={{
                 opacity: node.isBrain
@@ -297,7 +297,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
                 key={`arc-${i}`}
                 d={`M ${node.x} ${node.y} Q ${mx} ${my} ${next.x} ${next.y}`}
                 fill="none"
-                stroke="#FFF0D6"
+                stroke="rgba(123,97,255,0.6)"
                 strokeWidth="0.6"
                 strokeLinecap="round"
                 filter="url(#sparkGlow)"
