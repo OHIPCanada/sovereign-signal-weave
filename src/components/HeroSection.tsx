@@ -69,7 +69,7 @@ const HeroSection = () => {
             <motion.div
               className="absolute z-20 pointer-events-none"
               style={isMobile
-                ? { top: "18%", left: "25%", width: "55%", height: "55%" }
+                ? { top: "5%", left: "25%", width: "55%", height: "55%" }
                 : { top: "15%", left: "20%", width: "70%", height: "70%" }
               }
               animate={{ y: [0, -12, 0], scale: [1, 1.015, 1] }}
