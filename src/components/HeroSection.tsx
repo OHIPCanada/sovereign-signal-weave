@@ -49,10 +49,10 @@ const HeroSection = () => {
       </div>
 
       {/* Centered Brain Composition + Orbs */}
-      <div className="absolute inset-0 flex items-end justify-center">
+      <div className={`absolute inset-0 flex ${isMobile ? 'items-center' : 'items-end'} justify-center`}>
         <div
           className="relative"
-          style={{ width: containerSize, height: containerSize, marginBottom: bottomMargin }}
+          style={{ width: containerSize, height: containerSize, marginBottom: isMobile ? 0 : bottomMargin, marginTop: isMobile ? 60 : 0 }}
         >
           {/* Human image + neural plexus — centered */}
           <motion.div
