@@ -120,17 +120,6 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Narrative sentence - lower left */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 2.5 }}
-        className="absolute bottom-12 left-8 md:left-16 lg:left-24 pointer-events-none"
-      >
-        <p className="hero-subhead max-w-md">
-          Sovereign AI infrastructure for healthcare systems
-        </p>
-      </motion.div>
     </section>
   );
 };
