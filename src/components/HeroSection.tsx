@@ -42,7 +42,7 @@ const HeroSection = () => {
 
       {/* Centered Brain Composition + Orbs */}
       <div className="absolute inset-0 flex items-end justify-center">
-        <div className="relative mb-[-450px]" style={{ width: 1200, height: 1200 }}>
+        <div className="relative mb-[-320px]" style={{ width: 1200, height: 1200 }}>
           {/* Human image + neural plexus — centered */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
