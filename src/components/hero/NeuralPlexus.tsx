@@ -172,7 +172,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
 
           {/* Thinking spark glow — Bio-Electric Blue */}
           <filter id="sparkGlow" x="-200%" y="-200%" width="500%" height="500%">
-            <feGaussianBlur stdDeviation="6" result="blur" />
+            <feGaussianBlur stdDeviation="8" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -213,8 +213,8 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
                 fill="none"
                 stroke={
                   isBrainFilament
-                    ? "rgba(123,97,255,0.45)"
-                    : "rgba(200,200,255,0.2)"
+                    ? "rgba(255,255,255,0.7)"
+                    : "rgba(255,255,255,0.3)"
                 }
                 strokeWidth={isBrainFilament ? "0.8" : "0.5"}
                 strokeLinecap="round"
@@ -240,11 +240,11 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
                 cx={node.x}
                 cy={node.y}
                 r={node.size}
-                fill="#7B61FF"
+                fill="#FFFFFF"
                 filter="url(#sparkGlow)"
                 animate={{
-                  opacity: [0, 0.9, 0],
-                  r: [node.size * 0.5, node.size * 1.6, node.size * 0.5],
+                  opacity: [0, 1, 0],
+                  r: [node.size * 0.5, node.size * 2, node.size * 0.5],
                 }}
                 transition={{
                   duration: 1.5 + seededRandom(i * 77) * 2,
@@ -266,7 +266,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
               cx={node.x}
               cy={node.y}
               r={node.size}
-              fill={isAccent ? "rgba(123,97,255,0.8)" : "rgba(220,220,255,0.75)"}
+              fill={isAccent ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.7)"}
               filter={isAccent && node.isBrain ? "url(#coralGlow)" : undefined}
               initial={{ opacity: 0 }}
               animate={{
@@ -297,7 +297,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
                 key={`arc-${i}`}
                 d={`M ${node.x} ${node.y} Q ${mx} ${my} ${next.x} ${next.y}`}
                 fill="none"
-                stroke="rgba(123,97,255,0.6)"
+                stroke="rgba(255,255,255,0.8)"
                 strokeWidth="0.6"
                 strokeLinecap="round"
                 filter="url(#sparkGlow)"
