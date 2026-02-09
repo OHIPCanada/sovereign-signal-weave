@@ -37,7 +37,7 @@ const HeroSection = () => {
   return (
     <section className="hero-bg min-h-[50vh] md:min-h-screen relative overflow-hidden">
       {/* INTELLIGENCE - Large Background Text */}
-      <div className="absolute inset-0 flex items-start justify-center pt-6 md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-0">
+      <div className="absolute inset-0 flex items-start justify-center pt-16 md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-0">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
