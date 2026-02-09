@@ -140,7 +140,7 @@ const NeuralPlexus = ({ mouseX, mouseY }: NeuralPlexusProps) => {
     >
       <motion.svg
         viewBox="0 0 800 900"
-        className="w-[600px] md:w-[750px] lg:w-[900px] h-auto"
+        className="w-[400px] md:w-[500px] lg:w-[600px] h-auto"
         animate={{ scale: [1, 1.015, 1] }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
         style={{ overflow: "visible" }}
