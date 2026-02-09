@@ -36,12 +36,12 @@ const HeroSection = () => {
   const rotateX = (mouseY - 0.5) * -3;
 
   // Responsive dimensions
-  const containerSize = isMobile ? 380 : isTablet ? 700 : 1200;
+  const containerSize = isMobile ? 380 : isTablet ? 850 : 1200;
   const center = containerSize / 2;
-  const orbRadiiSet = isMobile ? [155, 155, 155, 135, 135] : isTablet ? [280, 280, 280, 230, 230] : [450, 450, 450, 370, 370];
-  const bottomMargin = isMobile ? -100 : isTablet ? -180 : -320;
-  const orbImgSize = isMobile ? "w-[32px]" : isTablet ? "w-[55px]" : "w-[70px] lg:w-[90px]";
-  const orbContainerWidth = isMobile ? 55 : isTablet ? 85 : 100;
+  const orbRadiiSet = isMobile ? [155, 155, 155, 135, 135] : isTablet ? [340, 340, 340, 280, 280] : [450, 450, 450, 370, 370];
+  const bottomMargin = isMobile ? -100 : isTablet ? -240 : -320;
+  const orbImgSize = isMobile ? "w-[32px]" : isTablet ? "w-[60px]" : "w-[70px] lg:w-[90px]";
+  const orbContainerWidth = isMobile ? 55 : isTablet ? 90 : 100;
 
   return (
     <section className="hero-bg min-h-[50vh] md:min-h-screen relative overflow-hidden">
@@ -90,7 +90,7 @@ const HeroSection = () => {
             <motion.img
               src={neuralProfile}
               alt="Neural Intelligence Profile"
-              className={isMobile ? "w-[320px] h-auto relative z-10" : isTablet ? "w-[580px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
+              className={isMobile ? "w-[320px] h-auto relative z-10" : isTablet ? "w-[750px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
               style={{
                 filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
               }}
