@@ -30,14 +30,14 @@ const HeroSection = () => {
   const containerSize = isMobile ? 340 : 1200;
   const center = containerSize / 2;
   const orbRadiiSet = isMobile ? [135, 135, 135, 115, 115] : [450, 450, 450, 370, 370];
-  const bottomMargin = isMobile ? -30 : -320;
+  const bottomMargin = isMobile ? -60 : -320;
   const orbImgSize = isMobile ? "w-[32px]" : "w-[70px] lg:w-[90px]";
   const orbContainerWidth = isMobile ? 55 : 100;
 
   return (
-    <section className="hero-bg min-h-[70vh] md:min-h-screen relative overflow-hidden">
+    <section className="hero-bg min-h-[50vh] md:min-h-screen relative overflow-hidden">
       {/* INTELLIGENCE - Large Background Text */}
-      <div className="absolute inset-0 flex items-start justify-center pt-16 md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-0">
+      <div className="absolute inset-0 flex items-start justify-center pt-10 md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-0">
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -49,10 +49,10 @@ const HeroSection = () => {
       </div>
 
       {/* Centered Brain Composition + Orbs */}
-      <div className={`absolute inset-0 flex ${isMobile ? 'items-center' : 'items-end'} justify-center`}>
+      <div className="absolute inset-0 flex items-end justify-center">
         <div
           className="relative"
-          style={{ width: containerSize, height: containerSize, marginBottom: isMobile ? 0 : bottomMargin, marginTop: isMobile ? 60 : 0 }}
+          style={{ width: containerSize, height: containerSize, marginBottom: bottomMargin }}
         >
           {/* Human image + neural plexus — centered */}
           <motion.div
