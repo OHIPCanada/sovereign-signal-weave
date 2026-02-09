@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useMouseFollow } from "@/hooks/useMouseFollow";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useEffect } from "react";
 import neuralProfile from "@/assets/neural-profile.png";
 import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
 import clinicOsOrb from "@/assets/clinic-os-orb-new.png";
@@ -22,17 +23,25 @@ const orbAngles = [180, 225, 270, 315, 0];
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
   const isMobile = useIsMobile();
+  const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const rotateY = (mouseX - 0.5) * 5;
   const rotateX = (mouseY - 0.5) * -3;
 
   // Responsive dimensions
-  const containerSize = isMobile ? 380 : 1200;
+  const containerSize = isMobile ? 380 : isTablet ? 700 : 1200;
   const center = containerSize / 2;
-  const orbRadiiSet = isMobile ? [155, 155, 155, 135, 135] : [450, 450, 450, 370, 370];
-  const bottomMargin = isMobile ? -100 : -320;
-  const orbImgSize = isMobile ? "w-[32px]" : "w-[70px] lg:w-[90px]";
-  const orbContainerWidth = isMobile ? 55 : 100;
+  const orbRadiiSet = isMobile ? [155, 155, 155, 135, 135] : isTablet ? [270, 270, 270, 220, 220] : [450, 450, 450, 370, 370];
+  const bottomMargin = isMobile ? -100 : isTablet ? -180 : -320;
+  const orbImgSize = isMobile ? "w-[32px]" : isTablet ? "w-[55px]" : "w-[70px] lg:w-[90px]";
+  const orbContainerWidth = isMobile ? 55 : isTablet ? 80 : 100;
 
   return (
     <section className="hero-bg min-h-[50vh] md:min-h-screen relative overflow-hidden">
@@ -81,7 +90,7 @@ const HeroSection = () => {
             <motion.img
               src={neuralProfile}
               alt="Neural Intelligence Profile"
-              className={isMobile ? "w-[320px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
+              className={isMobile ? "w-[320px] h-auto relative z-10" : isTablet ? "w-[600px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
               style={{
                 filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
               }}
