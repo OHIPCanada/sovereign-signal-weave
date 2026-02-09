@@ -18,7 +18,7 @@ const orbs = [
 
 // Place orbs in an arc from ~200° to ~340° (left arc around brain)
 const orbAngles = [180, 225, 270, 315, 0]; // AI Cortex at left-middle (180°), rest evenly spaced clockwise
-const orbRadius = 550; // distance from center — at glow edge
+const orbRadius = 400; // distance from center — closer to image
 
 const HeroSection = () => {
   const { x: mouseX, y: mouseY } = useMouseFollow();
