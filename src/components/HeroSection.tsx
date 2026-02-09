@@ -57,7 +57,7 @@ const HeroSection = () => {
             {/* Neural Plexus SVG — overlaid on brain area */}
             <motion.div
               className="absolute z-20 pointer-events-none"
-              style={{ top: "5%", left: "5%", width: "90%", height: "90%" }}
+              style={{ top: "-5%", left: "15%", width: "70%", height: "70%" }}
               animate={{ y: [0, -12, 0], scale: [1, 1.015, 1] }}
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
             >
