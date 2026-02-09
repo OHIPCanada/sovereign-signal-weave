@@ -27,9 +27,9 @@ const HeroSection = () => {
   const rotateX = (mouseY - 0.5) * -3;
 
   // Responsive dimensions
-  const containerSize = isMobile ? 340 : 1200;
+  const containerSize = isMobile ? 380 : 1200;
   const center = containerSize / 2;
-  const orbRadiiSet = isMobile ? [135, 135, 135, 115, 115] : [450, 450, 450, 370, 370];
+  const orbRadiiSet = isMobile ? [155, 155, 155, 135, 135] : [450, 450, 450, 370, 370];
   const bottomMargin = isMobile ? -120 : -320;
   const orbImgSize = isMobile ? "w-[32px]" : "w-[70px] lg:w-[90px]";
   const orbContainerWidth = isMobile ? 55 : 100;
