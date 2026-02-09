@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
+import ManifestoSection from "@/components/ManifestoSection";
 import PlatformSection from "@/components/PlatformSection";
 import InterfaceSection from "@/components/InterfaceSection";
 import TrustSection from "@/components/TrustSection";
@@ -9,6 +10,7 @@ const Index = () => {
     <div className="relative overflow-x-hidden">
       <Navigation />
       <HeroSection />
+      <ManifestoSection />
       <PlatformSection />
       <InterfaceSection />
       <TrustSection />
