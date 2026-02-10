@@ -1,252 +1,217 @@
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-// Deterministic pseudo-random
-const seededRandom = (seed: number) => {
-  const x = Math.sin(seed * 9301 + 49297) * 49297;
-  return x - Math.floor(x);
-};
-
-// Generate clean, readable curved paths — 6-8 per band max
-const generateBandPaths = (
-  bandIndex: number,
-  count: number,
-  yCenter: number,
-  bandHeight: number,
-  amplitude: number,
-  width: number
-) => {
-  const paths: string[] = [];
-  for (let i = 0; i < count; i++) {
-    const y = yCenter - bandHeight / 2 + (i / (count - 1)) * bandHeight;
-    const seed = bandIndex * 50 + i;
-    const a = amplitude * (0.5 + seededRandom(seed) * 0.5);
-    const cp1x = width * 0.3;
-    const cp1y = y - a;
-    const cp2x = width * 0.7;
-    const cp2y = y + a * 0.6;
-    const endY = y + (seededRandom(seed + 50) - 0.5) * 12;
-    paths.push(`M -20 ${y} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${width + 20} ${endY}`);
-  }
-  return paths;
-};
-
-// Place nodes intentionally ON lines — like checkpoints
-const generateCheckpointNodes = (
-  bandIndex: number,
-  count: number,
-  paths: string[],
-  width: number
-) => {
-  const nodes: { x: number; y: number; size: number; pathIndex: number }[] = [];
-  // Distribute nodes across paths at specific x positions
-  const xPositions = [0.18, 0.38, 0.58, 0.78, 0.48];
-  for (let i = 0; i < Math.min(count, xPositions.length); i++) {
-    const pathIdx = i % paths.length;
-    const x = width * xPositions[i];
-    const pathStr = paths[pathIdx];
-    const startY = parseFloat(pathStr.split(" ")[2]);
-    const endMatch = pathStr.match(/(\d+\.?\d*)\s*$/);
-    const endY = endMatch ? parseFloat(endMatch[1]) : startY;
-    const t = xPositions[i];
-    const y = startY + (endY - startY) * t;
-    nodes.push({
-      x,
-      y,
-      size: 5 + seededRandom(bandIndex * 30 + i) * 3,
-      pathIndex: pathIdx,
-    });
-  }
-  return nodes;
-};
-
-interface BandConfig {
+interface LayerConfig {
   label: string;
-  subtext: string;
-  strokeColor: string;
-  glowColor: string;
+  subtitle: string;
+  translatePercent: number;
+  speed: number; // seconds
+  pathD: string;
+  nodes: { cx: number; cy: number }[];
+  lineColor: string;
   nodeColor: string;
-  yCenter: number;
-  bandHeight: number;
-  pathCount: number;
-  nodeCount: number;
-  amplitude: number;
-  strokeWidth: number;
-  speed: number; // seconds for one cycle
 }
 
-const SVG_WIDTH = 1400;
-const SVG_HEIGHT = 700;
-
-const bands: BandConfig[] = [
+const layers: LayerConfig[] = [
   {
-    label: "Clinical Intelligence",
-    subtext: "Decision support, context awareness, reasoning",
-    strokeColor: "rgba(210, 190, 255, 0.50)",
-    glowColor: "rgba(210, 190, 255, 0.12)",
-    nodeColor: "rgba(235, 225, 255, 0.65)",
-    yCenter: 110,
-    bandHeight: 80,
-    pathCount: 4,
-    nodeCount: 5,
-    amplitude: 14,
-    strokeWidth: 2.2,
-    speed: 60,   // fastest band
+    label: "AI Cortex",
+    subtitle: "Reasoning · Context · Decision Support",
+    translatePercent: 12,
+    speed: 70,
+    pathD: "M 30 45 C 120 20, 260 70, 370 40 S 520 55, 600 35",
+    nodes: [
+      { cx: 150, cy: 33 },
+      { cx: 370, cy: 40 },
+      { cx: 520, cy: 50 },
+    ],
+    lineColor: "rgba(200, 180, 255, 0.5)",
+    nodeColor: "rgba(220, 200, 255, 0.8)",
   },
   {
-    label: "System Orchestration",
-    subtext: "Workflows, EMRs, clinical operations",
-    strokeColor: "rgba(180, 160, 230, 0.32)",
-    glowColor: "rgba(180, 160, 230, 0.08)",
-    nodeColor: "rgba(230, 220, 255, 0.50)",
-    yCenter: 350,
-    bandHeight: 70,
-    pathCount: 4,
-    nodeCount: 4,
-    amplitude: 10,
-    strokeWidth: 2,
-    speed: 90,   // medium
+    label: "Workflow Orchestration",
+    subtitle: "Routing · Decisions · Clinical Ops",
+    translatePercent: 8,
+    speed: 95,
+    pathD: "M 20 50 C 140 30, 280 65, 400 45 S 530 40, 620 50",
+    nodes: [
+      { cx: 200, cy: 42 },
+      { cx: 430, cy: 46 },
+    ],
+    lineColor: "rgba(170, 155, 230, 0.38)",
+    nodeColor: "rgba(200, 185, 255, 0.65)",
   },
   {
-    label: "Sovereign Governance",
-    subtext: "Compliance, auditability, jurisdictional control",
-    strokeColor: "rgba(140, 120, 210, 0.22)",
-    glowColor: "rgba(140, 120, 210, 0.06)",
-    nodeColor: "rgba(220, 210, 255, 0.40)",
-    yCenter: 580,
-    bandHeight: 60,
-    pathCount: 3,
-    nodeCount: 4,
-    amplitude: 8,
-    strokeWidth: 1.8,
-    speed: 120,  // slowest
+    label: "Sovereign Data Plane",
+    subtitle: "Storage · Policy · Jurisdictional Control",
+    translatePercent: 5,
+    speed: 120,
+    pathD: "M 25 48 C 160 60, 300 35, 420 52 S 540 45, 610 48",
+    nodes: [
+      { cx: 180, cy: 54 },
+      { cx: 420, cy: 52 },
+      { cx: 540, cy: 46 },
+    ],
+    lineColor: "rgba(140, 125, 210, 0.28)",
+    nodeColor: "rgba(180, 165, 240, 0.5)",
   },
 ];
 
-const CortexBand = ({
-  band,
-  scrollProgress,
-  index,
-}: {
-  band: BandConfig;
-  scrollProgress: ReturnType<typeof useScroll>["scrollYProgress"];
-  index: number;
-}) => {
-  const paths = useMemo(
-    () => generateBandPaths(index, band.pathCount, band.yCenter, band.bandHeight, band.amplitude, SVG_WIDTH),
-    [index, band.pathCount, band.yCenter, band.bandHeight, band.amplitude]
-  );
-  const nodes = useMemo(
-    () => generateCheckpointNodes(index, band.nodeCount, paths, SVG_WIDTH),
-    [index, band.nodeCount, paths]
-  );
-
-  const labelOpacity = useTransform(
-    scrollProgress,
-    [0.12 + index * 0.14, 0.26 + index * 0.14],
-    [0, 1]
-  );
-  const labelY = useTransform(
-    scrollProgress,
-    [0.12 + index * 0.14, 0.26 + index * 0.14],
-    [16, 0]
-  );
-
-  // Continuous left-to-right translate percentages per band
-  const translatePercent = index === 0 ? 14 : index === 1 ? 10 : 6;
-
+const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => {
   return (
-    <g>
-      {/* Glow behind lines */}
-      {paths.map((d, i) => (
-        <path
-          key={`glow-${index}-${i}`}
-          d={d}
-          fill="none"
-          stroke={band.glowColor}
-          strokeWidth={10}
-          filter="url(#bandBlur)"
-        >
-          <animateTransform
-            attributeName="transform"
-            type="translate"
-            from="0 0"
-            to={`${(SVG_WIDTH * translatePercent) / 100} 0`}
-            dur={`${band.speed}s`}
-            repeatCount="indefinite"
-          />
-        </path>
-      ))}
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ delay: index * 0.15, duration: 0.6, ease: "easeOut" }}
+      className="relative rounded-[18px] overflow-hidden"
+      style={{
+        background: "rgba(255, 255, 255, 0.06)",
+        border: "1px solid rgba(230, 230, 250, 0.18)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+        boxShadow: "0 18px 60px rgba(10, 5, 25, 0.35)",
+      }}
+    >
+      {/* Subtle grid */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(230,230,250,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(230,230,250,0.4) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
+      />
 
-      {/* Main lines */}
-      {paths.map((d, i) => (
-        <path
-          key={`line-${index}-${i}`}
-          d={d}
-          fill="none"
-          stroke={band.strokeColor}
-          strokeWidth={band.strokeWidth}
-          strokeLinecap="round"
+      {/* Animated paths + nodes */}
+      <div className="relative h-[90px] md:h-[100px] overflow-hidden">
+        <svg
+          viewBox="0 0 640 90"
+          className="absolute inset-0 w-full h-full"
+          preserveAspectRatio="none"
         >
-          <animateTransform
-            attributeName="transform"
-            type="translate"
-            from="0 0"
-            to={`${(SVG_WIDTH * translatePercent) / 100} 0`}
-            dur={`${band.speed}s`}
-            repeatCount="indefinite"
-          />
-        </path>
-      ))}
+          <defs>
+            <filter id={`glow-${index}`}>
+              <feGaussianBlur stdDeviation="3" />
+            </filter>
+          </defs>
 
-      {/* Checkpoint nodes — intentional, on-path */}
-      {nodes.map((node, i) => (
-        <circle
-          key={`node-${index}-${i}`}
-          cx={node.x}
-          cy={node.y}
-          r={node.size}
-          fill={band.nodeColor}
-          opacity={0.7}
-        >
-          <animateTransform
-            attributeName="transform"
-            type="translate"
-            from="0 0"
-            to={`${(SVG_WIDTH * translatePercent) / 100} 0`}
-            dur={`${band.speed}s`}
-            repeatCount="indefinite"
-          />
-        </circle>
-      ))}
+          {/* Animated group */}
+          <g>
+            {/* Glow path */}
+            <path
+              d={layer.pathD}
+              fill="none"
+              stroke={layer.lineColor}
+              strokeWidth={8}
+              opacity={0.3}
+              filter={`url(#glow-${index})`}
+            >
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                from="0 0"
+                to={`${640 * layer.translatePercent / 100} 0`}
+                dur={`${layer.speed}s`}
+                repeatCount="indefinite"
+              />
+            </path>
 
-      {/* Band label — right side */}
-      <foreignObject
-        x={SVG_WIDTH * 0.62}
-        y={band.yCenter - 20}
-        width={400}
-        height={70}
-        className="hidden md:block"
-      >
-        <motion.div
-          style={{ opacity: labelOpacity, y: labelY }}
-          className="flex flex-col"
-        >
+            {/* Main path */}
+            <path
+              d={layer.pathD}
+              fill="none"
+              stroke={layer.lineColor}
+              strokeWidth={1.8}
+              strokeLinecap="round"
+            >
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                from="0 0"
+                to={`${640 * layer.translatePercent / 100} 0`}
+                dur={`${layer.speed}s`}
+                repeatCount="indefinite"
+              />
+            </path>
+
+            {/* Second subtle path */}
+            <path
+              d={layer.pathD}
+              fill="none"
+              stroke={layer.lineColor}
+              strokeWidth={1}
+              strokeLinecap="round"
+              opacity={0.4}
+              transform="translate(0, 18)"
+            >
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                from="0 18"
+                to={`${640 * layer.translatePercent / 100} 18`}
+                dur={`${layer.speed}s`}
+                repeatCount="indefinite"
+              />
+            </path>
+
+            {/* Checkpoint nodes */}
+            {layer.nodes.map((node, ni) => (
+              <circle
+                key={ni}
+                cx={node.cx}
+                cy={node.cy}
+                r={ni === 0 ? 5 : ni === 1 ? 7 : 6}
+                fill={layer.nodeColor}
+              >
+                <animateTransform
+                  attributeName="transform"
+                  type="translate"
+                  from="0 0"
+                  to={`${640 * layer.translatePercent / 100} 0`}
+                  dur={`${layer.speed}s`}
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.6;1;0.6"
+                  dur="5s"
+                  repeatCount="indefinite"
+                  begin={`${ni * 1.2}s`}
+                />
+              </circle>
+            ))}
+          </g>
+        </svg>
+      </div>
+
+      {/* Label chip */}
+      <div className="relative px-5 pb-4 pt-1 flex items-center justify-between">
+        <div>
           <span
-            className="text-[15px] lg:text-[17px] font-semibold tracking-[0.06em]"
-            style={{ color: "rgba(220, 210, 255, 0.9)" }}
+            className="text-[13px] md:text-[15px] font-semibold tracking-[0.05em]"
+            style={{ color: "rgba(230, 225, 255, 0.92)" }}
           >
-            {band.label}
+            {layer.label}
           </span>
-          <span
-            className="text-[11px] lg:text-[13px] mt-1.5 tracking-wide"
-            style={{ color: "rgba(160, 150, 200, 0.6)" }}
+          <p
+            className="text-[10px] md:text-[11px] mt-0.5 tracking-wide"
+            style={{ color: "rgba(160, 150, 200, 0.55)" }}
           >
-            {band.subtext}
-          </span>
-        </motion.div>
-      </foreignObject>
-    </g>
+            {layer.subtitle}
+          </p>
+        </div>
+        <div
+          className="px-2.5 py-1 rounded-full text-[9px] md:text-[10px] font-medium tracking-wider uppercase"
+          style={{
+            background: "rgba(255, 255, 255, 0.06)",
+            border: "1px solid rgba(230, 230, 250, 0.12)",
+            color: "rgba(200, 190, 240, 0.6)",
+          }}
+        >
+          Active
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
@@ -258,121 +223,73 @@ const ManifestoSection = () => {
     offset: ["start end", "end start"],
   });
 
-  const headlineOpacity = useTransform(scrollYProgress, [0.05, 0.2], [0, 1]);
-  const headlineY = useTransform(scrollYProgress, [0.05, 0.2], [40, 0]);
+  const headlineOpacity = useTransform(scrollYProgress, [0.06, 0.22], [0, 1]);
+  const headlineY = useTransform(scrollYProgress, [0.06, 0.22], [36, 0]);
 
   return (
     <section
       ref={containerRef}
-      className="relative py-40 md:py-52 lg:py-60 overflow-hidden"
+      className="relative py-32 md:py-40 lg:py-48 overflow-hidden"
       style={{
-        background: "linear-gradient(135deg, #2D1B4E 0%, #331E5A 40%, #3A1F6B 100%)",
+        background: `
+          radial-gradient(50% 50% at 70% 45%, rgba(230,230,250,0.18), transparent 65%),
+          linear-gradient(135deg, #2D1B4E 0%, #3A1F6B 100%)
+        `,
+        color: "rgba(237, 235, 255, 0.92)",
       }}
     >
-      {/* Lavender haze overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 80% 70% at 50% 40%, rgba(140, 120, 200, 0.08) 0%, transparent 70%)",
-        }}
-      />
+      {/* Content grid: left text + right stack */}
+      <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-12 lg:gap-20 items-center">
 
-      {/* Power anchor — radial glow behind center of bands */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          top: "25%",
-          left: "20%",
-          width: "60%",
-          height: "55%",
-          background:
-            "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(160, 130, 240, 0.14) 0%, rgba(45, 27, 78, 0) 65%)",
-        }}
-      />
-
-      {/* Dark overlay behind text area for readability */}
-      <div
-        className="absolute top-0 left-0 pointer-events-none"
-        style={{
-          width: "55%",
-          height: "45%",
-          background:
-            "radial-gradient(ellipse 100% 100% at 0% 0%, rgba(15, 8, 35, 0.35) 0%, transparent 70%)",
-        }}
-      />
-
-      {/* Headline */}
-      <div className="relative z-20 max-w-[1200px] mx-auto px-8 md:px-12 mb-12 md:mb-20">
-        <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
-          <p
-            className="mono-label mb-6"
-            style={{ color: "rgba(160, 150, 200, 0.5)" }}
-          >
-            THE INTELLIGENCE LAYER
-          </p>
-          <h2
-            className="text-[28px] md:text-[38px] lg:text-[46px] font-bold leading-[1.15] tracking-tight"
-            style={{
-              color: "rgba(235, 230, 255, 0.95)",
-              fontFamily: "Inter, sans-serif",
-            }}
-          >
-            Intelligence,
-            <br />
-            Engineered as Infrastructure
-          </h2>
-        </motion.div>
-      </div>
-
-      {/* Cortex bands */}
-      <div className="relative z-10 max-w-[1200px] mx-auto px-4 md:px-8">
-        <svg
-          viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
-          className="w-full h-auto"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          <defs>
-            <filter id="bandBlur">
-              <feGaussianBlur stdDeviation="4" />
-            </filter>
-          </defs>
-
-          {bands.map((band, i) => (
-            <CortexBand
-              key={band.label}
-              band={band}
-              scrollProgress={scrollYProgress}
-              index={i}
-            />
-          ))}
-        </svg>
-      </div>
-
-      {/* Mobile labels */}
-      <div className="md:hidden relative z-10 max-w-[1200px] mx-auto px-8 mt-8 space-y-6">
-        {bands.map((band, i) => (
-          <motion.div
-            key={band.label}
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.15, duration: 0.5 }}
-          >
+          {/* Left column — text */}
+          <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
             <p
-              className="text-[14px] font-semibold tracking-wide"
-              style={{ color: "rgba(220, 210, 255, 0.85)" }}
+              className="mono-label mb-5"
+              style={{ color: "rgba(160, 150, 200, 0.5)" }}
             >
-              {band.label}
+              THE INTELLIGENCE LAYER
             </p>
-            <p
-              className="text-[12px] mt-0.5"
-              style={{ color: "rgba(160, 150, 200, 0.55)" }}
+            <h2
+              className="text-[26px] md:text-[34px] lg:text-[42px] font-bold leading-[1.15] tracking-tight mb-6"
+              style={{ color: "rgba(235, 230, 255, 0.95)" }}
             >
-              {band.subtext}
+              We are the layer
+              <br />
+              under everything.
+            </h2>
+            <p
+              className="text-[14px] md:text-[16px] leading-relaxed max-w-md"
+              style={{ color: "rgba(190, 180, 220, 0.7)" }}
+            >
+              Three system planes running beneath every clinical workflow — reasoning,
+              orchestration, and sovereign data governance — engineered as
+              infrastructure, not features.
             </p>
           </motion.div>
-        ))}
+
+          {/* Right column — layer stack */}
+          <div className="relative">
+            {/* Power glow behind stack */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                top: "-10%",
+                left: "5%",
+                width: "90%",
+                height: "120%",
+                background:
+                  "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(160, 130, 240, 0.12) 0%, transparent 65%)",
+              }}
+            />
+
+            <div className="relative z-10 space-y-4 md:space-y-5">
+              {layers.map((layer, i) => (
+                <LayerPanel key={layer.label} layer={layer} index={i} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
