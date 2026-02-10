@@ -44,16 +44,15 @@ const layers: LayerConfig[] = [
   {
     label: "Sovereign Data Plane",
     subtitle: "Storage · Policy · Jurisdictional Control",
-    translatePercent: 5,
-    speed: 120,
-    pathD: "M 25 48 C 160 60, 300 35, 420 52 S 540 45, 610 48",
+    translatePercent: 3,
+    speed: 180,
+    pathD: "M 0 35 L 640 35",
     nodes: [
-      { cx: 180, cy: 54 },
-      { cx: 420, cy: 52 },
-      { cx: 540, cy: 46 },
+      { cx: 240, cy: 45 },
+      { cx: 420, cy: 45 },
     ],
-    lineColor: "rgba(140, 125, 210, 0.28)",
-    nodeColor: "rgba(180, 165, 240, 0.5)",
+    lineColor: "rgba(160, 145, 210, 0.25)",
+    nodeColor: "rgba(190, 175, 230, 0.45)",
   },
 ];
 
@@ -66,11 +65,11 @@ const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => 
       transition={{ delay: index * 0.15, duration: 0.6, ease: "easeOut" }}
       className="relative rounded-[18px] overflow-hidden"
       style={{
-        background: index === 0 ? "rgba(255, 255, 255, 0.09)" : "rgba(255, 255, 255, 0.06)",
-        border: index === 0 ? "1px solid rgba(230, 230, 250, 0.24)" : "1px solid rgba(230, 230, 250, 0.18)",
+        background: index === 0 ? "rgba(255, 255, 255, 0.09)" : index === 2 ? "rgba(255, 255, 255, 0.035)" : "rgba(255, 255, 255, 0.06)",
+        border: index === 0 ? "1px solid rgba(230, 230, 250, 0.24)" : index === 2 ? "1px solid rgba(230, 230, 250, 0.12)" : "1px solid rgba(230, 230, 250, 0.18)",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
-        boxShadow: index === 0 ? "0 18px 60px rgba(10, 5, 25, 0.4)" : "0 18px 60px rgba(10, 5, 25, 0.35)",
+        boxShadow: index === 0 ? "0 18px 60px rgba(10, 5, 25, 0.4)" : index === 2 ? "0 18px 60px rgba(10, 5, 25, 0.45)" : "0 18px 60px rgba(10, 5, 25, 0.35)",
       }}
     >
       {/* Subtle grid */}
@@ -151,19 +150,26 @@ const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => 
               </>
             ) : (
               <>
-                {/* Sovereign Data Plane — default */}
-                <path d={layer.pathD} fill="none" stroke={layer.lineColor} strokeWidth={8} opacity={0.3} filter={`url(#glow-${index})`}>
+                {/* Sovereign Data Plane — near-static, heavy, regulatory */}
+                <path d="M 0 28 L 640 28" fill="none" stroke={layer.lineColor} strokeWidth={2.5} strokeLinecap="round">
                   <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
                 </path>
-                <path d={layer.pathD} fill="none" stroke={layer.lineColor} strokeWidth={1.8} strokeLinecap="round">
+                <path d="M 0 50 L 640 50" fill="none" stroke={layer.lineColor} strokeWidth={2} strokeLinecap="round" opacity={0.6}>
                   <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
                 </path>
-                {layer.nodes.map((node, ni) => (
-                  <circle key={ni} cx={node.cx} cy={node.cy} r={ni === 0 ? 5 : 6} fill={layer.nodeColor}>
-                    <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
-                    <animate attributeName="opacity" values="0.6;1;0.6" dur="5s" repeatCount="indefinite" begin={`${ni * 1.2}s`} />
-                  </circle>
-                ))}
+                <path d="M 0 70 L 640 70" fill="none" stroke={layer.lineColor} strokeWidth={1.4} strokeLinecap="round" opacity={0.35}>
+                  <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                <circle cx="240" cy="45" r="9" fill={layer.nodeColor} opacity={0.45}>
+                  <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </circle>
+                <circle cx="420" cy="45" r="9" fill={layer.nodeColor} opacity={0.45}>
+                  <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </circle>
+                <circle cx="330" cy="45" r="30" fill="rgba(160, 145, 210, 0.04)">
+                  <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.03;0.07;0.03" dur="14s" repeatCount="indefinite" />
+                </circle>
               </>
             )}
           </g>
