@@ -272,12 +272,12 @@ const ManifestoSection = () => {
             "radial-gradient(ellipse 50% 70% at 50% 45%, rgba(246, 247, 251, 0.6) 0%, transparent 60%)",
         }}
       />
-      {/* Right: restrained coral wash at 30% opacity */}
+      {/* Right: coral-salmon wash — stronger presence */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 55% 80% at 92% 60%, rgba(242, 193, 174, 0.3) 0%, transparent 55%)",
+            "radial-gradient(ellipse 60% 85% at 90% 55%, rgba(232, 150, 124, 0.35) 0%, rgba(212, 97, 107, 0.08) 40%, transparent 60%)",
         }}
       />
       {/* Subtle vignette */}
@@ -293,7 +293,7 @@ const ManifestoSection = () => {
         <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
           <p
             className="mono-label mb-6"
-            style={{ color: "rgba(90, 80, 140, 0.6)" }}
+            style={{ color: "var(--coral-mid)" }}
           >
             THE INTELLIGENCE LAYER
           </p>

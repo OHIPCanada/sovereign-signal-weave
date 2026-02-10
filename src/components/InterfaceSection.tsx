@@ -13,7 +13,8 @@ const InterfaceSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen bg-primary text-primary-foreground py-24 md:py-32"
+      className="relative min-h-screen text-primary-foreground py-24 md:py-32"
+      style={{ background: 'linear-gradient(170deg, #1A1A4E 0%, #2A1B3D 40%, #3D2038 70%, #4A2540 100%)' }}
       id="features"
     >
       {/* Dark mode transition overlay */}
@@ -32,14 +33,14 @@ const InterfaceSection = () => {
             transition={{ duration: 0.8 }}
             className="flex flex-col gap-8"
           >
-            <span className="mono-label text-accent">[ TERMINAL REALITY ]</span>
+            <span className="mono-label text-secondary">[ TERMINAL REALITY ]</span>
 
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
               Intelligence
               <br />
               at your
               <br />
-              <span className="text-accent">fingertips.</span>
+              <span className="text-secondary">fingertips.</span>
             </h2>
 
             <p className="text-primary-foreground/70 text-lg max-w-md">
@@ -90,7 +91,7 @@ interface MetricCardProps {
 
 const MetricCard = ({ value, label }: MetricCardProps) => {
   return (
-    <div className="border border-primary-foreground/20 rounded-lg p-6 hover:border-accent transition-colors">
+    <div className="border border-secondary/30 rounded-lg p-6 hover:border-secondary transition-colors">
       <AnimatedCounter value={value} />
       <span className="mono-label text-primary-foreground/50 mt-2 block">{label}</span>
     </div>
@@ -167,7 +168,7 @@ const DashboardMockup = () => {
             whileInView={{ height: `${height}%` }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: i * 0.05 }}
-            className="w-4 bg-accent/60 rounded-t"
+            className="w-4 bg-secondary/60 rounded-t"
           />
         ))}
       </div>
@@ -195,7 +196,7 @@ const TerminalLog = () => {
   return (
     <div className="bg-primary-foreground/5 border border-primary-foreground/10 rounded-lg p-4 font-mono">
       <div className="flex items-center gap-2 mb-3">
-        <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+        <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
         <span className="text-xs text-primary-foreground/40">SYSTEM LOG</span>
       </div>
       <div className="terminal-text">

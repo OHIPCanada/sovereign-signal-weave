@@ -17,12 +17,18 @@
     --cool1: rgba(120, 150, 210, 0.18);
     --cool2: rgba(150, 130, 210, 0.14);
 
-    /* Warm field */
-    --warm1: rgba(229, 115, 111, 0.14);
-    --warm2: rgba(235, 198, 196, 0.18);
+    /* Warm field — coral-salmon from reference */
+    --warm1: rgba(216, 120, 100, 0.18);
+    --warm2: rgba(232, 150, 124, 0.2);
+
+    /* Coral-salmon accent family */
+    --coral-strong: #D4616B;
+    --coral-mid: #E8967C;
+    --coral-soft: #F2C1AE;
+    --coral-mist: rgba(232, 150, 124, 0.12);
 
     /* Left coral band */
-    --coralStrong: #E5736F;
+    --coralStrong: #D4616B;
     --coralMid: #E39A96;
     --coralSoft: #EBC6C4;
 
@@ -35,9 +41,9 @@
     --primary: 248 50% 20%; /* #1A1A4E */
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Soft Pink/Coral accent */
-    --secondary: 340 50% 75%;
-    --secondary-foreground: 248 50% 20%;
+    /* Secondary - Coral-salmon accent */
+    --secondary: 10 60% 62%;
+    --secondary-foreground: 0 0% 100%;
 
     /* Accent - Purple glow */
     --accent: 270 60% 60%;

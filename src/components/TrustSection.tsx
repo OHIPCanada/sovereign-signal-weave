@@ -24,7 +24,7 @@ const badges = [
 
 const TrustSection = () => {
   return (
-    <section className="relative py-24 md:py-32 bg-background" id="pricing">
+    <section className="relative py-24 md:py-32" style={{ background: 'linear-gradient(180deg, #F6F7FB 0%, #F4F0EE 50%, #F0E8E4 100%)' }} id="pricing">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Header */}
         <motion.div
@@ -52,12 +52,12 @@ const TrustSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group bg-card border border-border rounded-xl p-8 hover:border-accent hover:shadow-xl transition-all duration-300"
+              className="group bg-card border border-border rounded-xl p-8 hover:border-secondary hover:shadow-xl transition-all duration-300"
               style={{
                 boxShadow: "0 0 0 0 transparent",
               }}
               whileHover={{
-                boxShadow: "0 0 30px hsl(180 100% 50% / 0.15)",
+                boxShadow: "0 0 30px rgba(232, 150, 124, 0.2)",
                 scale: 1.02,
               }}
             >
@@ -81,7 +81,7 @@ const TrustSection = () => {
           </p>
           <a
             href="#"
-            className="inline-flex items-center gap-2 text-foreground font-semibold hover:text-accent transition-colors group"
+            className="inline-flex items-center gap-2 text-foreground font-semibold hover:text-secondary transition-colors group"
           >
             View Security Documentation
             <span className="group-hover:translate-x-1 transition-transform">→</span>
