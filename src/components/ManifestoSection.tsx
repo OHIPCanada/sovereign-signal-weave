@@ -12,91 +12,74 @@ const layers: LayerConfig[] = [
   { label: "Sovereign Data Plane", subtitle: "Storage · Policy · Jurisdictional Control" },
 ];
 
-/* ─── AI CORTEX ─── compact neural cluster, thinking pulses */
+/* ─── AI CORTEX ─── compact neural mesh, thinking pulses toward center */
 const CortexMesh = () => {
-  // Central node + 5 surrounding — compact logic shape
-  const center = { cx: 320, cy: 45 };
+  const center = { cx: 320, cy: 55 };
   const satellites = [
-    { cx: 260, cy: 28 },
-    { cx: 280, cy: 68 },
-    { cx: 360, cy: 25 },
-    { cx: 370, cy: 65 },
-    { cx: 400, cy: 42 },
+    { cx: 240, cy: 30 },
+    { cx: 260, cy: 80 },
+    { cx: 310, cy: 22 },
+    { cx: 340, cy: 85 },
+    { cx: 380, cy: 25 },
+    { cx: 400, cy: 75 },
+    { cx: 420, cy: 45 },
   ];
-  // Cross-connections between satellites for mesh density
-  const extraEdges: [number, number][] = [[0, 2], [1, 3], [2, 4]];
+  const edges: [number, number][] = [
+    [0, 2], [2, 4], [4, 6], [6, 5], [5, 3], [3, 1], [1, 0],
+    [0, 3], [2, 5], [4, 5],
+  ];
 
-  const lineColor = "rgba(215, 205, 250, 0.28)";
-  const nodeBase = "rgba(215, 205, 250, 0.4)";
-  const nodeCore = "rgba(240, 232, 255, 0.7)";
-  const pulseColor = "rgba(240, 232, 255, 0.85)";
+  const lineColor = "rgba(230, 230, 250, 0.75)";
+  const nodeBase = "rgba(255, 255, 255, 0.65)";
+  const nodeCore = "rgba(255, 255, 255, 0.85)";
+  const pulseColor = "rgba(255, 255, 255, 0.9)";
 
-  // Build pulse paths: center→sat, one at a time, 3.5s apart
-  const pulsePaths = satellites.map((s, i) => ({
-    from: center,
-    to: s,
-    delay: i * 3.5,
+  // Pulses travel from satellites toward center, one at a time
+  const pulses = satellites.map((s, i) => ({
+    from: s, to: center, delay: i * 3,
   }));
-  // Add cross-connection pulses after satellite pulses
-  const crossPulses = extraEdges.map(([a, b], i) => ({
-    from: satellites[a],
-    to: satellites[b],
-    delay: satellites.length * 3.5 + i * 3.5,
-  }));
-  const allPulses = [...pulsePaths, ...crossPulses];
-  const totalCycle = allPulses.length * 3.5;
+  const totalCycle = pulses.length * 3;
 
   return (
-    <svg viewBox="0 0 640 90" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <filter id="cortex-glow">
-          <feGaussianBlur stdDeviation="3" />
-        </filter>
-      </defs>
-
+    <svg viewBox="0 0 640 110" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
       {/* Connections: center to each satellite */}
       {satellites.map((s, i) => (
         <line key={`r-${i}`} x1={center.cx} y1={center.cy} x2={s.cx} y2={s.cy}
-          stroke={lineColor} strokeWidth="1" strokeLinecap="round" />
+          stroke={lineColor} strokeWidth="2.5" strokeLinecap="round" />
       ))}
       {/* Cross-connections */}
-      {extraEdges.map(([a, b], i) => (
+      {edges.map(([a, b], i) => (
         <line key={`x-${i}`} x1={satellites[a].cx} y1={satellites[a].cy}
           x2={satellites[b].cx} y2={satellites[b].cy}
-          stroke={lineColor} strokeWidth="0.8" strokeLinecap="round" />
+          stroke={lineColor} strokeWidth="2" strokeLinecap="round" opacity="0.6" />
       ))}
 
-      {/* Inner glow on core */}
-      <circle cx={center.cx} cy={center.cy} r="14" fill="rgba(230, 220, 255, 0.06)" filter="url(#cortex-glow)" />
-
-      {/* Core node */}
-      <circle cx={center.cx} cy={center.cy} r="7" fill={nodeCore} />
+      {/* Core node — largest */}
+      <circle cx={center.cx} cy={center.cy} r="10" fill={nodeCore} />
 
       {/* Satellite nodes */}
       {satellites.map((s, i) => (
-        <circle key={`n-${i}`} cx={s.cx} cy={s.cy} r="3.5" fill={nodeBase} />
+        <circle key={`n-${i}`} cx={s.cx} cy={s.cy} r="5" fill={nodeBase} />
       ))}
 
-      {/* Signal pulses — one path at a time */}
-      {allPulses.map((p, i) => (
+      {/* Signal pulses — one at a time, traveling toward center */}
+      {pulses.map((p, i) => (
         <g key={`p-${i}`}>
-          <circle r="2.5" fill={pulseColor}>
+          <circle r="4" fill={pulseColor}>
             <animate attributeName="cx" values={`${p.from.cx};${p.to.cx}`}
-              dur="1.8s" begin={`${p.delay}s`} repeatCount="indefinite"
-              calcMode="spline" keySplines="0.4 0 0.2 1"
-              restart="always" />
+              dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite"
+              calcMode="spline" keySplines="0.4 0 0.2 1" />
             <animate attributeName="cy" values={`${p.from.cy};${p.to.cy}`}
-              dur="1.8s" begin={`${p.delay}s`} repeatCount="indefinite"
+              dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite"
               calcMode="spline" keySplines="0.4 0 0.2 1" />
             <animate attributeName="opacity" values="0;0.9;0.9;0"
-              keyTimes="0;0.15;0.8;1" dur="1.8s" begin={`${p.delay}s`}
+              keyTimes="0;0.1;0.8;1" dur="2.5s" begin={`${p.delay}s`}
               repeatCount="indefinite" />
           </circle>
-          {/* Destination node brightens */}
-          <circle cx={p.to.cx} cy={p.to.cy} r={p.to === center ? 7 : 3.5}
-            fill={pulseColor} opacity="0">
-            <animate attributeName="opacity" values="0;0;0.6;0"
-              keyTimes="0;0.7;0.88;1" dur="1.8s" begin={`${p.delay}s`}
+          {/* Center brightens on arrival */}
+          <circle cx={center.cx} cy={center.cy} r="10" fill={pulseColor} opacity="0">
+            <animate attributeName="opacity" values="0;0;0.5;0"
+              keyTimes="0;0.75;0.9;1" dur="2.5s" begin={`${p.delay}s`}
               repeatCount="indefinite" />
           </circle>
         </g>
@@ -105,102 +88,87 @@ const CortexMesh = () => {
   );
 };
 
-/* ─── WORKFLOW ORCHESTRATION ─── parallel lanes, left→right routing */
+/* ─── WORKFLOW ORCHESTRATION ─── 3 parallel lanes, left→right routing */
 const OrchestrationMesh = () => {
   const lanes = [
-    { y: 28, width: 1.2, opacity: 0.3 },
-    { y: 48, width: 1, opacity: 0.22 },
-    { y: 68, width: 0.8, opacity: 0.18 },
+    { y: 28 },
+    { y: 55 },
+    { y: 82 },
   ];
-  const lineColor = "rgba(190, 178, 235, 0.25)";
-  const nodeColor = "rgba(200, 190, 240, 0.45)";
-  const pulseColor = "rgba(220, 210, 250, 0.75)";
+  const lineColor = "rgba(230, 230, 250, 0.70)";
+  const nodeColor = "rgba(255, 255, 255, 0.75)";
+  const pulseColor = "rgba(255, 255, 255, 0.85)";
 
-  // Handoff nodes — vertically aligned between lanes
-  const handoffs = [
-    { x: 200, lanes: [0, 1] },
-    { x: 360, lanes: [1, 2] },
-    { x: 500, lanes: [0, 1, 2] },
-  ];
+  // Handoff columns — vertical connectors between lanes
+  const handoffX = [180, 340, 500];
 
   return (
-    <svg viewBox="0 0 640 90" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
+    <svg viewBox="0 0 640 110" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
       {/* Horizontal lanes */}
       {lanes.map((l, i) => (
         <line key={`lane-${i}`} x1="60" y1={l.y} x2="600" y2={l.y}
-          stroke={lineColor} strokeWidth={l.width} strokeLinecap="round" opacity={l.opacity} />
+          stroke={lineColor} strokeWidth="2" strokeLinecap="round" />
       ))}
 
       {/* Vertical handoff connectors */}
-      {handoffs.map((h, i) => {
-        const minLane = Math.min(...h.lanes);
-        const maxLane = Math.max(...h.lanes);
-        return (
-          <line key={`v-${i}`} x1={h.x} y1={lanes[minLane].y} x2={h.x} y2={lanes[maxLane].y}
-            stroke={lineColor} strokeWidth="0.7" opacity="0.15" />
-        );
-      })}
+      {handoffX.map((x, i) => (
+        <line key={`v-${i}`} x1={x} y1={lanes[0].y} x2={x} y2={lanes[2].y}
+          stroke={lineColor} strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
+      ))}
 
-      {/* Handoff nodes */}
-      {handoffs.map((h, hi) =>
-        h.lanes.map((li) => (
-          <circle key={`hn-${hi}-${li}`} cx={h.x} cy={lanes[li].y} r="3" fill={nodeColor} />
+      {/* Handoff nodes at intersections */}
+      {handoffX.map((x, hi) =>
+        lanes.map((l, li) => (
+          <circle key={`hn-${hi}-${li}`} cx={x} cy={l.y} r="5" fill={nodeColor} />
         ))
       )}
 
       {/* Left→right traveling pulses, staggered per lane */}
       {lanes.map((l, i) => (
-        <circle key={`pulse-${i}`} r="2" fill={pulseColor} cy={l.y}>
-          <animate attributeName="cx" values="60;600" dur="5s"
-            begin={`${i * 1.2}s`} repeatCount="indefinite"
-            calcMode="spline" keySplines="0.3 0 0.7 1" />
-          <animate attributeName="opacity" values="0;0.7;0.7;0"
-            keyTimes="0;0.05;0.9;1" dur="5s"
-            begin={`${i * 1.2}s`} repeatCount="indefinite" />
+        <circle key={`pulse-${i}`} r="4" fill={pulseColor} cy={l.y}>
+          <animate attributeName="cx" values="60;600" dur="4.5s"
+            begin={`${i * 0.8}s`} repeatCount="indefinite"
+            calcMode="linear" />
+          <animate attributeName="opacity" values="0;0.85;0.85;0"
+            keyTimes="0;0.05;0.9;1" dur="4.5s"
+            begin={`${i * 0.8}s`} repeatCount="indefinite" />
         </circle>
       ))}
     </svg>
   );
 };
 
-/* ─── SOVEREIGN DATA PLANE ─── minimal, heavy, near-static */
+/* ─── SOVEREIGN DATA PLANE ─── single heavy spine, near-static */
 const SovereignMesh = () => {
-  const lineColor = "rgba(145, 130, 200, 0.2)";
-  const nodeColor = "rgba(165, 150, 215, 0.35)";
-  const pulseColor = "rgba(180, 165, 225, 0.5)";
+  const lineColor = "rgba(230, 230, 250, 0.60)";
+  const nodeColor = "rgba(255, 255, 255, 0.70)";
+  const pulseColor = "rgba(255, 255, 255, 0.55)";
 
   const nodes = [
-    { cx: 230, cy: 48, r: 8 },
-    { cx: 400, cy: 48, r: 7 },
-    { cx: 520, cy: 48, r: 4.5 },
+    { cx: 200, cy: 55, r: 11 },
+    { cx: 380, cy: 55, r: 10 },
+    { cx: 520, cy: 55, r: 8 },
   ];
 
   return (
-    <svg viewBox="0 0 640 90" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
+    <svg viewBox="0 0 640 110" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
       {/* Single heavy horizontal spine */}
-      <line x1="120" y1="48" x2="580" y2="48"
-        stroke={lineColor} strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="100" y1="55" x2="580" y2="55"
+        stroke={lineColor} strokeWidth="3" strokeLinecap="round" />
 
-      {/* Nodes — heavy, static */}
+      {/* Nodes — heavy, monolithic */}
       {nodes.map((n, i) => (
         <circle key={`sn-${i}`} cx={n.cx} cy={n.cy} r={n.r} fill={nodeColor} />
       ))}
 
-      {/* Very slow pulse — 8s travel, long pause before repeat */}
-      <circle r="2.5" fill={pulseColor}>
-        <animate attributeName="cx" values={`${nodes[0].cx};${nodes[1].cx};${nodes[2].cx}`}
-          keyTimes="0;0.6;1" dur="8s" begin="0s" repeatCount="indefinite"
-          calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" />
-        <animate attributeName="cy" values="48;48;48" dur="8s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0;0.5;0.5;0.5;0"
-          keyTimes="0;0.05;0.5;0.9;1" dur="8s" begin="0s" repeatCount="indefinite" />
-      </circle>
-
-      {/* Node 2 brightens on arrival */}
-      <circle cx={nodes[1].cx} cy={nodes[1].cy} r={nodes[1].r} fill={pulseColor} opacity="0">
-        <animate attributeName="opacity" values="0;0;0.3;0"
-          keyTimes="0;0.5;0.65;0.8" dur="8s" repeatCount="indefinite" />
-      </circle>
+      {/* Very slow brightness pulse — 7s, near-static */}
+      {nodes.map((n, i) => (
+        <circle key={`glow-${i}`} cx={n.cx} cy={n.cy} r={n.r + 4} fill="none"
+          stroke={pulseColor} strokeWidth="2" opacity="0">
+          <animate attributeName="opacity" values="0;0.4;0"
+            dur="7s" begin={`${i * 2.5}s`} repeatCount="indefinite" />
+        </circle>
+      ))}
     </svg>
   );
 };
@@ -252,7 +220,7 @@ const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => 
       }}
     >
       {/* Mesh visualization */}
-      <div className="relative h-[120px] md:h-[130px] overflow-hidden">
+      <div className="relative h-[140px] md:h-[150px] overflow-hidden">
         {index === 0 && <CortexMesh />}
         {index === 1 && <OrchestrationMesh />}
         {index === 2 && <SovereignMesh />}
@@ -269,7 +237,7 @@ const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => 
           </span>
           <p
             className="text-[10px] md:text-[11px] mt-0.5 tracking-wide"
-            style={{ color: "rgba(160, 150, 200, 0.55)" }}
+            style={{ color: "rgba(190, 180, 220, 0.75)" }}
           >
             {layer.subtitle}
           </p>
