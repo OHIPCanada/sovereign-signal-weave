@@ -39,7 +39,7 @@ const PlatformSection = () => {
   return (
     <section ref={containerRef} className="relative h-[300vh]" id="product">
       {/* Sticky Container */}
-      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden bg-background">
+      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(165deg, #F6F7FB 0%, #F0EEF5 40%, #F4F0EE 70%, #F8F0EA 100%)' }}>
         <div className="w-full max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left - Text Content */}
@@ -47,7 +47,7 @@ const PlatformSection = () => {
               <motion.span
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                className="mono-label"
+                className="mono-label" style={{ color: 'var(--coral-strong)' }}
               >
                 [ ARCHITECTURE OF THE CORTEX ]
               </motion.span>
@@ -103,9 +103,9 @@ const LayerCard = ({ layer, index, progress }: LayerCardProps) => {
   return (
     <motion.div
       style={{ opacity, scale }}
-      className="group border-l-2 border-border pl-6 py-4 hover:border-accent transition-colors"
+      className="group border-l-2 border-border pl-6 py-4 hover:border-secondary transition-colors"
     >
-      <span className="mono-label text-accent">{layer.label}</span>
+      <span className="mono-label text-secondary">{layer.label}</span>
       <h3 className="text-2xl font-bold text-foreground mt-2">{layer.title}</h3>
       <p className="text-muted-foreground mt-2 max-w-md">{layer.description}</p>
     </motion.div>
@@ -138,7 +138,7 @@ const ArchitectureVisual = ({ progress }: ArchitectureVisualProps) => {
           <div
             className="absolute inset-0 rounded-full"
             style={{
-              background: `radial-gradient(circle at 30% 30%, hsl(180 100% 50% / ${0.1 - i * 0.03}), transparent 70%)`,
+              background: `radial-gradient(circle at 30% 30%, hsl(10 60% 62% / ${0.12 - i * 0.03}), transparent 70%)`,
             }}
           />
         </motion.div>
@@ -146,8 +146,8 @@ const ArchitectureVisual = ({ progress }: ArchitectureVisualProps) => {
 
       {/* Center Glow */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-20 h-20 rounded-full bg-accent/20 blur-xl pulse-glow" />
-        <div className="absolute w-8 h-8 rounded-full bg-accent" />
+        <div className="w-20 h-20 rounded-full bg-secondary/20 blur-xl" />
+        <div className="absolute w-8 h-8 rounded-full bg-secondary" />
       </div>
     </motion.div>
   );

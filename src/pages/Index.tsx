@@ -16,7 +16,7 @@ const Index = () => {
       <TrustSection />
       
       {/* Footer */}
-      <footer className="bg-background border-t border-border py-12">
+      <footer className="border-t border-border py-12" style={{ background: 'linear-gradient(180deg, #F0E8E4 0%, #EDE5E0 100%)' }}>
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
