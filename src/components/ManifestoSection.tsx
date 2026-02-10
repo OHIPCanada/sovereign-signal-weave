@@ -77,45 +77,45 @@ interface BandConfig {
 }
 
 const SVG_WIDTH = 1400;
-const SVG_HEIGHT = 600;
+const SVG_HEIGHT = 700;
 
 const bands: BandConfig[] = [
   {
     label: "Clinical Intelligence",
     subtext: "Decision support, context awareness, reasoning",
-    strokeColor: "rgba(210, 190, 255, 0.45)",
-    glowColor: "rgba(210, 190, 255, 0.12)",
-    nodeColor: "rgba(230, 220, 255, 0.55)",
-    yCenter: 120,
-    bandHeight: 90,
-    pathCount: 8,
-    nodeCount: 7,
-    amplitude: 18,
+    strokeColor: "rgba(210, 190, 255, 0.50)",
+    glowColor: "rgba(210, 190, 255, 0.15)",
+    nodeColor: "rgba(235, 225, 255, 0.60)",
+    yCenter: 110,
+    bandHeight: 100,
+    pathCount: 7,
+    nodeCount: 6,
+    amplitude: 16,
     strokeWidth: 2,
     speed: 25,
   },
   {
     label: "System Orchestration",
     subtext: "Workflows, EMRs, clinical operations",
-    strokeColor: "rgba(180, 160, 230, 0.30)",
-    glowColor: "rgba(180, 160, 230, 0.08)",
-    nodeColor: "rgba(230, 220, 255, 0.55)",
-    yCenter: 300,
-    bandHeight: 80,
-    pathCount: 7,
-    nodeCount: 6,
-    amplitude: 14,
+    strokeColor: "rgba(180, 160, 230, 0.32)",
+    glowColor: "rgba(180, 160, 230, 0.10)",
+    nodeColor: "rgba(230, 220, 255, 0.50)",
+    yCenter: 350,
+    bandHeight: 90,
+    pathCount: 6,
+    nodeCount: 5,
+    amplitude: 12,
     strokeWidth: 1.8,
     speed: 32,
   },
   {
     label: "Sovereign Governance",
     subtext: "Compliance, auditability, jurisdictional control",
-    strokeColor: "rgba(140, 120, 210, 0.18)",
-    glowColor: "rgba(140, 120, 210, 0.06)",
-    nodeColor: "rgba(230, 220, 255, 0.55)",
-    yCenter: 480,
-    bandHeight: 70,
+    strokeColor: "rgba(140, 120, 210, 0.20)",
+    glowColor: "rgba(140, 120, 210, 0.07)",
+    nodeColor: "rgba(220, 210, 255, 0.45)",
+    yCenter: 580,
+    bandHeight: 80,
     pathCount: 6,
     nodeCount: 5,
     amplitude: 10,
@@ -286,9 +286,9 @@ const ManifestoSection = () => {
   return (
     <section
       ref={containerRef}
-      className="relative py-32 md:py-40 lg:py-48 overflow-hidden"
+      className="relative py-40 md:py-52 lg:py-60 overflow-hidden"
       style={{
-        background: "linear-gradient(90deg, #1B1038 0%, #24124A 50%, #2A154F 100%)",
+        background: "linear-gradient(135deg, #2D1B4E 0%, #331E5A 40%, #3A1F6B 100%)",
       }}
     >
       {/* Lavender haze overlay */}
@@ -304,12 +304,12 @@ const ManifestoSection = () => {
       <div
         className="absolute pointer-events-none"
         style={{
-          top: "30%",
-          left: "25%",
-          width: "50%",
-          height: "60%",
+          top: "25%",
+          left: "20%",
+          width: "60%",
+          height: "55%",
           background:
-            "radial-gradient(circle at 50% 50%, rgba(170, 140, 255, 0.18) 0%, rgba(27, 16, 56, 0) 60%)",
+            "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(160, 130, 240, 0.14) 0%, rgba(45, 27, 78, 0) 65%)",
         }}
       />
 
