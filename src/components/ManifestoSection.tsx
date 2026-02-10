@@ -40,21 +40,20 @@ const generateCheckpointNodes = (
 ) => {
   const nodes: { x: number; y: number; size: number; pathIndex: number }[] = [];
   // Distribute nodes across paths at specific x positions
-  const xPositions = [0.15, 0.3, 0.45, 0.55, 0.7, 0.85, 0.25, 0.6];
+  const xPositions = [0.18, 0.38, 0.58, 0.78, 0.48];
   for (let i = 0; i < Math.min(count, xPositions.length); i++) {
     const pathIdx = i % paths.length;
     const x = width * xPositions[i];
-    // Approximate y from path — parse the start y and end y, interpolate
     const pathStr = paths[pathIdx];
     const startY = parseFloat(pathStr.split(" ")[2]);
     const endMatch = pathStr.match(/(\d+\.?\d*)\s*$/);
     const endY = endMatch ? parseFloat(endMatch[1]) : startY;
     const t = xPositions[i];
-    const y = startY + (endY - startY) * t + (seededRandom(bandIndex * 100 + i) - 0.5) * 8;
+    const y = startY + (endY - startY) * t;
     nodes.push({
       x,
       y,
-      size: 4 + seededRandom(bandIndex * 30 + i) * 3,
+      size: 5 + seededRandom(bandIndex * 30 + i) * 3,
       pathIndex: pathIdx,
     });
   }
@@ -84,43 +83,43 @@ const bands: BandConfig[] = [
     label: "Clinical Intelligence",
     subtext: "Decision support, context awareness, reasoning",
     strokeColor: "rgba(210, 190, 255, 0.50)",
-    glowColor: "rgba(210, 190, 255, 0.15)",
-    nodeColor: "rgba(235, 225, 255, 0.60)",
+    glowColor: "rgba(210, 190, 255, 0.12)",
+    nodeColor: "rgba(235, 225, 255, 0.65)",
     yCenter: 110,
-    bandHeight: 100,
-    pathCount: 7,
-    nodeCount: 6,
-    amplitude: 16,
-    strokeWidth: 2,
-    speed: 25,
+    bandHeight: 80,
+    pathCount: 4,
+    nodeCount: 5,
+    amplitude: 14,
+    strokeWidth: 2.2,
+    speed: 60,   // fastest band
   },
   {
     label: "System Orchestration",
     subtext: "Workflows, EMRs, clinical operations",
     strokeColor: "rgba(180, 160, 230, 0.32)",
-    glowColor: "rgba(180, 160, 230, 0.10)",
+    glowColor: "rgba(180, 160, 230, 0.08)",
     nodeColor: "rgba(230, 220, 255, 0.50)",
     yCenter: 350,
-    bandHeight: 90,
-    pathCount: 6,
-    nodeCount: 5,
-    amplitude: 12,
-    strokeWidth: 1.8,
-    speed: 32,
+    bandHeight: 70,
+    pathCount: 4,
+    nodeCount: 4,
+    amplitude: 10,
+    strokeWidth: 2,
+    speed: 90,   // medium
   },
   {
     label: "Sovereign Governance",
     subtext: "Compliance, auditability, jurisdictional control",
-    strokeColor: "rgba(140, 120, 210, 0.20)",
-    glowColor: "rgba(140, 120, 210, 0.07)",
-    nodeColor: "rgba(220, 210, 255, 0.45)",
+    strokeColor: "rgba(140, 120, 210, 0.22)",
+    glowColor: "rgba(140, 120, 210, 0.06)",
+    nodeColor: "rgba(220, 210, 255, 0.40)",
     yCenter: 580,
-    bandHeight: 80,
-    pathCount: 6,
-    nodeCount: 5,
-    amplitude: 10,
-    strokeWidth: 1.5,
-    speed: 40,
+    bandHeight: 60,
+    pathCount: 3,
+    nodeCount: 4,
+    amplitude: 8,
+    strokeWidth: 1.8,
+    speed: 120,  // slowest
   },
 ];
 
@@ -153,7 +152,8 @@ const CortexBand = ({
     [16, 0]
   );
 
-  const translateAmount = 40 + index * 10;
+  // Continuous left-to-right translate percentages per band
+  const translatePercent = index === 0 ? 14 : index === 1 ? 10 : 6;
 
   return (
     <g>
@@ -164,20 +164,21 @@ const CortexBand = ({
           d={d}
           fill="none"
           stroke={band.glowColor}
-          strokeWidth={8}
+          strokeWidth={10}
           filter="url(#bandBlur)"
         >
           <animateTransform
             attributeName="transform"
             type="translate"
-            values={`0,0; ${translateAmount},0; 0,0`}
-            dur={`${band.speed + i * 1.5}s`}
+            from="0 0"
+            to={`${(SVG_WIDTH * translatePercent) / 100} 0`}
+            dur={`${band.speed}s`}
             repeatCount="indefinite"
           />
         </path>
       ))}
 
-      {/* Main lines — clean, readable strokes */}
+      {/* Main lines */}
       {paths.map((d, i) => (
         <path
           key={`line-${index}-${i}`}
@@ -190,56 +191,33 @@ const CortexBand = ({
           <animateTransform
             attributeName="transform"
             type="translate"
-            values={`0,0; ${translateAmount},0; 0,0`}
-            dur={`${band.speed + i * 1.5}s`}
+            from="0 0"
+            to={`${(SVG_WIDTH * translatePercent) / 100} 0`}
+            dur={`${band.speed}s`}
             repeatCount="indefinite"
           />
         </path>
       ))}
 
-      {/* Checkpoint nodes — on lines, moving with their band */}
+      {/* Checkpoint nodes — intentional, on-path */}
       {nodes.map((node, i) => (
-        <g key={`node-${index}-${i}`}>
-          {/* Node glow */}
-          <circle
-            cx={node.x}
-            cy={node.y}
-            r={node.size + 4}
-            fill="none"
-            stroke={band.nodeColor}
-            strokeWidth={1}
-            opacity={0.25}
-          >
-            <animateTransform
-              attributeName="transform"
-              type="translate"
-              values={`0,0; ${translateAmount},0; 0,0`}
-              dur={`${band.speed}s`}
-              repeatCount="indefinite"
-            />
-          </circle>
-          {/* Node core */}
-          <circle
-            cx={node.x}
-            cy={node.y}
-            r={node.size}
-            fill={band.nodeColor}
-          >
-            <animate
-              attributeName="opacity"
-              values="0.4;0.75;0.4"
-              dur={`${4 + i}s`}
-              repeatCount="indefinite"
-            />
-            <animateTransform
-              attributeName="transform"
-              type="translate"
-              values={`0,0; ${translateAmount},0; 0,0`}
-              dur={`${band.speed}s`}
-              repeatCount="indefinite"
-            />
-          </circle>
-        </g>
+        <circle
+          key={`node-${index}-${i}`}
+          cx={node.x}
+          cy={node.y}
+          r={node.size}
+          fill={band.nodeColor}
+          opacity={0.7}
+        >
+          <animateTransform
+            attributeName="transform"
+            type="translate"
+            from="0 0"
+            to={`${(SVG_WIDTH * translatePercent) / 100} 0`}
+            dur={`${band.speed}s`}
+            repeatCount="indefinite"
+          />
+        </circle>
       ))}
 
       {/* Band label — right side */}
