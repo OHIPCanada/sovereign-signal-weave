@@ -33,11 +33,13 @@ const layers: LayerConfig[] = [
     speed: 95,
     pathD: "M 20 50 C 140 30, 280 65, 400 45 S 530 40, 620 50",
     nodes: [
-      { cx: 200, cy: 42 },
-      { cx: 430, cy: 46 },
+      { cx: 130, cy: 38 },
+      { cx: 290, cy: 44 },
+      { cx: 450, cy: 42 },
+      { cx: 580, cy: 46 },
     ],
-    lineColor: "rgba(170, 155, 230, 0.38)",
-    nodeColor: "rgba(200, 185, 255, 0.65)",
+    lineColor: "rgba(200, 185, 235, 0.35)",
+    nodeColor: "rgba(220, 210, 245, 0.6)",
   },
   {
     label: "Sovereign Data Plane",
@@ -125,20 +127,39 @@ const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => 
                   <animate attributeName="opacity" values="0.45;0.85;0.45" dur="8s" repeatCount="indefinite" begin="3s" />
                 </circle>
               </>
+            ) : index === 1 ? (
+              <>
+                {/* Workflow Orchestration: straight routing paths, left→right */}
+                <path d="M 0 20 L 640 20" fill="none" stroke={layer.lineColor} strokeWidth={2} strokeLinecap="round">
+                  <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                <path d="M 0 36 L 640 36" fill="none" stroke={layer.lineColor} strokeWidth={1.8} strokeLinecap="round" opacity={0.75}>
+                  <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                <path d="M 0 52 L 640 52" fill="none" stroke={layer.lineColor} strokeWidth={1.5} strokeLinecap="round" opacity={0.55}>
+                  <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                <path d="M 0 66 L 640 66" fill="none" stroke={layer.lineColor} strokeWidth={1.2} strokeLinecap="round" opacity={0.35}>
+                  <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                {/* Handoff nodes — square, mechanical, no pulse */}
+                {layer.nodes.map((node, ni) => (
+                  <rect key={ni} x={node.cx - 4} y={node.cy - 4} width={8} height={8} rx={2} fill={layer.nodeColor} opacity={0.6}>
+                    <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                  </rect>
+                ))}
+              </>
             ) : (
               <>
-                {/* Default rendering for other cards */}
+                {/* Sovereign Data Plane — default */}
                 <path d={layer.pathD} fill="none" stroke={layer.lineColor} strokeWidth={8} opacity={0.3} filter={`url(#glow-${index})`}>
                   <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
                 </path>
                 <path d={layer.pathD} fill="none" stroke={layer.lineColor} strokeWidth={1.8} strokeLinecap="round">
                   <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
                 </path>
-                <path d={layer.pathD} fill="none" stroke={layer.lineColor} strokeWidth={1} strokeLinecap="round" opacity={0.4} transform="translate(0, 18)">
-                  <animateTransform attributeName="transform" type="translate" from="0 18" to={`${640 * layer.translatePercent / 100} 18`} dur={`${layer.speed}s`} repeatCount="indefinite" />
-                </path>
                 {layer.nodes.map((node, ni) => (
-                  <circle key={ni} cx={node.cx} cy={node.cy} r={ni === 0 ? 5 : ni === 1 ? 7 : 6} fill={layer.nodeColor}>
+                  <circle key={ni} cx={node.cx} cy={node.cy} r={ni === 0 ? 5 : 6} fill={layer.nodeColor}>
                     <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
                     <animate attributeName="opacity" values="0.6;1;0.6" dur="5s" repeatCount="indefinite" begin={`${ni * 1.2}s`} />
                   </circle>
