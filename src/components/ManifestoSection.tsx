@@ -15,71 +15,112 @@ const layers: LayerConfig[] = [
 /* ─── AI CORTEX ─── compact neural mesh, thinking pulses toward center */
 const CortexMesh = () => {
   const center = { cx: 320, cy: 55 };
-  const satellites = [
-    { cx: 240, cy: 30 },
-    { cx: 260, cy: 80 },
-    { cx: 310, cy: 22 },
-    { cx: 340, cy: 85 },
-    { cx: 380, cy: 25 },
-    { cx: 400, cy: 75 },
-    { cx: 420, cy: 45 },
+  const innerRing = [
+    { cx: 270, cy: 30 },
+    { cx: 280, cy: 78 },
+    { cx: 330, cy: 20 },
+    { cx: 360, cy: 80 },
+    { cx: 370, cy: 32 },
   ];
-  const edges: [number, number][] = [
-    [0, 2], [2, 4], [4, 6], [6, 5], [5, 3], [3, 1], [1, 0],
-    [0, 3], [2, 5], [4, 5],
+  const outerRing = [
+    { cx: 220, cy: 50 },
+    { cx: 250, cy: 90 },
+    { cx: 310, cy: 95 },
+    { cx: 390, cy: 90 },
+    { cx: 420, cy: 48 },
+    { cx: 400, cy: 18 },
+    { cx: 260, cy: 15 },
+  ];
+  const allNodes = [...innerRing, ...outerRing];
+
+  // Inner ring fully connected to center
+  // Outer ring connected to nearest inner nodes + some cross-connections
+  const outerEdges: [number, number][] = [
+    [5, 0], [5, 1], [6, 0], [6, 1], [7, 1], [7, 3],
+    [8, 3], [8, 4], [9, 4], [9, 2], [10, 2], [10, 4],
+    [11, 0], [11, 2],
+  ];
+  // Cross-connections within outer ring
+  const outerCross: [number, number][] = [
+    [5, 6], [6, 11], [7, 8], [8, 9], [9, 10], [10, 11],
   ];
 
   const lineColor = "rgba(230, 230, 250, 0.75)";
-  const nodeBase = "rgba(255, 255, 255, 0.65)";
-  const nodeCore = "rgba(255, 255, 255, 0.85)";
-  const pulseColor = "rgba(255, 255, 255, 0.9)";
+  const lineColorDim = "rgba(230, 230, 250, 0.45)";
+  const nodeBase = "rgba(255, 255, 255, 0.7)";
+  const nodeCore = "rgba(255, 255, 255, 0.95)";
+  const pulseColor = "rgba(200, 190, 255, 1)";
 
-  // Pulses travel from satellites toward center, one at a time
-  const pulses = satellites.map((s, i) => ({
-    from: s, to: center, delay: i * 3,
+  // Pulses travel from outer nodes toward center
+  const pulseNodes = [5, 7, 9, 11, 6, 8, 10];
+  const pulses = pulseNodes.map((idx, i) => ({
+    from: allNodes[idx], to: center, delay: i * 2.8,
   }));
-  const totalCycle = pulses.length * 3;
 
   return (
     <svg viewBox="0 0 640 110" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
-      {/* Connections: center to each satellite */}
-      {satellites.map((s, i) => (
-        <line key={`r-${i}`} x1={center.cx} y1={center.cy} x2={s.cx} y2={s.cy}
+      <defs>
+        <filter id="cortex-glow">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+      </defs>
+
+      {/* Center to inner ring — strong connections */}
+      {innerRing.map((s, i) => (
+        <line key={`ci-${i}`} x1={center.cx} y1={center.cy} x2={s.cx} y2={s.cy}
           stroke={lineColor} strokeWidth="2.5" strokeLinecap="round" />
       ))}
-      {/* Cross-connections */}
-      {edges.map(([a, b], i) => (
-        <line key={`x-${i}`} x1={satellites[a].cx} y1={satellites[a].cy}
-          x2={satellites[b].cx} y2={satellites[b].cy}
-          stroke={lineColor} strokeWidth="2" strokeLinecap="round" opacity="0.6" />
+      {/* Inner cross-connections */}
+      {[[0,2],[2,4],[4,3],[3,1],[1,0],[0,4],[2,3]].map(([a,b], i) => (
+        <line key={`ic-${i}`} x1={innerRing[a].cx} y1={innerRing[a].cy}
+          x2={innerRing[b].cx} y2={innerRing[b].cy}
+          stroke={lineColor} strokeWidth="2" strokeLinecap="round" opacity="0.65" />
+      ))}
+      {/* Outer to inner connections */}
+      {outerEdges.map(([a, b], i) => (
+        <line key={`oe-${i}`} x1={allNodes[a].cx} y1={allNodes[a].cy}
+          x2={allNodes[b].cx} y2={allNodes[b].cy}
+          stroke={lineColorDim} strokeWidth="2" strokeLinecap="round" />
+      ))}
+      {/* Outer ring cross-connections */}
+      {outerCross.map(([a, b], i) => (
+        <line key={`oc-${i}`} x1={allNodes[a].cx} y1={allNodes[a].cy}
+          x2={allNodes[b].cx} y2={allNodes[b].cy}
+          stroke={lineColorDim} strokeWidth="1.5" strokeLinecap="round" />
       ))}
 
-      {/* Core node — largest */}
-      <circle cx={center.cx} cy={center.cy} r="10" fill={nodeCore} />
+      {/* Core node — large, glowing */}
+      <circle cx={center.cx} cy={center.cy} r="14" fill={nodeCore} filter="url(#cortex-glow)" />
+      <circle cx={center.cx} cy={center.cy} r="8" fill="rgba(200, 190, 255, 0.6)" />
 
-      {/* Satellite nodes */}
-      {satellites.map((s, i) => (
-        <circle key={`n-${i}`} cx={s.cx} cy={s.cy} r="5" fill={nodeBase} />
+      {/* Inner ring nodes */}
+      {innerRing.map((s, i) => (
+        <circle key={`in-${i}`} cx={s.cx} cy={s.cy} r="6" fill={nodeBase} />
+      ))}
+      {/* Outer ring nodes — smaller */}
+      {outerRing.map((s, i) => (
+        <circle key={`on-${i}`} cx={s.cx} cy={s.cy} r="4.5" fill="rgba(255,255,255,0.55)" />
       ))}
 
-      {/* Signal pulses — one at a time, traveling toward center */}
+      {/* Signal pulses — traveling toward center */}
       {pulses.map((p, i) => (
         <g key={`p-${i}`}>
-          <circle r="4" fill={pulseColor}>
+          <circle r="5" fill={pulseColor} filter="url(#cortex-glow)">
             <animate attributeName="cx" values={`${p.from.cx};${p.to.cx}`}
-              dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite"
+              dur="2.2s" begin={`${p.delay}s`} repeatCount="indefinite"
               calcMode="spline" keySplines="0.4 0 0.2 1" />
             <animate attributeName="cy" values={`${p.from.cy};${p.to.cy}`}
-              dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite"
+              dur="2.2s" begin={`${p.delay}s`} repeatCount="indefinite"
               calcMode="spline" keySplines="0.4 0 0.2 1" />
-            <animate attributeName="opacity" values="0;0.9;0.9;0"
-              keyTimes="0;0.1;0.8;1" dur="2.5s" begin={`${p.delay}s`}
+            <animate attributeName="opacity" values="0;1;0.9;0"
+              keyTimes="0;0.1;0.8;1" dur="2.2s" begin={`${p.delay}s`}
               repeatCount="indefinite" />
           </circle>
           {/* Center brightens on arrival */}
-          <circle cx={center.cx} cy={center.cy} r="10" fill={pulseColor} opacity="0">
-            <animate attributeName="opacity" values="0;0;0.5;0"
-              keyTimes="0;0.75;0.9;1" dur="2.5s" begin={`${p.delay}s`}
+          <circle cx={center.cx} cy={center.cy} r="18" fill={pulseColor} opacity="0">
+            <animate attributeName="opacity" values="0;0;0.35;0"
+              keyTimes="0;0.7;0.9;1" dur="2.2s" begin={`${p.delay}s`}
               repeatCount="indefinite" />
           </circle>
         </g>
