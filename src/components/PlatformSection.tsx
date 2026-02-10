@@ -39,7 +39,7 @@ const PlatformSection = () => {
   return (
     <section ref={containerRef} className="relative h-[300vh]" id="product">
       {/* Sticky Container */}
-      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(165deg, #F6F7FB 0%, #F0EEF5 40%, #F4F0EE 70%, #F8F0EA 100%)' }}>
+      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(165deg, #D4616B 0%, #E8967C 50%, #F2C1AE 100%)' }}>
         <div className="w-full max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left - Text Content */}
