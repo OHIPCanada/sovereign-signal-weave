@@ -67,9 +67,9 @@ const bands: BandConfig[] = [
   {
     label: "Clinical Intelligence",
     subtext: "Decision support, context awareness, reasoning",
-    strokeColor: "rgba(160, 140, 220, 0.35)",
-    glowColor: "rgba(160, 140, 220, 0.15)",
-    nodeColor: "rgba(190, 170, 240, 0.8)",
+    strokeColor: "rgba(140, 130, 200, 0.4)",
+    glowColor: "rgba(140, 130, 200, 0.18)",
+    nodeColor: "rgba(130, 115, 195, 0.7)",
     yOffset: 60,
     pathCount: 8,
     nodeCount: 18,
@@ -79,9 +79,9 @@ const bands: BandConfig[] = [
   {
     label: "System Orchestration",
     subtext: "Workflows, EMRs, clinical operations",
-    strokeColor: "rgba(120, 140, 200, 0.3)",
-    glowColor: "rgba(120, 140, 200, 0.12)",
-    nodeColor: "rgba(140, 165, 220, 0.75)",
+    strokeColor: "rgba(110, 120, 180, 0.35)",
+    glowColor: "rgba(110, 120, 180, 0.15)",
+    nodeColor: "rgba(100, 115, 175, 0.65)",
     yOffset: 220,
     pathCount: 6,
     nodeCount: 12,
@@ -91,9 +91,9 @@ const bands: BandConfig[] = [
   {
     label: "Sovereign Governance",
     subtext: "Compliance, auditability, jurisdictional control",
-    strokeColor: "rgba(90, 80, 160, 0.25)",
-    glowColor: "rgba(90, 80, 160, 0.1)",
-    nodeColor: "rgba(120, 110, 180, 0.65)",
+    strokeColor: "rgba(90, 80, 150, 0.3)",
+    glowColor: "rgba(90, 80, 150, 0.12)",
+    nodeColor: "rgba(85, 75, 145, 0.55)",
     yOffset: 380,
     pathCount: 5,
     nodeCount: 8,
@@ -212,13 +212,13 @@ const CortexBand = ({
         >
           <span
             className="text-[15px] lg:text-[17px] font-semibold tracking-wide"
-            style={{ color: "rgba(230, 225, 255, 0.9)" }}
+            style={{ color: "hsl(248, 45%, 25%)" }}
           >
             {band.label}
           </span>
           <span
             className="text-[11px] lg:text-[13px] mt-1 tracking-wide"
-            style={{ color: "rgba(180, 175, 210, 0.7)" }}
+            style={{ color: "rgba(90, 80, 140, 0.65)" }}
           >
             {band.subtext}
           </span>
@@ -244,15 +244,48 @@ const ManifestoSection = () => {
       ref={containerRef}
       className="relative py-32 md:py-40 lg:py-48 overflow-hidden"
       style={{
-        background:
-          "linear-gradient(175deg, #1E1640 0%, #1A1245 25%, #16103D 50%, #120D35 75%, #0E0A2D 100%)",
+        background: `linear-gradient(135deg,
+          #E6E6FA 0%,
+          #DAD8F3 18%,
+          #D5D4EE 30%,
+          #E8E9F5 42%,
+          #F6F7FB 50%,
+          #F4F2F0 62%,
+          #F6F7FB 75%,
+          #EDE8E5 100%
+        )`,
       }}
     >
+      {/* Left: cool lavender / periwinkle field */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, rgba(10, 8, 30, 0.5) 100%)",
+            "radial-gradient(ellipse 70% 90% at 10% 50%, rgba(199, 201, 242, 0.55) 0%, transparent 65%)",
+        }}
+      />
+      {/* Center: neutral off-white breathing space */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 50% 70% at 50% 45%, rgba(246, 247, 251, 0.6) 0%, transparent 60%)",
+        }}
+      />
+      {/* Right: restrained coral wash at 30% opacity */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 55% 80% at 92% 60%, rgba(242, 193, 174, 0.3) 0%, transparent 55%)",
+        }}
+      />
+      {/* Subtle vignette */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 75% 65% at 50% 50%, transparent 40%, rgba(218, 216, 243, 0.25) 100%)",
         }}
       />
 
@@ -260,14 +293,14 @@ const ManifestoSection = () => {
         <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
           <p
             className="mono-label mb-6"
-            style={{ color: "rgba(160, 150, 200, 0.6)" }}
+            style={{ color: "rgba(90, 80, 140, 0.6)" }}
           >
             THE INTELLIGENCE LAYER
           </p>
           <h2
             className="text-[28px] md:text-[38px] lg:text-[46px] font-bold leading-[1.15] tracking-tight"
             style={{
-              color: "rgba(235, 230, 255, 0.95)",
+              color: "hsl(248, 50%, 20%)",
               fontFamily: "Inter, sans-serif",
             }}
           >
@@ -312,13 +345,13 @@ const ManifestoSection = () => {
           >
             <p
               className="text-[14px] font-semibold tracking-wide"
-              style={{ color: "rgba(230, 225, 255, 0.85)" }}
+              style={{ color: "hsl(248, 45%, 25%)" }}
             >
               {band.label}
             </p>
             <p
               className="text-[12px] mt-0.5"
-              style={{ color: "rgba(180, 175, 210, 0.6)" }}
+              style={{ color: "rgba(90, 80, 140, 0.55)" }}
             >
               {band.subtext}
             </p>
