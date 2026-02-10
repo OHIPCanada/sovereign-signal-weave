@@ -51,7 +51,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="hero-title text-center text-[clamp(38px,12vw,260px)] md:text-[clamp(140px,20vw,260px)] w-full" style={{ background: 'linear-gradient(180deg, #2E1A6B 0%, #3C2A8E 45%, #D4616B 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+          className="hero-title text-center text-[clamp(38px,12vw,260px)] md:text-[clamp(140px,20vw,260px)] w-full"
         >
           INTELLIGENCE
         </motion.h1>

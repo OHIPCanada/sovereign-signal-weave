@@ -293,7 +293,7 @@ const ManifestoSection = () => {
         <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
           <p
             className="mono-label mb-6"
-            style={{ color: "var(--coral-mid)" }}
+            style={{ color: "rgba(90, 80, 140, 0.6)" }}
           >
             THE INTELLIGENCE LAYER
           </p>

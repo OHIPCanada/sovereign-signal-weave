@@ -47,7 +47,7 @@ const PlatformSection = () => {
               <motion.span
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
-                className="mono-label" style={{ color: 'var(--coral-strong)' }}
+                className="mono-label"
               >
                 [ ARCHITECTURE OF THE CORTEX ]
               </motion.span>
@@ -103,9 +103,9 @@ const LayerCard = ({ layer, index, progress }: LayerCardProps) => {
   return (
     <motion.div
       style={{ opacity, scale }}
-      className="group border-l-2 border-border pl-6 py-4 hover:border-secondary transition-colors"
+      className="group border-l-2 border-border pl-6 py-4 hover:border-accent transition-colors"
     >
-      <span className="mono-label text-secondary">{layer.label}</span>
+      <span className="mono-label text-accent">{layer.label}</span>
       <h3 className="text-2xl font-bold text-foreground mt-2">{layer.title}</h3>
       <p className="text-muted-foreground mt-2 max-w-md">{layer.description}</p>
     </motion.div>

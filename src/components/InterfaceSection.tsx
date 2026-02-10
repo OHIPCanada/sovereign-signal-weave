@@ -33,14 +33,14 @@ const InterfaceSection = () => {
             transition={{ duration: 0.8 }}
             className="flex flex-col gap-8"
           >
-            <span className="mono-label text-secondary">[ TERMINAL REALITY ]</span>
+            <span className="mono-label text-accent">[ TERMINAL REALITY ]</span>
 
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
               Intelligence
               <br />
               at your
               <br />
-              <span className="text-secondary">fingertips.</span>
+              <span className="text-accent">fingertips.</span>
             </h2>
 
             <p className="text-primary-foreground/70 text-lg max-w-md">
