@@ -28,7 +28,7 @@ const CortexMesh = () => {
   ];
 
   const lineColor = "rgba(235, 230, 255, 0.85)";
-  const nodeColor = "rgba(255, 255, 255, 0.9)";
+  const nodeColor = "rgba(255, 255, 255, 0.95)";
   const coreColor = "rgba(255, 255, 255, 0.95)";
   const pulseColor = "rgba(220, 210, 255, 1)";
 
@@ -45,7 +45,7 @@ const CortexMesh = () => {
     <svg viewBox="0 0 640 110" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
       <defs>
         <filter id="cortex-glow">
-          <feGaussianBlur stdDeviation="4" result="blur" />
+          <feGaussianBlur stdDeviation="6" result="blur" />
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
@@ -105,7 +105,7 @@ const OrchestrationMesh = () => {
     { y: 82 },
   ];
   const lineColor = "rgba(235, 230, 255, 0.85)";
-  const nodeColor = "rgba(255, 255, 255, 0.9)";
+  const nodeColor = "rgba(255, 255, 255, 0.95)";
   const pulseColor = "rgba(255, 255, 255, 0.85)";
 
   // Offset node positions per lane (not vertically aligned)
@@ -162,7 +162,7 @@ const OrchestrationMesh = () => {
 /* ─── SOVEREIGN DATA PLANE ─── heavy immovable spine, near-static */
 const SovereignMesh = () => {
   const lineColor = "rgba(235, 230, 255, 0.85)";
-  const nodeColor = "rgba(255, 255, 255, 0.9)";
+  const nodeColor = "rgba(255, 255, 255, 0.95)";
 
   const nodes = [
     { cx: 200, cy: 55, r: 13 },
@@ -176,9 +176,9 @@ const SovereignMesh = () => {
       <line x1="100" y1="55" x2="580" y2="55"
         stroke={lineColor} strokeWidth="4" strokeLinecap="round" />
 
-      {/* Heavy nodes */}
+      {/* Heavy nodes — larger for gravitas */}
       {nodes.map((n, i) => (
-        <circle key={`sn-${i}`} cx={n.cx} cy={n.cy} r={n.r} fill={nodeColor} />
+        <circle key={`sn-${i}`} cx={n.cx} cy={n.cy} r={n.r + 2} fill={nodeColor} />
       ))}
 
       {/* Very slow opacity pulse — 9s, minimal glow */}
@@ -196,22 +196,22 @@ const SovereignMesh = () => {
 /* ─── CARD STYLES per layer ─── */
 const cardStyles = [
   {
-    // AI Cortex — brightest
-    bg: "rgba(90, 50, 140, 0.45)",
-    border: "1px solid rgba(255, 255, 255, 0.12)",
-    shadow: "0 20px 60px rgba(10, 5, 25, 0.35)",
+    // AI Cortex — smartest: brightest glass, lightest feel
+    bg: "rgba(100, 60, 155, 0.42)",
+    border: "1px solid rgba(255, 255, 255, 0.14)",
+    shadow: "0 20px 60px rgba(10, 5, 25, 0.3)",
   },
   {
-    // Orchestration — neutral
-    bg: "rgba(90, 50, 140, 0.45)",
-    border: "1px solid rgba(255, 255, 255, 0.12)",
+    // Orchestration — busiest: neutral mid-tone
+    bg: "rgba(85, 48, 135, 0.45)",
+    border: "1px solid rgba(255, 255, 255, 0.11)",
     shadow: "0 18px 55px rgba(10, 5, 25, 0.38)",
   },
   {
-    // Sovereign — darkest, heavier
-    bg: "rgba(90, 50, 140, 0.45)",
-    border: "1px solid rgba(255, 255, 255, 0.12)",
-    shadow: "0 18px 60px rgba(10, 5, 25, 0.48)",
+    // Sovereign — heaviest: darkest, densest
+    bg: "rgba(70, 38, 120, 0.52)",
+    border: "1px solid rgba(255, 255, 255, 0.09)",
+    shadow: "0 22px 65px rgba(10, 5, 25, 0.55)",
   },
 ];
 
