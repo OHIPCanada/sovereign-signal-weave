@@ -20,12 +20,11 @@ const layers: LayerConfig[] = [
     speed: 70,
     pathD: "M 30 45 C 120 20, 260 70, 370 40 S 520 55, 600 35",
     nodes: [
-      { cx: 150, cy: 33 },
+      { cx: 280, cy: 42 },
       { cx: 370, cy: 40 },
-      { cx: 520, cy: 50 },
     ],
-    lineColor: "rgba(200, 180, 255, 0.5)",
-    nodeColor: "rgba(220, 200, 255, 0.8)",
+    lineColor: "rgba(230, 220, 255, 0.55)",
+    nodeColor: "rgba(245, 235, 255, 0.8)",
   },
   {
     label: "Workflow Orchestration",
@@ -65,11 +64,11 @@ const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => 
       transition={{ delay: index * 0.15, duration: 0.6, ease: "easeOut" }}
       className="relative rounded-[18px] overflow-hidden"
       style={{
-        background: "rgba(255, 255, 255, 0.06)",
-        border: "1px solid rgba(230, 230, 250, 0.18)",
+        background: index === 0 ? "rgba(255, 255, 255, 0.09)" : "rgba(255, 255, 255, 0.06)",
+        border: index === 0 ? "1px solid rgba(230, 230, 250, 0.24)" : "1px solid rgba(230, 230, 250, 0.18)",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
-        boxShadow: "0 18px 60px rgba(10, 5, 25, 0.35)",
+        boxShadow: index === 0 ? "0 18px 60px rgba(10, 5, 25, 0.4)" : "0 18px 60px rgba(10, 5, 25, 0.35)",
       }}
     >
       {/* Subtle grid */}
@@ -95,91 +94,57 @@ const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => 
             </filter>
           </defs>
 
-          {/* Animated group */}
           <g>
-            {/* Glow path */}
-            <path
-              d={layer.pathD}
-              fill="none"
-              stroke={layer.lineColor}
-              strokeWidth={8}
-              opacity={0.3}
-              filter={`url(#glow-${index})`}
-            >
-              <animateTransform
-                attributeName="transform"
-                type="translate"
-                from="0 0"
-                to={`${640 * layer.translatePercent / 100} 0`}
-                dur={`${layer.speed}s`}
-                repeatCount="indefinite"
-              />
-            </path>
-
-            {/* Main path */}
-            <path
-              d={layer.pathD}
-              fill="none"
-              stroke={layer.lineColor}
-              strokeWidth={1.8}
-              strokeLinecap="round"
-            >
-              <animateTransform
-                attributeName="transform"
-                type="translate"
-                from="0 0"
-                to={`${640 * layer.translatePercent / 100} 0`}
-                dur={`${layer.speed}s`}
-                repeatCount="indefinite"
-              />
-            </path>
-
-            {/* Second subtle path */}
-            <path
-              d={layer.pathD}
-              fill="none"
-              stroke={layer.lineColor}
-              strokeWidth={1}
-              strokeLinecap="round"
-              opacity={0.4}
-              transform="translate(0, 18)"
-            >
-              <animateTransform
-                attributeName="transform"
-                type="translate"
-                from="0 18"
-                to={`${640 * layer.translatePercent / 100} 18`}
-                dur={`${layer.speed}s`}
-                repeatCount="indefinite"
-              />
-            </path>
-
-            {/* Checkpoint nodes */}
-            {layer.nodes.map((node, ni) => (
-              <circle
-                key={ni}
-                cx={node.cx}
-                cy={node.cy}
-                r={ni === 0 ? 5 : ni === 1 ? 7 : 6}
-                fill={layer.nodeColor}
-              >
-                <animateTransform
-                  attributeName="transform"
-                  type="translate"
-                  from="0 0"
-                  to={`${640 * layer.translatePercent / 100} 0`}
-                  dur={`${layer.speed}s`}
-                  repeatCount="indefinite"
-                />
-                <animate
-                  attributeName="opacity"
-                  values="0.6;1;0.6"
-                  dur="5s"
-                  repeatCount="indefinite"
-                  begin={`${ni * 1.2}s`}
-                />
-              </circle>
-            ))}
+            {/* AI Cortex: converging multi-path system */}
+            {index === 0 ? (
+              <>
+                {/* Path 1 — upper arc converging to center */}
+                <path d="M 10 25 C 100 15, 200 30, 320 42 S 500 38, 630 30" fill="none" stroke={layer.lineColor} strokeWidth={2.2} strokeLinecap="round">
+                  <animateTransform attributeName="transform" type="translate" from="-20 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                {/* Path 2 — main center line */}
+                <path d="M 5 50 C 130 55, 250 38, 320 43 S 480 48, 635 45" fill="none" stroke={layer.lineColor} strokeWidth={2} strokeLinecap="round" opacity={0.7}>
+                  <animateTransform attributeName="transform" type="translate" from="-20 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                {/* Path 3 — lower arc converging to center */}
+                <path d="M 15 68 C 120 72, 220 55, 320 44 S 490 50, 625 60" fill="none" stroke={layer.lineColor} strokeWidth={1.6} strokeLinecap="round" opacity={0.5}>
+                  <animateTransform attributeName="transform" type="translate" from="-20 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                {/* Glow behind convergence zone */}
+                <circle cx="320" cy="43" r="18" fill="rgba(230, 220, 255, 0.06)" filter={`url(#glow-${index})`}>
+                  <animateTransform attributeName="transform" type="translate" from="-20 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </circle>
+                {/* Convergence node — primary decision point */}
+                <circle cx="320" cy="43" r="7" fill={layer.nodeColor}>
+                  <animateTransform attributeName="transform" type="translate" from="-20 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.55;1;0.55" dur="7s" repeatCount="indefinite" />
+                </circle>
+                {/* Secondary checkpoint */}
+                <circle cx="480" cy="44" r="5" fill={layer.nodeColor} opacity={0.6}>
+                  <animateTransform attributeName="transform" type="translate" from="-20 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                  <animate attributeName="opacity" values="0.45;0.85;0.45" dur="8s" repeatCount="indefinite" begin="3s" />
+                </circle>
+              </>
+            ) : (
+              <>
+                {/* Default rendering for other cards */}
+                <path d={layer.pathD} fill="none" stroke={layer.lineColor} strokeWidth={8} opacity={0.3} filter={`url(#glow-${index})`}>
+                  <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                <path d={layer.pathD} fill="none" stroke={layer.lineColor} strokeWidth={1.8} strokeLinecap="round">
+                  <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                <path d={layer.pathD} fill="none" stroke={layer.lineColor} strokeWidth={1} strokeLinecap="round" opacity={0.4} transform="translate(0, 18)">
+                  <animateTransform attributeName="transform" type="translate" from="0 18" to={`${640 * layer.translatePercent / 100} 18`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                </path>
+                {layer.nodes.map((node, ni) => (
+                  <circle key={ni} cx={node.cx} cy={node.cy} r={ni === 0 ? 5 : ni === 1 ? 7 : 6} fill={layer.nodeColor}>
+                    <animateTransform attributeName="transform" type="translate" from="0 0" to={`${640 * layer.translatePercent / 100} 0`} dur={`${layer.speed}s`} repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="5s" repeatCount="indefinite" begin={`${ni * 1.2}s`} />
+                  </circle>
+                ))}
+              </>
+            )}
           </g>
         </svg>
       </div>
