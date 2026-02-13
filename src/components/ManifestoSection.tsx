@@ -1,99 +1,113 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-/* ─── AI CORTEX ─── neural mesh with convergence to massive core */
-const CortexViz = () => (
-  <svg viewBox="0 0 640 220" className="w-full h-full block">
-    <defs>
-      <radialGradient id="coreGlow" cx="50%" cy="50%" r="55%">
-        <stop offset="0%" stopColor="rgba(255,255,255,0.70)" />
-        <stop offset="35%" stopColor="rgba(199,163,255,0.55)" />
-        <stop offset="70%" stopColor="rgba(129,83,255,0.25)" />
-        <stop offset="100%" stopColor="rgba(129,83,255,0.0)" />
-      </radialGradient>
-    </defs>
+/* ─── AI CORTEX ─── Particle Ring (from Section 4) */
+const CortexViz = () => {
+  const dots = Array.from({ length: 100 }, (_, i) => {
+    const angle = (i / 100) * Math.PI * 2;
+    const r = 70;
+    const x = 100 + Math.cos(angle) * r;
+    const y = 100 + Math.sin(angle) * r;
+    const isGap = i % 12 === 0 || i % 17 === 0;
+    const isCoral = i === 23 || i === 67;
+    return { x, y, isGap, isCoral };
+  });
 
-    {/* Core glow */}
-    <circle cx="330" cy="88" r="42" fill="url(#coreGlow)" style={{ filter: "drop-shadow(0 0 10px rgba(255,255,255,0.22))" }} />
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div
+        className="absolute"
+        style={{
+          width: 60,
+          height: 60,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(123,97,255,.45), rgba(123,97,255,.1) 60%, transparent 80%)",
+          animation: "glowPulse 3.5s ease-in-out infinite",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+      <svg
+        width="200"
+        height="200"
+        viewBox="0 0 200 200"
+        style={{ animation: "slowSpin 50s linear infinite" }}
+      >
+        {dots.map((d, i) =>
+          d.isGap ? null : (
+            <circle
+              key={i}
+              cx={d.x}
+              cy={d.y}
+              r={d.isCoral ? 2.2 : 1.6}
+              fill={d.isCoral ? "rgba(212,97,107,.85)" : "rgba(123,97,255,.7)"}
+              opacity={0.5 + Math.random() * 0.4}
+            />
+          )
+        )}
+      </svg>
+    </div>
+  );
+};
 
-    {/* Edges */}
-    <g className="s2-cortex-edges">
-      <line x1="150" y1="90" x2="250" y2="45" />
-      <line x1="250" y1="45" x2="330" y2="88" />
-      <line x1="330" y1="88" x2="420" y2="40" />
-      <line x1="420" y1="40" x2="520" y2="85" />
-      <line x1="520" y1="85" x2="420" y2="145" />
-      <line x1="420" y1="145" x2="330" y2="88" />
-      <line x1="330" y1="88" x2="240" y2="145" />
-      <line x1="240" y1="145" x2="150" y2="90" />
-      <line x1="250" y1="45" x2="420" y2="40" />
-      <line x1="240" y1="145" x2="420" y2="145" />
-    </g>
+/* ─── WORKFLOW ORCHESTRATION ─── Rails with packets (from Section 4) */
+const WorkflowViz = () => {
+  const rails = [
+    { y: 40, packets: [{ delay: 0, dur: 10 }, { delay: 4, dur: 10 }, { delay: 7.5, dur: 10 }] },
+    { y: 70, packets: [{ delay: 1, dur: 12 }, { delay: 6, dur: 12 }] },
+    { y: 100, packets: [{ delay: 2, dur: 8 }, { delay: 5, dur: 8 }, { delay: 9, dur: 8 }] },
+  ];
 
-    {/* Nodes */}
-    <g className="s2-cortex-nodes">
-      <circle cx="150" cy="90" r="7" />
-      <circle cx="250" cy="45" r="6" />
-      <circle cx="420" cy="40" r="6" />
-      <circle cx="520" cy="85" r="7" />
-      <circle cx="420" cy="145" r="7" />
-      <circle cx="240" cy="145" r="7" />
-      {/* micro spark nodes */}
-      <circle className="s2-micro" cx="285" cy="62" r="3" />
-      <circle className="s2-micro" cx="470" cy="60" r="3" />
-      <circle className="s2-micro" cx="475" cy="120" r="3" />
-    </g>
+  return (
+    <div className="relative w-full h-full flex items-center justify-center">
+      <svg width="100%" height="100%" viewBox="0 0 400 140" preserveAspectRatio="xMidYMid meet">
+        {rails.map((rail, ri) => (
+          <g key={ri}>
+            <line x1="20" y1={rail.y} x2="380" y2={rail.y} stroke="rgba(255,255,255,.08)" strokeWidth="1" />
+            {rail.packets.map((pkt, pi) => (
+              <circle key={pi} r="4" cy={rail.y} fill="rgba(123,97,255,.65)">
+                <animate attributeName="cx" values="20;380" dur={`${pkt.dur}s`} begin={`${pkt.delay}s`} repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0;.7;.7;0" dur={`${pkt.dur}s`} begin={`${pkt.delay}s`} repeatCount="indefinite" />
+              </circle>
+            ))}
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+};
 
-    {/* Pulses converging to center */}
-    {[
-      { cx: 150, cy: 90, delay: 0 },
-      { cx: 420, cy: 40, delay: 3.5 },
-      { cx: 520, cy: 85, delay: 7 },
-      { cx: 240, cy: 145, delay: 10.5 },
-    ].map((p, i) => (
-      <g key={i}>
-        <circle r="5" fill="rgba(220,210,255,1)" style={{ filter: "drop-shadow(0 0 6px rgba(186,145,255,0.4))" }}>
-          <animate attributeName="cx" values={`${p.cx};330`} dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1" />
-          <animate attributeName="cy" values={`${p.cy};88`} dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1" />
-          <animate attributeName="opacity" values="0;0.9;0.8;0" keyTimes="0;0.1;0.8;1" dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite" />
-        </circle>
-        <circle cx="330" cy="88" r="22" fill="rgba(220,210,255,1)" opacity="0">
-          <animate attributeName="opacity" values="0;0;0.3;0" keyTimes="0;0.75;0.9;1" dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite" />
-        </circle>
-      </g>
-    ))}
-  </svg>
-);
-
-/* ─── WORKFLOW ORCHESTRATION ─── 3 lanes with offset nodes + pulses */
-const WorkflowViz = () => (
-  <div className="absolute inset-0" style={{ padding: 18 }}>
-    {/* 3 horizontal lines */}
-    <div className="s2-wf-line" style={{ top: 36 }} />
-    <div className="s2-wf-line" style={{ top: 62, opacity: 0.8 }} />
-    <div className="s2-wf-line" style={{ top: 88, opacity: 0.65 }} />
-
-    {/* Checkpoint nodes */}
-    <span className="s2-wf-node" style={{ top: 31, left: "28%" }} />
-    <span className="s2-wf-node" style={{ top: 57, left: "55%" }} />
-    <span className="s2-wf-node" style={{ top: 83, left: "78%" }} />
-
-    {/* Moving pulses */}
-    <span className="s2-wf-pulse s2-wf-pulse-1" style={{ top: 31 }} />
-    <span className="s2-wf-pulse s2-wf-pulse-2" style={{ top: 57 }} />
-  </div>
-);
-
-/* ─── SOVEREIGN DATA PLANE ─── heavy spine with gate nodes */
+/* ─── SOVEREIGN DATA PLANE ─── Vault Field (from Section 4) */
 const DataPlaneViz = () => (
-  <div className="absolute inset-0" style={{ padding: 18 }}>
-    {/* Heavy horizontal rail */}
-    <div className="s2-dp-rail" />
-
-    {/* Gate nodes */}
-    <span className="s2-dp-gate" style={{ left: "30%", animationDelay: "0s" }} />
-    <span className="s2-dp-gate" style={{ left: "57%", animationDelay: "0.6s" }} />
-    <span className="s2-dp-gate" style={{ left: "82%", animationDelay: "1.2s" }} />
+  <div className="relative w-full h-full flex items-center justify-center">
+    <div
+      className="absolute"
+      style={{
+        width: 100,
+        height: 100,
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(212,97,107,.45), rgba(232,150,124,.2), rgba(242,193,174,0))",
+        filter: "blur(18px)",
+        opacity: 0.5,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    />
+    <svg width="220" height="170" viewBox="0 0 280 220">
+      <rect x="30" y="20" width="220" height="180" rx="20" fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="1" />
+      {Array.from({ length: 9 }, (_, i) => (
+        <line key={`v${i}`} x1={30 + (i + 1) * 22} y1="20" x2={30 + (i + 1) * 22} y2="200" stroke="rgba(255,255,255,.04)" strokeWidth="1" />
+      ))}
+      {Array.from({ length: 7 }, (_, i) => (
+        <line key={`h${i}`} x1="30" y1={20 + (i + 1) * 22.5} x2="250" y2={20 + (i + 1) * 22.5} stroke="rgba(255,255,255,.04)" strokeWidth="1" />
+      ))}
+      <circle cx="140" cy="110" r="8" fill="rgba(212,97,107,.6)">
+        <animate attributeName="opacity" values=".5;.85;.5" dur="3.5s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="140" cy="110" r="18" fill="none" stroke="rgba(212,97,107,.2)" strokeWidth="1" />
+    </svg>
   </div>
 );
 
