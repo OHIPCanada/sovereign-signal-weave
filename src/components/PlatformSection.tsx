@@ -313,7 +313,7 @@ const PlatformSection = () => {
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              background: "rgba(255, 255, 255, 0.65)",
+              background: "rgba(255, 255, 255, 0.25)",
               backdropFilter: "blur(28px)",
               WebkitBackdropFilter: "blur(28px)",
               borderRadius: "36px",
