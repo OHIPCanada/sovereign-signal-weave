@@ -403,3 +403,8 @@
   .delay-600 { animation-delay: 600ms; }
   .delay-700 { animation-delay: 700ms; }
 }
+
+@keyframes backgroundShift {
+  0% { background-position: 30% 20%; }
+  100% { background-position: 35% 25%; }
+}

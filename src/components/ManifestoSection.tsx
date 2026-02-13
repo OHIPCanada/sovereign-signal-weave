@@ -284,29 +284,31 @@ const ManifestoSection = () => {
       className="relative py-32 md:py-40 lg:py-48 overflow-hidden"
       style={{
         background: `
-          radial-gradient(circle at 30% 30%, rgba(123, 97, 255, 0.25) 0%, rgba(45, 27, 78, 0.9) 60%),
-          linear-gradient(180deg, #2D1B4E 0%, #3A1F6A 50%, #1E0F35 100%)
+          radial-gradient(circle at 25% 20%, rgba(140, 110, 255, 0.35) 0%, rgba(90, 45, 160, 0.6) 40%, rgba(45, 20, 90, 0.95) 75%),
+          linear-gradient(180deg, #2A0F4F 0%, #1A0935 100%)
         `,
+        backgroundSize: '120% 120%',
+        animation: 'backgroundShift 18s ease-in-out infinite alternate',
       }}
     >
       <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-12 lg:gap-20 items-center">
           {/* Left column — text */}
           <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
-            <p className="mb-5" style={{ color: "rgba(255, 255, 255, 0.5)", letterSpacing: "0.2em", fontSize: "12px", fontFamily: "monospace", textTransform: "uppercase" }}>
+            <p className="mb-8" style={{ color: "rgba(255, 255, 255, 0.5)", letterSpacing: "0.2em", fontSize: "12px", fontFamily: "monospace", textTransform: "uppercase" }}>
               THE INTELLIGENCE LAYER
             </p>
             <h2
-              className="tracking-tight mb-6"
-              style={{ color: "#F4F1FF", fontWeight: 700, fontSize: "clamp(48px, 5vw, 72px)", lineHeight: 1.1 }}
+              className="mb-8"
+              style={{ color: "#F8F6FF", fontWeight: 800, fontSize: "clamp(56px, 6vw, 84px)", lineHeight: 1.05, letterSpacing: "-0.02em" }}
             >
-              We are the layer
+              Healthcare runs on
               <br />
-              under everything.
+              intelligence now.
             </h2>
             <p
               className=""
-              style={{ color: "rgba(255, 255, 255, 0.75)", fontWeight: 400, fontSize: "18px", lineHeight: 1.6, maxWidth: "600px" }}
+              style={{ color: "rgba(255, 255, 255, 0.82)", fontWeight: 400, fontSize: "17px", lineHeight: 1.7, maxWidth: "560px", marginTop: "24px" }}
             >
               Three system planes running beneath every clinical workflow —
               reasoning, orchestration, and sovereign data governance — engineered
