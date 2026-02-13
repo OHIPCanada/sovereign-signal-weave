@@ -2,39 +2,39 @@ import { motion } from "framer-motion";
 
 /* ─── DATA (pulled inward for engineered spacing) ─── */
 const inputNodes = [
-  { label: "EMR", x: 75, y: 400 },
-  { label: "Virtual Care", x: 200, y: 420 },
-  { label: "Patient Access", x: 340, y: 435 },
-  { label: "Labs", x: 500, y: 420 },
-  { label: "Scheduling", x: 650, y: 400 },
+  { label: "EMR", x: 75, y: 430 },
+  { label: "Virtual Care", x: 200, y: 450 },
+  { label: "Patient Access", x: 340, y: 465 },
+  { label: "Labs", x: 500, y: 450 },
+  { label: "Scheduling", x: 650, y: 430 },
 ];
 
 const outputNodes = [
-  { label: "Clinical Ops", x: 75, y: 90 },
-  { label: "Care Pathways", x: 210, y: 70 },
-  { label: "Automation", x: 400, y: 58 },
-  { label: "Audit", x: 540, y: 70 },
-  { label: "Policy", x: 665, y: 90 },
+  { label: "Clinical Ops", x: 75, y: 60 },
+  { label: "Care Pathways", x: 210, y: 42 },
+  { label: "Automation", x: 400, y: 30 },
+  { label: "Audit", x: 540, y: 42 },
+  { label: "Policy", x: 665, y: 60 },
 ];
 
 const core = { x: 370, y: 248 };
 
 /* Signal routes: input→cortex (half path) for staggered firing */
 const signalPaths = [
-  { from: 0, path: `M75,400 Q200,330 370,248`, dur: "1.8s", delay: "0s" },
-  { from: 1, path: `M200,420 Q280,340 370,248`, dur: "1.6s", delay: "5s" },
-  { from: 2, path: `M340,435 Q355,345 370,248`, dur: "1.4s", delay: "2.5s" },
-  { from: 3, path: `M500,420 Q440,340 370,248`, dur: "1.6s", delay: "8s" },
-  { from: 4, path: `M650,400 Q520,330 370,248`, dur: "1.8s", delay: "4s" },
+  { from: 0, path: `M75,430 Q200,345 370,248`, dur: "1.8s", delay: "0s" },
+  { from: 1, path: `M200,450 Q280,355 370,248`, dur: "1.6s", delay: "5s" },
+  { from: 2, path: `M340,465 Q355,360 370,248`, dur: "1.4s", delay: "2.5s" },
+  { from: 3, path: `M500,450 Q440,355 370,248`, dur: "1.6s", delay: "8s" },
+  { from: 4, path: `M650,430 Q520,345 370,248`, dur: "1.8s", delay: "4s" },
 ];
 
 /* Outgoing routes: cortex→output */
 const outgoingPaths = [
-  { path: `M370,248 Q200,170 75,90`, dur: "1.8s", delay: "2s" },
-  { path: `M370,248 Q290,160 210,70`, dur: "1.6s", delay: "7s" },
-  { path: `M370,248 Q385,155 400,58`, dur: "1.4s", delay: "4.5s" },
-  { path: `M370,248 Q460,160 540,70`, dur: "1.6s", delay: "10s" },
-  { path: `M370,248 Q530,170 665,90`, dur: "1.8s", delay: "6s" },
+  { path: `M370,248 Q200,155 75,60`, dur: "1.8s", delay: "2s" },
+  { path: `M370,248 Q290,145 210,42`, dur: "1.6s", delay: "7s" },
+  { path: `M370,248 Q385,140 400,30`, dur: "1.4s", delay: "4.5s" },
+  { path: `M370,248 Q460,145 540,42`, dur: "1.6s", delay: "10s" },
+  { path: `M370,248 Q530,155 665,60`, dur: "1.8s", delay: "6s" },
 ];
 
 /* ─── ARCHITECTURE VISUALIZATION ─── */
