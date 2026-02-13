@@ -3,73 +3,67 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 /* ─── AI CORTEX ─── neural mesh with converging pulses */
 const CortexPlane = () => {
-  const center = { cx: 300, cy: 60 };
+  const center = { cx: 280, cy: 55 };
   const nodes = [
-    { cx: 140, cy: 25 }, { cx: 180, cy: 85 }, { cx: 230, cy: 30 },
-    { cx: 260, cy: 90 }, { cx: 340, cy: 90 }, { cx: 370, cy: 30 },
-    { cx: 420, cy: 85 }, { cx: 460, cy: 25 }, { cx: 200, cy: 55 },
-    { cx: 400, cy: 55 }, { cx: 280, cy: 20 }, { cx: 320, cy: 95 },
+    { cx: 130, cy: 25 }, { cx: 180, cy: 85 },
+    { cx: 240, cy: 20 }, { cx: 340, cy: 90 },
+    { cx: 390, cy: 30 }, { cx: 430, cy: 70 },
+    { cx: 200, cy: 55 }, { cx: 360, cy: 50 },
+    { cx: 300, cy: 90 }, { cx: 260, cy: 65 },
   ];
 
-  const crossEdges: [number, number][] = [
-    [0, 2], [2, 10], [10, 5], [5, 7], [7, 9], [9, 5],
-    [0, 8], [8, 1], [1, 3], [3, 11], [11, 4], [4, 6], [6, 9],
-    [8, 2], [3, 8], [4, 9], [11, 3], [10, 11],
+  const edges: [number, number][] = [
+    [0, 2], [2, 4], [4, 5], [0, 6], [6, 1],
+    [1, 8], [8, 3], [3, 7], [7, 5], [9, 6],
+    [9, 8], [2, 9], [7, 4],
   ];
 
-  const pulseIndices = [0, 3, 7, 10];
+  const pulseIndices = [0, 3, 5];
 
   return (
-    <svg viewBox="0 0 600 120" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+    <svg viewBox="0 0 500 110" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
       <defs>
-        <filter id="cortex-glow-v2">
-          <feGaussianBlur stdDeviation="8" result="blur" />
+        <filter id="cortex-glow-v3">
+          <feGaussianBlur stdDeviation="6" result="blur" />
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
-      </defs>
-
-      {/* Connections to center */}
-      {nodes.map((n, i) => (
-        <line key={`cc-${i}`} x1={center.cx} y1={center.cy} x2={n.cx} y2={n.cy}
-          stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round">
-          <animate attributeName="opacity" values="0.4;0.7;0.4" dur="6s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
-        </line>
-      ))}
-
-      {/* Cross connections */}
-      {crossEdges.map(([a, b], i) => (
-        <line key={`ce-${i}`} x1={nodes[a].cx} y1={nodes[a].cy}
-          x2={nodes[b].cx} y2={nodes[b].cy}
-          stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" opacity="0.5" />
-      ))}
-
-      {/* Center core with glow */}
-      <circle cx={center.cx} cy={center.cy} r="16" fill="url(#cortex-core-grad)" filter="url(#cortex-glow-v2)">
-        <animate attributeName="r" values="16;18.5;16" dur="4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
-      </circle>
-      <defs>
-        <radialGradient id="cortex-core-grad" cx="50%" cy="50%" r="50%">
+        <radialGradient id="cortex-core-grad-v3" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#FFFFFF" />
           <stop offset="100%" stopColor="#7B61FF" />
         </radialGradient>
       </defs>
 
-      {/* Peripheral nodes */}
       {nodes.map((n, i) => (
-        <circle key={`n-${i}`} cx={n.cx} cy={n.cy} r="4" fill="rgba(255,255,255,0.8)" />
+        <line key={`cc-${i}`} x1={center.cx} y1={center.cy} x2={n.cx} y2={n.cy}
+          stroke="rgba(255,255,255,0.55)" strokeWidth="1.5" strokeLinecap="round">
+          <animate attributeName="opacity" values="0.4;0.7;0.4" dur="6s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
+        </line>
       ))}
 
-      {/* Converging pulses */}
+      {edges.map(([a, b], i) => (
+        <line key={`ce-${i}`} x1={nodes[a].cx} y1={nodes[a].cy}
+          x2={nodes[b].cx} y2={nodes[b].cy}
+          stroke="rgba(255,255,255,0.45)" strokeWidth="1.5" strokeLinecap="round" />
+      ))}
+
+      <circle cx={center.cx} cy={center.cy} r="14" fill="url(#cortex-core-grad-v3)" filter="url(#cortex-glow-v3)">
+        <animate attributeName="r" values="14;16;14" dur="4s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1;0.4 0 0.6 1" />
+      </circle>
+
+      {nodes.map((n, i) => (
+        <circle key={`n-${i}`} cx={n.cx} cy={n.cy} r="3.5" fill="rgba(255,255,255,0.75)" />
+      ))}
+
       {pulseIndices.map((idx, i) => (
-        <circle key={`p-${i}`} r="3.5" fill="rgba(255,255,255,0.85)" filter="url(#cortex-glow-v2)">
+        <circle key={`p-${i}`} r="3" fill="rgba(255,255,255,0.85)" filter="url(#cortex-glow-v3)">
           <animate attributeName="cx" values={`${nodes[idx].cx};${center.cx}`}
-            dur="2.5s" begin={`${i * 3.5}s`} repeatCount="indefinite"
+            dur="2.5s" begin={`${i * 4}s`} repeatCount="indefinite"
             calcMode="spline" keySplines="0.4 0 0.2 1" />
           <animate attributeName="cy" values={`${nodes[idx].cy};${center.cy}`}
-            dur="2.5s" begin={`${i * 3.5}s`} repeatCount="indefinite"
+            dur="2.5s" begin={`${i * 4}s`} repeatCount="indefinite"
             calcMode="spline" keySplines="0.4 0 0.2 1" />
           <animate attributeName="opacity" values="0;0.9;0.8;0"
-            keyTimes="0;0.1;0.8;1" dur="2.5s" begin={`${i * 3.5}s`}
+            keyTimes="0;0.1;0.8;1" dur="2.5s" begin={`${i * 4}s`}
             repeatCount="indefinite" />
         </circle>
       ))}
@@ -77,83 +71,74 @@ const CortexPlane = () => {
   );
 };
 
-/* ─── WORKFLOW ORCHESTRATION ─── 3 horizontal rails with traveling nodes */
+/* ─── WORKFLOW ORCHESTRATION ─── 3 rails with traveling nodes */
 const OrchestrationPlane = () => {
   const rails = [
     { y: 25, speed: "18s" },
-    { y: 60, speed: "22s" },
-    { y: 95, speed: "26s" },
+    { y: 55, speed: "22s" },
+    { y: 85, speed: "26s" },
   ];
 
   const railNodes = [
-    [{ x: 120 }, { x: 260 }, { x: 400 }, { x: 520 }],
-    [{ x: 80 }, { x: 200 }, { x: 350 }, { x: 480 }],
-    [{ x: 150 }, { x: 300 }, { x: 430 }],
+    [{ x: 100 }, { x: 260 }, { x: 420 }],
+    [{ x: 160 }, { x: 320 }, { x: 450 }],
+    [{ x: 130 }, { x: 290 }],
   ];
 
-  // Decision divergence path
-  const diverge = { from: { x: 260, y: 25 }, to: { x: 200, y: 60 } };
-
   return (
-    <svg viewBox="0 0 600 120" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+    <svg viewBox="0 0 500 110" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
       <defs>
-        <filter id="orch-node-glow">
-          <feGaussianBlur stdDeviation="4" result="blur" />
+        <filter id="orch-glow-v3">
+          <feGaussianBlur stdDeviation="3.5" result="blur" />
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
 
-      {/* Horizontal rails */}
       {rails.map((r, i) => (
-        <line key={`rail-${i}`} x1="40" y1={r.y} x2="570" y2={r.y}
+        <line key={`rail-${i}`} x1="30" y1={r.y} x2="480" y2={r.y}
           stroke="rgba(255,255,255,0.6)" strokeWidth="2" strokeLinecap="round" />
       ))}
 
-      {/* Divergence path */}
-      <line x1={diverge.from.x} y1={diverge.from.y} x2={diverge.to.x} y2={diverge.to.y}
-        stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeDasharray="6 4" />
+      {/* Divergence */}
+      <line x1="260" y1="25" x2="320" y2="55"
+        stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" strokeDasharray="6 4" />
 
-      {/* Fixed nodes */}
       {railNodes.map((nodes, ri) =>
         nodes.map((n, ni) => (
-          <circle key={`n-${ri}-${ni}`} cx={n.x} cy={rails[ri].y} r="5"
-            fill="rgba(255,255,255,0.9)" filter="url(#orch-node-glow)" />
+          <circle key={`n-${ri}-${ni}`} cx={n.x} cy={rails[ri].y} r="4.5"
+            fill="rgba(255,255,255,0.85)" filter="url(#orch-glow-v3)" />
         ))
       )}
 
-      {/* Traveling pulses at different speeds */}
       {rails.map((r, i) => (
-        <circle key={`pulse-${i}`} r="4" fill="rgba(255,255,255,0.8)" cy={r.y}>
-          <animate attributeName="cx" values="40;570" dur={r.speed}
-            begin={`${i * 1.2}s`} repeatCount="indefinite" calcMode="linear" />
-          <animate attributeName="opacity" values="0;0.85;0.85;0"
+        <circle key={`pulse-${i}`} r="3.5" fill="rgba(255,255,255,0.75)" cy={r.y}>
+          <animate attributeName="cx" values="30;480" dur={r.speed}
+            begin={`${i * 1.5}s`} repeatCount="indefinite" calcMode="linear" />
+          <animate attributeName="opacity" values="0;0.8;0.8;0"
             keyTimes="0;0.05;0.9;1" dur={r.speed}
-            begin={`${i * 1.2}s`} repeatCount="indefinite" />
+            begin={`${i * 1.5}s`} repeatCount="indefinite" />
         </circle>
       ))}
     </svg>
   );
 };
 
-/* ─── SOVEREIGN DATA PLANE ─── single heavy spine, near-static */
+/* ─── SOVEREIGN DATA PLANE ─── single heavy spine */
 const SovereignPlane = () => {
   const nodes = [
-    { cx: 120, cy: 60, r: 7 },
-    { cx: 300, cy: 60, r: 9 },
-    { cx: 480, cy: 60, r: 6 },
+    { cx: 100, cy: 55, r: 7 },
+    { cx: 260, cy: 55, r: 9 },
+    { cx: 420, cy: 55, r: 6 },
   ];
 
   return (
-    <svg viewBox="0 0 600 120" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
-      {/* Heavy spine */}
-      <line x1="60" y1="60" x2="540" y2="60"
+    <svg viewBox="0 0 500 110" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+      <line x1="50" y1="55" x2="460" y2="55"
         stroke="rgba(255,255,255,0.75)" strokeWidth="3" strokeLinecap="round" />
 
-      {/* Anchor nodes */}
       {nodes.map((n, i) => (
         <g key={`sn-${i}`}>
           <circle cx={n.cx} cy={n.cy} r={n.r} fill="rgba(255,255,255,0.9)" />
-          {/* Slow glow pulse */}
           <circle cx={n.cx} cy={n.cy} r={n.r + 4} fill="none"
             stroke="rgba(255,255,255,0.3)" strokeWidth="1.5">
             <animate attributeName="opacity" values="0.6;0.9;0.6"
@@ -172,30 +157,33 @@ const layerData = [
   { label: "Sovereign Data Plane", subtitle: "Storage · Policy · Jurisdictional Control", Plane: SovereignPlane },
 ];
 
-/* ─── INFRASTRUCTURE BAND ─── label left, plane right, no card */
-const InfrastructureBand = ({ label, subtitle, Plane, index }: {
+/* ─── SYSTEM PLANE ROW ─── label left, visualization right, inside unified frame */
+const SystemPlaneRow = ({ label, subtitle, Plane, index }: {
   label: string; subtitle: string; Plane: React.FC; index: number;
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 16 }}
     whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-40px" }}
-    transition={{ delay: index * 0.18, duration: 0.6, ease: "easeOut" }}
-    className="flex items-center gap-6 md:gap-10"
-    style={{ height: "120px" }}
+    viewport={{ once: true, margin: "-30px" }}
+    transition={{ delay: index * 0.15, duration: 0.5, ease: "easeOut" }}
+    className="flex items-center gap-6"
+    style={{
+      padding: "40px 48px",
+      ...(index > 0 ? { borderTop: "1px solid rgba(255,255,255,0.08)" } : {}),
+    }}
   >
-    {/* Label — left of plane */}
-    <div className="flex-shrink-0 w-[140px] md:w-[180px]">
-      <p style={{ color: "#FFFFFF", fontWeight: 600, fontSize: "20px", lineHeight: 1.3 }}>
+    {/* Label */}
+    <div className="flex-shrink-0 w-[130px] md:w-[160px]">
+      <p style={{ color: "#FFFFFF", fontWeight: 600, fontSize: "18px", lineHeight: 1.3, fontFamily: "Inter, sans-serif" }}>
         {label}
       </p>
-      <p style={{ color: "rgba(255,255,255,0.65)", fontWeight: 400, fontSize: "14px", marginTop: "4px" }}>
+      <p style={{ color: "rgba(255,255,255,0.65)", fontWeight: 400, fontSize: "13px", marginTop: "4px", fontFamily: "Inter, sans-serif" }}>
         {subtitle}
       </p>
     </div>
 
-    {/* Plane visualization — no border, no card, no container */}
-    <div className="flex-1 h-full">
+    {/* Visualization */}
+    <div className="flex-1" style={{ height: "110px" }}>
       <Plane />
     </div>
   </motion.div>
@@ -243,8 +231,8 @@ const ManifestoSection = () => {
             <h2 style={{
               color: "#F8F6FF",
               fontWeight: 800,
-              fontSize: "clamp(48px, 6vw, 96px)",
-              lineHeight: 1.05,
+              fontSize: "clamp(42px, 5vw, 78px)",
+              lineHeight: 1.1,
               letterSpacing: "-0.02em",
               fontFamily: "Inter, sans-serif",
             }}>
@@ -253,7 +241,7 @@ const ManifestoSection = () => {
               intelligence now.
             </h2>
             <p style={{
-              color: "rgba(255,255,255,0.82)",
+              color: "rgba(255,255,255,0.88)",
               fontWeight: 400,
               fontSize: "18px",
               lineHeight: 1.6,
@@ -267,17 +255,32 @@ const ManifestoSection = () => {
             </p>
           </motion.div>
 
-          {/* Right — three infrastructure planes */}
-          <div className="relative flex flex-col justify-center" style={{ gap: "120px" }}>
-            {layerData.map((layer, i) => (
-              <InfrastructureBand
-                key={layer.label}
-                label={layer.label}
-                subtitle={layer.subtitle}
-                Plane={layer.Plane}
-                index={i}
-              />
-            ))}
+          {/* Right — unified system frame */}
+          <div className="relative flex items-center justify-center">
+            <div
+              style={{
+                width: "100%",
+                minHeight: "70vh",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: "28px",
+                background: "linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
+                backdropFilter: "blur(4px)",
+                WebkitBackdropFilter: "blur(4px)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              {layerData.map((layer, i) => (
+                <SystemPlaneRow
+                  key={layer.label}
+                  label={layer.label}
+                  subtitle={layer.subtitle}
+                  Plane={layer.Plane}
+                  index={i}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
