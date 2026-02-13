@@ -255,17 +255,8 @@ const PlatformSection = () => {
             transition={{ duration: 0.7 }}
             className="flex flex-col gap-7"
           >
-            <span
-              style={{
-                fontSize: "12px",
-                letterSpacing: "0.18em",
-                textTransform: "uppercase" as const,
-                fontWeight: 500,
-                color: "rgba(17, 17, 17, 0.55)",
-                fontFamily: "Inter, sans-serif",
-              }}
-            >
-              PLATFORM ARCHITECTURE
+            <span className="mono-label" style={{ color: "rgba(17, 17, 17, 0.55)" }}>
+              [ PLATFORM ARCHITECTURE ]
             </span>
 
             <h2 style={{

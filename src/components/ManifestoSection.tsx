@@ -300,8 +300,8 @@ const ManifestoSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-12 lg:gap-20 items-center">
           {/* Left column — text */}
           <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
-            <p className="mb-8" style={{ color: "rgba(255, 255, 255, 0.5)", letterSpacing: "0.2em", fontSize: "12px", fontFamily: "monospace", textTransform: "uppercase" }}>
-              THE INTELLIGENCE LAYER
+            <p className="mb-8 mono-label" style={{ color: "rgba(255, 255, 255, 0.5)" }}>
+              [ THE INTELLIGENCE LAYER ]
             </p>
             <h2
               className="mb-8"
