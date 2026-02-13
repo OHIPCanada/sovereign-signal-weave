@@ -2,45 +2,45 @@ import { motion } from "framer-motion";
 
 /* ─── DATA (pulled inward for engineered spacing) ─── */
 const inputNodes = [
-  { label: "EMR", x: 75, y: 430 },
-  { label: "Virtual Care", x: 200, y: 450 },
-  { label: "Patient Access", x: 340, y: 465 },
-  { label: "Labs", x: 500, y: 450 },
-  { label: "Scheduling", x: 650, y: 430 },
+  { label: "EMR", x: 75, y: 460 },
+  { label: "Virtual Care", x: 200, y: 475 },
+  { label: "Patient Access", x: 340, y: 485 },
+  { label: "Labs", x: 500, y: 475 },
+  { label: "Scheduling", x: 650, y: 460 },
 ];
 
 const outputNodes = [
-  { label: "Clinical Ops", x: 75, y: 60 },
-  { label: "Care Pathways", x: 210, y: 42 },
-  { label: "Automation", x: 400, y: 30 },
-  { label: "Audit", x: 540, y: 42 },
-  { label: "Policy", x: 665, y: 60 },
+  { label: "Clinical Ops", x: 75, y: 40 },
+  { label: "Care Pathways", x: 210, y: 25 },
+  { label: "Automation", x: 400, y: 18 },
+  { label: "Audit", x: 540, y: 25 },
+  { label: "Policy", x: 665, y: 40 },
 ];
 
 const core = { x: 370, y: 248 };
 
 /* Signal routes: input→cortex (half path) for staggered firing */
 const signalPaths = [
-  { from: 0, path: `M75,430 Q200,345 370,248`, dur: "1.8s", delay: "0s" },
-  { from: 1, path: `M200,450 Q280,355 370,248`, dur: "1.6s", delay: "5s" },
-  { from: 2, path: `M340,465 Q355,360 370,248`, dur: "1.4s", delay: "2.5s" },
-  { from: 3, path: `M500,450 Q440,355 370,248`, dur: "1.6s", delay: "8s" },
-  { from: 4, path: `M650,430 Q520,345 370,248`, dur: "1.8s", delay: "4s" },
+  { from: 0, path: `M75,460 Q200,360 370,248`, dur: "1.8s", delay: "0s" },
+  { from: 1, path: `M200,475 Q280,365 370,248`, dur: "1.6s", delay: "5s" },
+  { from: 2, path: `M340,485 Q355,370 370,248`, dur: "1.4s", delay: "2.5s" },
+  { from: 3, path: `M500,475 Q440,365 370,248`, dur: "1.6s", delay: "8s" },
+  { from: 4, path: `M650,460 Q520,360 370,248`, dur: "1.8s", delay: "4s" },
 ];
 
 /* Outgoing routes: cortex→output */
 const outgoingPaths = [
-  { path: `M370,248 Q200,155 75,60`, dur: "1.8s", delay: "2s" },
-  { path: `M370,248 Q290,145 210,42`, dur: "1.6s", delay: "7s" },
-  { path: `M370,248 Q385,140 400,30`, dur: "1.4s", delay: "4.5s" },
-  { path: `M370,248 Q460,145 540,42`, dur: "1.6s", delay: "10s" },
-  { path: `M370,248 Q530,155 665,60`, dur: "1.8s", delay: "6s" },
+  { path: `M370,248 Q200,145 75,40`, dur: "1.8s", delay: "2s" },
+  { path: `M370,248 Q290,138 210,25`, dur: "1.6s", delay: "7s" },
+  { path: `M370,248 Q385,135 400,18`, dur: "1.4s", delay: "4.5s" },
+  { path: `M370,248 Q460,138 540,25`, dur: "1.6s", delay: "10s" },
+  { path: `M370,248 Q530,145 665,40`, dur: "1.8s", delay: "6s" },
 ];
 
 /* ─── ARCHITECTURE VISUALIZATION ─── */
 const LivingArchitecture = () => (
   <div className="relative w-full aspect-[4/3]">
-    <svg viewBox="0 0 740 500" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+    <svg viewBox="0 0 740 520" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
       <defs>
         <filter id="core-glow">
           <feGaussianBlur stdDeviation="16" result="blur" />
