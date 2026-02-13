@@ -80,10 +80,9 @@ const LivingArchitecture = () => (
         </radialGradient>
         {/* Hero-matching violet gradient for AI CORTEX text */}
         <linearGradient id="cortex-text-grad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#2E1A6B" />
-          <stop offset="35%" stopColor="#7B61FF" />
-          <stop offset="65%" stopColor="#D4616B" />
-          <stop offset="100%" stopColor="#E8967C" />
+          <stop offset="0%" stopColor="#3C2A8E" />
+          <stop offset="50%" stopColor="#6B5090" />
+          <stop offset="100%" stopColor="#C07A7E" />
         </linearGradient>
       </defs>
 
