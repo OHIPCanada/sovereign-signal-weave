@@ -66,24 +66,26 @@ const HeroSection = () => {
           {/* Human image + neural plexus — centered */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            animate={{ opacity: 1, scale: 1, y: [0, -12, 0] }}
+            transition={{ 
+              opacity: { duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] },
+              scale: { duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] },
+              y: { duration: 7, repeat: Infinity, ease: "easeInOut" },
+            }}
             className="absolute inset-0 flex items-center justify-center"
             style={{
               transform: `perspective(1200px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`,
               transition: "transform 0.4s ease-out",
             }}
           >
-            {/* Neural Plexus SVG — overlaid on brain area */}
+            {/* Neural Plexus SVG — overlaid on brain area, no separate animation (inherits parent) */}
             {!isMobile && (
-              <motion.div
+              <div
                 className="absolute z-20 pointer-events-none"
                 style={{ top: "15%", left: "20%", width: "70%", height: "70%" }}
-                animate={{ y: [0, -12, 0], scale: [1, 1.015, 1] }}
-                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
               >
                 <NeuralPlexus mouseX={mouseX} mouseY={mouseY} />
-              </motion.div>
+              </div>
             )}
 
             {/* Human profile image */}
@@ -94,8 +96,6 @@ const HeroSection = () => {
               style={{
                 filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
               }}
-              animate={{ y: [0, -12, 0], scale: [1, 1.015, 1] }}
-              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
             />
           </motion.div>
 
