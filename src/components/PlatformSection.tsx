@@ -1,377 +1,286 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 
 /* ─── DATA ─── */
-const inputs = [
-  { label: "EMR / Clinical Systems", x: 80, y: 420 },
-  { label: "Virtual Care", x: 230, y: 440 },
-  { label: "Patient Access", x: 380, y: 430 },
-  { label: "Labs & Imaging", x: 520, y: 440 },
-  { label: "Scheduling", x: 660, y: 420 },
+const inputNodes = [
+  { label: "EMR", x: 100, y: 400 },
+  { label: "Virtual Care", x: 230, y: 420 },
+  { label: "Patient Access", x: 370, y: 430 },
+  { label: "Labs", x: 510, y: 420 },
+  { label: "Scheduling", x: 640, y: 400 },
 ];
 
-const outputs = [
-  { label: "Clinical Ops", x: 100, y: 60 },
-  { label: "Care Pathways", x: 260, y: 50 },
-  { label: "Automation", x: 420, y: 55 },
-  { label: "Audit Trails", x: 560, y: 50 },
-  { label: "Policy Enforcement", x: 700, y: 60 },
+const outputNodes = [
+  { label: "Clinical Ops", x: 100, y: 80 },
+  { label: "Care Pathways", x: 240, y: 65 },
+  { label: "Automation", x: 380, y: 60 },
+  { label: "Audit", x: 510, y: 65 },
+  { label: "Policy", x: 640, y: 80 },
 ];
 
-const coreNode = { x: 400, y: 240, label: "AI Cortex", subtitle: "Reasoning • Context • Decision Support" };
+const core = { x: 370, y: 240 };
 
-/* checkpoint dots along routes */
-const checkpoints = [
-  { cx: 180, cy: 350 },
-  { cx: 350, cy: 330 },
-  { cx: 500, cy: 345 },
-  { cx: 620, cy: 340 },
-  { cx: 200, cy: 140 },
-  { cx: 350, cy: 130 },
-  { cx: 530, cy: 135 },
-  { cx: 660, cy: 145 },
-];
-
-/* routes for pulses: each is input→checkpoint→core→checkpoint→output */
 const pulseRoutes = [
-  { points: "80,420 180,350 400,240 200,140 100,60", dur: "6s", delay: "0s" },
-  { points: "380,430 350,330 400,240 350,130 260,50", dur: "7s", delay: "2s" },
-  { points: "660,420 620,340 400,240 530,135 560,50", dur: "6.5s", delay: "4s" },
+  { path: "M100,400 Q200,320 370,240 Q240,150 100,80", dur: "9s", delay: "0s" },
+  { path: "M370,430 Q370,340 370,240 Q370,150 380,60", dur: "8s", delay: "2s" },
+  { path: "M640,400 Q520,320 370,240 Q520,150 640,80", dur: "9s", delay: "4s" },
+  { path: "M230,420 Q290,330 370,240 Q300,150 240,65", dur: "10s", delay: "1s" },
+  { path: "M510,420 Q450,330 370,240 Q450,150 510,65", dur: "10s", delay: "3s" },
 ];
 
-/* ─── ARCHITECTURE MAP SVG ─── */
-const ArchitectureMap = () => {
-  const [hoveredRoute, setHoveredRoute] = useState<number | null>(null);
-  const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
-
-  const routeTooltips = [
-    "Clinical data flows through AI reasoning for real-time decision support.",
-    "Patient access routes through contextual intelligence for care pathway optimization.",
-    "Scheduling data enforces sovereign governance and audit compliance automatically.",
-  ];
-
-  const lineColor = "rgba(123, 97, 255, 0.28)";
-  const lineDim = "rgba(123, 97, 255, 0.12)";
-  const coreColor = "rgba(123, 97, 255, 0.85)";
-  const textStrong = "rgba(26, 26, 78, 0.9)";
-  const textSoft = "rgba(26, 26, 78, 0.55)";
-
-  /* Nodes pulse warmer near coral side (right), cooler near purple side (left) */
-  const getNodeColor = (x: number) => {
-    const t = Math.min(1, Math.max(0, x / 800));
-    const r = Math.round(123 - t * 20);
-    const g = Math.round(97 + t * 53);
-    const b = Math.round(255 - t * 130);
-    return `rgba(${r}, ${g}, ${b}, 0.7)`;
-  };
-
-  return (
-    <div className="relative w-full aspect-[4/3]">
-      <svg
-        viewBox="0 0 800 500"
-        className="w-full h-full"
-        preserveAspectRatio="xMidYMid meet"
-      >
-        <defs>
-          <filter id="core-glow">
-            <feGaussianBlur stdDeviation="12" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          <filter id="node-glow">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        {/* ── Lines: Inputs → Core ── */}
-        {inputs.map((inp, i) => (
-          <line
-            key={`in-${i}`}
-            x1={inp.x} y1={inp.y}
-            x2={coreNode.x} y2={coreNode.y}
-            stroke={lineColor}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            opacity={hoveredRoute !== null ? 0.12 : 1}
-            style={{ transition: "opacity 0.4s" }}
-          />
-        ))}
-
-        {/* ── Lines: Core → Outputs ── */}
-        {outputs.map((out, i) => (
-          <line
-            key={`out-${i}`}
-            x1={coreNode.x} y1={coreNode.y}
-            x2={out.x} y2={out.y}
-            stroke={lineColor}
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            opacity={hoveredRoute !== null ? 0.12 : 1}
-            style={{ transition: "opacity 0.4s" }}
-          />
-        ))}
-
-        {/* ── Highlighted routes (on hover) ── */}
-        {pulseRoutes.map((route, i) => (
-          <polyline
-            key={`route-${i}`}
-            points={route.points}
-            fill="none"
-            stroke={hoveredRoute === i ? "rgba(123, 97, 255, 0.55)" : "transparent"}
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ transition: "stroke 0.4s" }}
-            onMouseEnter={() => {
-              setHoveredRoute(i);
-              const pts = route.points.split(" ");
-              const mid = pts[2].split(",");
-              setTooltip({ text: routeTooltips[i], x: parseFloat(mid[0]), y: parseFloat(mid[1]) - 40 });
-            }}
-            onMouseLeave={() => { setHoveredRoute(null); setTooltip(null); }}
-            className="cursor-pointer"
-            pointerEvents="stroke"
-          />
-        ))}
-
-        {/* ── Checkpoint nodes ── */}
-        {checkpoints.map((cp, i) => (
-          <circle key={`cp-${i}`} cx={cp.cx} cy={cp.cy} r="4" fill={getNodeColor(cp.cx)}>
-            <animate
-              attributeName="opacity"
-              values="0.6;1;0.6"
-              dur="6s"
-              begin={`${i * 0.8}s`}
-              repeatCount="indefinite"
-            />
-          </circle>
-        ))}
-
-        {/* ── Input labels ── */}
-        {inputs.map((inp, i) => (
-          <g key={`il-${i}`}>
-            <circle cx={inp.x} cy={inp.y} r="5" fill={getNodeColor(inp.x)} filter="url(#node-glow)">
-              <animate attributeName="opacity" values="0.6;1;0.6" dur="6s" begin={`${i * 1.2}s`} repeatCount="indefinite" />
-            </circle>
-            <text
-              x={inp.x} y={inp.y + 20}
-              textAnchor="middle"
-              fill={textSoft}
-              fontSize="10"
-              fontFamily="Inter, sans-serif"
-              fontWeight="500"
-              letterSpacing="0.04em"
-            >
-              {inp.label}
-            </text>
-          </g>
-        ))}
-
-        {/* ── Output labels ── */}
-        {outputs.map((out, i) => (
-          <g key={`ol-${i}`}>
-            <circle cx={out.x} cy={out.y} r="5" fill={getNodeColor(out.x)} filter="url(#node-glow)">
-              <animate attributeName="opacity" values="0.6;1;0.6" dur="6s" begin={`${i * 1.2 + 0.5}s`} repeatCount="indefinite" />
-            </circle>
-            <text
-              x={out.x} y={out.y - 14}
-              textAnchor="middle"
-              fill={textSoft}
-              fontSize="10"
-              fontFamily="Inter, sans-serif"
-              fontWeight="500"
-              letterSpacing="0.04em"
-            >
-              {out.label}
-            </text>
-          </g>
-        ))}
-
-        {/* ── Central core node ── */}
-        <circle cx={coreNode.x} cy={coreNode.y} r="36" fill={coreColor} filter="url(#core-glow)">
-          <animate attributeName="opacity" values="0.85;1;0.85" dur="4s" repeatCount="indefinite" />
-        </circle>
-        <circle cx={coreNode.x} cy={coreNode.y} r="22" fill="rgba(123, 97, 255, 0.15)" />
-        <text
-          x={coreNode.x} y={coreNode.y - 2}
-          textAnchor="middle"
-          fill={textStrong}
-          fontSize="13"
-          fontFamily="Inter, sans-serif"
-          fontWeight="700"
-          letterSpacing="0.02em"
-        >
-          {coreNode.label}
-        </text>
-        <text
-          x={coreNode.x} y={coreNode.y + 56}
-          textAnchor="middle"
-          fill={textSoft}
-          fontSize="9.5"
-          fontFamily="Inter, sans-serif"
-          fontWeight="400"
-          letterSpacing="0.06em"
-        >
-          {coreNode.subtitle}
-        </text>
-
-        {/* ── Traveling pulses ── */}
-        {pulseRoutes.map((route, i) => (
-          <circle key={`pulse-${i}`} r="5" fill="rgba(123, 97, 255, 0.8)" filter="url(#node-glow)">
-            <animateMotion
-              dur={route.dur}
-              begin={route.delay}
-              repeatCount="indefinite"
-              path={`M${route.points.split(" ").map(p => p.replace(",", " ")).join(" L")}`}
-              calcMode="spline"
-              keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"
-              keyTimes="0;0.33;0.66;1"
-            />
-            <animate
-              attributeName="opacity"
-              values="0;0.9;0.9;0"
-              keyTimes="0;0.1;0.85;1"
-              dur={route.dur}
-              begin={route.delay}
-              repeatCount="indefinite"
-            />
-          </circle>
-        ))}
-
-        {/* ── Tooltip ── */}
-        {tooltip && (
-          <g>
-            <rect
-              x={tooltip.x - 140}
-              y={tooltip.y - 14}
-              width="280"
-              height="28"
-              rx="6"
-              fill="rgba(42, 26, 62, 0.92)"
-              stroke="rgba(80, 60, 120, 0.2)"
-              strokeWidth="1"
-            />
-            <text
-              x={tooltip.x}
-              y={tooltip.y + 4}
-              textAnchor="middle"
-              fill="rgba(255,255,255,0.92)"
-              fontSize="10"
-              fontFamily="Inter, sans-serif"
-              fontWeight="400"
-            >
-              {tooltip.text}
-            </text>
-          </g>
-        )}
-      </svg>
-    </div>
-  );
+/* Color interpolation: coral (left) → violet (right) */
+const getNodeColor = (x: number) => {
+  const t = x / 740;
+  const r = Math.round(212 - t * 89);
+  const g = Math.round(97 + t * 0);
+  const b = Math.round(107 + t * 148);
+  return `rgba(${r}, ${g}, ${b}, 0.7)`;
 };
+
+const getPulseColor = (i: number) => {
+  const colors = [
+    "rgba(212, 97, 107, 0.8)",
+    "rgba(180, 97, 140, 0.8)",
+    "rgba(123, 97, 255, 0.8)",
+    "rgba(200, 97, 120, 0.8)",
+    "rgba(150, 97, 200, 0.8)",
+  ];
+  return colors[i % colors.length];
+};
+
+/* ─── ARCHITECTURE VISUALIZATION ─── */
+const LivingArchitecture = () => (
+  <div className="relative w-full aspect-[4/3]">
+    <svg viewBox="0 0 740 500" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <filter id="core-glow-3">
+          <feGaussianBlur stdDeviation="16" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id="node-glow-3">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <radialGradient id="core-gradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#D4616B" stopOpacity="1" />
+          <stop offset="40%" stopColor="#E8967C" stopOpacity="0.8" />
+          <stop offset="70%" stopColor="rgba(123, 97, 255, 0.3)" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="halo-gradient" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(123, 97, 255, 0.15)" />
+          <stop offset="100%" stopColor="transparent" />
+        </radialGradient>
+      </defs>
+
+      {/* ── Routes: Input → Core ── */}
+      {inputNodes.map((inp, i) => (
+        <line
+          key={`in-${i}`}
+          x1={inp.x} y1={inp.y}
+          x2={core.x} y2={core.y}
+          stroke={getNodeColor(inp.x)}
+          strokeWidth="1"
+          strokeLinecap="round"
+          opacity="0.25"
+        />
+      ))}
+
+      {/* ── Routes: Core → Output ── */}
+      {outputNodes.map((out, i) => (
+        <line
+          key={`out-${i}`}
+          x1={core.x} y1={core.y}
+          x2={out.x} y2={out.y}
+          stroke={getNodeColor(out.x)}
+          strokeWidth="1"
+          strokeLinecap="round"
+          opacity="0.25"
+        />
+      ))}
+
+      {/* ── Input nodes + labels ── */}
+      {inputNodes.map((inp, i) => (
+        <g key={`il-${i}`}>
+          <circle cx={inp.x} cy={inp.y} r="5" fill={getNodeColor(inp.x)} filter="url(#node-glow-3)">
+            <animate attributeName="opacity" values="0.5;1;0.5" dur="6s" begin={`${i * 1.2}s`} repeatCount="indefinite" />
+          </circle>
+          <text x={inp.x} y={inp.y + 22} textAnchor="middle" fill="rgba(30,30,60,0.6)" fontSize="10" fontFamily="Inter, sans-serif" fontWeight="500" letterSpacing="0.06em">
+            {inp.label}
+          </text>
+        </g>
+      ))}
+
+      {/* ── Output nodes + labels ── */}
+      {outputNodes.map((out, i) => (
+        <g key={`ol-${i}`}>
+          <circle cx={out.x} cy={out.y} r="5" fill={getNodeColor(out.x)} filter="url(#node-glow-3)">
+            <animate attributeName="opacity" values="0.5;1;0.5" dur="6s" begin={`${i * 1.2 + 0.5}s`} repeatCount="indefinite" />
+          </circle>
+          <text x={out.x} y={out.y - 16} textAnchor="middle" fill="rgba(30,30,60,0.6)" fontSize="10" fontFamily="Inter, sans-serif" fontWeight="500" letterSpacing="0.06em">
+            {out.label}
+          </text>
+        </g>
+      ))}
+
+      {/* ── Violet halo around core ── */}
+      <circle cx={core.x} cy={core.y} r="70" fill="url(#halo-gradient)" />
+
+      {/* ── Core: AI Cortex with coral glow ── */}
+      <circle cx={core.x} cy={core.y} r="44" fill="url(#core-gradient)" filter="url(#core-glow-3)">
+        <animate attributeName="r" values="44;47;44" dur="5s" repeatCount="indefinite" />
+      </circle>
+      <circle cx={core.x} cy={core.y} r="24" fill="rgba(212, 97, 107, 0.25)" />
+      <text x={core.x} y={core.y + 4} textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="13" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.02em">
+        AI Cortex
+      </text>
+
+      {/* ── Traveling light packets ── */}
+      {pulseRoutes.map((route, i) => (
+        <circle key={`pulse-${i}`} r="4" fill={getPulseColor(i)} filter="url(#node-glow-3)">
+          <animateMotion
+            dur={route.dur}
+            begin={route.delay}
+            repeatCount="indefinite"
+            path={route.path}
+            calcMode="linear"
+          />
+          <animate
+            attributeName="opacity"
+            values="0;0.9;0.9;0"
+            keyTimes="0;0.1;0.85;1"
+            dur={route.dur}
+            begin={route.delay}
+            repeatCount="indefinite"
+          />
+        </circle>
+      ))}
+
+      {/* ── Section labels ── */}
+      <text x="370" y="480" textAnchor="middle" fill="rgba(30,30,60,0.35)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.2em">
+        INPUTS
+      </text>
+      <text x="370" y="35" textAnchor="middle" fill="rgba(30,30,60,0.35)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.2em">
+        OUTPUTS
+      </text>
+    </svg>
+  </div>
+);
 
 /* ─── MAIN SECTION ─── */
 const PlatformSection = () => {
   return (
     <section
-      className="platform-bg relative overflow-hidden"
+      className="relative overflow-hidden"
       id="product"
-      style={{ minHeight: "95vh" }}
+      style={{
+        minHeight: "100vh",
+        background: `
+          radial-gradient(circle at 25% 50%, rgba(212,97,107,0.18), transparent 60%),
+          radial-gradient(circle at 75% 40%, rgba(123,97,255,0.20), transparent 60%),
+          linear-gradient(180deg, #F6F4FA 0%, #EDEAF6 100%)
+        `,
+      }}
     >
-      {/* Top gradient line separator — connects from Section 2 */}
+      {/* Top gradient line separator */}
       <div
         className="absolute top-0 left-0 right-0 h-[2px]"
         style={{
           background: "linear-gradient(90deg, transparent 5%, rgba(123, 97, 255, 0.5) 30%, rgba(0, 255, 255, 0.3) 60%, rgba(212, 97, 107, 0.4) 85%, transparent 95%)",
         }}
       />
-      {/* Subtle glow beneath the line */}
       <div
         className="absolute top-0 left-0 right-0 h-[40px] pointer-events-none"
         style={{
           background: "linear-gradient(180deg, rgba(123, 97, 255, 0.08) 0%, transparent 100%)",
         }}
       />
-      <div className="relative z-10 max-w-[1240px] mx-auto px-6 md:px-12 py-28 md:py-36 lg:py-44">
-        <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-14 lg:gap-20 items-center">
-          {/* ── Left: Text ── */}
+
+      <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12 py-28 md:py-36 lg:py-44 flex items-center min-h-screen">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-16 lg:gap-20 items-center w-full">
+          {/* ── Left: Narrative ── */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7 }}
-            className="flex flex-col gap-8"
+            className="flex flex-col gap-7"
           >
-            <span className="mono-label" style={{ color: "rgba(100, 75, 180, 0.65)", letterSpacing: "0.18em" }}>
-              [ PLATFORM ARCHITECTURE ]
+            <span
+              className="text-xs uppercase tracking-[0.18em] font-medium"
+              style={{ color: "rgba(29, 29, 31, 0.6)" }}
+            >
+              PLATFORM ARCHITECTURE
             </span>
 
             <h2
               style={{
-                color: "#2A1A3E",
+                color: "#1D1D1F",
                 fontWeight: 800,
-                fontSize: "clamp(40px, 5.5vw, 64px)",
-                lineHeight: 1.1,
+                fontSize: "clamp(48px, 6vw, 80px)",
+                lineHeight: 1.05,
                 letterSpacing: "-0.02em",
+                fontFamily: "Inter, sans-serif",
               }}
             >
-              How the system
+              How intelligence
               <br />
-              is{" "}
-              <span className="text-secondary">built.</span>
+              moves through
+              <br />
+              healthcare.
             </h2>
 
             <p
               style={{
-                color: "rgba(42, 26, 62, 0.72)",
+                color: "rgba(30, 30, 30, 0.75)",
                 fontSize: "18px",
                 fontWeight: 400,
-                lineHeight: 1.6,
+                lineHeight: 1.65,
                 maxWidth: "520px",
               }}
             >
-              DocG AI is a cognitive layer that sits above clinical systems,
-              routes decisions through workflow, and enforces sovereign
-              governance—without adding friction to care delivery.
+              DocG AI sits above clinical systems, routes signals through
+              workflows, and enforces sovereign governance — without adding
+              friction to care delivery.
             </p>
 
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
-              className="self-start px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-300"
+              className="self-start px-8 py-4 rounded-full text-sm font-semibold tracking-wide transition-all duration-300"
               style={{
-                background: "linear-gradient(135deg, rgba(212, 97, 107, 0.9), rgba(180, 70, 85, 0.85))",
+                background: "linear-gradient(135deg, #D4616B, #E8967C)",
                 color: "#FFFAF8",
-                border: "1px solid rgba(212, 97, 107, 0.25)",
-                boxShadow: "0 8px 32px rgba(212, 97, 107, 0.25)",
+                border: "none",
+                boxShadow: "0 8px 32px rgba(212, 97, 107, 0.3)",
               }}
             >
               Explore the Platform
             </motion.button>
           </motion.div>
 
-          {/* ── Right: Architecture Map ── */}
+          {/* ── Right: Glass Architecture Surface ── */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.8, delay: 0.15 }}
-            className="rounded-[28px] overflow-hidden"
             style={{
-              background: "linear-gradient(160deg, rgba(123, 97, 255, 0.06), rgba(123, 97, 255, 0.02))",
-              border: "1px solid rgba(123, 97, 255, 0.12)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              boxShadow: "0 30px 80px rgba(0,0,0,0.06), inset 0 0 120px rgba(123, 97, 255, 0.04)",
-              padding: "24px",
+              background: "rgba(255, 255, 255, 0.75)",
+              backdropFilter: "blur(18px)",
+              WebkitBackdropFilter: "blur(18px)",
+              borderRadius: "32px",
+              border: "1px solid rgba(120, 100, 200, 0.15)",
+              boxShadow: "0 40px 100px rgba(80, 60, 160, 0.20)",
+              padding: "28px",
             }}
           >
-            <ArchitectureMap />
+            <LivingArchitecture />
           </motion.div>
         </div>
       </div>
