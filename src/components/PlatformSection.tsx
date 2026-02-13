@@ -50,19 +50,19 @@ const ArchitectureMap = () => {
     "Scheduling data enforces sovereign governance and audit compliance automatically.",
   ];
 
-  const lineColor = "rgba(100, 75, 160, 0.35)";
-  const lineDim = "rgba(100, 75, 160, 0.18)";
-  const coreColor = "rgba(212, 97, 107, 0.9)";
-  const textStrong = "rgba(30, 20, 50, 0.92)";
-  const textSoft = "rgba(50, 40, 70, 0.62)";
+  const lineColor = "rgba(123, 97, 255, 0.28)";
+  const lineDim = "rgba(123, 97, 255, 0.12)";
+  const coreColor = "rgba(123, 97, 255, 0.85)";
+  const textStrong = "rgba(26, 26, 78, 0.9)";
+  const textSoft = "rgba(26, 26, 78, 0.55)";
 
   /* Nodes pulse warmer near coral side (right), cooler near purple side (left) */
   const getNodeColor = (x: number) => {
     const t = Math.min(1, Math.max(0, x / 800));
-    const r = Math.round(100 + t * 112);
-    const g = Math.round(75 + t * 22);
-    const b = Math.round(180 - t * 73);
-    return `rgba(${r}, ${g}, ${b}, 0.75)`;
+    const r = Math.round(123 - t * 20);
+    const g = Math.round(97 + t * 53);
+    const b = Math.round(255 - t * 130);
+    return `rgba(${r}, ${g}, ${b}, 0.7)`;
   };
 
   return (
@@ -123,7 +123,7 @@ const ArchitectureMap = () => {
             key={`route-${i}`}
             points={route.points}
             fill="none"
-            stroke={hoveredRoute === i ? "rgba(200, 180, 255, 0.6)" : "transparent"}
+            stroke={hoveredRoute === i ? "rgba(123, 97, 255, 0.55)" : "transparent"}
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -197,7 +197,7 @@ const ArchitectureMap = () => {
         <circle cx={coreNode.x} cy={coreNode.y} r="36" fill={coreColor} filter="url(#core-glow)">
           <animate attributeName="opacity" values="0.85;1;0.85" dur="4s" repeatCount="indefinite" />
         </circle>
-        <circle cx={coreNode.x} cy={coreNode.y} r="22" fill="rgba(255, 200, 180, 0.2)" />
+        <circle cx={coreNode.x} cy={coreNode.y} r="22" fill="rgba(123, 97, 255, 0.15)" />
         <text
           x={coreNode.x} y={coreNode.y - 2}
           textAnchor="middle"
@@ -223,7 +223,7 @@ const ArchitectureMap = () => {
 
         {/* ── Traveling pulses ── */}
         {pulseRoutes.map((route, i) => (
-          <circle key={`pulse-${i}`} r="5" fill="rgba(180, 100, 130, 0.85)" filter="url(#node-glow)">
+          <circle key={`pulse-${i}`} r="5" fill="rgba(123, 97, 255, 0.8)" filter="url(#node-glow)">
             <animateMotion
               dur={route.dur}
               begin={route.delay}
@@ -283,6 +283,20 @@ const PlatformSection = () => {
       id="product"
       style={{ minHeight: "95vh" }}
     >
+      {/* Top gradient line separator — connects from Section 2 */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[2px]"
+        style={{
+          background: "linear-gradient(90deg, transparent 5%, rgba(123, 97, 255, 0.5) 30%, rgba(0, 255, 255, 0.3) 60%, rgba(212, 97, 107, 0.4) 85%, transparent 95%)",
+        }}
+      />
+      {/* Subtle glow beneath the line */}
+      <div
+        className="absolute top-0 left-0 right-0 h-[40px] pointer-events-none"
+        style={{
+          background: "linear-gradient(180deg, rgba(123, 97, 255, 0.08) 0%, transparent 100%)",
+        }}
+      />
       <div className="relative z-10 max-w-[1240px] mx-auto px-6 md:px-12 py-28 md:py-36 lg:py-44">
         <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-14 lg:gap-20 items-center">
           {/* ── Left: Text ── */}
@@ -349,11 +363,11 @@ const PlatformSection = () => {
             transition={{ duration: 0.8, delay: 0.15 }}
             className="rounded-[28px] overflow-hidden"
             style={{
-              background: "linear-gradient(160deg, rgba(60, 40, 100, 0.08), rgba(60, 40, 100, 0.03))",
-              border: "1px solid rgba(80, 60, 120, 0.12)",
+              background: "linear-gradient(160deg, rgba(123, 97, 255, 0.06), rgba(123, 97, 255, 0.02))",
+              border: "1px solid rgba(123, 97, 255, 0.12)",
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
-              boxShadow: "0 30px 80px rgba(0,0,0,0.08), inset 0 0 120px rgba(232,150,124,0.04)",
+              boxShadow: "0 30px 80px rgba(0,0,0,0.06), inset 0 0 120px rgba(123, 97, 255, 0.04)",
               padding: "24px",
             }}
           >
