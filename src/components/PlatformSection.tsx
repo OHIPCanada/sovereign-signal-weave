@@ -291,35 +291,25 @@ const PlatformSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7 }}
-            className="flex flex-col"
+            className="flex flex-col gap-8"
           >
-            <p
-              style={{
-                color: "rgba(80, 60, 120, 0.6)",
-                letterSpacing: "0.18em",
-                fontSize: "12px",
-                fontWeight: 600,
-                fontFamily: "Inter, sans-serif",
-                textTransform: "uppercase",
-                marginBottom: "28px",
-              }}
-            >
-              PLATFORM ARCHITECTURE
-            </p>
+            <span className="mono-label" style={{ color: "rgba(100, 75, 180, 0.65)", letterSpacing: "0.18em" }}>
+              [ PLATFORM ARCHITECTURE ]
+            </span>
 
             <h2
               style={{
                 color: "#2A1A3E",
                 fontWeight: 800,
-                fontSize: "clamp(48px, 5.5vw, 72px)",
-                lineHeight: 1.08,
+                fontSize: "clamp(40px, 5.5vw, 64px)",
+                lineHeight: 1.1,
                 letterSpacing: "-0.02em",
-                marginBottom: "28px",
               }}
             >
               How the system
               <br />
-              is built.
+              is{" "}
+              <span className="text-secondary">built.</span>
             </h2>
 
             <p
@@ -327,9 +317,8 @@ const PlatformSection = () => {
                 color: "rgba(42, 26, 62, 0.72)",
                 fontSize: "18px",
                 fontWeight: 400,
-                lineHeight: 1.5,
+                lineHeight: 1.6,
                 maxWidth: "520px",
-                marginBottom: "40px",
               }}
             >
               DocG AI is a cognitive layer that sits above clinical systems,
