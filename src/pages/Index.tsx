@@ -11,6 +11,13 @@ const Index = () => {
       <Navigation />
       <HeroSection />
       <ManifestoSection />
+      {/* Smooth transition from dark Intelligence Layer to light Platform Architecture */}
+      <div
+        className="relative h-32 md:h-48 -mt-1 -mb-1"
+        style={{
+          background: `linear-gradient(180deg, #1A0935 0%, #2A1B4A 20%, #5A3878 40%, #9A7098 55%, #C8A8B4 68%, #DCCCD0 78%, #E8E2EA 88%, #EEF2F6 100%)`,
+        }}
+      />
       <PlatformSection />
       <InterfaceSection />
       <TrustSection />
