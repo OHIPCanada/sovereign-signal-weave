@@ -48,17 +48,16 @@ const CortexViz = () => (
       <circle cx="370" cy="130" r="2.5" className="s2-micro" />
     </g>
 
-    {/* Signal pulses converging to core */}
+    {/* Signal pulses converging to core via animateMotion */}
     {[
-      { cx: 120, cy: 100, delay: 0 },
-      { cx: 430, cy: 50, delay: 4 },
-      { cx: 530, cy: 95, delay: 8 },
-      { cx: 210, cy: 150, delay: 12 },
+      { path: "M120,100 L220,55 L320,100", delay: 0 },
+      { path: "M430,50 L320,100", delay: 1.5 },
+      { path: "M530,95 L430,155 L320,100", delay: 3 },
+      { path: "M210,150 L320,100", delay: 4.5 },
     ].map((p, i) => (
       <g key={i}>
-        <circle r="3.5" fill="#B08CFF" style={{ filter: "drop-shadow(0 0 6px rgba(176,140,255,0.6))" }}>
-          <animate attributeName="cx" values={`${p.cx};320`} dur="2.8s" begin={`${p.delay}s`} repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1" />
-          <animate attributeName="cy" values={`${p.cy};100`} dur="2.8s" begin={`${p.delay}s`} repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1" />
+        <circle r="3.5" fill="#B08CFF" opacity="0" style={{ filter: "drop-shadow(0 0 6px rgba(176,140,255,0.6))" }}>
+          <animateMotion dur="2.8s" begin={`${p.delay}s`} repeatCount="indefinite" path={p.path} calcMode="spline" keySplines="0.4 0 0.2 1" keyTimes="0;1" />
           <animate attributeName="opacity" values="0;0.85;0.7;0" keyTimes="0;0.12;0.82;1" dur="2.8s" begin={`${p.delay}s`} repeatCount="indefinite" />
         </circle>
         {/* Core flash on arrival */}
@@ -105,9 +104,9 @@ const DataPlaneViz = () => (
 
 /* ─── Card hierarchy ─── */
 const layers = [
-  { label: "AI Cortex", subtitle: "Reasoning · Context · Decision Support", Viz: CortexViz, vizHeight: "h-[160px]" },
-  { label: "Workflow Orchestration", subtitle: "Routing · Decisions · Clinical Ops", Viz: WorkflowViz, vizHeight: "h-[140px]" },
-  { label: "Sovereign Data Plane", subtitle: "Storage · Policy · Jurisdictional Control", Viz: DataPlaneViz, vizHeight: "h-[130px]" },
+  { label: "AI Cortex", subtitle: "Reasoning · Context · Decision Support", Viz: CortexViz },
+  { label: "Workflow Orchestration", subtitle: "Routing · Decisions · Clinical Ops", Viz: WorkflowViz },
+  { label: "Sovereign Data Plane", subtitle: "Storage · Policy · Jurisdictional Control", Viz: DataPlaneViz },
 ];
 
 const ManifestoSection = () => {
@@ -229,9 +228,9 @@ const ManifestoSection = () => {
                     </div>
                   </div>
 
-                  {/* Visualization */}
+                  {/* Visualization — uniform height */}
                   <div
-                    className={`relative ${layer.vizHeight} rounded-2xl overflow-hidden`}
+                    className="relative h-[150px] rounded-2xl overflow-hidden"
                     style={{ background: "rgba(0,0,0,0.15)", border: "1px solid rgba(255,255,255,0.05)" }}
                   >
                     <layer.Viz />
