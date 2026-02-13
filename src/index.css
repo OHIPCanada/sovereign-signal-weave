@@ -500,3 +500,12 @@
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.92; transform: scale(1.01); }
 }
+
+@keyframes slowSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: .55; }
+  50% { opacity: .9; }
+}
