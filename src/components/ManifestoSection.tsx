@@ -1,13 +1,13 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-/* ─── AI CORTEX ─── Particle Ring (from Section 4) */
+/* ─── AI CORTEX ─── Particle Ring */
 const CortexViz = () => {
   const dots = Array.from({ length: 100 }, (_, i) => {
     const angle = (i / 100) * Math.PI * 2;
-    const r = 70;
-    const x = 100 + Math.cos(angle) * r;
-    const y = 100 + Math.sin(angle) * r;
+    const r = 80;
+    const x = 120 + Math.cos(angle) * r;
+    const y = 120 + Math.sin(angle) * r;
     const isGap = i % 12 === 0 || i % 17 === 0;
     const isCoral = i === 23 || i === 67;
     return { x, y, isGap, isCoral };
@@ -18,10 +18,10 @@ const CortexViz = () => {
       <div
         className="absolute"
         style={{
-          width: 60,
-          height: 60,
+          width: 90,
+          height: 90,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(123,97,255,.45), rgba(123,97,255,.1) 60%, transparent 80%)",
+          background: "radial-gradient(circle, rgba(180,140,255,.6), rgba(123,97,255,.2) 60%, transparent 80%)",
           animation: "glowPulse 3.5s ease-in-out infinite",
           top: "50%",
           left: "50%",
@@ -29,9 +29,9 @@ const CortexViz = () => {
         }}
       />
       <svg
-        width="200"
-        height="200"
-        viewBox="0 0 200 200"
+        width="240"
+        height="240"
+        viewBox="0 0 240 240"
         style={{ animation: "slowSpin 50s linear infinite" }}
       >
         {dots.map((d, i) =>
@@ -40,9 +40,9 @@ const CortexViz = () => {
               key={i}
               cx={d.x}
               cy={d.y}
-              r={d.isCoral ? 2.2 : 1.6}
-              fill={d.isCoral ? "rgba(212,97,107,.85)" : "rgba(123,97,255,.7)"}
-              opacity={0.5 + Math.random() * 0.4}
+              r={d.isCoral ? 3 : 2.2}
+              fill={d.isCoral ? "rgba(232,150,124,1)" : "rgba(180,150,255,.9)"}
+              opacity={0.6 + Math.random() * 0.4}
             />
           )
         )}
@@ -51,24 +51,27 @@ const CortexViz = () => {
   );
 };
 
-/* ─── WORKFLOW ORCHESTRATION ─── Rails with packets (from Section 4) */
+/* ─── WORKFLOW ORCHESTRATION ─── Rails with packets */
 const WorkflowViz = () => {
   const rails = [
-    { y: 40, packets: [{ delay: 0, dur: 10 }, { delay: 4, dur: 10 }, { delay: 7.5, dur: 10 }] },
-    { y: 70, packets: [{ delay: 1, dur: 12 }, { delay: 6, dur: 12 }] },
-    { y: 100, packets: [{ delay: 2, dur: 8 }, { delay: 5, dur: 8 }, { delay: 9, dur: 8 }] },
+    { y: 45, packets: [{ delay: 0, dur: 10 }, { delay: 4, dur: 10 }, { delay: 7.5, dur: 10 }] },
+    { y: 85, packets: [{ delay: 1, dur: 12 }, { delay: 6, dur: 12 }] },
+    { y: 125, packets: [{ delay: 2, dur: 8 }, { delay: 5, dur: 8 }, { delay: 9, dur: 8 }] },
   ];
 
   return (
     <div className="relative w-full h-full flex items-center justify-center">
-      <svg width="100%" height="100%" viewBox="0 0 400 140" preserveAspectRatio="xMidYMid meet">
+      <svg width="100%" height="100%" viewBox="0 0 500 170" preserveAspectRatio="xMidYMid meet">
         {rails.map((rail, ri) => (
           <g key={ri}>
-            <line x1="20" y1={rail.y} x2="380" y2={rail.y} stroke="rgba(255,255,255,.08)" strokeWidth="1" />
+            <line x1="20" y1={rail.y} x2="480" y2={rail.y} stroke="rgba(200,180,255,.2)" strokeWidth="1.5" />
+            {/* Static checkpoint nodes */}
+            <circle cx={140 + ri * 80} cy={rail.y} r="5" fill="rgba(200,180,255,.5)" />
+            <circle cx={300 + ri * 40} cy={rail.y} r="5" fill="rgba(200,180,255,.5)" />
             {rail.packets.map((pkt, pi) => (
-              <circle key={pi} r="4" cy={rail.y} fill="rgba(123,97,255,.65)">
-                <animate attributeName="cx" values="20;380" dur={`${pkt.dur}s`} begin={`${pkt.delay}s`} repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0;.7;.7;0" dur={`${pkt.dur}s`} begin={`${pkt.delay}s`} repeatCount="indefinite" />
+              <circle key={pi} r="5.5" cy={rail.y} fill="rgba(180,150,255,.9)">
+                <animate attributeName="cx" values="20;480" dur={`${pkt.dur}s`} begin={`${pkt.delay}s`} repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0;.9;.9;0" dur={`${pkt.dur}s`} begin={`${pkt.delay}s`} repeatCount="indefinite" />
               </circle>
             ))}
           </g>
@@ -78,52 +81,53 @@ const WorkflowViz = () => {
   );
 };
 
-/* ─── SOVEREIGN DATA PLANE ─── Vault Field (from Section 4) */
+/* ─── SOVEREIGN DATA PLANE ─── Vault Field */
 const DataPlaneViz = () => (
   <div className="relative w-full h-full flex items-center justify-center">
     <div
       className="absolute"
       style={{
-        width: 100,
-        height: 100,
+        width: 130,
+        height: 130,
         borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(212,97,107,.45), rgba(232,150,124,.2), rgba(242,193,174,0))",
-        filter: "blur(18px)",
-        opacity: 0.5,
+        background: "radial-gradient(circle, rgba(232,150,124,.5), rgba(212,97,107,.25), rgba(242,193,174,0))",
+        filter: "blur(20px)",
+        opacity: 0.65,
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
       }}
     />
-    <svg width="220" height="170" viewBox="0 0 280 220">
-      <rect x="30" y="20" width="220" height="180" rx="20" fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="1" />
-      {Array.from({ length: 9 }, (_, i) => (
-        <line key={`v${i}`} x1={30 + (i + 1) * 22} y1="20" x2={30 + (i + 1) * 22} y2="200" stroke="rgba(255,255,255,.04)" strokeWidth="1" />
+    <svg width="280" height="200" viewBox="0 0 280 200">
+      <rect x="20" y="10" width="240" height="180" rx="18" fill="none" stroke="rgba(200,180,255,.15)" strokeWidth="1.5" />
+      {Array.from({ length: 10 }, (_, i) => (
+        <line key={`v${i}`} x1={20 + (i + 1) * 21.8} y1="10" x2={20 + (i + 1) * 21.8} y2="190" stroke="rgba(200,180,255,.08)" strokeWidth="1" />
       ))}
-      {Array.from({ length: 7 }, (_, i) => (
-        <line key={`h${i}`} x1="30" y1={20 + (i + 1) * 22.5} x2="250" y2={20 + (i + 1) * 22.5} stroke="rgba(255,255,255,.04)" strokeWidth="1" />
+      {Array.from({ length: 8 }, (_, i) => (
+        <line key={`h${i}`} x1="20" y1={10 + (i + 1) * 20} x2="260" y2={10 + (i + 1) * 20} stroke="rgba(200,180,255,.08)" strokeWidth="1" />
       ))}
-      <circle cx="140" cy="110" r="8" fill="rgba(212,97,107,.6)">
-        <animate attributeName="opacity" values=".5;.85;.5" dur="3.5s" repeatCount="indefinite" />
+      <circle cx="140" cy="100" r="10" fill="rgba(232,150,124,.8)">
+        <animate attributeName="opacity" values=".55;1;.55" dur="3.5s" repeatCount="indefinite" />
       </circle>
-      <circle cx="140" cy="110" r="18" fill="none" stroke="rgba(212,97,107,.2)" strokeWidth="1" />
+      <circle cx="140" cy="100" r="22" fill="none" stroke="rgba(232,150,124,.3)" strokeWidth="1.5" />
+      <circle cx="140" cy="100" r="36" fill="none" stroke="rgba(232,150,124,.12)" strokeWidth="1" />
     </svg>
   </div>
 );
 
 /* ─── Card hierarchy styles ─── */
 const cardStyles = [
-  { // Cortex — brightest
+  {
     bg: "linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.06))",
     border: "1px solid rgba(255,255,255,0.15)",
     shadow: "0 24px 70px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 0 120px rgba(123,97,255,0.18)",
   },
-  { // Orchestration — neutral
+  {
     bg: "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))",
     border: "1px solid rgba(255,255,255,0.12)",
     shadow: "0 24px 70px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 120px rgba(123,97,255,0.15)",
   },
-  { // Sovereign — darkest, heaviest
+  {
     bg: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
     border: "1px solid rgba(255,255,255,0.09)",
     shadow: "0 24px 70px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 0 120px rgba(123,97,255,0.10)",
@@ -131,9 +135,9 @@ const cardStyles = [
 ];
 
 const layers = [
-  { label: "AI Cortex", subtitle: "Reasoning · Context · Decision Support", Viz: CortexViz, vizHeight: "h-[140px]" },
-  { label: "Workflow Orchestration", subtitle: "Routing · Decisions · Clinical Ops", Viz: WorkflowViz, vizHeight: "h-[126px]" },
-  { label: "Sovereign Data Plane", subtitle: "Storage · Policy · Jurisdictional Control", Viz: DataPlaneViz, vizHeight: "h-[126px]" },
+  { label: "AI Cortex", subtitle: "Reasoning · Context · Decision Support", Viz: CortexViz },
+  { label: "Workflow Orchestration", subtitle: "Routing · Decisions · Clinical Ops", Viz: WorkflowViz },
+  { label: "Sovereign Data Plane", subtitle: "Storage · Policy · Jurisdictional Control", Viz: DataPlaneViz },
 ];
 
 const ManifestoSection = () => {
@@ -149,7 +153,6 @@ const ManifestoSection = () => {
   const headlineOpacity = useTransform(scrollYProgress, [0.06, 0.22], [0, 1]);
   const headlineY = useTransform(scrollYProgress, [0.06, 0.22], [36, 0]);
 
-  // Micro-parallax on cards
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!containerRef.current) return;
     const r = containerRef.current.getBoundingClientRect();
@@ -226,7 +229,6 @@ const ManifestoSection = () => {
 
           {/* Right — Cards */}
           <div ref={cardsRef} className="relative">
-            {/* Ambient glow */}
             <div
               className="absolute pointer-events-none"
               style={{
@@ -258,21 +260,24 @@ const ManifestoSection = () => {
                     transition: "transform 0.15s ease-out",
                   }}
                 >
-                  {/* Inner light gradient */}
                   <div className="absolute inset-[-1px] pointer-events-none" style={{ background: "radial-gradient(480px 220px at 12% 18%, rgba(255,255,255,0.10), transparent 60%)" }} />
 
                   {/* Header */}
                   <div className="relative flex justify-between items-start gap-3 mb-2.5">
                     <div>
-                      <div style={{ fontWeight: 650, fontSize: 18, color: "rgba(255,255,255,0.92)" }}>{layer.label}</div>
-                      <div style={{ fontWeight: 450, fontSize: 13, color: "rgba(255,255,255,0.55)", marginTop: 4 }}>{layer.subtitle}</div>
+                      <div style={{ fontWeight: 650, fontSize: 18, color: "rgba(255,255,255,0.95)" }}>{layer.label}</div>
+                      <div style={{ fontWeight: 450, fontSize: 13, color: "rgba(255,255,255,0.6)", marginTop: 4 }}>{layer.subtitle}</div>
                     </div>
                   </div>
 
-                  {/* Visualization area */}
+                  {/* Visualization — uniform height */}
                   <div
-                    className={`relative ${layer.vizHeight} rounded-2xl overflow-hidden`}
-                    style={{ background: "rgba(0,0,0,0.10)", border: "1px solid rgba(255,255,255,0.08)" }}
+                    className="relative rounded-2xl overflow-hidden"
+                    style={{
+                      height: 160,
+                      background: "rgba(0,0,0,0.18)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                    }}
                   >
                     <layer.Viz />
                   </div>
