@@ -78,6 +78,12 @@ const LivingArchitecture = () => (
           <stop offset="0%" stopColor="rgba(212, 97, 107, 0.08)" />
           <stop offset="100%" stopColor="transparent" />
         </radialGradient>
+        {/* Hero-matching violet gradient for AI CORTEX text */}
+        <linearGradient id="cortex-text-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#2E1A6B" />
+          <stop offset="55%" stopColor="#3C2A8E" />
+          <stop offset="100%" stopColor="#4B5ED7" />
+        </linearGradient>
       </defs>
 
       {/* ── Ambient field behind everything ── */}
@@ -177,12 +183,9 @@ const LivingArchitecture = () => (
         <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.5s" repeatCount="indefinite" />
         <animate attributeName="r" values="10;12;10" dur="3s" repeatCount="indefinite" />
       </circle>
-      {/* ── AI CORTEX label — left of core, decorative font ── */}
-      <text x={core.x - 95} y={core.y + 6} textAnchor="end" fontSize="28" fontFamily="Inter, sans-serif" fontWeight="900" letterSpacing="-0.03em" fill="rgba(20, 15, 40, 0.85)">
-        AI
-      </text>
-      <text x={core.x - 95} y={core.y + 34} textAnchor="end" fontSize="28" fontFamily="Inter, sans-serif" fontWeight="900" letterSpacing="-0.03em" fill="rgba(20, 15, 40, 0.85)">
-        CORTEX
+      {/* ── AI CORTEX — left of core, hero "INTELLIGENCE" style ── */}
+      <text x={core.x - 90} y={core.y + 10} textAnchor="end" fontSize="32" fontFamily="Inter, sans-serif" fontWeight="900" letterSpacing="-0.02em" fill="url(#cortex-text-grad)">
+        AI CORTEX
       </text>
 
       {/* ── Traveling particles (bold, high-visibility) ── */}
