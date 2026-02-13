@@ -52,10 +52,18 @@ const ArchitectureMap = () => {
 
   const lineColor = "rgba(200, 180, 255, 0.32)";
   const lineDim = "rgba(200, 180, 255, 0.18)";
-  const nodeColor = "rgba(235, 230, 255, 0.85)";
-  const coreColor = "rgba(123, 97, 255, 0.95)";
+  const coreColor = "rgba(232, 150, 124, 0.95)";
   const textStrong = "rgba(255,255,255,0.92)";
   const textSoft = "rgba(255,255,255,0.68)";
+
+  /* Nodes pulse warmer near coral side (right), cooler near purple side (left) */
+  const getNodeColor = (x: number) => {
+    const t = Math.min(1, Math.max(0, x / 800));
+    const r = Math.round(200 + t * 35);
+    const g = Math.round(180 + t * 10);
+    const b = Math.round(255 - t * 130);
+    return `rgba(${r}, ${g}, ${b}, 0.85)`;
+  };
 
   return (
     <div className="relative w-full aspect-[4/3]">
@@ -134,7 +142,7 @@ const ArchitectureMap = () => {
 
         {/* ── Checkpoint nodes ── */}
         {checkpoints.map((cp, i) => (
-          <circle key={`cp-${i}`} cx={cp.cx} cy={cp.cy} r="4" fill={nodeColor}>
+          <circle key={`cp-${i}`} cx={cp.cx} cy={cp.cy} r="4" fill={getNodeColor(cp.cx)}>
             <animate
               attributeName="opacity"
               values="0.6;1;0.6"
@@ -148,7 +156,7 @@ const ArchitectureMap = () => {
         {/* ── Input labels ── */}
         {inputs.map((inp, i) => (
           <g key={`il-${i}`}>
-            <circle cx={inp.x} cy={inp.y} r="5" fill={nodeColor} filter="url(#node-glow)">
+            <circle cx={inp.x} cy={inp.y} r="5" fill={getNodeColor(inp.x)} filter="url(#node-glow)">
               <animate attributeName="opacity" values="0.6;1;0.6" dur="6s" begin={`${i * 1.2}s`} repeatCount="indefinite" />
             </circle>
             <text
@@ -168,7 +176,7 @@ const ArchitectureMap = () => {
         {/* ── Output labels ── */}
         {outputs.map((out, i) => (
           <g key={`ol-${i}`}>
-            <circle cx={out.x} cy={out.y} r="5" fill={nodeColor} filter="url(#node-glow)">
+            <circle cx={out.x} cy={out.y} r="5" fill={getNodeColor(out.x)} filter="url(#node-glow)">
               <animate attributeName="opacity" values="0.6;1;0.6" dur="6s" begin={`${i * 1.2 + 0.5}s`} repeatCount="indefinite" />
             </circle>
             <text
@@ -189,7 +197,7 @@ const ArchitectureMap = () => {
         <circle cx={coreNode.x} cy={coreNode.y} r="36" fill={coreColor} filter="url(#core-glow)">
           <animate attributeName="opacity" values="0.85;1;0.85" dur="4s" repeatCount="indefinite" />
         </circle>
-        <circle cx={coreNode.x} cy={coreNode.y} r="22" fill="rgba(200, 190, 255, 0.25)" />
+        <circle cx={coreNode.x} cy={coreNode.y} r="22" fill="rgba(255, 200, 180, 0.2)" />
         <text
           x={coreNode.x} y={coreNode.y - 2}
           textAnchor="middle"
@@ -276,8 +284,8 @@ const PlatformSection = () => {
       style={{
         minHeight: "95vh",
         background: `
-          radial-gradient(circle at 35% 40%, rgba(123, 97, 255, 0.18) 0%, transparent 55%),
-          linear-gradient(180deg, #2A0B4E 0%, #3A0F6F 50%, #1B0736 100%)
+          radial-gradient(circle at 65% 50%, rgba(255, 170, 150, 0.25), transparent 60%),
+          linear-gradient(135deg, #2B0A4A 0%, #4A148C 35%, #7B1FA2 55%, #D4616B 75%, #E8967C 90%, #F2C1AE 100%)
         `,
       }}
     >
@@ -362,7 +370,7 @@ const PlatformSection = () => {
               border: "1px solid rgba(255,255,255,0.12)",
               backdropFilter: "blur(10px)",
               WebkitBackdropFilter: "blur(10px)",
-              boxShadow: "0 30px 80px rgba(0,0,0,0.35), inset 0 0 160px rgba(123,97,255,0.10)",
+              boxShadow: "0 30px 80px rgba(0,0,0,0.35), inset 0 0 160px rgba(232,150,124,0.08)",
               padding: "24px",
             }}
           >
