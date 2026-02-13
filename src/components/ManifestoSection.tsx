@@ -194,25 +194,14 @@ const SovereignMesh = () => {
 };
 
 /* ─── CARD STYLES per layer ─── */
+const cardBg = `radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10), transparent 60%), linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))`;
+const cardBorder = "1px solid rgba(255,255,255,0.12)";
+const cardShadow = "inset 0 0 120px rgba(123, 97, 255, 0.15)";
+
 const cardStyles = [
-  {
-    // AI Cortex — smartest: brightest glass, lightest feel
-    bg: "rgba(100, 60, 155, 0.42)",
-    border: "1px solid rgba(255, 255, 255, 0.14)",
-    shadow: "0 20px 60px rgba(10, 5, 25, 0.3)",
-  },
-  {
-    // Orchestration — busiest: neutral mid-tone
-    bg: "rgba(85, 48, 135, 0.45)",
-    border: "1px solid rgba(255, 255, 255, 0.11)",
-    shadow: "0 18px 55px rgba(10, 5, 25, 0.38)",
-  },
-  {
-    // Sovereign — heaviest: darkest, densest
-    bg: "rgba(70, 38, 120, 0.52)",
-    border: "1px solid rgba(255, 255, 255, 0.09)",
-    shadow: "0 22px 65px rgba(10, 5, 25, 0.55)",
-  },
+  { bg: cardBg, border: cardBorder, shadow: cardShadow },
+  { bg: cardBg, border: cardBorder, shadow: cardShadow },
+  { bg: cardBg, border: cardBorder, shadow: cardShadow },
 ];
 
 const labelColors = [
@@ -234,8 +223,8 @@ const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => 
       style={{
         background: style.bg,
         border: style.border,
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
         boxShadow: style.shadow,
       }}
     >
