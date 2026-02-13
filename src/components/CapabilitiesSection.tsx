@@ -1,253 +1,194 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
-/* ───── Band 1: AI Cortex — breathing network mesh ───── */
+/* ───── SVG Visuals ───── */
 
-const CortexVisual = () => (
-  <div className="s4-viz-container">
-    {/* Core glow orb */}
-    <div className="s4-cortex-core" />
-    <svg
-      className="s4-svg"
-      viewBox="0 0 800 280"
-      preserveAspectRatio="xMidYMid meet"
-    >
-      <defs>
-        <radialGradient id="s4CoreGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="rgba(139,92,246,0.5)" />
-          <stop offset="50%" stopColor="rgba(192,132,252,0.2)" />
-          <stop offset="100%" stopColor="transparent" />
-        </radialGradient>
-      </defs>
+const ParticleRing = () => {
+  const dots = Array.from({ length: 100 }, (_, i) => {
+    const angle = (i / 100) * Math.PI * 2;
+    const r = 90;
+    const x = 150 + Math.cos(angle) * r;
+    const y = 150 + Math.sin(angle) * r;
+    // Create gaps
+    const isGap = i % 12 === 0 || i % 17 === 0;
+    const isCoral = i === 23 || i === 67;
+    return { x, y, isGap, isCoral };
+  });
 
-      {/* Core glow circle */}
-      <circle cx="400" cy="140" r="55" fill="url(#s4CoreGlow)" className="s4-core-glow" />
+  return (
+    <div className="relative w-full flex items-center justify-center" style={{ height: 260 }}>
+      {/* Core glow */}
+      <div
+        className="absolute"
+        style={{
+          width: 80,
+          height: 80,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(123,97,255,.45), rgba(123,97,255,.1) 60%, transparent 80%)",
+          animation: "glowPulse 3.5s ease-in-out infinite",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+      {/* Rotating ring */}
+      <svg
+        width="300"
+        height="300"
+        viewBox="0 0 300 300"
+        style={{ animation: "slowSpin 50s linear infinite" }}
+      >
+        {dots.map((d, i) =>
+          d.isGap ? null : (
+            <circle
+              key={i}
+              cx={d.x}
+              cy={d.y}
+              r={d.isCoral ? 2.2 : 1.6}
+              fill={d.isCoral ? "rgba(212,97,107,.85)" : "rgba(123,97,255,.7)"}
+              opacity={0.5 + Math.random() * 0.4}
+            />
+          )
+        )}
+      </svg>
+    </div>
+  );
+};
 
-      {/* Network mesh edges */}
-      <g className="s4-cortex-edges">
-        <line x1="120" y1="140" x2="240" y2="80" />
-        <line x1="240" y1="80" x2="330" y2="120" />
-        <line x1="330" y1="120" x2="400" y2="140" />
-        <line x1="400" y1="140" x2="470" y2="110" />
-        <line x1="470" y1="110" x2="560" y2="80" />
-        <line x1="560" y1="80" x2="680" y2="140" />
-        <line x1="400" y1="140" x2="330" y2="200" />
-        <line x1="330" y1="200" x2="240" y2="190" />
-        <line x1="240" y1="190" x2="120" y2="140" />
-        <line x1="400" y1="140" x2="470" y2="200" />
-        <line x1="470" y1="200" x2="560" y2="195" />
-        <line x1="560" y1="195" x2="680" y2="140" />
-        <line x1="240" y1="80" x2="240" y2="190" />
-        <line x1="560" y1="80" x2="560" y2="195" />
-        <line x1="330" y1="120" x2="330" y2="200" />
-        <line x1="470" y1="110" x2="470" y2="200" />
-      </g>
-
-      {/* Nodes */}
-      <g className="s4-cortex-nodes">
-        <circle cx="120" cy="140" r="5" />
-        <circle cx="240" cy="80" r="4.5" />
-        <circle cx="330" cy="120" r="4" />
-        <circle cx="400" cy="140" r="7" className="s4-center-node" />
-        <circle cx="470" cy="110" r="4" />
-        <circle cx="560" cy="80" r="4.5" />
-        <circle cx="680" cy="140" r="5" />
-        <circle cx="240" cy="190" r="4" />
-        <circle cx="330" cy="200" r="4.5" />
-        <circle cx="470" cy="200" r="4.5" />
-        <circle cx="560" cy="195" r="4" />
-      </g>
-
-      {/* Convergence pulse — travels to center */}
-      <circle r="3" fill="rgba(192,132,252,0.9)" className="s4-convergence-1">
-        <animateMotion dur="4s" repeatCount="indefinite" path="M120,140 L240,80 L330,120 L400,140" />
-        <animate attributeName="opacity" values="0;0.9;0.9;0" dur="4s" repeatCount="indefinite" />
-      </circle>
-      <circle r="3" fill="rgba(192,132,252,0.9)" className="s4-convergence-2">
-        <animateMotion dur="5s" repeatCount="indefinite" path="M680,140 L560,80 L470,110 L400,140" />
-        <animate attributeName="opacity" values="0;0.9;0.9;0" dur="5s" repeatCount="indefinite" />
-      </circle>
-    </svg>
-  </div>
-);
-
-/* ───── Band 2: Workflow Orchestration — signal rails ───── */
-
-const WorkflowVisual = () => {
+const WorkflowRails = () => {
   const rails = [
-    { y: 70, pulses: [{ delay: 0, dur: 5 }, { delay: 2.5, dur: 5 }] },
-    { y: 140, pulses: [{ delay: 0.8, dur: 6.5 }, { delay: 4, dur: 6.5 }] },
-    { y: 210, pulses: [{ delay: 1.6, dur: 8 }, { delay: 5, dur: 8 }] },
+    { y: 55, packets: [{ delay: 0, dur: 10 }, { delay: 4, dur: 10 }, { delay: 7.5, dur: 10 }] },
+    { y: 100, packets: [{ delay: 1, dur: 12 }, { delay: 6, dur: 12 }] },
+    { y: 145, packets: [{ delay: 2, dur: 8 }, { delay: 5, dur: 8 }, { delay: 9, dur: 8 }] },
   ];
 
   return (
-    <div className="s4-viz-container">
-      <svg
-        className="s4-svg"
-        viewBox="0 0 800 280"
-        preserveAspectRatio="xMidYMid meet"
-      >
+    <div className="relative w-full flex items-center justify-center" style={{ height: 260 }}>
+      <svg width="100%" height="200" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
         {rails.map((rail, ri) => (
           <g key={ri}>
             {/* Rail line */}
             <line
-              x1="0" y1={rail.y} x2="800" y2={rail.y}
-              stroke="rgba(167,139,250,0.2)"
+              x1="20"
+              y1={rail.y}
+              x2="380"
+              y2={rail.y}
+              stroke="rgba(255,255,255,.08)"
               strokeWidth="1"
             />
-            {/* Junction nodes */}
-            <circle cx="200" cy={rail.y} r="3" fill="rgba(167,139,250,0.4)" />
-            <circle cx="400" cy={rail.y} r="3" fill="rgba(167,139,250,0.4)" />
-            <circle cx="600" cy={rail.y} r="3" fill="rgba(167,139,250,0.4)" />
-            {/* Signal pulses */}
-            {rail.pulses.map((p, pi) => (
-              <circle key={pi} r="5" cy={rail.y} fill="rgba(196,181,253,0.85)">
+            {/* Packets */}
+            {rail.packets.map((pkt, pi) => (
+              <circle key={pi} r="4" cy={rail.y} fill="rgba(123,97,255,.65)">
                 <animate
                   attributeName="cx"
-                  values="0;800"
-                  dur={`${p.dur}s`}
-                  begin={`${p.delay}s`}
+                  values="20;380"
+                  dur={`${pkt.dur}s`}
+                  begin={`${pkt.delay}s`}
                   repeatCount="indefinite"
                 />
                 <animate
                   attributeName="opacity"
-                  values="0;0.85;0.85;0"
-                  dur={`${p.dur}s`}
-                  begin={`${p.delay}s`}
+                  values="0;.7;.7;0"
+                  dur={`${pkt.dur}s`}
+                  begin={`${pkt.delay}s`}
                   repeatCount="indefinite"
                 />
               </circle>
             ))}
           </g>
         ))}
-
-        {/* Branch lines (occasional merge/split) */}
-        <line x1="250" y1="70" x2="350" y2="140" stroke="rgba(167,139,250,0.1)" strokeWidth="1" />
-        <line x1="450" y1="140" x2="550" y2="210" stroke="rgba(167,139,250,0.1)" strokeWidth="1" />
-        <line x1="500" y1="70" x2="600" y2="140" stroke="rgba(167,139,250,0.08)" strokeWidth="1" />
       </svg>
     </div>
   );
 };
 
-/* ───── Band 3: Sovereign Data Plane — grid + anchor nodes ───── */
-
-const DataPlaneVisual = () => (
-  <div className="s4-viz-container">
-    <svg
-      className="s4-svg"
-      viewBox="0 0 800 280"
-      preserveAspectRatio="xMidYMid meet"
-    >
-      {/* Faint grid */}
-      {Array.from({ length: 20 }, (_, i) => (
+const VaultField = () => (
+  <div className="relative w-full flex items-center justify-center" style={{ height: 260 }}>
+    {/* Coral accent glow */}
+    <div
+      className="absolute"
+      style={{
+        width: 120,
+        height: 120,
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(212,97,107,.45), rgba(232,150,124,.2), rgba(242,193,174,0))",
+        filter: "blur(18px)",
+        opacity: 0.5,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    />
+    <svg width="280" height="220" viewBox="0 0 280 220">
+      {/* Vault rectangle */}
+      <rect
+        x="30"
+        y="20"
+        width="220"
+        height="180"
+        rx="20"
+        fill="none"
+        stroke="rgba(255,255,255,.08)"
+        strokeWidth="1"
+      />
+      {/* Faint grid inside */}
+      {Array.from({ length: 9 }, (_, i) => (
         <line
           key={`v${i}`}
-          x1={i * 42}
-          y1="0"
-          x2={i * 42}
-          y2="280"
-          stroke="rgba(255,255,255,0.04)"
+          x1={30 + (i + 1) * 22}
+          y1="20"
+          x2={30 + (i + 1) * 22}
+          y2="200"
+          stroke="rgba(255,255,255,.04)"
           strokeWidth="1"
         />
       ))}
-      {Array.from({ length: 8 }, (_, i) => (
+      {Array.from({ length: 7 }, (_, i) => (
         <line
           key={`h${i}`}
-          x1="0"
-          y1={i * 40}
-          x2="800"
-          y2={i * 40}
-          stroke="rgba(255,255,255,0.04)"
+          x1="30"
+          y1={20 + (i + 1) * 22.5}
+          x2="250"
+          y2={20 + (i + 1) * 22.5}
+          stroke="rgba(255,255,255,.04)"
           strokeWidth="1"
         />
       ))}
-
-      {/* Anchor nodes with security halos */}
-      {[
-        { cx: 200, cy: 140, r: 6, delay: 0 },
-        { cx: 400, cy: 140, r: 8, delay: 1 },
-        { cx: 600, cy: 140, r: 6, delay: 2 },
-        { cx: 300, cy: 80, r: 4, delay: 0.5 },
-        { cx: 500, cy: 80, r: 4, delay: 1.5 },
-        { cx: 300, cy: 200, r: 4, delay: 2.5 },
-        { cx: 500, cy: 200, r: 4, delay: 3 },
-      ].map((node, i) => (
-        <g key={i}>
-          {/* Security halo */}
-          <circle
-            cx={node.cx}
-            cy={node.cy}
-            r={node.r + 12}
-            fill="none"
-            stroke="rgba(212,97,107,0.15)"
-            strokeWidth="1"
-          >
-            <animate
-              attributeName="r"
-              values={`${node.r + 10};${node.r + 16};${node.r + 10}`}
-              dur="8s"
-              begin={`${node.delay}s`}
-              repeatCount="indefinite"
-            />
-            <animate
-              attributeName="opacity"
-              values="0.6;1;0.6"
-              dur="8s"
-              begin={`${node.delay}s`}
-              repeatCount="indefinite"
-            />
-          </circle>
-          {/* Anchor node */}
-          <circle
-            cx={node.cx}
-            cy={node.cy}
-            r={node.r}
-            className="s4-data-node"
-          >
-            <animate
-              attributeName="opacity"
-              values="0.7;1;0.7"
-              dur="8s"
-              begin={`${node.delay}s`}
-              repeatCount="indefinite"
-            />
-          </circle>
-        </g>
-      ))}
-
-      {/* Connecting spine lines between anchors */}
-      <line x1="200" y1="140" x2="400" y2="140" stroke="rgba(232,150,124,0.2)" strokeWidth="1" />
-      <line x1="400" y1="140" x2="600" y2="140" stroke="rgba(232,150,124,0.2)" strokeWidth="1" />
-      <line x1="300" y1="80" x2="400" y2="140" stroke="rgba(232,150,124,0.12)" strokeWidth="1" />
-      <line x1="500" y1="80" x2="400" y2="140" stroke="rgba(232,150,124,0.12)" strokeWidth="1" />
-      <line x1="300" y1="200" x2="400" y2="140" stroke="rgba(232,150,124,0.12)" strokeWidth="1" />
-      <line x1="500" y1="200" x2="400" y2="140" stroke="rgba(232,150,124,0.12)" strokeWidth="1" />
+      {/* Central lock node */}
+      <circle cx="140" cy="110" r="8" fill="rgba(212,97,107,.6)">
+        <animate
+          attributeName="opacity"
+          values=".5;.85;.5"
+          dur="3.5s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle cx="140" cy="110" r="18" fill="none" stroke="rgba(212,97,107,.2)" strokeWidth="1" />
     </svg>
   </div>
 );
 
-/* ───── Band data ───── */
+/* ───── Card Data ───── */
 
-const bands = [
+const cards = [
   {
     title: "AI Cortex",
-    sub: "Reasoning layer that routes clinical decisions through structured intelligence.",
-    Visual: CortexVisual,
+    line: "Reasoning layer that routes clinical decisions.",
+    Visual: ParticleRing,
   },
   {
     title: "Workflow Orchestration",
-    sub: "Signals moving across pathways — steady, branching, merging — at system scale.",
-    Visual: WorkflowVisual,
+    line: "Signals that move across pathways, calmly.",
+    Visual: WorkflowRails,
   },
   {
     title: "Sovereign Data Plane",
-    sub: "Policy, storage, and jurisdiction — enforced automatically, anchored permanently.",
-    Visual: DataPlaneVisual,
+    line: "Policy, storage, jurisdiction — enforced automatically.",
+    Visual: VaultField,
   },
 ];
 
-/* ───── Section ───── */
+/* ───── Main Section ───── */
 
 const CapabilitiesSection = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -255,50 +196,148 @@ const CapabilitiesSection = () => {
     target: ref,
     offset: ["start end", "end start"],
   });
-  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   return (
     <section
       ref={ref}
-      className="s4-section relative overflow-hidden"
+      className="relative overflow-hidden"
+      style={{
+        padding: "clamp(72px, 10vw, 120px) 0",
+        background: `
+          radial-gradient(1200px 700px at 15% 25%, rgba(123,97,255,.18), transparent 60%),
+          radial-gradient(900px 600px at 85% 65%, rgba(212,97,107,.14), transparent 62%),
+          radial-gradient(700px 420px at 50% 10%, rgba(255,255,255,.06), transparent 60%),
+          linear-gradient(180deg, #07060B 0%, #090716 50%, #07060B 100%)
+        `,
+      }}
     >
-      {/* Grain noise overlay */}
-      <div className="s4-noise" />
+      {/* Star noise */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(rgba(255,255,255,.16) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+          opacity: 0.08,
+          filter: "blur(.2px)",
+        }}
+      />
       {/* Ambient glow */}
-      <div className="s4-ambient" />
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          inset: "-30%",
+          background: "radial-gradient(circle, rgba(123,97,255,.10), transparent 55%)",
+          opacity: 0.35,
+          filter: "blur(60px)",
+        }}
+      />
 
-      <motion.div style={{ opacity }} className="relative z-10">
-        {/* Section header */}
-        <div className="s4-header">
-          <span className="mono-label" style={{ color: "rgba(255,255,255,0.35)" }}>
+      <motion.div
+        style={{ opacity }}
+        className="relative z-10 max-w-7xl mx-auto px-6 md:px-12"
+      >
+        {/* Header */}
+        <div className="mb-16">
+          <span
+            className="mono-label"
+            style={{ color: "rgba(255,255,255,.4)" }}
+          >
             [ CAPABILITIES ]
           </span>
-          <h2 className="s4-headline">
-            Built as Infrastructure.
+          <h2
+            className="mt-6"
+            style={{
+              fontSize: "clamp(32px, 4vw, 52px)",
+              fontWeight: 600,
+              color: "rgba(255,255,255,.92)",
+              lineHeight: 1.15,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Built as infrastructure.
           </h2>
-          <p className="s4-subtext">
-            Three structural planes that power modern healthcare — invisibly, continuously, and at scale.
+          <p
+            className="mt-4"
+            style={{
+              fontSize: "clamp(15px, 1.4vw, 18px)",
+              color: "rgba(255,255,255,.55)",
+              lineHeight: 1.6,
+              maxWidth: 560,
+            }}
+          >
+            Three planes that let healthcare systems reason, route, and govern — quietly.
           </p>
         </div>
 
-        {/* Infrastructure bands */}
-        <div className="s4-bands">
-          {bands.map((band, i) => (
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {cards.map((card, i) => (
             <motion.div
-              key={band.title}
-              initial={{ opacity: 0, y: 40 }}
+              key={card.title}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.7, delay: i * 0.15 }}
-              className="s4-band"
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: i * 0.12 }}
+              className="flex flex-col"
+              style={{
+                background: "rgba(12,10,20,.55)",
+                border: "1px solid rgba(255,255,255,.08)",
+                borderRadius: 28,
+                padding: 28,
+                minHeight: 420,
+                boxShadow:
+                  "0 30px 80px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06)",
+                backdropFilter: "blur(14px)",
+              }}
             >
-              <div className="s4-band-text">
-                <h3 className="s4-band-title">{band.title}</h3>
-                <p className="s4-band-sub">{band.sub}</p>
+              {/* Visual */}
+              <card.Visual />
+
+              {/* Text */}
+              <div className="mt-auto">
+                <h3
+                  style={{
+                    color: "rgba(255,255,255,.92)",
+                    fontWeight: 600,
+                    fontSize: 22,
+                  }}
+                >
+                  {card.title}
+                </h3>
+                <p
+                  style={{
+                    color: "rgba(255,255,255,.62)",
+                    fontSize: 15,
+                    lineHeight: 1.5,
+                    marginTop: 8,
+                  }}
+                >
+                  {card.line}
+                </p>
               </div>
-              <div className="s4-band-visual">
-                <band.Visual />
-              </div>
+
+              {/* CTA */}
+              <button
+                className="mt-6 self-start transition-colors duration-200"
+                style={{
+                  display: "inline-flex",
+                  padding: "10px 14px",
+                  borderRadius: 999,
+                  border: "1px solid rgba(255,255,255,.12)",
+                  color: "rgba(255,255,255,.85)",
+                  background: "rgba(255,255,255,.03)",
+                  fontSize: 13,
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.borderColor = "rgba(212,97,107,.4)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.borderColor = "rgba(255,255,255,.12)")
+                }
+              >
+                Learn more →
+              </button>
             </motion.div>
           ))}
         </div>

@@ -1,116 +1,130 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-/* ─── AI CORTEX ─── structured pulsing network with signal transmission */
+/* ─── AI CORTEX ─── neural mesh with convergence to massive core */
 const CortexViz = () => (
-  <svg viewBox="0 0 640 200" className="w-full h-full block">
+  <svg viewBox="0 0 640 220" className="w-full h-full block">
     <defs>
-      <radialGradient id="cortexCore" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stopColor="rgba(176,140,255,0.6)" />
-        <stop offset="60%" stopColor="rgba(176,140,255,0.2)" />
-        <stop offset="100%" stopColor="rgba(176,140,255,0)" />
+      <radialGradient id="coreGlow" cx="50%" cy="50%" r="55%">
+        <stop offset="0%" stopColor="rgba(255,255,255,0.70)" />
+        <stop offset="35%" stopColor="rgba(199,163,255,0.55)" />
+        <stop offset="70%" stopColor="rgba(129,83,255,0.25)" />
+        <stop offset="100%" stopColor="rgba(129,83,255,0.0)" />
       </radialGradient>
     </defs>
 
-    {/* Core glow — subtle, not overpowering */}
-    <circle cx="320" cy="100" r="32" fill="url(#cortexCore)" />
+    {/* Core glow */}
+    <circle cx="330" cy="88" r="42" fill="url(#coreGlow)" style={{ filter: "drop-shadow(0 0 10px rgba(255,255,255,0.22))" }} />
 
-    {/* Network edges — dashed signal lines */}
+    {/* Edges */}
     <g className="s2-cortex-edges">
-      <line x1="120" y1="100" x2="220" y2="55" />
-      <line x1="220" y1="55" x2="320" y2="100" />
-      <line x1="320" y1="100" x2="430" y2="50" />
-      <line x1="430" y1="50" x2="530" y2="95" />
-      <line x1="530" y1="95" x2="430" y2="155" />
-      <line x1="430" y1="155" x2="320" y2="100" />
-      <line x1="320" y1="100" x2="210" y2="150" />
-      <line x1="210" y1="150" x2="120" y2="100" />
-      <line x1="220" y1="55" x2="430" y2="50" />
-      <line x1="210" y1="150" x2="430" y2="155" />
-      {/* Secondary connections */}
-      <line x1="170" y1="75" x2="270" y2="40" style={{ opacity: 0.5 }} />
-      <line x1="480" y1="70" x2="380" y2="45" style={{ opacity: 0.5 }} />
+      <line x1="150" y1="90" x2="250" y2="45" />
+      <line x1="250" y1="45" x2="330" y2="88" />
+      <line x1="330" y1="88" x2="420" y2="40" />
+      <line x1="420" y1="40" x2="520" y2="85" />
+      <line x1="520" y1="85" x2="420" y2="145" />
+      <line x1="420" y1="145" x2="330" y2="88" />
+      <line x1="330" y1="88" x2="240" y2="145" />
+      <line x1="240" y1="145" x2="150" y2="90" />
+      <line x1="250" y1="45" x2="420" y2="40" />
+      <line x1="240" y1="145" x2="420" y2="145" />
     </g>
 
-    {/* Nodes — lavender glow, not white */}
+    {/* Nodes */}
     <g className="s2-cortex-nodes">
-      <circle cx="120" cy="100" r="5" />
-      <circle cx="220" cy="55" r="4.5" />
-      <circle cx="430" cy="50" r="4.5" />
-      <circle cx="530" cy="95" r="5" />
-      <circle cx="430" cy="155" r="5" />
-      <circle cx="210" cy="150" r="5" />
-      {/* Core node — larger */}
-      <circle cx="320" cy="100" r="8" className="s2-core-node" />
-      {/* Micro sparks */}
-      <circle cx="270" cy="72" r="2.5" className="s2-micro" />
-      <circle cx="480" cy="70" r="2.5" className="s2-micro" />
-      <circle cx="370" cy="130" r="2.5" className="s2-micro" />
+      <circle cx="150" cy="90" r="7" />
+      <circle cx="250" cy="45" r="6" />
+      <circle cx="420" cy="40" r="6" />
+      <circle cx="520" cy="85" r="7" />
+      <circle cx="420" cy="145" r="7" />
+      <circle cx="240" cy="145" r="7" />
+      {/* micro spark nodes */}
+      <circle className="s2-micro" cx="285" cy="62" r="3" />
+      <circle className="s2-micro" cx="470" cy="60" r="3" />
+      <circle className="s2-micro" cx="475" cy="120" r="3" />
     </g>
 
-    {/* Signal pulses converging to core via animateMotion */}
+    {/* Pulses converging to center */}
     {[
-      { path: "M120,100 L220,55 L320,100", delay: 0 },
-      { path: "M430,50 L320,100", delay: 1.5 },
-      { path: "M530,95 L430,155 L320,100", delay: 3 },
-      { path: "M210,150 L320,100", delay: 4.5 },
+      { cx: 150, cy: 90, delay: 0 },
+      { cx: 420, cy: 40, delay: 3.5 },
+      { cx: 520, cy: 85, delay: 7 },
+      { cx: 240, cy: 145, delay: 10.5 },
     ].map((p, i) => (
       <g key={i}>
-        <circle r="3.5" fill="#B08CFF" opacity="0" style={{ filter: "drop-shadow(0 0 6px rgba(176,140,255,0.6))" }}>
-          <animateMotion dur="2.8s" begin={`${p.delay}s`} repeatCount="indefinite" path={p.path} calcMode="spline" keySplines="0.4 0 0.2 1" keyTimes="0;1" />
-          <animate attributeName="opacity" values="0;0.85;0.7;0" keyTimes="0;0.12;0.82;1" dur="2.8s" begin={`${p.delay}s`} repeatCount="indefinite" />
+        <circle r="5" fill="rgba(220,210,255,1)" style={{ filter: "drop-shadow(0 0 6px rgba(186,145,255,0.4))" }}>
+          <animate attributeName="cx" values={`${p.cx};330`} dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1" />
+          <animate attributeName="cy" values={`${p.cy};88`} dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.2 1" />
+          <animate attributeName="opacity" values="0;0.9;0.8;0" keyTimes="0;0.1;0.8;1" dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite" />
         </circle>
-        {/* Core flash on arrival */}
-        <circle cx="320" cy="100" r="18" fill="#B08CFF" opacity="0">
-          <animate attributeName="opacity" values="0;0;0.2;0" keyTimes="0;0.78;0.92;1" dur="2.8s" begin={`${p.delay}s`} repeatCount="indefinite" />
+        <circle cx="330" cy="88" r="22" fill="rgba(220,210,255,1)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.3;0" keyTimes="0;0.75;0.9;1" dur="2.5s" begin={`${p.delay}s`} repeatCount="indefinite" />
         </circle>
       </g>
     ))}
   </svg>
 );
 
-/* ─── WORKFLOW ORCHESTRATION ─── calm data routing, no glow */
+/* ─── WORKFLOW ORCHESTRATION ─── 3 lanes with offset nodes + pulses */
 const WorkflowViz = () => (
   <div className="absolute inset-0" style={{ padding: 18 }}>
-    {/* 3 horizontal lines — quiet, no glow */}
-    <div className="s2-wf-line" style={{ top: 42 }} />
-    <div className="s2-wf-line" style={{ top: 72 }} />
-    <div className="s2-wf-line" style={{ top: 102 }} />
+    {/* 3 horizontal lines */}
+    <div className="s2-wf-line" style={{ top: 36 }} />
+    <div className="s2-wf-line" style={{ top: 62, opacity: 0.8 }} />
+    <div className="s2-wf-line" style={{ top: 88, opacity: 0.65 }} />
 
-    {/* Checkpoint nodes — offset positions */}
-    <span className="s2-wf-node" style={{ top: 37, left: "26%" }} />
-    <span className="s2-wf-node" style={{ top: 67, left: "52%" }} />
-    <span className="s2-wf-node" style={{ top: 97, left: "76%" }} />
+    {/* Checkpoint nodes */}
+    <span className="s2-wf-node" style={{ top: 31, left: "28%" }} />
+    <span className="s2-wf-node" style={{ top: 57, left: "55%" }} />
+    <span className="s2-wf-node" style={{ top: 83, left: "78%" }} />
 
-    {/* Moving packets — different speeds */}
-    <span className="s2-wf-pulse s2-wf-pulse-1" style={{ top: 37 }} />
-    <span className="s2-wf-pulse s2-wf-pulse-2" style={{ top: 67 }} />
-    <span className="s2-wf-pulse s2-wf-pulse-3" style={{ top: 97 }} />
+    {/* Moving pulses */}
+    <span className="s2-wf-pulse s2-wf-pulse-1" style={{ top: 31 }} />
+    <span className="s2-wf-pulse s2-wf-pulse-2" style={{ top: 57 }} />
   </div>
 );
 
-/* ─── SOVEREIGN DATA PLANE ─── coral anchors, authoritative */
+/* ─── SOVEREIGN DATA PLANE ─── heavy spine with gate nodes */
 const DataPlaneViz = () => (
   <div className="absolute inset-0" style={{ padding: 18 }}>
-    {/* Heavy horizontal spine */}
+    {/* Heavy horizontal rail */}
     <div className="s2-dp-rail" />
 
-    {/* Coral anchor nodes */}
-    <span className="s2-dp-gate" style={{ left: "25%", animationDelay: "0s" }} />
-    <span className="s2-dp-gate" style={{ left: "50%", animationDelay: "0.8s" }} />
-    <span className="s2-dp-gate" style={{ left: "75%", animationDelay: "1.6s" }} />
+    {/* Gate nodes */}
+    <span className="s2-dp-gate" style={{ left: "30%", animationDelay: "0s" }} />
+    <span className="s2-dp-gate" style={{ left: "57%", animationDelay: "0.6s" }} />
+    <span className="s2-dp-gate" style={{ left: "82%", animationDelay: "1.2s" }} />
   </div>
 );
 
-/* ─── Card hierarchy ─── */
+/* ─── Card hierarchy styles ─── */
+const cardStyles = [
+  { // Cortex — brightest
+    bg: "linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.06))",
+    border: "1px solid rgba(255,255,255,0.15)",
+    shadow: "0 24px 70px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.10), inset 0 0 120px rgba(123,97,255,0.18)",
+  },
+  { // Orchestration — neutral
+    bg: "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))",
+    border: "1px solid rgba(255,255,255,0.12)",
+    shadow: "0 24px 70px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 120px rgba(123,97,255,0.15)",
+  },
+  { // Sovereign — darkest, heaviest
+    bg: "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))",
+    border: "1px solid rgba(255,255,255,0.09)",
+    shadow: "0 24px 70px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 0 120px rgba(123,97,255,0.10)",
+  },
+];
+
 const layers = [
-  { label: "AI Cortex", subtitle: "Reasoning · Context · Decision Support", Viz: CortexViz },
-  { label: "Workflow Orchestration", subtitle: "Routing · Decisions · Clinical Ops", Viz: WorkflowViz },
-  { label: "Sovereign Data Plane", subtitle: "Storage · Policy · Jurisdictional Control", Viz: DataPlaneViz },
+  { label: "AI Cortex", subtitle: "Reasoning · Context · Decision Support", Viz: CortexViz, vizHeight: "h-[140px]" },
+  { label: "Workflow Orchestration", subtitle: "Routing · Decisions · Clinical Ops", Viz: WorkflowViz, vizHeight: "h-[126px]" },
+  { label: "Sovereign Data Plane", subtitle: "Storage · Policy · Jurisdictional Control", Viz: DataPlaneViz, vizHeight: "h-[126px]" },
 ];
 
 const ManifestoSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
   const [cardTransforms, setCardTransforms] = useState<string[]>(["", "", ""]);
 
   const { scrollYProgress } = useScroll({
@@ -121,16 +135,17 @@ const ManifestoSection = () => {
   const headlineOpacity = useTransform(scrollYProgress, [0.06, 0.22], [0, 1]);
   const headlineY = useTransform(scrollYProgress, [0.06, 0.22], [36, 0]);
 
-  // Micro-parallax
+  // Micro-parallax on cards
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!containerRef.current) return;
     const r = containerRef.current.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
+
     setCardTransforms(
       [0, 1, 2].map((i) => {
-        const depth = (i + 1) * 0.5;
-        return `perspective(1200px) rotateY(${x * 2.5 * depth}deg) rotateX(${-y * 1.8 * depth}deg) translateY(${y * 4}px)`;
+        const depth = (i + 1) * 0.6;
+        return `perspective(1200px) rotateY(${x * 3 * depth}deg) rotateX(${-y * 2 * depth}deg) translateY(${y * 6}px)`;
       })
     );
   }, []);
@@ -155,83 +170,95 @@ const ManifestoSection = () => {
       ref={containerRef}
       id="intelligence-layer"
       className="relative overflow-hidden"
-      style={{ padding: "clamp(72px, 8vw, 120px) 0" }}
+      style={{ padding: "clamp(64px, 7vw, 110px) 0" }}
     >
-      {/* Background — deep, quiet gradient */}
+      {/* Background */}
       <div
         className="absolute inset-0"
         style={{
-          background: "radial-gradient(1200px 800px at 70% 40%, #5E2CA5 0%, #3D0E6F 40%, #140022 100%)",
-        }}
-      />
-      {/* Noise texture overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-          opacity: 0.06,
+          background: `
+            radial-gradient(900px 600px at 18% 38%, rgba(143,83,255,0.45), transparent 60%),
+            radial-gradient(700px 520px at 78% 22%, rgba(255,192,174,0.18), transparent 62%),
+            radial-gradient(900px 700px at 70% 75%, rgba(212,97,107,0.14), transparent 66%),
+            linear-gradient(135deg, #1A0630 0%, #3A0B6E 48%, #5B1FA6 120%)
+          `,
+          filter: "saturate(1.08)",
         }}
       />
 
       <div className="relative z-10" style={{ width: "min(1180px, calc(100% - 48px))", margin: "0 auto" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] items-start" style={{ gap: "clamp(32px, 5vw, 72px)" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] items-start" style={{ gap: "clamp(24px, 4vw, 64px)" }}>
           {/* Left — Copy */}
           <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
-            <p className="mb-6 mono-label" style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, letterSpacing: "0.18em" }}>
+            <p className="mb-5 mono-label" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
               [ THE INTELLIGENCE LAYER ]
             </p>
             <h2
+              className="mb-5"
               style={{
-                color: "#ffffff",
+                color: "rgba(255,255,255,0.92)",
                 fontWeight: 800,
-                lineHeight: 1.05,
-                fontSize: "clamp(60px, 7vw, 96px)",
-                margin: "0 0 24px 0",
+                lineHeight: 0.95,
+                fontSize: "clamp(44px, 5.2vw, 84px)",
+                textShadow: "0 10px 40px rgba(0,0,0,0.22)",
               }}
             >
               Healthcare<br />runs on<br />intelligence<br />now.
             </h2>
-            <p style={{
-              color: "rgba(255,255,255,0.7)",
-              fontWeight: 400,
-              fontSize: 18,
-              lineHeight: 1.6,
-              maxWidth: "520px",
-              margin: 0,
-            }}>
+            <p style={{ color: "rgba(255,255,255,0.72)", fontWeight: 400, fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}>
               Three system planes running beneath every clinical workflow — reasoning, orchestration, and sovereign data governance — engineered as infrastructure, not features.
             </p>
           </motion.div>
 
-          {/* Right — Cards with Z-depth */}
-          <div className="relative" style={{ perspective: "1200px" }}>
-            <div className="relative z-10 flex flex-col gap-5">
+          {/* Right — Cards */}
+          <div ref={cardsRef} className="relative">
+            {/* Ambient glow */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                top: "-10%", left: "5%", width: "90%", height: "120%",
+                background: "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(160,130,240,0.12) 0%, transparent 65%)",
+              }}
+            />
+            <div className="relative z-10 flex flex-col gap-[18px]">
               {layers.map((layer, i) => (
                 <motion.article
                   key={layer.label}
-                  initial={{ opacity: 0, y: 28 }}
+                  initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-40px" }}
                   transition={{ delay: i * 0.15, duration: 0.6, ease: "easeOut" }}
-                  className="s2-plane-card relative overflow-hidden"
+                  whileHover={{
+                    y: -4,
+                    borderColor: "rgba(255,255,255,0.20)",
+                  }}
+                  className="relative rounded-[22px] overflow-hidden transition-colors duration-300"
                   style={{
-                    transform: cardTransforms[i] || `translateZ(${-i * 10}px)`,
-                    transition: "transform 0.2s ease-out, border-color 0.2s ease",
+                    background: cardStyles[i].bg,
+                    border: cardStyles[i].border,
+                    backdropFilter: "blur(18px)",
+                    WebkitBackdropFilter: "blur(18px)",
+                    boxShadow: cardStyles[i].shadow,
+                    padding: "18px 18px 16px",
+                    transform: cardTransforms[i] || "none",
+                    transition: "transform 0.15s ease-out",
                   }}
                 >
+                  {/* Inner light gradient */}
+                  <div className="absolute inset-[-1px] pointer-events-none" style={{ background: "radial-gradient(480px 220px at 12% 18%, rgba(255,255,255,0.10), transparent 60%)" }} />
+
                   {/* Header */}
-                  <div className="relative flex justify-between items-start gap-3 mb-3">
+                  <div className="relative flex justify-between items-start gap-3 mb-2.5">
                     <div>
                       <div style={{ fontWeight: 650, fontSize: 18, color: "rgba(255,255,255,0.92)" }}>{layer.label}</div>
-                      <div style={{ fontWeight: 400, fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>{layer.subtitle}</div>
+                      <div style={{ fontWeight: 450, fontSize: 13, color: "rgba(255,255,255,0.55)", marginTop: 4 }}>{layer.subtitle}</div>
                     </div>
                   </div>
 
-                  {/* Visualization — uniform height */}
+                  {/* Visualization area */}
                   <div
-                    className="relative h-[150px] rounded-2xl overflow-hidden"
-                    style={{ background: "rgba(0,0,0,0.15)", border: "1px solid rgba(255,255,255,0.05)" }}
+                    className={`relative ${layer.vizHeight} rounded-2xl overflow-hidden`}
+                    style={{ background: "rgba(0,0,0,0.10)", border: "1px solid rgba(255,255,255,0.08)" }}
                   >
                     <layer.Viz />
                   </div>
