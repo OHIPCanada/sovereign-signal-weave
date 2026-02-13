@@ -1,60 +1,80 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-/* ─── AI CORTEX ─── Orbital particle ring with glowing core */
+/* ─── AI CORTEX ─── Two dots orbit opposite, then merge to center */
 const CortexViz = () => {
-  const rings = [
-    { r: 62, count: 60, speed: 50 },
-    { r: 44, count: 36, speed: 38 },
-  ];
-
   return (
     <div className="relative w-full h-full flex items-center justify-center">
       {/* Central core glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         style={{
-          width: 48, height: 48, borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(255,255,255,.35), rgba(180,150,255,.3) 50%, transparent 80%)",
-          boxShadow: "0 0 40px 12px rgba(160,130,255,.25), 0 0 80px 20px rgba(123,97,255,.12)",
+          width: 36, height: 36, borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(255,255,255,.3), rgba(180,150,255,.25) 50%, transparent 80%)",
+          boxShadow: "0 0 30px 10px rgba(160,130,255,.2), 0 0 60px 16px rgba(123,97,255,.1)",
           animation: "glowPulse 3.5s ease-in-out infinite",
         }}
       />
-      {/* Inner white dot */}
+      {/* Center dot */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,.9)" }}
+        style={{ width: 7, height: 7, borderRadius: "50%", background: "rgba(255,255,255,.9)" }}
       />
-      {/* Rings */}
-      {rings.map((ring, ri) => (
-        <svg key={ri} className="absolute top-1/2 left-1/2"
-          width={ring.r * 2 + 20} height={ring.r * 2 + 20}
-          viewBox={`0 0 ${ring.r * 2 + 20} ${ring.r * 2 + 20}`}
-          style={{
-            transform: `translate(-50%, -50%) ${ri === 1 ? "rotate(30deg)" : ""}`,
-            animation: `slowSpin ${ring.speed}s linear infinite ${ri === 1 ? "reverse" : ""}`,
-          }}
-        >
-          {/* Orbit path */}
-          <circle cx={ring.r + 10} cy={ring.r + 10} r={ring.r}
-            fill="none" stroke="rgba(180,160,255,.12)" strokeWidth="1"
-            strokeDasharray="4 6"
-          />
-          {/* Dots */}
-          {Array.from({ length: ring.count }, (_, i) => {
-            const angle = (i / ring.count) * Math.PI * 2;
-            const x = (ring.r + 10) + Math.cos(angle) * ring.r;
-            const y = (ring.r + 10) + Math.sin(angle) * ring.r;
-            const isGap = i % 8 === 0;
-            const isAccent = i === 5 || i === 23 || i === 41;
-            if (isGap) return null;
-            return (
-              <circle key={i} cx={x} cy={y}
-                r={isAccent ? 2.8 : 1.8}
-                fill={isAccent ? "rgba(232,150,124,1)" : "rgba(200,180,255,.85)"}
-              />
-            );
-          })}
-        </svg>
-      ))}
+
+      {/* Orbit ring visuals */}
+      <svg className="absolute top-1/2 left-1/2" width="140" height="140" viewBox="0 0 140 140"
+        style={{ transform: "translate(-50%, -50%)" }}>
+        <circle cx="70" cy="70" r="55" fill="none" stroke="rgba(180,160,255,.12)" strokeWidth="1" strokeDasharray="4 6" />
+        <circle cx="70" cy="70" r="36" fill="none" stroke="rgba(180,160,255,.08)" strokeWidth="1" strokeDasharray="3 5" />
+      </svg>
+
+      {/* Dot A — clockwise on outer ring, merges every cycle */}
+      <div className="absolute top-1/2 left-1/2" style={{
+        width: 0, height: 0,
+        animation: "cortexOrbitA 5s ease-in-out infinite",
+      }}>
+        <div style={{
+          width: 12, height: 12, borderRadius: "50%",
+          transform: "translate(-50%, -50%)",
+          background: "rgba(200,180,255,.95)",
+          boxShadow: "0 0 14px 5px rgba(180,150,255,.5), 0 0 30px 10px rgba(123,97,255,.2)",
+          animation: "cortexDotPulse 5s ease-in-out infinite",
+        }} />
+      </div>
+
+      {/* Dot B — counter-clockwise on outer ring, merges every cycle */}
+      <div className="absolute top-1/2 left-1/2" style={{
+        width: 0, height: 0,
+        animation: "cortexOrbitB 5s ease-in-out infinite",
+      }}>
+        <div style={{
+          width: 12, height: 12, borderRadius: "50%",
+          transform: "translate(-50%, -50%)",
+          background: "rgba(232,150,124,.95)",
+          boxShadow: "0 0 14px 5px rgba(232,150,124,.45), 0 0 30px 10px rgba(212,97,107,.15)",
+          animation: "cortexDotPulse 5s ease-in-out infinite",
+        }} />
+      </div>
+
+      {/* Merge flash at center */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        style={{
+          width: 28, height: 28, borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(255,255,255,.6), transparent 70%)",
+          animation: "cortexMergeFlash 5s ease-in-out infinite",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Faint particle ring decoration */}
+      <svg className="absolute top-1/2 left-1/2" width="140" height="140" viewBox="0 0 140 140"
+        style={{ transform: "translate(-50%, -50%)", animation: "slowSpin 60s linear infinite" }}>
+        {Array.from({ length: 24 }, (_, i) => {
+          const angle = (i / 24) * Math.PI * 2;
+          const x = 70 + Math.cos(angle) * 55;
+          const y = 70 + Math.sin(angle) * 55;
+          if (i % 4 === 0) return null;
+          return <circle key={i} cx={x} cy={y} r={1.2} fill="rgba(200,180,255,.3)" />;
+        })}
+      </svg>
     </div>
   );
 };
