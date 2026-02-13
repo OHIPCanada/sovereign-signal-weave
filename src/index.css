@@ -414,12 +414,12 @@
   position: relative;
   overflow: hidden;
   background: linear-gradient(
-    155deg,
-    #E4E0EE 0%,
-    #E8EDF3 25%,
-    #EEF2F6 45%,
-    #F0EAE6 70%,
-    #EDDFDA 100%
+    135deg,
+    #7B1FA2 0%,
+    #9C4DB8 30%,
+    #C47A90 55%,
+    #E8967C 80%,
+    #E8967C 100%
   );
 }
 
@@ -430,20 +430,18 @@
   pointer-events: none;
   background:
     radial-gradient(
-      ellipse 50% 60% at 15% 30%,
-      rgba(140, 110, 220, 0.3) 0%,
-      rgba(120, 90, 200, 0.15) 35%,
+      ellipse 55% 60% at 20% 35%,
+      rgba(123, 31, 162, 0.35) 0%,
       transparent 65%
     ),
     radial-gradient(
-      ellipse 45% 55% at 70% 55%,
-      rgba(232, 150, 124, 0.35) 0%,
-      rgba(212, 97, 107, 0.15) 40%,
-      transparent 70%
+      ellipse 50% 55% at 75% 60%,
+      rgba(232, 150, 124, 0.4) 0%,
+      transparent 65%
     ),
     radial-gradient(
-      ellipse 30% 35% at 50% 50%,
-      rgba(255, 255, 255, 0.45) 0%,
+      ellipse 35% 40% at 50% 50%,
+      rgba(255, 255, 255, 0.12) 0%,
       transparent 70%
     );
   animation: platformBreath 10s ease-in-out infinite;
@@ -457,14 +455,13 @@
   z-index: 1;
   background:
     radial-gradient(
-      ellipse 65% 55% at 90% 85%,
-      rgba(242, 193, 174, 0.45) 0%,
-      rgba(232, 150, 124, 0.2) 40%,
-      transparent 70%
+      ellipse 60% 50% at 85% 80%,
+      rgba(232, 150, 124, 0.3) 0%,
+      transparent 65%
     ),
     radial-gradient(
-      ellipse 40% 50% at 5% 15%,
-      rgba(100, 75, 180, 0.18) 0%,
+      ellipse 45% 50% at 10% 20%,
+      rgba(123, 31, 162, 0.2) 0%,
       transparent 55%
     );
 }
