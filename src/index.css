@@ -408,3 +408,68 @@
   0% { background-position: 30% 20%; }
   100% { background-position: 35% 25%; }
 }
+
+/* ===== Platform Section Background - Hero-inspired with violet-coral shift ===== */
+.platform-bg {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    155deg,
+    #E4E0EE 0%,
+    #E8EDF3 25%,
+    #EEF2F6 45%,
+    #F0EAE6 70%,
+    #EDDFDA 100%
+  );
+}
+
+.platform-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 50% 60% at 15% 30%,
+      rgba(140, 110, 220, 0.3) 0%,
+      rgba(120, 90, 200, 0.15) 35%,
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 45% 55% at 70% 55%,
+      rgba(232, 150, 124, 0.35) 0%,
+      rgba(212, 97, 107, 0.15) 40%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 30% 35% at 50% 50%,
+      rgba(255, 255, 255, 0.45) 0%,
+      transparent 70%
+    );
+  animation: platformBreath 10s ease-in-out infinite;
+}
+
+.platform-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(
+      ellipse 65% 55% at 90% 85%,
+      rgba(242, 193, 174, 0.45) 0%,
+      rgba(232, 150, 124, 0.2) 40%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 40% 50% at 5% 15%,
+      rgba(100, 75, 180, 0.18) 0%,
+      transparent 55%
+    );
+}
+
+@keyframes platformBreath {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.008); }
+}
