@@ -93,9 +93,9 @@ const LivingArchitecture = () => (
       {inputNodes.map((inp, i) => (
         <g key={`in-${i}`}>
           <line x1={inp.x} y1={inp.y} x2={core.x} y2={core.y}
-            stroke="rgba(212, 97, 107, 0.25)" strokeWidth="2.5" strokeLinecap="round" />
+            stroke="rgba(0, 0, 0, 0.15)" strokeWidth="1.5" strokeLinecap="round" />
           <line x1={inp.x} y1={inp.y} x2={core.x} y2={core.y}
-            stroke="rgba(212, 97, 107, 0.6)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)">
+            stroke="rgba(0, 0, 0, 0.35)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)">
             <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" begin={`${i * 0.8}s`} repeatCount="indefinite" />
           </line>
         </g>
@@ -105,9 +105,9 @@ const LivingArchitecture = () => (
       {outputNodes.map((out, i) => (
         <g key={`out-${i}`}>
           <line x1={core.x} y1={core.y} x2={out.x} y2={out.y}
-            stroke="rgba(123, 97, 255, 0.25)" strokeWidth="2.5" strokeLinecap="round" />
+            stroke="rgba(0, 0, 0, 0.15)" strokeWidth="1.5" strokeLinecap="round" />
           <line x1={core.x} y1={core.y} x2={out.x} y2={out.y}
-            stroke="rgba(123, 97, 255, 0.6)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)">
+            stroke="rgba(0, 0, 0, 0.35)" strokeWidth="1.5" strokeLinecap="round" filter="url(#line-glow)">
             <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" begin={`${i * 0.8 + 2}s`} repeatCount="indefinite" />
           </line>
         </g>
