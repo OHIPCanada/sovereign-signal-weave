@@ -211,11 +211,11 @@ const LivingArchitecture = () => (
         </g>
       ))}
 
-      {/* ── Zone labels — clear of all nodes ── */}
+      {/* ── Zone labels ── */}
       <text x="330" y="500" textAnchor="middle" fill="rgba(20,20,40,0.3)" fontSize="8" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         INPUTS
       </text>
-      <text x="410" y="28" textAnchor="middle" fill="rgba(20,20,40,0.3)" fontSize="8" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
+      <text x="410" y="100" textAnchor="middle" fill="rgba(20,20,40,0.3)" fontSize="8" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         OUTPUTS
       </text>
     </svg>
