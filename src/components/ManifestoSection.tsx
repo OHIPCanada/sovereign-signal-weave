@@ -262,16 +262,6 @@ const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => 
             {layer.subtitle}
           </p>
         </div>
-        <div
-          className="px-2.5 py-1 rounded-full text-[9px] md:text-[10px] font-medium tracking-wider uppercase"
-          style={{
-            background: "rgba(255, 255, 255, 0.06)",
-            border: "1px solid rgba(230, 230, 250, 0.12)",
-            color: "rgba(200, 190, 240, 0.6)",
-          }}
-        >
-          Active
-        </div>
       </div>
     </motion.div>
   );
