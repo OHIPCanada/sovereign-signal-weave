@@ -58,8 +58,9 @@ const LivingArchitecture = () => (
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
         <filter id="particle-glow">
-          <feGaussianBlur stdDeviation="5" result="blur" />
-          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          <feGaussianBlur stdDeviation="6" result="blur" />
+          <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.2  0 1 0 0 0.2  0 0 1 0 0.3  0 0 0 1.5 0" result="colorBlur" />
+          <feMerge><feMergeNode in="colorBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
         <radialGradient id="core-gradient" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#fff" stopOpacity="0.95" />
@@ -86,9 +87,9 @@ const LivingArchitecture = () => (
       {inputNodes.map((inp, i) => (
         <g key={`in-${i}`}>
           <line x1={inp.x} y1={inp.y} x2={core.x} y2={core.y}
-            stroke="rgba(212, 97, 107, 0.15)" strokeWidth="2" strokeLinecap="round" />
+            stroke="rgba(212, 97, 107, 0.25)" strokeWidth="2.5" strokeLinecap="round" />
           <line x1={inp.x} y1={inp.y} x2={core.x} y2={core.y}
-            stroke="rgba(212, 97, 107, 0.5)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)">
+            stroke="rgba(212, 97, 107, 0.6)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)">
             <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" begin={`${i * 0.8}s`} repeatCount="indefinite" />
           </line>
         </g>
@@ -98,9 +99,9 @@ const LivingArchitecture = () => (
       {outputNodes.map((out, i) => (
         <g key={`out-${i}`}>
           <line x1={core.x} y1={core.y} x2={out.x} y2={out.y}
-            stroke="rgba(123, 97, 255, 0.15)" strokeWidth="2" strokeLinecap="round" />
+            stroke="rgba(123, 97, 255, 0.25)" strokeWidth="2.5" strokeLinecap="round" />
           <line x1={core.x} y1={core.y} x2={out.x} y2={out.y}
-            stroke="rgba(123, 97, 255, 0.5)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)">
+            stroke="rgba(123, 97, 255, 0.6)" strokeWidth="2.5" strokeLinecap="round" filter="url(#line-glow)">
             <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" begin={`${i * 0.8 + 2}s`} repeatCount="indefinite" />
           </line>
         </g>
@@ -115,10 +116,10 @@ const LivingArchitecture = () => (
             <animate attributeName="opacity" values="0.4;0.1;0.4" dur="5s" begin={`${i * 0.6}s`} repeatCount="indefinite" />
           </circle>
           {/* Core dot */}
-          <circle cx={inp.x} cy={inp.y} r="6" fill={getInputColor(inp.x)} filter="url(#node-glow-3)">
+          <circle cx={inp.x} cy={inp.y} r="7.5" fill={getInputColor(inp.x)} filter="url(#node-glow-3)">
             <animate attributeName="opacity" values="0.6;1;0.6" dur="4s" begin={`${i * 1.2}s`} repeatCount="indefinite" />
           </circle>
-          <text x={inp.x} y={inp.y + 26} textAnchor="middle" fill="rgba(20,20,40,0.8)" fontSize="12.5" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.04em">
+          <text x={inp.x} y={inp.y + 28} textAnchor="middle" fill="rgba(15,15,35,0.88)" fontSize="13" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.03em">
             {inp.label}
           </text>
         </g>
@@ -131,10 +132,10 @@ const LivingArchitecture = () => (
             <animate attributeName="r" values="10;14;10" dur="5s" begin={`${i * 0.6 + 0.3}s`} repeatCount="indefinite" />
             <animate attributeName="opacity" values="0.4;0.1;0.4" dur="5s" begin={`${i * 0.6 + 0.3}s`} repeatCount="indefinite" />
           </circle>
-          <circle cx={out.x} cy={out.y} r="6" fill={getOutputColor(out.x)} filter="url(#node-glow-3)">
+          <circle cx={out.x} cy={out.y} r="7.5" fill={getOutputColor(out.x)} filter="url(#node-glow-3)">
             <animate attributeName="opacity" values="0.6;1;0.6" dur="4s" begin={`${i * 1.2 + 0.5}s`} repeatCount="indefinite" />
           </circle>
-          <text x={out.x} y={out.y - 20} textAnchor="middle" fill="rgba(20,20,40,0.8)" fontSize="12.5" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.04em">
+          <text x={out.x} y={out.y - 22} textAnchor="middle" fill="rgba(15,15,35,0.88)" fontSize="13" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.03em">
             {out.label}
           </text>
         </g>
@@ -172,30 +173,32 @@ const LivingArchitecture = () => (
       <circle cx={core.x} cy={core.y} r="20" fill="rgba(212, 97, 107, 0.4)">
         <animate attributeName="r" values="20;23;20" dur="3s" repeatCount="indefinite" />
       </circle>
-      <circle cx={core.x} cy={core.y} r="8" fill="rgba(255, 255, 255, 0.6)">
-        <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" repeatCount="indefinite" />
+      <circle cx={core.x} cy={core.y} r="10" fill="rgba(255, 255, 255, 0.7)">
+        <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.5s" repeatCount="indefinite" />
+        <animate attributeName="r" values="10;12;10" dur="3s" repeatCount="indefinite" />
       </circle>
-      <text x={core.x} y={core.y + 6} textAnchor="middle" fill="rgba(255,255,255,0.97)" fontSize="16" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.05em">
-        AI Cortex
+      {/* ── AI Cortex label BELOW the core ── */}
+      <text x={core.x} y={core.y + 85} textAnchor="middle" fill="rgba(20, 20, 40, 0.9)" fontSize="15" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.1em">
+        AI CORTEX
       </text>
 
-      {/* ── Traveling particles (white with colored trail) ── */}
+      {/* ── Traveling particles (bold, high-visibility) ── */}
       {pulseRoutes.map((route, i) => (
         <g key={`pulse-${i}`}>
-          {/* Outer glow trail */}
-          <circle r="10" fill="rgba(255,255,255,0.15)" filter="url(#particle-glow)">
+          {/* Wide outer glow */}
+          <circle r="14" fill="rgba(123, 97, 255, 0.25)" filter="url(#particle-glow)">
             <animateMotion dur={route.dur} begin={route.delay} repeatCount="indefinite" path={route.path} calcMode="linear" />
-            <animate attributeName="opacity" values="0;0.4;0.4;0" keyTimes="0;0.08;0.88;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;0.6;0.6;0" keyTimes="0;0.06;0.9;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
           </circle>
-          {/* Mid glow */}
-          <circle r="5" fill="rgba(255,255,255,0.5)" filter="url(#node-glow-3)">
+          {/* Mid bright ring */}
+          <circle r="7" fill="rgba(255,255,255,0.7)" filter="url(#node-glow-3)">
             <animateMotion dur={route.dur} begin={route.delay} repeatCount="indefinite" path={route.path} calcMode="linear" />
-            <animate attributeName="opacity" values="0;0.7;0.7;0" keyTimes="0;0.08;0.88;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.06;0.9;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
           </circle>
-          {/* Bright core particle */}
-          <circle r="3" fill="rgba(255,255,255,0.95)">
+          {/* Bright white core */}
+          <circle r="4" fill="#FFFFFF">
             <animateMotion dur={route.dur} begin={route.delay} repeatCount="indefinite" path={route.path} calcMode="linear" />
-            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.88;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.06;0.9;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
           </circle>
         </g>
       ))}
