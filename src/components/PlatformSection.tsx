@@ -50,19 +50,19 @@ const ArchitectureMap = () => {
     "Scheduling data enforces sovereign governance and audit compliance automatically.",
   ];
 
-  const lineColor = "rgba(200, 180, 255, 0.32)";
-  const lineDim = "rgba(200, 180, 255, 0.18)";
-  const coreColor = "rgba(232, 150, 124, 0.95)";
-  const textStrong = "rgba(255,255,255,0.92)";
-  const textSoft = "rgba(255,255,255,0.68)";
+  const lineColor = "rgba(100, 75, 160, 0.35)";
+  const lineDim = "rgba(100, 75, 160, 0.18)";
+  const coreColor = "rgba(212, 97, 107, 0.9)";
+  const textStrong = "rgba(30, 20, 50, 0.92)";
+  const textSoft = "rgba(50, 40, 70, 0.62)";
 
   /* Nodes pulse warmer near coral side (right), cooler near purple side (left) */
   const getNodeColor = (x: number) => {
     const t = Math.min(1, Math.max(0, x / 800));
-    const r = Math.round(200 + t * 35);
-    const g = Math.round(180 + t * 10);
-    const b = Math.round(255 - t * 130);
-    return `rgba(${r}, ${g}, ${b}, 0.85)`;
+    const r = Math.round(100 + t * 112);
+    const g = Math.round(75 + t * 22);
+    const b = Math.round(180 - t * 73);
+    return `rgba(${r}, ${g}, ${b}, 0.75)`;
   };
 
   return (
@@ -223,7 +223,7 @@ const ArchitectureMap = () => {
 
         {/* ── Traveling pulses ── */}
         {pulseRoutes.map((route, i) => (
-          <circle key={`pulse-${i}`} r="5" fill="rgba(220, 210, 255, 0.9)" filter="url(#node-glow)">
+          <circle key={`pulse-${i}`} r="5" fill="rgba(180, 100, 130, 0.85)" filter="url(#node-glow)">
             <animateMotion
               dur={route.dur}
               begin={route.delay}
@@ -253,15 +253,15 @@ const ArchitectureMap = () => {
               width="280"
               height="28"
               rx="6"
-              fill="rgba(30, 15, 55, 0.92)"
-              stroke="rgba(255,255,255,0.15)"
+              fill="rgba(42, 26, 62, 0.92)"
+              stroke="rgba(80, 60, 120, 0.2)"
               strokeWidth="1"
             />
             <text
               x={tooltip.x}
               y={tooltip.y + 4}
               textAnchor="middle"
-              fill={textStrong}
+              fill="rgba(255,255,255,0.92)"
               fontSize="10"
               fontFamily="Inter, sans-serif"
               fontWeight="400"
@@ -279,15 +279,9 @@ const ArchitectureMap = () => {
 const PlatformSection = () => {
   return (
     <section
-      className="relative overflow-hidden"
+      className="platform-bg relative overflow-hidden"
       id="product"
-      style={{
-        minHeight: "95vh",
-        background: `
-          radial-gradient(circle at 65% 50%, rgba(255, 170, 150, 0.25), transparent 60%),
-          linear-gradient(135deg, #2B0A4A 0%, #4A148C 35%, #7B1FA2 55%, #D4616B 75%, #E8967C 90%, #F2C1AE 100%)
-        `,
-      }}
+      style={{ minHeight: "95vh" }}
     >
       <div className="relative z-10 max-w-[1240px] mx-auto px-6 md:px-12 py-28 md:py-36 lg:py-44">
         <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-14 lg:gap-20 items-center">
@@ -301,7 +295,7 @@ const PlatformSection = () => {
           >
             <p
               style={{
-                color: "rgba(255, 255, 255, 0.55)",
+                color: "rgba(80, 60, 120, 0.6)",
                 letterSpacing: "0.18em",
                 fontSize: "12px",
                 fontWeight: 600,
@@ -315,7 +309,7 @@ const PlatformSection = () => {
 
             <h2
               style={{
-                color: "#F8F6FF",
+                color: "#2A1A3E",
                 fontWeight: 800,
                 fontSize: "clamp(48px, 5.5vw, 72px)",
                 lineHeight: 1.08,
@@ -330,7 +324,7 @@ const PlatformSection = () => {
 
             <p
               style={{
-                color: "rgba(255, 255, 255, 0.72)",
+                color: "rgba(42, 26, 62, 0.72)",
                 fontSize: "18px",
                 fontWeight: 400,
                 lineHeight: 1.5,
@@ -348,10 +342,10 @@ const PlatformSection = () => {
               whileTap={{ scale: 0.98 }}
               className="self-start px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-300"
               style={{
-                background: "linear-gradient(135deg, rgba(123, 97, 255, 0.9), rgba(100, 70, 220, 0.8))",
-                color: "#F8F6FF",
-                border: "1px solid rgba(255, 255, 255, 0.18)",
-                boxShadow: "0 8px 32px rgba(123, 97, 255, 0.3)",
+                background: "linear-gradient(135deg, rgba(212, 97, 107, 0.9), rgba(180, 70, 85, 0.85))",
+                color: "#FFFAF8",
+                border: "1px solid rgba(212, 97, 107, 0.25)",
+                boxShadow: "0 8px 32px rgba(212, 97, 107, 0.25)",
               }}
             >
               Explore the Platform
@@ -366,11 +360,11 @@ const PlatformSection = () => {
             transition={{ duration: 0.8, delay: 0.15 }}
             className="rounded-[28px] overflow-hidden"
             style={{
-              background: "linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
-              border: "1px solid rgba(255,255,255,0.12)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-              boxShadow: "0 30px 80px rgba(0,0,0,0.35), inset 0 0 160px rgba(232,150,124,0.08)",
+              background: "linear-gradient(160deg, rgba(60, 40, 100, 0.08), rgba(60, 40, 100, 0.03))",
+              border: "1px solid rgba(80, 60, 120, 0.12)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              boxShadow: "0 30px 80px rgba(0,0,0,0.08), inset 0 0 120px rgba(232,150,124,0.04)",
               padding: "24px",
             }}
           >
