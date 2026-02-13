@@ -2,39 +2,39 @@ import { motion } from "framer-motion";
 
 /* ─── DATA (pulled inward for engineered spacing) ─── */
 const inputNodes = [
-  { label: "EMR", x: 75, y: 460 },
-  { label: "Virtual Care", x: 200, y: 475 },
-  { label: "Patient Access", x: 340, y: 485 },
-  { label: "Labs", x: 500, y: 475 },
-  { label: "Scheduling", x: 650, y: 460 },
+  { label: "EMR", x: 65, y: 440 },
+  { label: "Virtual Care", x: 185, y: 460 },
+  { label: "Patient Access", x: 330, y: 470 },
+  { label: "Labs", x: 480, y: 460 },
+  { label: "Scheduling", x: 650, y: 440 },
 ];
 
 const outputNodes = [
-  { label: "Clinical Ops", x: 75, y: 40 },
-  { label: "Care Pathways", x: 210, y: 25 },
-  { label: "Automation", x: 400, y: 18 },
-  { label: "Audit", x: 540, y: 25 },
-  { label: "Policy", x: 665, y: 40 },
+  { label: "Clinical Ops", x: 65, y: 55 },
+  { label: "Care Pathways", x: 195, y: 38 },
+  { label: "Automation", x: 390, y: 30 },
+  { label: "Audit", x: 540, y: 38 },
+  { label: "Policy", x: 670, y: 55 },
 ];
 
 const core = { x: 370, y: 248 };
 
 /* Signal routes: input→cortex (half path) for staggered firing */
 const signalPaths = [
-  { from: 0, path: `M75,460 Q200,360 370,248`, dur: "1.8s", delay: "0s" },
-  { from: 1, path: `M200,475 Q280,365 370,248`, dur: "1.6s", delay: "5s" },
-  { from: 2, path: `M340,485 Q355,370 370,248`, dur: "1.4s", delay: "2.5s" },
-  { from: 3, path: `M500,475 Q440,365 370,248`, dur: "1.6s", delay: "8s" },
-  { from: 4, path: `M650,460 Q520,360 370,248`, dur: "1.8s", delay: "4s" },
+  { from: 0, path: `M65,440 Q190,350 370,248`, dur: "1.8s", delay: "0s" },
+  { from: 1, path: `M185,460 Q275,360 370,248`, dur: "1.6s", delay: "5s" },
+  { from: 2, path: `M330,470 Q350,365 370,248`, dur: "1.4s", delay: "2.5s" },
+  { from: 3, path: `M480,460 Q430,360 370,248`, dur: "1.6s", delay: "8s" },
+  { from: 4, path: `M650,440 Q520,350 370,248`, dur: "1.8s", delay: "4s" },
 ];
 
 /* Outgoing routes: cortex→output */
 const outgoingPaths = [
-  { path: `M370,248 Q200,145 75,40`, dur: "1.8s", delay: "2s" },
-  { path: `M370,248 Q290,138 210,25`, dur: "1.6s", delay: "7s" },
-  { path: `M370,248 Q385,135 400,18`, dur: "1.4s", delay: "4.5s" },
-  { path: `M370,248 Q460,138 540,25`, dur: "1.6s", delay: "10s" },
-  { path: `M370,248 Q530,145 665,40`, dur: "1.8s", delay: "6s" },
+  { path: `M370,248 Q195,155 65,55`, dur: "1.8s", delay: "2s" },
+  { path: `M370,248 Q280,140 195,38`, dur: "1.6s", delay: "7s" },
+  { path: `M370,248 Q380,140 390,30`, dur: "1.4s", delay: "4.5s" },
+  { path: `M370,248 Q460,140 540,38`, dur: "1.6s", delay: "10s" },
+  { path: `M370,248 Q530,155 670,55`, dur: "1.8s", delay: "6s" },
 ];
 
 /* ─── ARCHITECTURE VISUALIZATION ─── */
@@ -176,8 +176,8 @@ const LivingArchitecture = () => (
         <animate attributeName="opacity" values="0.8;0.95;0.8" dur="6s" repeatCount="indefinite" />
       </circle>
 
-      {/* ── AI CORTEX label ── */}
-      <text x={core.x - 75} y={core.y + 7} textAnchor="end" fontSize="24" fontFamily="Inter, sans-serif" fontWeight="900" letterSpacing="-0.02em" fill="url(#cortex-text-grad)">
+      {/* ── AI CORTEX label — pushed further left, clear of glow ── */}
+      <text x={core.x - 90} y={core.y + 7} textAnchor="end" fontSize="22" fontFamily="Inter, sans-serif" fontWeight="900" letterSpacing="-0.02em" fill="url(#cortex-text-grad)">
         AI CORTEX
       </text>
 
@@ -211,11 +211,11 @@ const LivingArchitecture = () => (
         </g>
       ))}
 
-      {/* ── Zone labels ── */}
-      <text x="370" y="490" textAnchor="middle" fill="rgba(20,20,40,0.35)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
+      {/* ── Zone labels — repositioned to avoid overlaps ── */}
+      <text x="370" y="510" textAnchor="middle" fill="rgba(20,20,40,0.35)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         INPUTS
       </text>
-      <text x="370" y="24" textAnchor="middle" fill="rgba(20,20,40,0.35)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
+      <text x="370" y="12" textAnchor="middle" fill="rgba(20,20,40,0.35)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         OUTPUTS
       </text>
     </svg>
