@@ -1,155 +1,376 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
-interface PlatformLayer {
-  id: string;
-  label: string;
-  title: string;
-  description: string;
-}
-
-const layers: PlatformLayer[] = [
-  {
-    id: "memory",
-    label: "MEMORY LAYER",
-    title: "EMR",
-    description: "Sovereign data gravity. Designed for jurisdictional permanence.",
-  },
-  {
-    id: "delivery",
-    label: "DELIVERY LAYER",
-    title: "Virtual Care",
-    description: "Intelligence reaching the edge of the system.",
-  },
-  {
-    id: "access",
-    label: "ACCESS LAYER",
-    title: "Logistics",
-    description: "The nervous system of clinical operations.",
-  },
+/* ─── DATA ─── */
+const inputs = [
+  { label: "EMR / Clinical Systems", x: 80, y: 420 },
+  { label: "Virtual Care", x: 230, y: 440 },
+  { label: "Patient Access", x: 380, y: 430 },
+  { label: "Labs & Imaging", x: 520, y: 440 },
+  { label: "Scheduling", x: 660, y: 420 },
 ];
 
-const PlatformSection = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+const outputs = [
+  { label: "Clinical Ops", x: 100, y: 60 },
+  { label: "Care Pathways", x: 260, y: 50 },
+  { label: "Automation", x: 420, y: 55 },
+  { label: "Audit Trails", x: 560, y: 50 },
+  { label: "Policy Enforcement", x: 700, y: 60 },
+];
+
+const coreNode = { x: 400, y: 240, label: "AI Cortex", subtitle: "Reasoning • Context • Decision Support" };
+
+/* checkpoint dots along routes */
+const checkpoints = [
+  { cx: 180, cy: 350 },
+  { cx: 350, cy: 330 },
+  { cx: 500, cy: 345 },
+  { cx: 620, cy: 340 },
+  { cx: 200, cy: 140 },
+  { cx: 350, cy: 130 },
+  { cx: 530, cy: 135 },
+  { cx: 660, cy: 145 },
+];
+
+/* routes for pulses: each is input→checkpoint→core→checkpoint→output */
+const pulseRoutes = [
+  { points: "80,420 180,350 400,240 200,140 100,60", dur: "6s", delay: "0s" },
+  { points: "380,430 350,330 400,240 350,130 260,50", dur: "7s", delay: "2s" },
+  { points: "660,420 620,340 400,240 530,135 560,50", dur: "6.5s", delay: "4s" },
+];
+
+/* ─── ARCHITECTURE MAP SVG ─── */
+const ArchitectureMap = () => {
+  const [hoveredRoute, setHoveredRoute] = useState<number | null>(null);
+  const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number } | null>(null);
+
+  const routeTooltips = [
+    "Clinical data flows through AI reasoning for real-time decision support.",
+    "Patient access routes through contextual intelligence for care pathway optimization.",
+    "Scheduling data enforces sovereign governance and audit compliance automatically.",
+  ];
+
+  const lineColor = "rgba(200, 180, 255, 0.32)";
+  const lineDim = "rgba(200, 180, 255, 0.18)";
+  const nodeColor = "rgba(235, 230, 255, 0.85)";
+  const coreColor = "rgba(123, 97, 255, 0.95)";
+  const textStrong = "rgba(255,255,255,0.92)";
+  const textSoft = "rgba(255,255,255,0.68)";
 
   return (
-    <section ref={containerRef} className="relative h-[300vh]" id="product">
-      {/* Sticky Container */}
-      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden" style={{ background: 'linear-gradient(165deg, #D4616B 0%, #E8967C 50%, #F2C1AE 100%)' }}>
-        <div className="w-full max-w-7xl mx-auto px-6 md:px-12">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left - Text Content */}
-            <div className="flex flex-col gap-8">
-              <motion.span
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                className="mono-label"
-              >
-                [ ARCHITECTURE OF THE CORTEX ]
-              </motion.span>
+    <div className="relative w-full aspect-[4/3]">
+      <svg
+        viewBox="0 0 800 500"
+        className="w-full h-full"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <defs>
+          <filter id="core-glow">
+            <feGaussianBlur stdDeviation="12" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <filter id="node-glow">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
 
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground tracking-tight leading-tight"
-              >
-                Three layers.
-                <br />
-                <span className="text-muted-foreground">One system.</span>
-              </motion.h2>
+        {/* ── Lines: Inputs → Core ── */}
+        {inputs.map((inp, i) => (
+          <line
+            key={`in-${i}`}
+            x1={inp.x} y1={inp.y}
+            x2={coreNode.x} y2={coreNode.y}
+            stroke={lineColor}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            opacity={hoveredRoute !== null ? 0.12 : 1}
+            style={{ transition: "opacity 0.4s" }}
+          />
+        ))}
 
-              {/* Scrolling Layers */}
-              <div className="space-y-8 mt-8">
-                {layers.map((layer, index) => (
-                  <LayerCard
-                    key={layer.id}
-                    layer={layer}
-                    index={index}
-                    progress={scrollYProgress}
-                  />
-                ))}
-              </div>
-            </div>
+        {/* ── Lines: Core → Outputs ── */}
+        {outputs.map((out, i) => (
+          <line
+            key={`out-${i}`}
+            x1={coreNode.x} y1={coreNode.y}
+            x2={out.x} y2={out.y}
+            stroke={lineColor}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            opacity={hoveredRoute !== null ? 0.12 : 1}
+            style={{ transition: "opacity 0.4s" }}
+          />
+        ))}
 
-            {/* Right - Visual */}
-            <div className="relative hidden lg:flex items-center justify-center">
-              <ArchitectureVisual progress={scrollYProgress} />
-            </div>
-          </div>
+        {/* ── Highlighted routes (on hover) ── */}
+        {pulseRoutes.map((route, i) => (
+          <polyline
+            key={`route-${i}`}
+            points={route.points}
+            fill="none"
+            stroke={hoveredRoute === i ? "rgba(200, 180, 255, 0.6)" : "transparent"}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ transition: "stroke 0.4s" }}
+            onMouseEnter={() => {
+              setHoveredRoute(i);
+              const pts = route.points.split(" ");
+              const mid = pts[2].split(",");
+              setTooltip({ text: routeTooltips[i], x: parseFloat(mid[0]), y: parseFloat(mid[1]) - 40 });
+            }}
+            onMouseLeave={() => { setHoveredRoute(null); setTooltip(null); }}
+            className="cursor-pointer"
+            pointerEvents="stroke"
+          />
+        ))}
+
+        {/* ── Checkpoint nodes ── */}
+        {checkpoints.map((cp, i) => (
+          <circle key={`cp-${i}`} cx={cp.cx} cy={cp.cy} r="4" fill={nodeColor}>
+            <animate
+              attributeName="opacity"
+              values="0.6;1;0.6"
+              dur="6s"
+              begin={`${i * 0.8}s`}
+              repeatCount="indefinite"
+            />
+          </circle>
+        ))}
+
+        {/* ── Input labels ── */}
+        {inputs.map((inp, i) => (
+          <g key={`il-${i}`}>
+            <circle cx={inp.x} cy={inp.y} r="5" fill={nodeColor} filter="url(#node-glow)">
+              <animate attributeName="opacity" values="0.6;1;0.6" dur="6s" begin={`${i * 1.2}s`} repeatCount="indefinite" />
+            </circle>
+            <text
+              x={inp.x} y={inp.y + 20}
+              textAnchor="middle"
+              fill={textSoft}
+              fontSize="10"
+              fontFamily="Inter, sans-serif"
+              fontWeight="500"
+              letterSpacing="0.04em"
+            >
+              {inp.label}
+            </text>
+          </g>
+        ))}
+
+        {/* ── Output labels ── */}
+        {outputs.map((out, i) => (
+          <g key={`ol-${i}`}>
+            <circle cx={out.x} cy={out.y} r="5" fill={nodeColor} filter="url(#node-glow)">
+              <animate attributeName="opacity" values="0.6;1;0.6" dur="6s" begin={`${i * 1.2 + 0.5}s`} repeatCount="indefinite" />
+            </circle>
+            <text
+              x={out.x} y={out.y - 14}
+              textAnchor="middle"
+              fill={textSoft}
+              fontSize="10"
+              fontFamily="Inter, sans-serif"
+              fontWeight="500"
+              letterSpacing="0.04em"
+            >
+              {out.label}
+            </text>
+          </g>
+        ))}
+
+        {/* ── Central core node ── */}
+        <circle cx={coreNode.x} cy={coreNode.y} r="36" fill={coreColor} filter="url(#core-glow)">
+          <animate attributeName="opacity" values="0.85;1;0.85" dur="4s" repeatCount="indefinite" />
+        </circle>
+        <circle cx={coreNode.x} cy={coreNode.y} r="22" fill="rgba(200, 190, 255, 0.25)" />
+        <text
+          x={coreNode.x} y={coreNode.y - 2}
+          textAnchor="middle"
+          fill={textStrong}
+          fontSize="13"
+          fontFamily="Inter, sans-serif"
+          fontWeight="700"
+          letterSpacing="0.02em"
+        >
+          {coreNode.label}
+        </text>
+        <text
+          x={coreNode.x} y={coreNode.y + 56}
+          textAnchor="middle"
+          fill={textSoft}
+          fontSize="9.5"
+          fontFamily="Inter, sans-serif"
+          fontWeight="400"
+          letterSpacing="0.06em"
+        >
+          {coreNode.subtitle}
+        </text>
+
+        {/* ── Traveling pulses ── */}
+        {pulseRoutes.map((route, i) => (
+          <circle key={`pulse-${i}`} r="5" fill="rgba(220, 210, 255, 0.9)" filter="url(#node-glow)">
+            <animateMotion
+              dur={route.dur}
+              begin={route.delay}
+              repeatCount="indefinite"
+              path={`M${route.points.split(" ").map(p => p.replace(",", " ")).join(" L")}`}
+              calcMode="spline"
+              keySplines="0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"
+              keyTimes="0;0.33;0.66;1"
+            />
+            <animate
+              attributeName="opacity"
+              values="0;0.9;0.9;0"
+              keyTimes="0;0.1;0.85;1"
+              dur={route.dur}
+              begin={route.delay}
+              repeatCount="indefinite"
+            />
+          </circle>
+        ))}
+
+        {/* ── Tooltip ── */}
+        {tooltip && (
+          <g>
+            <rect
+              x={tooltip.x - 140}
+              y={tooltip.y - 14}
+              width="280"
+              height="28"
+              rx="6"
+              fill="rgba(30, 15, 55, 0.92)"
+              stroke="rgba(255,255,255,0.15)"
+              strokeWidth="1"
+            />
+            <text
+              x={tooltip.x}
+              y={tooltip.y + 4}
+              textAnchor="middle"
+              fill={textStrong}
+              fontSize="10"
+              fontFamily="Inter, sans-serif"
+              fontWeight="400"
+            >
+              {tooltip.text}
+            </text>
+          </g>
+        )}
+      </svg>
+    </div>
+  );
+};
+
+/* ─── MAIN SECTION ─── */
+const PlatformSection = () => {
+  return (
+    <section
+      className="relative overflow-hidden"
+      id="product"
+      style={{
+        minHeight: "95vh",
+        background: `
+          radial-gradient(circle at 35% 40%, rgba(123, 97, 255, 0.18) 0%, transparent 55%),
+          linear-gradient(180deg, #2A0B4E 0%, #3A0F6F 50%, #1B0736 100%)
+        `,
+      }}
+    >
+      <div className="relative z-10 max-w-[1240px] mx-auto px-6 md:px-12 py-28 md:py-36 lg:py-44">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-14 lg:gap-20 items-center">
+          {/* ── Left: Text ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.7 }}
+            className="flex flex-col"
+          >
+            <p
+              style={{
+                color: "rgba(255, 255, 255, 0.55)",
+                letterSpacing: "0.18em",
+                fontSize: "12px",
+                fontWeight: 600,
+                fontFamily: "Inter, sans-serif",
+                textTransform: "uppercase",
+                marginBottom: "28px",
+              }}
+            >
+              PLATFORM ARCHITECTURE
+            </p>
+
+            <h2
+              style={{
+                color: "#F8F6FF",
+                fontWeight: 800,
+                fontSize: "clamp(48px, 5.5vw, 72px)",
+                lineHeight: 1.08,
+                letterSpacing: "-0.02em",
+                marginBottom: "28px",
+              }}
+            >
+              How the system
+              <br />
+              is built.
+            </h2>
+
+            <p
+              style={{
+                color: "rgba(255, 255, 255, 0.72)",
+                fontSize: "18px",
+                fontWeight: 400,
+                lineHeight: 1.5,
+                maxWidth: "520px",
+                marginBottom: "40px",
+              }}
+            >
+              DocG AI is a cognitive layer that sits above clinical systems,
+              routes decisions through workflow, and enforces sovereign
+              governance—without adding friction to care delivery.
+            </p>
+
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="self-start px-7 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-300"
+              style={{
+                background: "linear-gradient(135deg, rgba(123, 97, 255, 0.9), rgba(100, 70, 220, 0.8))",
+                color: "#F8F6FF",
+                border: "1px solid rgba(255, 255, 255, 0.18)",
+                boxShadow: "0 8px 32px rgba(123, 97, 255, 0.3)",
+              }}
+            >
+              Explore the Platform
+            </motion.button>
+          </motion.div>
+
+          {/* ── Right: Architecture Map ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.8, delay: 0.15 }}
+            className="rounded-[28px] overflow-hidden"
+            style={{
+              background: "linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
+              border: "1px solid rgba(255,255,255,0.12)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              boxShadow: "0 30px 80px rgba(0,0,0,0.35), inset 0 0 160px rgba(123,97,255,0.10)",
+              padding: "24px",
+            }}
+          >
+            <ArchitectureMap />
+          </motion.div>
         </div>
       </div>
     </section>
-  );
-};
-
-interface LayerCardProps {
-  layer: PlatformLayer;
-  index: number;
-  progress: ReturnType<typeof useScroll>["scrollYProgress"];
-}
-
-const LayerCard = ({ layer, index, progress }: LayerCardProps) => {
-  const start = index / 3;
-  const end = (index + 1) / 3;
-
-  const opacity = useTransform(progress, [start, start + 0.1, end - 0.1, end], [0.3, 1, 1, 0.3]);
-  const scale = useTransform(progress, [start, start + 0.1, end - 0.1, end], [0.95, 1, 1, 0.95]);
-
-  return (
-    <motion.div
-      style={{ opacity, scale }}
-      className="group border-l-2 border-border pl-6 py-4 hover:border-accent transition-colors"
-    >
-      <span className="mono-label text-accent">{layer.label}</span>
-      <h3 className="text-2xl font-bold text-foreground mt-2">{layer.title}</h3>
-      <p className="text-muted-foreground mt-2 max-w-md">{layer.description}</p>
-    </motion.div>
-  );
-};
-
-interface ArchitectureVisualProps {
-  progress: ReturnType<typeof useScroll>["scrollYProgress"];
-}
-
-const ArchitectureVisual = ({ progress }: ArchitectureVisualProps) => {
-  const rotate = useTransform(progress, [0, 1], [0, 180]);
-  const scale = useTransform(progress, [0, 0.5, 1], [0.8, 1, 0.9]);
-
-  return (
-    <motion.div
-      style={{ rotateY: rotate, scale }}
-      className="relative w-80 h-80"
-    >
-      {/* Layered Circles */}
-      {[0, 1, 2].map((i) => (
-        <motion.div
-          key={i}
-          className="absolute inset-0 rounded-full border border-border"
-          style={{
-            transform: `scale(${1 - i * 0.2}) translateY(${i * 20}px)`,
-            opacity: 0.5 + i * 0.15,
-          }}
-        >
-          <div
-            className="absolute inset-0 rounded-full"
-            style={{
-              background: `radial-gradient(circle at 30% 30%, hsl(10 60% 62% / ${0.12 - i * 0.03}), transparent 70%)`,
-            }}
-          />
-        </motion.div>
-      ))}
-
-      {/* Center Glow */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="w-20 h-20 rounded-full bg-secondary/20 blur-xl" />
-        <div className="absolute w-8 h-8 rounded-full bg-secondary" />
-      </div>
-    </motion.div>
   );
 };
 
