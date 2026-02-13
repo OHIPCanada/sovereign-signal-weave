@@ -2,39 +2,39 @@ import { motion } from "framer-motion";
 
 /* ─── DATA (pulled inward for engineered spacing) ─── */
 const inputNodes = [
-  { label: "EMR", x: 65, y: 440 },
-  { label: "Virtual Care", x: 185, y: 460 },
-  { label: "Patient Access", x: 330, y: 470 },
-  { label: "Labs", x: 480, y: 460 },
-  { label: "Scheduling", x: 650, y: 440 },
+  { label: "EMR", x: 65, y: 420 },
+  { label: "Virtual Care", x: 185, y: 445 },
+  { label: "Patient Access", x: 330, y: 455 },
+  { label: "Labs", x: 480, y: 445 },
+  { label: "Scheduling", x: 650, y: 420 },
 ];
 
 const outputNodes = [
-  { label: "Clinical Ops", x: 65, y: 55 },
-  { label: "Care Pathways", x: 195, y: 38 },
-  { label: "Automation", x: 390, y: 30 },
-  { label: "Audit", x: 540, y: 38 },
-  { label: "Policy", x: 670, y: 55 },
+  { label: "Clinical Ops", x: 65, y: 75 },
+  { label: "Care Pathways", x: 185, y: 55 },
+  { label: "Automation", x: 410, y: 48 },
+  { label: "Audit", x: 550, y: 55 },
+  { label: "Policy", x: 670, y: 75 },
 ];
 
 const core = { x: 370, y: 248 };
 
 /* Signal routes: input→cortex (half path) for staggered firing */
 const signalPaths = [
-  { from: 0, path: `M65,440 Q190,350 370,248`, dur: "1.8s", delay: "0s" },
-  { from: 1, path: `M185,460 Q275,360 370,248`, dur: "1.6s", delay: "5s" },
-  { from: 2, path: `M330,470 Q350,365 370,248`, dur: "1.4s", delay: "2.5s" },
-  { from: 3, path: `M480,460 Q430,360 370,248`, dur: "1.6s", delay: "8s" },
-  { from: 4, path: `M650,440 Q520,350 370,248`, dur: "1.8s", delay: "4s" },
+  { from: 0, path: `M65,420 Q190,340 370,248`, dur: "1.8s", delay: "0s" },
+  { from: 1, path: `M185,445 Q275,350 370,248`, dur: "1.6s", delay: "5s" },
+  { from: 2, path: `M330,455 Q350,355 370,248`, dur: "1.4s", delay: "2.5s" },
+  { from: 3, path: `M480,445 Q430,350 370,248`, dur: "1.6s", delay: "8s" },
+  { from: 4, path: `M650,420 Q520,340 370,248`, dur: "1.8s", delay: "4s" },
 ];
 
 /* Outgoing routes: cortex→output */
 const outgoingPaths = [
-  { path: `M370,248 Q195,155 65,55`, dur: "1.8s", delay: "2s" },
-  { path: `M370,248 Q280,140 195,38`, dur: "1.6s", delay: "7s" },
-  { path: `M370,248 Q380,140 390,30`, dur: "1.4s", delay: "4.5s" },
-  { path: `M370,248 Q460,140 540,38`, dur: "1.6s", delay: "10s" },
-  { path: `M370,248 Q530,155 670,55`, dur: "1.8s", delay: "6s" },
+  { path: `M370,248 Q195,165 65,75`, dur: "1.8s", delay: "2s" },
+  { path: `M370,248 Q275,155 185,55`, dur: "1.6s", delay: "7s" },
+  { path: `M370,248 Q390,150 410,48`, dur: "1.4s", delay: "4.5s" },
+  { path: `M370,248 Q465,155 550,55`, dur: "1.6s", delay: "10s" },
+  { path: `M370,248 Q530,165 670,75`, dur: "1.8s", delay: "6s" },
 ];
 
 /* ─── ARCHITECTURE VISUALIZATION ─── */
@@ -211,11 +211,11 @@ const LivingArchitecture = () => (
         </g>
       ))}
 
-      {/* ── Zone labels — repositioned to avoid overlaps ── */}
-      <text x="370" y="510" textAnchor="middle" fill="rgba(20,20,40,0.35)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
+      {/* ── Zone labels — clear of all nodes ── */}
+      <text x="330" y="500" textAnchor="middle" fill="rgba(20,20,40,0.3)" fontSize="8" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         INPUTS
       </text>
-      <text x="370" y="12" textAnchor="middle" fill="rgba(20,20,40,0.35)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
+      <text x="410" y="28" textAnchor="middle" fill="rgba(20,20,40,0.3)" fontSize="8" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         OUTPUTS
       </text>
     </svg>
