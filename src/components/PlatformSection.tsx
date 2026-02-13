@@ -1,40 +1,40 @@
 import { motion } from "framer-motion";
 
-/* ─── DATA (15% more spacing) ─── */
+/* ─── DATA (expanded spacing for scale presence) ─── */
 const inputNodes = [
-  { label: "EMR", x: 80, y: 430 },
-  { label: "Virtual Care", x: 210, y: 450 },
-  { label: "Patient Access", x: 370, y: 460 },
-  { label: "Labs", x: 530, y: 450 },
-  { label: "Scheduling", x: 660, y: 430 },
+  { label: "EMR", x: 60, y: 440 },
+  { label: "Virtual Care", x: 195, y: 460 },
+  { label: "Patient Access", x: 370, y: 472 },
+  { label: "Labs", x: 545, y: 460 },
+  { label: "Scheduling", x: 680, y: 440 },
 ];
 
 const outputNodes = [
-  { label: "Clinical Ops", x: 80, y: 65 },
-  { label: "Care Pathways", x: 220, y: 50 },
-  { label: "Automation", x: 370, y: 42 },
-  { label: "Audit", x: 520, y: 50 },
-  { label: "Policy", x: 660, y: 65 },
+  { label: "Clinical Ops", x: 60, y: 55 },
+  { label: "Care Pathways", x: 195, y: 38 },
+  { label: "Automation", x: 370, y: 28 },
+  { label: "Audit", x: 545, y: 38 },
+  { label: "Policy", x: 680, y: 55 },
 ];
 
 const core = { x: 370, y: 248 };
 
 const pulseRoutes = [
-  { path: "M80,430 Q200,340 370,248 Q200,150 80,65", dur: "9s", delay: "0s" },
-  { path: "M370,460 Q370,360 370,248 Q370,145 370,42", dur: "8s", delay: "2s" },
-  { path: "M660,430 Q530,340 370,248 Q530,150 660,65", dur: "9s", delay: "4s" },
-  { path: "M210,450 Q280,350 370,248 Q290,150 220,50", dur: "10s", delay: "1s" },
-  { path: "M530,450 Q460,350 370,248 Q460,150 520,50", dur: "10s", delay: "3s" },
+  { path: "M60,440 Q190,350 370,248 Q190,150 60,55", dur: "8s", delay: "0s" },
+  { path: "M370,472 Q370,365 370,248 Q370,140 370,28", dur: "7s", delay: "1.5s" },
+  { path: "M680,440 Q540,350 370,248 Q540,150 680,55", dur: "8s", delay: "3s" },
+  { path: "M195,460 Q275,360 370,248 Q275,145 195,38", dur: "9s", delay: "0.8s" },
+  { path: "M545,460 Q465,360 370,248 Q465,145 545,38", dur: "9s", delay: "2.2s" },
 ];
 
 /* Color: coral (left) → violet (right) */
 const getInputColor = (x: number) => {
   const t = x / 740;
-  return `rgba(${Math.round(212 - t * 50)}, ${Math.round(97 + t * 10)}, ${Math.round(107 + t * 80)}, 0.7)`;
+  return `rgba(${Math.round(212 - t * 50)}, ${Math.round(97 + t * 10)}, ${Math.round(107 + t * 80)}, 0.85)`;
 };
 const getOutputColor = (x: number) => {
   const t = x / 740;
-  return `rgba(${Math.round(160 - t * 37)}, ${Math.round(97)}, ${Math.round(180 + t * 75)}, 0.7)`;
+  return `rgba(${Math.round(160 - t * 37)}, ${Math.round(97)}, ${Math.round(180 + t * 75)}, 0.85)`;
 };
 
 /* ─── ARCHITECTURE VISUALIZATION ─── */
@@ -43,57 +43,82 @@ const LivingArchitecture = () => (
     <svg viewBox="0 0 740 500" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
       <defs>
         <filter id="core-glow-3">
-          <feGaussianBlur stdDeviation="18" result="blur" />
+          <feGaussianBlur stdDeviation="22" result="blur" />
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
         <filter id="node-glow-3">
-          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feGaussianBlur stdDeviation="4" result="blur" />
           <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
         <filter id="halo-blur">
-          <feGaussianBlur stdDeviation="8" />
+          <feGaussianBlur stdDeviation="12" />
+        </filter>
+        <filter id="line-glow">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        <filter id="particle-glow">
+          <feGaussianBlur stdDeviation="5" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
         <radialGradient id="core-gradient" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#D4616B" stopOpacity="1" />
-          <stop offset="35%" stopColor="#E8967C" stopOpacity="0.85" />
-          <stop offset="65%" stopColor="rgba(180, 120, 200, 0.4)" stopOpacity="0.4" />
+          <stop offset="0%" stopColor="#fff" stopOpacity="0.95" />
+          <stop offset="15%" stopColor="#D4616B" stopOpacity="1" />
+          <stop offset="40%" stopColor="#E8967C" stopOpacity="0.85" />
+          <stop offset="65%" stopColor="rgba(180, 120, 200, 0.45)" stopOpacity="0.45" />
           <stop offset="100%" stopColor="transparent" stopOpacity="0" />
         </radialGradient>
         <radialGradient id="halo-grad" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="rgba(123, 97, 255, 0.12)" />
+          <stop offset="0%" stopColor="rgba(123, 97, 255, 0.18)" />
+          <stop offset="60%" stopColor="rgba(123, 97, 255, 0.06)" />
           <stop offset="100%" stopColor="transparent" />
         </radialGradient>
-        {/* Input line gradient: coral tint */}
-        <linearGradient id="input-line-grad" x1="0%" y1="100%" x2="50%" y2="50%">
-          <stop offset="0%" stopColor="rgba(212, 97, 107, 0.4)" />
-          <stop offset="100%" stopColor="rgba(212, 97, 107, 0.15)" />
-        </linearGradient>
-        {/* Output line gradient: violet tint */}
-        <linearGradient id="output-line-grad" x1="50%" y1="50%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="rgba(123, 97, 255, 0.15)" />
-          <stop offset="100%" stopColor="rgba(123, 97, 255, 0.4)" />
-        </linearGradient>
+        <radialGradient id="ambient-field" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(212, 97, 107, 0.08)" />
+          <stop offset="100%" stopColor="transparent" />
+        </radialGradient>
       </defs>
 
-      {/* ── Input lines (coral tint, 1.5px) ── */}
+      {/* ── Ambient field behind everything ── */}
+      <circle cx={core.x} cy={core.y} r="220" fill="url(#ambient-field)" />
+
+      {/* ── Input lines (coral, glowing) ── */}
       {inputNodes.map((inp, i) => (
-        <line key={`in-${i}`} x1={inp.x} y1={inp.y} x2={core.x} y2={core.y}
-          stroke="rgba(212, 97, 107, 0.3)" strokeWidth="1.5" strokeLinecap="round" />
+        <g key={`in-${i}`}>
+          <line x1={inp.x} y1={inp.y} x2={core.x} y2={core.y}
+            stroke="rgba(212, 97, 107, 0.15)" strokeWidth="2" strokeLinecap="round" />
+          <line x1={inp.x} y1={inp.y} x2={core.x} y2={core.y}
+            stroke="rgba(212, 97, 107, 0.5)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)">
+            <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" begin={`${i * 0.8}s`} repeatCount="indefinite" />
+          </line>
+        </g>
       ))}
 
-      {/* ── Output lines (violet tint, 1.5px) ── */}
+      {/* ── Output lines (violet, glowing) ── */}
       {outputNodes.map((out, i) => (
-        <line key={`out-${i}`} x1={core.x} y1={core.y} x2={out.x} y2={out.y}
-          stroke="rgba(123, 97, 255, 0.3)" strokeWidth="1.5" strokeLinecap="round" />
+        <g key={`out-${i}`}>
+          <line x1={core.x} y1={core.y} x2={out.x} y2={out.y}
+            stroke="rgba(123, 97, 255, 0.15)" strokeWidth="2" strokeLinecap="round" />
+          <line x1={core.x} y1={core.y} x2={out.x} y2={out.y}
+            stroke="rgba(123, 97, 255, 0.5)" strokeWidth="2" strokeLinecap="round" filter="url(#line-glow)">
+            <animate attributeName="opacity" values="0.2;0.6;0.2" dur="4s" begin={`${i * 0.8 + 2}s`} repeatCount="indefinite" />
+          </line>
+        </g>
       ))}
 
       {/* ── Input nodes ── */}
       {inputNodes.map((inp, i) => (
         <g key={`il-${i}`}>
-          <circle cx={inp.x} cy={inp.y} r="5.5" fill={getInputColor(inp.x)} filter="url(#node-glow-3)">
-            <animate attributeName="opacity" values="0.5;1;0.5" dur="6s" begin={`${i * 1.2}s`} repeatCount="indefinite" />
+          {/* Outer ring */}
+          <circle cx={inp.x} cy={inp.y} r="10" fill="none" stroke={getInputColor(inp.x)} strokeWidth="1" opacity="0.4">
+            <animate attributeName="r" values="10;14;10" dur="5s" begin={`${i * 0.6}s`} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.4;0.1;0.4" dur="5s" begin={`${i * 0.6}s`} repeatCount="indefinite" />
           </circle>
-          <text x={inp.x} y={inp.y + 24} textAnchor="middle" fill="rgba(30,30,50,0.55)" fontSize="11" fontFamily="Inter, sans-serif" fontWeight="500" letterSpacing="0.05em">
+          {/* Core dot */}
+          <circle cx={inp.x} cy={inp.y} r="6" fill={getInputColor(inp.x)} filter="url(#node-glow-3)">
+            <animate attributeName="opacity" values="0.6;1;0.6" dur="4s" begin={`${i * 1.2}s`} repeatCount="indefinite" />
+          </circle>
+          <text x={inp.x} y={inp.y + 26} textAnchor="middle" fill="rgba(20,20,40,0.8)" fontSize="12.5" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.04em">
             {inp.label}
           </text>
         </g>
@@ -102,63 +127,84 @@ const LivingArchitecture = () => (
       {/* ── Output nodes ── */}
       {outputNodes.map((out, i) => (
         <g key={`ol-${i}`}>
-          <circle cx={out.x} cy={out.y} r="5.5" fill={getOutputColor(out.x)} filter="url(#node-glow-3)">
-            <animate attributeName="opacity" values="0.5;1;0.5" dur="6s" begin={`${i * 1.2 + 0.5}s`} repeatCount="indefinite" />
+          <circle cx={out.x} cy={out.y} r="10" fill="none" stroke={getOutputColor(out.x)} strokeWidth="1" opacity="0.4">
+            <animate attributeName="r" values="10;14;10" dur="5s" begin={`${i * 0.6 + 0.3}s`} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.4;0.1;0.4" dur="5s" begin={`${i * 0.6 + 0.3}s`} repeatCount="indefinite" />
           </circle>
-          <text x={out.x} y={out.y - 18} textAnchor="middle" fill="rgba(30,30,50,0.55)" fontSize="11" fontFamily="Inter, sans-serif" fontWeight="500" letterSpacing="0.05em">
+          <circle cx={out.x} cy={out.y} r="6" fill={getOutputColor(out.x)} filter="url(#node-glow-3)">
+            <animate attributeName="opacity" values="0.6;1;0.6" dur="4s" begin={`${i * 1.2 + 0.5}s`} repeatCount="indefinite" />
+          </circle>
+          <text x={out.x} y={out.y - 20} textAnchor="middle" fill="rgba(20,20,40,0.8)" fontSize="12.5" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.04em">
             {out.label}
           </text>
         </g>
       ))}
 
-      {/* ── Layer 3: Slow rotating ring ── */}
-      <circle cx={core.x} cy={core.y} r="80" fill="none" stroke="rgba(123, 97, 255, 0.08)" strokeWidth="1" strokeDasharray="8 12">
-        <animateTransform attributeName="transform" type="rotate" from={`0 ${core.x} ${core.y}`} to={`360 ${core.x} ${core.y}`} dur="60s" repeatCount="indefinite" />
+      {/* ── Layer 3: Rotating rings ── */}
+      <circle cx={core.x} cy={core.y} r="95" fill="none" stroke="rgba(123, 97, 255, 0.12)" strokeWidth="1.2" strokeDasharray="6 14">
+        <animateTransform attributeName="transform" type="rotate" from={`0 ${core.x} ${core.y}`} to={`360 ${core.x} ${core.y}`} dur="50s" repeatCount="indefinite" />
       </circle>
-      <circle cx={core.x} cy={core.y} r="68" fill="none" stroke="rgba(212, 97, 107, 0.06)" strokeWidth="0.8" strokeDasharray="5 10">
-        <animateTransform attributeName="transform" type="rotate" from={`360 ${core.x} ${core.y}`} to={`0 ${core.x} ${core.y}`} dur="45s" repeatCount="indefinite" />
+      <circle cx={core.x} cy={core.y} r="82" fill="none" stroke="rgba(212, 97, 107, 0.1)" strokeWidth="1" strokeDasharray="4 10">
+        <animateTransform attributeName="transform" type="rotate" from={`360 ${core.x} ${core.y}`} to={`0 ${core.x} ${core.y}`} dur="38s" repeatCount="indefinite" />
+      </circle>
+      <circle cx={core.x} cy={core.y} r="108" fill="none" stroke="rgba(123, 97, 255, 0.06)" strokeWidth="0.8" strokeDasharray="3 18">
+        <animateTransform attributeName="transform" type="rotate" from={`0 ${core.x} ${core.y}`} to={`360 ${core.x} ${core.y}`} dur="70s" repeatCount="indefinite" />
       </circle>
 
-      {/* ── Layer 2: Expanding halo pulse ── */}
-      <circle cx={core.x} cy={core.y} r="52" fill="none" stroke="rgba(212, 97, 107, 0.15)" strokeWidth="1.5" filter="url(#halo-blur)">
-        <animate attributeName="r" values="52;72;52" dur="6s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.6;0.15;0.6" dur="6s" repeatCount="indefinite" />
+      {/* ── Layer 2: Expanding halo pulses ── */}
+      <circle cx={core.x} cy={core.y} r="55" fill="none" stroke="rgba(212, 97, 107, 0.25)" strokeWidth="2" filter="url(#halo-blur)">
+        <animate attributeName="r" values="55;85;55" dur="6s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.7;0.08;0.7" dur="6s" repeatCount="indefinite" />
+      </circle>
+      <circle cx={core.x} cy={core.y} r="60" fill="none" stroke="rgba(123, 97, 255, 0.15)" strokeWidth="1.5" filter="url(#halo-blur)">
+        <animate attributeName="r" values="60;95;60" dur="8s" begin="1s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.5;0.05;0.5" dur="8s" begin="1s" repeatCount="indefinite" />
       </circle>
 
       {/* ── Violet ambient halo ── */}
-      <circle cx={core.x} cy={core.y} r="85" fill="url(#halo-grad)" />
+      <circle cx={core.x} cy={core.y} r="100" fill="url(#halo-grad)" />
 
       {/* ── Layer 1: Core reactor ── */}
-      <circle cx={core.x} cy={core.y} r="52" fill="url(#core-gradient)" filter="url(#core-glow-3)">
-        <animate attributeName="r" values="52;58;52" dur="5s" repeatCount="indefinite" />
+      <circle cx={core.x} cy={core.y} r="60" fill="url(#core-gradient)" filter="url(#core-glow-3)">
+        <animate attributeName="r" values="60;67;60" dur="5s" repeatCount="indefinite" />
       </circle>
-      <circle cx={core.x} cy={core.y} r="30" fill="rgba(212, 97, 107, 0.2)" />
-      <circle cx={core.x} cy={core.y} r="16" fill="rgba(212, 97, 107, 0.35)" />
-      <text x={core.x} y={core.y + 5} textAnchor="middle" fill="rgba(255,255,255,0.95)" fontSize="14" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.03em">
+      <circle cx={core.x} cy={core.y} r="35" fill="rgba(212, 97, 107, 0.25)" />
+      <circle cx={core.x} cy={core.y} r="20" fill="rgba(212, 97, 107, 0.4)">
+        <animate attributeName="r" values="20;23;20" dur="3s" repeatCount="indefinite" />
+      </circle>
+      <circle cx={core.x} cy={core.y} r="8" fill="rgba(255, 255, 255, 0.6)">
+        <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" repeatCount="indefinite" />
+      </circle>
+      <text x={core.x} y={core.y + 6} textAnchor="middle" fill="rgba(255,255,255,0.97)" fontSize="16" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.05em">
         AI Cortex
       </text>
 
-      {/* ── Traveling white particles (active signals) ── */}
+      {/* ── Traveling particles (white with colored trail) ── */}
       {pulseRoutes.map((route, i) => (
         <g key={`pulse-${i}`}>
-          {/* Glow trail */}
-          <circle r="6" fill="rgba(255,255,255,0.3)" filter="url(#node-glow-3)">
+          {/* Outer glow trail */}
+          <circle r="10" fill="rgba(255,255,255,0.15)" filter="url(#particle-glow)">
             <animateMotion dur={route.dur} begin={route.delay} repeatCount="indefinite" path={route.path} calcMode="linear" />
-            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.1;0.85;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;0.4;0.4;0" keyTimes="0;0.08;0.88;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
           </circle>
-          {/* White core particle */}
-          <circle r="3" fill="rgba(255,255,255,0.9)">
+          {/* Mid glow */}
+          <circle r="5" fill="rgba(255,255,255,0.5)" filter="url(#node-glow-3)">
             <animateMotion dur={route.dur} begin={route.delay} repeatCount="indefinite" path={route.path} calcMode="linear" />
-            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;0.7;0.7;0" keyTimes="0;0.08;0.88;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
+          </circle>
+          {/* Bright core particle */}
+          <circle r="3" fill="rgba(255,255,255,0.95)">
+            <animateMotion dur={route.dur} begin={route.delay} repeatCount="indefinite" path={route.path} calcMode="linear" />
+            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.88;1" dur={route.dur} begin={route.delay} repeatCount="indefinite" />
           </circle>
         </g>
       ))}
 
       {/* ── Zone labels ── */}
-      <text x="370" y="495" textAnchor="middle" fill="rgba(30,30,50,0.3)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.2em">
+      <text x="370" y="498" textAnchor="middle" fill="rgba(20,20,40,0.4)" fontSize="10" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         INPUTS
       </text>
-      <text x="370" y="22" textAnchor="middle" fill="rgba(30,30,50,0.3)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.2em">
+      <text x="370" y="16" textAnchor="middle" fill="rgba(20,20,40,0.4)" fontSize="10" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         OUTPUTS
       </text>
     </svg>
@@ -189,7 +235,7 @@ const PlatformSection = () => {
       }} />
 
       <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12 py-28 md:py-36 lg:py-44 flex items-center min-h-screen">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-16 lg:gap-20 items-center w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-16 lg:gap-20 items-center w-full">
           {/* ── Left: Narrative ── */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -253,18 +299,22 @@ const PlatformSection = () => {
 
           {/* ── Right: Glass Architecture Slab ── */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 24, scale: 0.97 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              background: "rgba(255, 255, 255, 0.55)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
+              background: "rgba(255, 255, 255, 0.65)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
               borderRadius: "36px",
-              border: "1px solid rgba(90, 70, 160, 0.15)",
-              boxShadow: "0 60px 140px rgba(60, 40, 120, 0.18)",
-              padding: "32px",
+              border: "1px solid rgba(90, 70, 160, 0.18)",
+              boxShadow: `
+                0 60px 140px rgba(60, 40, 120, 0.2),
+                0 20px 60px rgba(60, 40, 120, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8)
+              `,
+              padding: "36px",
             }}
           >
             <LivingArchitecture />
