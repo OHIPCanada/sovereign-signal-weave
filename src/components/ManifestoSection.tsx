@@ -194,14 +194,25 @@ const SovereignMesh = () => {
 };
 
 /* ─── CARD STYLES per layer ─── */
-const cardBg = `radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10), transparent 60%), linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))`;
-const cardBorder = "1px solid rgba(255,255,255,0.12)";
-const cardShadow = "inset 0 0 120px rgba(123, 97, 255, 0.15)";
-
 const cardStyles = [
-  { bg: cardBg, border: cardBorder, shadow: cardShadow },
-  { bg: cardBg, border: cardBorder, shadow: cardShadow },
-  { bg: cardBg, border: cardBorder, shadow: cardShadow },
+  {
+    // AI Cortex — brightest, smartest
+    bg: `radial-gradient(circle at 20% 30%, rgba(255,255,255,0.13), transparent 60%), linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03))`,
+    border: "1px solid rgba(255,255,255,0.15)",
+    shadow: "inset 0 0 120px rgba(123, 97, 255, 0.18)",
+  },
+  {
+    // Orchestration — neutral mid-tone
+    bg: `radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10), transparent 60%), linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))`,
+    border: "1px solid rgba(255,255,255,0.12)",
+    shadow: "inset 0 0 120px rgba(123, 97, 255, 0.15)",
+  },
+  {
+    // Sovereign — darkest, heaviest
+    bg: `radial-gradient(circle at 20% 30%, rgba(255,255,255,0.07), transparent 60%), linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))`,
+    border: "1px solid rgba(255,255,255,0.09)",
+    shadow: "inset 0 0 120px rgba(123, 97, 255, 0.10)",
+  },
 ];
 
 const labelColors = [
