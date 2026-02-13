@@ -177,7 +177,7 @@ const LivingArchitecture = () => (
       </circle>
 
       {/* ── AI CORTEX label ── */}
-      <text x={core.x - 80} y={core.y + 8} textAnchor="end" fontSize="32" fontFamily="Inter, sans-serif" fontWeight="900" letterSpacing="-0.02em" fill="url(#cortex-text-grad)">
+      <text x={core.x - 75} y={core.y + 7} textAnchor="end" fontSize="24" fontFamily="Inter, sans-serif" fontWeight="900" letterSpacing="-0.02em" fill="url(#cortex-text-grad)">
         AI CORTEX
       </text>
 
