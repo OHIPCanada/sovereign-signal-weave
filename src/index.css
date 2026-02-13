@@ -509,3 +509,110 @@
   0%, 100% { opacity: .55; }
   50% { opacity: .9; }
 }
+
+/* ===== Section 2: Intelligence Layer Card Animations ===== */
+
+/* Cortex edges — dashed moving lines */
+.s2-cortex-edges line {
+  stroke: rgba(232, 220, 255, 0.50);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-opacity: 0.95;
+  stroke-dasharray: 10 8;
+  animation: s2DashMove 6.8s linear infinite;
+}
+
+/* Cortex nodes */
+.s2-cortex-nodes circle {
+  fill: rgba(255,255,255,0.92);
+  filter: drop-shadow(0 0 10px rgba(186,145,255,0.30));
+  animation: s2NodePulse 2.6s ease-in-out infinite;
+}
+.s2-cortex-nodes .s2-micro {
+  fill: rgba(255,255,255,0.55);
+  animation-duration: 3.4s;
+}
+
+/* Workflow lines */
+.s2-wf-line {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(232,220,255,0.55), transparent);
+  opacity: 0.95;
+}
+
+/* Workflow checkpoint nodes */
+.s2-wf-node {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 0 0 6px rgba(186,145,255,0.16), 0 0 18px rgba(186,145,255,0.22);
+}
+
+/* Workflow moving pulses */
+.s2-wf-pulse {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 0 0 7px rgba(212,97,107,0.10), 0 0 24px rgba(255,192,174,0.25);
+}
+.s2-wf-pulse-1 { animation: s2Flow1 4.8s linear infinite; }
+.s2-wf-pulse-2 { animation: s2Flow2 6.2s linear infinite; }
+
+/* Data plane rail */
+.s2-dp-rail {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.70), transparent);
+  opacity: 0.85;
+}
+
+/* Data plane gate nodes */
+.s2-dp-gate {
+  position: absolute;
+  top: 53px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 0 0 10px rgba(186,145,255,0.12);
+  animation: s2GatePulse 3.6s ease-in-out infinite;
+}
+
+@keyframes s2DashMove {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -120; }
+}
+
+@keyframes s2NodePulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.18); opacity: 1; }
+}
+
+@keyframes s2Flow1 {
+  from { left: 18px; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  to { left: calc(100% - 30px); opacity: 0; }
+}
+
+@keyframes s2Flow2 {
+  from { left: 18px; opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  to { left: calc(100% - 30px); opacity: 0; }
+}
+
+@keyframes s2GatePulse {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.20); opacity: 1; }
+}
