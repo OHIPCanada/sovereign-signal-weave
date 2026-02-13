@@ -177,7 +177,13 @@ const LivingArchitecture = () => (
         <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.5s" repeatCount="indefinite" />
         <animate attributeName="r" values="10;12;10" dur="3s" repeatCount="indefinite" />
       </circle>
-      {/* Label moved to left narrative column */}
+      {/* ── AI CORTEX label — left of core, decorative font ── */}
+      <text x={core.x - 95} y={core.y + 6} textAnchor="end" fontSize="28" fontFamily="Inter, sans-serif" fontWeight="900" letterSpacing="-0.03em" fill="rgba(20, 15, 40, 0.85)">
+        AI
+      </text>
+      <text x={core.x - 95} y={core.y + 34} textAnchor="end" fontSize="28" fontFamily="Inter, sans-serif" fontWeight="900" letterSpacing="-0.03em" fill="rgba(20, 15, 40, 0.85)">
+        CORTEX
+      </text>
 
       {/* ── Traveling particles (bold, high-visibility) ── */}
       {pulseRoutes.map((route, i) => (
@@ -256,27 +262,6 @@ const PlatformSection = () => {
             >
               PLATFORM ARCHITECTURE
             </span>
-
-            {/* AI CORTEX - Decorative hero-style title */}
-            <motion.span
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="hero-title"
-              style={{
-                fontSize: "clamp(52px, 8vw, 110px)",
-                lineHeight: 0.95,
-                letterSpacing: "-0.04em",
-                color: "transparent",
-                background: "linear-gradient(135deg, #D4616B 0%, #7B61FF 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              AI CORTEX
-            </motion.span>
 
             <h2 style={{
               color: "#111111",
