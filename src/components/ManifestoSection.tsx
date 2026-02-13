@@ -284,30 +284,29 @@ const ManifestoSection = () => {
       className="relative py-32 md:py-40 lg:py-48 overflow-hidden"
       style={{
         background: `
-          radial-gradient(50% 50% at 70% 45%, rgba(230,230,250,0.18), transparent 65%),
-          linear-gradient(135deg, #2D1B4E 0%, #3A1F6B 100%)
+          radial-gradient(circle at 30% 30%, rgba(123, 97, 255, 0.25) 0%, rgba(45, 27, 78, 0.9) 60%),
+          linear-gradient(180deg, #2D1B4E 0%, #3A1F6A 50%, #1E0F35 100%)
         `,
-        color: "rgba(237, 235, 255, 0.92)",
       }}
     >
       <div className="relative z-10 max-w-[1200px] mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-12 lg:gap-20 items-center">
           {/* Left column — text */}
           <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
-            <p className="mono-label mb-5" style={{ color: "rgba(160, 150, 200, 0.5)" }}>
+            <p className="mb-5" style={{ color: "rgba(255, 255, 255, 0.5)", letterSpacing: "0.2em", fontSize: "12px", fontFamily: "monospace", textTransform: "uppercase" }}>
               THE INTELLIGENCE LAYER
             </p>
             <h2
-              className="text-[26px] md:text-[34px] lg:text-[42px] font-bold leading-[1.15] tracking-tight mb-6"
-              style={{ color: "rgba(235, 230, 255, 0.95)" }}
+              className="tracking-tight mb-6"
+              style={{ color: "#F4F1FF", fontWeight: 700, fontSize: "clamp(48px, 5vw, 72px)", lineHeight: 1.1 }}
             >
               We are the layer
               <br />
               under everything.
             </h2>
             <p
-              className="text-[14px] md:text-[16px] leading-relaxed max-w-md"
-              style={{ color: "rgba(190, 180, 220, 0.7)" }}
+              className=""
+              style={{ color: "rgba(255, 255, 255, 0.75)", fontWeight: 400, fontSize: "18px", lineHeight: 1.6, maxWidth: "600px" }}
             >
               Three system planes running beneath every clinical workflow —
               reasoning, orchestration, and sovereign data governance — engineered
