@@ -230,7 +230,11 @@ const LayerPanel = ({ layer, index }: { layer: LayerConfig; index: number }) => 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ delay: index * 0.15, duration: 0.6, ease: "easeOut" }}
-      className="relative rounded-[18px] overflow-hidden"
+      whileHover={{
+        boxShadow: `${style.shadow}, 0 0 40px rgba(123, 97, 255, 0.2)`,
+        borderColor: "rgba(255, 255, 255, 0.2)",
+      }}
+      className="relative rounded-[18px] overflow-hidden transition-colors duration-300"
       style={{
         background: style.bg,
         border: style.border,
