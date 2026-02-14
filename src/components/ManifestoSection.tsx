@@ -24,8 +24,8 @@ const CortexViz = () => {
           width: 64,
           height: 64,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(255,255,255,.35), rgba(180,160,255,.3) 45%, transparent 80%)",
-          boxShadow: "0 0 40px 14px rgba(123,97,255,.3), 0 0 80px 30px rgba(123,97,255,.12)",
+          background: "radial-gradient(circle, rgba(255,220,210,.4), rgba(232,150,124,.35) 45%, transparent 80%)",
+          boxShadow: "0 0 40px 14px rgba(232,150,124,.3), 0 0 80px 30px rgba(212,97,107,.12)",
           animation: "glowPulse 3.5s ease-in-out infinite",
         }}
       />
