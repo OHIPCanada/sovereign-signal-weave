@@ -21,12 +21,18 @@ const CortexViz = () => {
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         style={{
-          width: 50,
-          height: 50,
+          width: 64,
+          height: 64,
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(123,97,255,.45), rgba(123,97,255,.1) 60%, transparent 80%)",
+          background: "radial-gradient(circle, rgba(255,255,255,.35), rgba(180,160,255,.3) 45%, transparent 80%)",
+          boxShadow: "0 0 40px 14px rgba(123,97,255,.3), 0 0 80px 30px rgba(123,97,255,.12)",
           animation: "glowPulse 3.5s ease-in-out infinite",
         }}
+      />
+      {/* Center dot */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,.95)" }}
       />
       {/* Rotating ring */}
       <svg
@@ -41,9 +47,9 @@ const CortexViz = () => {
               key={i}
               cx={d.x}
               cy={d.y}
-              r={d.isCoral ? 2.2 : 1.6}
-              fill={d.isCoral ? "rgba(212,97,107,.85)" : "rgba(123,97,255,.7)"}
-              opacity={0.5 + Math.random() * 0.4}
+              r={d.isCoral ? 3 : 2.2}
+              fill={d.isCoral ? "rgba(255,160,150,1)" : "rgba(200,185,255,1)"}
+              opacity={0.7 + Math.random() * 0.3}
             />
           )
         )}
