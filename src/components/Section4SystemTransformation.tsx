@@ -192,7 +192,7 @@ export default function Section4SystemTransformation() {
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-       <div className="mx-auto max-w-6xl px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+       <div className="mx-auto max-w-6xl px-6 grid grid-cols-1 lg:grid-cols-12 items-center" style={{ gap: "clamp(24px, 4vw, 64px)" }}>
         {/* Left content */}
         <div className="lg:col-span-5 flex flex-col gap-6">
           <motion.p
