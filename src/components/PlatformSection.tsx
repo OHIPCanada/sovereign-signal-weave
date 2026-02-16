@@ -229,7 +229,7 @@ const PlatformSection = () => {
       className="relative overflow-hidden"
       id="product"
       style={{
-        minHeight: "100vh",
+        padding: "clamp(64px, 7vw, 110px) 0",
         background: `
           radial-gradient(1200px 600px at 20% 50%, rgba(212,97,107,0.25), transparent 60%),
           radial-gradient(1000px 700px at 85% 30%, rgba(123,97,255,0.25), transparent 65%),
@@ -245,7 +245,7 @@ const PlatformSection = () => {
         background: "linear-gradient(180deg, rgba(123, 97, 255, 0.08) 0%, transparent 100%)",
       }} />
 
-      <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12 py-28 md:py-36 lg:py-44 flex items-center min-h-screen">
+      <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-16 lg:gap-20 items-center w-full">
           {/* ── Left: Narrative ── */}
           <motion.div
