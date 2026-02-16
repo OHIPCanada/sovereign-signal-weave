@@ -194,21 +194,59 @@ export default function Section4SystemTransformation() {
     >
       <div className="mx-auto max-w-6xl px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         {/* Left content */}
-        <div className="lg:col-span-5">
-          <div className="text-[12px] tracking-[0.22em] uppercase text-white" style={{ opacity: 0.55 }}>
+        <div className="lg:col-span-5 flex flex-col gap-5">
+          <motion.p
+            className="mono-label"
+            style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
             [ SYSTEM TRANSFORMATION ]
-          </div>
+          </motion.p>
 
-          <h2 className="mt-4 text-white font-extrabold leading-[0.98]" style={{ fontSize: "clamp(40px, 5vw, 64px)" }}>
+          <motion.h2
+            style={{
+              color: "rgba(255,255,255,0.95)",
+              fontWeight: 800,
+              fontSize: "clamp(44px, 5.2vw, 84px)",
+              lineHeight: 0.95,
+              letterSpacing: "-0.02em",
+              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
+            }}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             When intelligence becomes infrastructure.
-          </h2>
+          </motion.h2>
 
-          <p className="mt-5 text-[16px] leading-relaxed max-w-[44ch]" style={{ color: "rgba(230,230,250,0.78)" }}>
+          <motion.p
+            style={{
+              color: "rgba(255,255,255,0.72)",
+              fontWeight: 400,
+              fontSize: "clamp(15px, 1.25vw, 18px)",
+              lineHeight: 1.55,
+              maxWidth: "46ch",
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
             Signals stop fragmenting. Workflows coordinate. Governance becomes automatic.
             Care becomes continuous — across the entire system.
-          </p>
+          </motion.p>
 
-          <div className="mt-6 flex flex-wrap gap-2">
+          <motion.div
+            className="flex flex-wrap gap-2"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
             {["Routing", "Orchestration", "Policy Enforcement", "Audit Trails"].map((label) => (
               <span
                 key={label}
@@ -217,7 +255,7 @@ export default function Section4SystemTransformation() {
                 {label}
               </span>
             ))}
-          </div>
+          </motion.div>
         </div>
 
         {/* Right visual */}
