@@ -192,9 +192,10 @@ export default function Section4SystemTransformation() {
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-       <div className="mx-auto max-w-6xl px-6 grid grid-cols-1 lg:grid-cols-12 items-center" style={{ gap: "clamp(24px, 4vw, 64px)" }}>
+       <div className="relative z-10" style={{ width: "min(1180px, calc(100% - 48px))", margin: "0 auto" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] items-center" style={{ gap: "clamp(24px, 4vw, 64px)" }}>
         {/* Left content */}
-        <div className="lg:col-span-5 flex flex-col gap-6">
+        <div className="flex flex-col gap-6">
           <motion.p
             className="mono-label"
             style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}
@@ -259,7 +260,7 @@ export default function Section4SystemTransformation() {
         </div>
 
         {/* Right visual */}
-        <div className="lg:col-span-7">
+        <div>
           <div
             ref={wrapRef}
             className="relative h-[520px] rounded-[28px] overflow-hidden border border-white/10 bg-white/[0.03]"
@@ -279,6 +280,7 @@ export default function Section4SystemTransformation() {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
 
