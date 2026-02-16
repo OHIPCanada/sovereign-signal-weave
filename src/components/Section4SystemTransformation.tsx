@@ -264,7 +264,7 @@ export default function Section4SystemTransformation() {
         <div>
            <div
             ref={wrapRef}
-            className="relative aspect-[4/3] rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.03]"
+            className="relative aspect-[3/2] rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.03] min-h-[480px]"
             style={{
               boxShadow: "0 40px 120px rgba(0,0,0,0.35)",
             }}
