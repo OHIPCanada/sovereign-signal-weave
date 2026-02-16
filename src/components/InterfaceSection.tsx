@@ -13,8 +13,8 @@ const InterfaceSection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen text-primary-foreground py-24 md:py-32"
-      style={{ background: 'linear-gradient(170deg, #1A1A4E 0%, #2A1B3D 40%, #3D2038 70%, #4A2540 100%)' }}
+      className="relative text-primary-foreground"
+      style={{ padding: "clamp(64px, 7vw, 110px) 0", background: 'linear-gradient(170deg, #1A1A4E 0%, #2A1B3D 40%, #3D2038 70%, #4A2540 100%)' }}
       id="features"
     >
       {/* Dark mode transition overlay */}

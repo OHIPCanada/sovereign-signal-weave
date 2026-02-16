@@ -24,7 +24,7 @@ const badges = [
 
 const TrustSection = () => {
   return (
-    <section className="relative py-24 md:py-32" style={{ background: 'linear-gradient(180deg, #F6F7FB 0%, #F4F0EE 50%, #F0E8E4 100%)' }} id="pricing">
+    <section className="relative" style={{ padding: "clamp(64px, 7vw, 110px) 0", background: 'linear-gradient(180deg, #F6F7FB 0%, #F4F0EE 50%, #F0E8E4 100%)' }} id="pricing">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Header */}
         <motion.div
