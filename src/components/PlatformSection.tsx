@@ -226,10 +226,11 @@ const LivingArchitecture = () => (
 const PlatformSection = () => {
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden flex items-center"
       id="product"
       style={{
         padding: "clamp(64px, 7vw, 110px) 0",
+        minHeight: "100vh",
         background: `
           radial-gradient(1200px 600px at 20% 50%, rgba(212,97,107,0.25), transparent 60%),
           radial-gradient(1000px 700px at 85% 30%, rgba(123,97,255,0.25), transparent 65%),
