@@ -217,23 +217,19 @@ export default function Section4SystemTransformation() {
         <div className="lg:col-span-7">
           <div
             ref={wrapRef}
-            className="relative rounded-[28px] border border-white/10 backdrop-blur-xl h-[420px] sm:h-[520px]"
+            className="relative h-[520px] rounded-[28px] overflow-hidden border border-white/10 bg-white/[0.03]"
             style={{
-              background:
-                "radial-gradient(800px 600px at 85% 80%, rgba(242,193,174,0.10), rgba(0,0,0,0))," +
-                "radial-gradient(700px 500px at 30% 30%, rgba(123,97,255,0.16), rgba(0,0,0,0))," +
-                "rgba(255,255,255,0.03)",
               boxShadow: "0 40px 120px rgba(0,0,0,0.35)",
             }}
           >
-            <canvas ref={canvasRef} className="absolute inset-0 rounded-[28px]" />
+            <canvas ref={canvasRef} className="absolute inset-0 z-[2]" />
 
-            <div className="absolute left-6 top-6 text-white/70 text-[12px] tracking-[0.18em] uppercase">
+            <div className="absolute left-6 top-6 z-[3] text-white/70 text-[12px] tracking-[0.18em] uppercase">
               National-scale coordination layer
             </div>
 
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="text-white/5 font-black tracking-tight" style={{ fontSize: "clamp(44px, 6vw, 88px)" }}>
+            <div className="absolute inset-0 z-[1] flex items-center justify-center pointer-events-none">
+              <div className="text-white/5 font-black tracking-tight text-[88px]">
                 DOCG AI
               </div>
             </div>
