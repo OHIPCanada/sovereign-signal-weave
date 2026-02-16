@@ -14,9 +14,9 @@ export default function Section4SystemTransformation() {
 
     let w = 0, h = 0;
     const dpr = Math.max(1, window.devicePixelRatio || 1);
-    const N = 46;
-    const LINK_DIST = 170;
-    const drift = 0.12;
+    const N = 54;
+    const LINK_DIST = 200;
+    const drift = 0.18;
     const nodes: { x: number; y: number; vx: number; vy: number; r: number; phase: number }[] = [];
     let t = 0;
 
@@ -49,7 +49,7 @@ export default function Section4SystemTransformation() {
           y: rand(0.12 * h, 0.88 * h),
           vx: rand(-drift, drift),
           vy: rand(-drift, drift),
-          r: rand(1.8, 3.2),
+          r: rand(2.5, 5),
           phase: rand(0, Math.PI * 2),
         });
       }
@@ -82,11 +82,11 @@ export default function Section4SystemTransformation() {
           const dist = Math.hypot(dx, dy);
           if (dist > LINK_DIST) continue;
 
-          let alpha = (1 - dist / LINK_DIST) * 0.26;
+          let alpha = (1 - dist / LINK_DIST) * 0.45;
           const da = Math.hypot(a.x - cx, a.y - cy);
           const db = Math.hypot(b.x - cx, b.y - cy);
           const inPulse = Math.abs(da - pulseRadius) < 28 || Math.abs(db - pulseRadius) < 28;
-          if (inPulse) alpha += 0.22;
+          if (inPulse) alpha += 0.35;
 
           ctx!.strokeStyle = `rgba(170,160,210,${alpha})`;
           ctx!.lineWidth = 1;
@@ -103,35 +103,37 @@ export default function Section4SystemTransformation() {
       for (const n of nodes) {
         const d = Math.hypot(n.x - cx, n.y - cy);
         const hit = Math.abs(d - pulseRadius) < 22;
-        const pulseBoost = hit ? 0.55 : 0.0;
-        const base = 0.55 + 0.18 * Math.sin(t * 0.02 + n.phase);
+        const pulseBoost = hit ? 0.6 : 0.0;
+        const base = 0.65 + 0.2 * Math.sin(t * 0.02 + n.phase);
         const a = Math.min(1, base + pulseBoost);
 
         ctx!.beginPath();
         ctx!.fillStyle = `rgba(220,210,255,${a})`;
-        ctx!.arc(n.x, n.y, n.r + (hit ? 1.2 : 0), 0, Math.PI * 2);
+        ctx!.arc(n.x, n.y, n.r + (hit ? 2.5 : 0), 0, Math.PI * 2);
         ctx!.fill();
 
         ctx!.beginPath();
-        ctx!.fillStyle = `rgba(123,97,255,${hit ? 0.20 : 0.08})`;
-        ctx!.arc(n.x, n.y, n.r + 6, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(123,97,255,${hit ? 0.30 : 0.12})`;
+        ctx!.arc(n.x, n.y, n.r + 10, 0, Math.PI * 2);
         ctx!.fill();
       }
     }
 
     function drawPulse(pulseRadius: number) {
+      if (pulseRadius < 20) return; // skip when too small
       const cx = w * 0.52, cy = h * 0.50;
-      const ring = ctx!.createRadialGradient(cx, cy, pulseRadius - 18, cx, cy, pulseRadius + 18);
+      const inner = Math.max(0, pulseRadius - 18);
+      const ring = ctx!.createRadialGradient(cx, cy, inner, cx, cy, pulseRadius + 18);
 
       if (pulseMode === 0) {
         ring.addColorStop(0, "rgba(123,97,255,0)");
-        ring.addColorStop(0.5, "rgba(123,97,255,0.18)");
+        ring.addColorStop(0.5, "rgba(123,97,255,0.30)");
         ring.addColorStop(1, "rgba(123,97,255,0)");
       } else {
         ring.addColorStop(0, "rgba(212,97,107,0)");
-        ring.addColorStop(0.35, "rgba(212,97,107,0.12)");
-        ring.addColorStop(0.6, "rgba(232,150,124,0.12)");
-        ring.addColorStop(0.8, "rgba(242,193,174,0.10)");
+        ring.addColorStop(0.35, "rgba(212,97,107,0.22)");
+        ring.addColorStop(0.6, "rgba(232,150,124,0.20)");
+        ring.addColorStop(0.8, "rgba(242,193,174,0.15)");
         ring.addColorStop(1, "rgba(242,193,174,0)");
       }
 
