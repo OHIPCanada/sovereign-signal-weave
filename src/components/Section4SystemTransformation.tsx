@@ -261,9 +261,9 @@ export default function Section4SystemTransformation() {
 
         {/* Right visual */}
         <div>
-          <div
+           <div
             ref={wrapRef}
-            className="relative h-[520px] rounded-[28px] overflow-hidden border border-white/10 bg-white/[0.03]"
+            className="relative aspect-[4/3] rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.03]"
             style={{
               boxShadow: "0 40px 120px rgba(0,0,0,0.35)",
             }}
