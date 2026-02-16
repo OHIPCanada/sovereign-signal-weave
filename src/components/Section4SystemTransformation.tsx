@@ -259,12 +259,8 @@ export default function Section4SystemTransformation() {
           </motion.div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24, scale: 0.97 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-        >
+        {/* Right visual */}
+        <div>
            <div
             ref={wrapRef}
             className="relative aspect-[4/3] rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.03]"
@@ -284,7 +280,7 @@ export default function Section4SystemTransformation() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
         </div>
       </div>
 
