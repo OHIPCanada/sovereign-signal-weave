@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 export default function Section4SystemTransformation() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -184,7 +185,13 @@ export default function Section4SystemTransformation() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden py-20">
+    <motion.section
+      className="relative overflow-hidden py-20"
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
       <div className="mx-auto max-w-6xl px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
         {/* Left content */}
         <div className="lg:col-span-5">
@@ -244,6 +251,6 @@ export default function Section4SystemTransformation() {
           background: "linear-gradient(135deg, #140022 0%, #2A0B4E 55%, #140022 100%)",
         }}
       />
-    </section>
+    </motion.section>
   );
 }
