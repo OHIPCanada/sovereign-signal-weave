@@ -186,8 +186,8 @@ export default function Section4SystemTransformation() {
 
   return (
     <motion.section
-      className="relative overflow-hidden"
-      style={{ padding: "clamp(64px, 7vw, 110px) 0" }}
+      className="relative overflow-hidden flex items-center"
+      style={{ padding: "clamp(64px, 7vw, 110px) 0", minHeight: "100vh" }}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}

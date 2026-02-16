@@ -203,8 +203,8 @@ const ManifestoSection = () => {
     <section
       ref={containerRef}
       id="intelligence-layer"
-      className="relative overflow-hidden"
-      style={{ padding: "clamp(64px, 7vw, 110px) 0" }}
+      className="relative overflow-hidden flex items-center"
+      style={{ padding: "clamp(64px, 7vw, 110px) 0", minHeight: "100vh" }}
     >
       {/* Background */}
       <div className="absolute inset-0" style={{
