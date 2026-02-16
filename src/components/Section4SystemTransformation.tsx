@@ -194,7 +194,7 @@ export default function Section4SystemTransformation() {
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
        <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.45fr] gap-16 lg:gap-20 items-center w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr] gap-16 lg:gap-20 items-center w-full">
         {/* Left content */}
         <div className="flex flex-col gap-7">
           <motion.p
@@ -264,7 +264,7 @@ export default function Section4SystemTransformation() {
         <div>
           <div
             ref={wrapRef}
-            className="relative aspect-[3/2] rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.03]"
+            className="relative aspect-[13/9] rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.03]"
             style={{
               boxShadow: "0 40px 120px rgba(0,0,0,0.35)",
             }}
