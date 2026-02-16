@@ -261,15 +261,20 @@ export default function Section4SystemTransformation() {
         </div>
 
         {/* Right visual */}
-        <div>
-           <div
+        <div
             ref={wrapRef}
-            className="relative aspect-[3/2] rounded-[40px] overflow-hidden border border-white/10 bg-white/[0.03] min-h-[480px]"
+            className="relative rounded-[40px] overflow-hidden"
             style={{
-              boxShadow: "0 40px 120px rgba(0,0,0,0.35)",
+              padding: "36px",
+              background: "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.025) 100%)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              boxShadow: "0 80px 160px rgba(0,0,0,0.25), 0 30px 80px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.08)",
             }}
           >
-            <canvas ref={canvasRef} className="absolute inset-0 z-[2]" />
+            <div className="relative aspect-[4/3] rounded-[20px] overflow-hidden bg-black/20">
+              <canvas ref={canvasRef} className="absolute inset-0 z-[2]" />
 
             <div className="absolute left-6 top-6 z-[3] text-white/70 text-[12px] tracking-[0.18em] uppercase">
               National-scale coordination layer
