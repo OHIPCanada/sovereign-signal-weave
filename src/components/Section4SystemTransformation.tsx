@@ -381,27 +381,37 @@ export default function Section4SystemTransformation() {
             </motion.div>
           </div>
 
-          {/* Right visual – viewport card */}
-          <div className="relative">
-            {/* Subtle purple glow behind card */}
+          {/* Right visual – no card, floating field */}
+          <div className="relative" style={{ perspective: "1000px" }}>
+            {/* Ambient glow */}
             <div
               className="absolute inset-0 -z-[1]"
               style={{
-                background: "radial-gradient(ellipse 110% 90% at 50% 50%, rgba(123,97,255,0.18), transparent 70%)",
-                filter: "blur(40px)",
-                transform: "scale(1.15)",
+                background: "radial-gradient(ellipse 120% 100% at 50% 50%, rgba(123,97,255,0.22), rgba(212,97,107,0.08) 50%, transparent 75%)",
+                filter: "blur(50px)",
+                transform: "scale(1.3)",
+                animation: "s4Breathe 7s ease-in-out infinite",
               }}
             />
-            <motion.div
+            {/* Ground shadow for depth */}
+            <div style={{
+              position: "absolute",
+              bottom: "-12%",
+              left: "15%",
+              width: "70%",
+              height: "30%",
+              background: "radial-gradient(ellipse at center, rgba(123,97,255,0.15) 0%, rgba(212,97,107,0.06) 40%, transparent 70%)",
+              borderRadius: "50%",
+              filter: "blur(24px)",
+              pointerEvents: "none",
+            }} />
+            <div
               ref={wrapRef}
-              className="relative overflow-hidden"
+              className="relative"
               style={{
-                borderRadius: 32,
-                background: "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))",
-                border: "1px solid rgba(255,255,255,0.14)",
-                overflow: "hidden",
+                transform: "rotateX(28deg) rotateZ(-8deg)",
+                transformStyle: "preserve-3d",
                 minHeight: "clamp(320px, 40vw, 460px)",
-                boxShadow: "0 0 0 1px rgba(255,255,255,0.05) inset, 0 30px 80px rgba(0,0,0,0.35)",
               }}
             >
               <canvas ref={canvasRef} className="absolute inset-0 z-[2]" style={{ width: "100%", height: "100%", display: "block" }} />
@@ -412,8 +422,15 @@ export default function Section4SystemTransformation() {
               >
                 National-scale coordination layer
               </div>
-            </motion.div>
+            </div>
           </div>
+
+          <style>{`
+            @keyframes s4Breathe {
+              0%, 100% { opacity: 0.7; transform: scale(1.3); }
+              50% { opacity: 1; transform: scale(1.38); }
+            }
+          `}</style>
         </div>
       </div>
 
