@@ -26,6 +26,7 @@ const ParticleField = () => {
   const bloomsRef = useRef<Bloom[]>([]);
   const rafRef = useRef<number>(0);
   const tRef = useRef(0);
+  const mouseRef = useRef<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
 
   const initParticles = useCallback((W: number, H: number) => {
     const count = 65;
@@ -62,6 +63,14 @@ const ParticleField = () => {
     resize();
     window.addEventListener("resize", resize);
 
+    const handleMouseMove = (e: MouseEvent) => {
+      const r = canvas.getBoundingClientRect();
+      mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top, active: true };
+    };
+    const handleMouseLeave = () => { mouseRef.current.active = false; };
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+
     const CONNECT_DIST = 90;
     const CLUSTER_DIST = 60;
     const CLUSTER_MIN = 3;
@@ -85,6 +94,18 @@ const ParticleField = () => {
         if (p.x > W) { p.x = W; p.vx *= -1; }
         if (p.y < 0) { p.y = 0; p.vy *= -1; }
         if (p.y > H) { p.y = H; p.vy *= -1; }
+
+        // Mouse attraction
+        if (mouseRef.current.active) {
+          const mdx = mouseRef.current.x - p.x;
+          const mdy = mouseRef.current.y - p.y;
+          const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+          if (mDist < 180 && mDist > 1) {
+            const force = 0.015 * (1 - mDist / 180);
+            p.vx += (mdx / mDist) * force;
+            p.vy += (mdy / mDist) * force;
+          }
+        }
 
         // Slight drift variation
         p.vx += (Math.random() - 0.5) * 0.01;
@@ -202,6 +223,8 @@ const ParticleField = () => {
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", resize);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [initParticles]);
 
