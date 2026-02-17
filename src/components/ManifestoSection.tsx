@@ -238,91 +238,59 @@ const ManifestoSection = () => {
             </p>
           </motion.div>
 
-          {/* Right — Floating visualizations, no cards */}
-          <div className="relative" style={{ perspective: "1100px" }}>
-            {/* Ambient field glow */}
+          {/* Right — Cards */}
+          <div className="relative">
             <div className="absolute pointer-events-none" style={{
-              top: "-15%", left: "-5%", width: "110%", height: "130%",
-              background: "radial-gradient(ellipse 80% 60% at 50% 45%, rgba(160,130,240,0.16) 0%, rgba(212,97,107,0.06) 45%, transparent 70%)",
-              filter: "blur(40px)",
-              animation: "s2AmbientBreathe 8s ease-in-out infinite",
+              top: "-10%", left: "5%", width: "90%", height: "120%",
+              background: "radial-gradient(ellipse 70% 55% at 50% 50%, rgba(160,130,240,0.12) 0%, transparent 65%)",
             }} />
+            <div className="relative z-10 flex flex-col gap-4">
+              {layers.map((layer, i) => (
+                <motion.article
+                  key={layer.label}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ delay: i * 0.15, duration: 0.6, ease: "easeOut" }}
+                  whileHover={{ y: -4 }}
+                  className="relative rounded-[20px] overflow-hidden"
+                  style={{
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025))",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    backdropFilter: "blur(20px)",
+                    WebkitBackdropFilter: "blur(20px)",
+                    boxShadow: "0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)",
+                    padding: "20px",
+                    transform: cardTransforms[i] || "none",
+                    transition: "transform 0.15s ease-out",
+                  }}
+                >
+                  {/* Subtle inner highlight */}
+                  <div className="absolute inset-0 pointer-events-none rounded-[20px]"
+                    style={{ background: "radial-gradient(600px 250px at 15% 20%, rgba(255,255,255,0.06), transparent 50%)" }}
+                  />
 
-            <div className="relative z-10 flex flex-col" style={{ gap: "clamp(48px, 5vw, 72px)" }}>
-              {layers.map((layer, i) => {
-                const tilts = [
-                  "rotateX(12deg) rotateY(-6deg) rotateZ(1deg)",
-                  "rotateX(8deg) rotateY(5deg) rotateZ(-1.5deg)",
-                  "rotateX(14deg) rotateY(-4deg) rotateZ(2deg)",
-                ];
-                const glowColors = [
-                  "rgba(232,150,124,0.2)",
-                  "rgba(123,97,255,0.18)",
-                  "rgba(232,150,124,0.15)",
-                ];
-
-                return (
-                  <motion.div
-                    key={layer.label}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ delay: i * 0.18, duration: 0.7, ease: [0.22, 0.65, 0.3, 1] }}
-                    className="relative"
-                  >
-                    {/* Per-viz ambient glow */}
-                    <div className="absolute -z-[1] pointer-events-none" style={{
-                      top: "50%", left: "50%", width: "120%", height: "140%",
-                      transform: "translate(-50%, -50%)",
-                      background: `radial-gradient(circle, ${glowColors[i]}, transparent 65%)`,
-                      filter: "blur(35px)",
-                    }} />
-
-                    {/* Label */}
-                    <div className="mb-3">
-                      <div style={{ fontWeight: 600, fontSize: 17, color: "rgba(255,255,255,0.92)", letterSpacing: "-0.01em" }}>
-                        {layer.label}
-                      </div>
-                      <div style={{ fontWeight: 400, fontSize: 13, color: "rgba(255,255,255,0.45)", marginTop: 3 }}>
-                        {layer.subtitle}
-                      </div>
+                  {/* Header */}
+                  <div className="relative mb-3">
+                    <div style={{ fontWeight: 600, fontSize: 17, color: "rgba(255,255,255,0.95)", letterSpacing: "-0.01em" }}>
+                      {layer.label}
                     </div>
-
-                    {/* 3D tilted visualization */}
-                    <div
-                      style={{
-                        transform: cardTransforms[i] || tilts[i],
-                        transformStyle: "preserve-3d",
-                        transition: "transform 0.3s ease-out",
-                        height: 160,
-                        position: "relative",
-                      }}
-                    >
-                      <layer.Viz />
-                      {/* Ground shadow */}
-                      <div style={{
-                        position: "absolute",
-                        bottom: "-20%",
-                        left: "15%",
-                        width: "70%",
-                        height: "25%",
-                        background: `radial-gradient(ellipse at center, ${glowColors[i]}, transparent 70%)`,
-                        borderRadius: "50%",
-                        filter: "blur(16px)",
-                        pointerEvents: "none",
-                      }} />
+                    <div style={{ fontWeight: 400, fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 3 }}>
+                      {layer.subtitle}
                     </div>
-                  </motion.div>
-                );
-              })}
+                  </div>
+
+                  {/* Visualization — FIXED equal height */}
+                  <div className="relative rounded-xl overflow-hidden" style={{
+                    height: 150,
+                    background: "rgba(0,0,0,0.2)",
+                    border: "1px solid rgba(255,255,255,0.06)",
+                  }}>
+                    <layer.Viz />
+                  </div>
+                </motion.article>
+              ))}
             </div>
-
-            <style>{`
-              @keyframes s2AmbientBreathe {
-                0%, 100% { opacity: 0.6; transform: scale(1); }
-                50% { opacity: 1; transform: scale(1.06); }
-              }
-            `}</style>
           </div>
         </div>
       </div>
