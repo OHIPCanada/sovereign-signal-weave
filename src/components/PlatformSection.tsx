@@ -1,10 +1,5 @@
 import { motion } from "framer-motion";
 
-/* Breathing glow keyframe */
-const s3Style = document.createElement("style");
-s3Style.textContent = `@keyframes s3Breathe { 0%,100%{opacity:.5;transform:scale(1)} 50%{opacity:.85;transform:scale(1.06)} }`;
-if (!document.getElementById("s3-breathe-style")) { s3Style.id = "s3-breathe-style"; document.head.appendChild(s3Style); }
-
 /* ─── DATA (pulled inward for engineered spacing) ─── */
 const inputNodes = [
   { label: "EMR", x: 65, y: 420 },
@@ -100,11 +95,11 @@ const LivingArchitecture = () => (
       {/* ── Connection lines with gradient (0.4 base opacity) ── */}
       {inputNodes.map((inp, i) => (
         <line key={`il-${i}`} x1={inp.x} y1={inp.y} x2={core.x} y2={core.y}
-          stroke="url(#line-grad-in)" strokeWidth="2.2" strokeLinecap="round" opacity="0.7" />
+          stroke="url(#line-grad-in)" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
       ))}
       {outputNodes.map((out, i) => (
         <line key={`ol-${i}`} x1={core.x} y1={core.y} x2={out.x} y2={out.y}
-          stroke="url(#line-grad-out)" strokeWidth="2.2" strokeLinecap="round" opacity="0.7" />
+          stroke="url(#line-grad-out)" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
       ))}
 
       {/* ── Input nodes (ambient breathing) ── */}
@@ -123,7 +118,7 @@ const LivingArchitecture = () => (
             <circle cx={inp.x} cy={inp.y} r="6" fill={col} filter="url(#node-glow)">
               <animate attributeName="opacity" values="0.7;0.9;0.7" dur={`${5 + i * 0.7}s`} repeatCount="indefinite" />
             </circle>
-            <text x={inp.x} y={inp.y + 26} textAnchor="middle" fill="rgba(15,10,40,0.95)" fontSize="13" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.04em">
+            <text x={inp.x} y={inp.y + 26} textAnchor="middle" fill="rgba(20,20,40,0.75)" fontSize="12" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.05em">
               {inp.label}
             </text>
           </g>
@@ -145,7 +140,7 @@ const LivingArchitecture = () => (
             <circle cx={out.x} cy={out.y} r="6" fill={col} filter="url(#node-glow)">
               <animate attributeName="opacity" values="0.7;0.9;0.7" dur={`${5.5 + i * 0.5}s`} repeatCount="indefinite" />
             </circle>
-            <text x={out.x} y={out.y - 20} textAnchor="middle" fill="rgba(15,10,40,0.95)" fontSize="13" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.04em">
+            <text x={out.x} y={out.y - 20} textAnchor="middle" fill="rgba(20,20,40,0.75)" fontSize="12" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.05em">
               {out.label}
             </text>
           </g>
@@ -217,10 +212,10 @@ const LivingArchitecture = () => (
       ))}
 
       {/* ── Zone labels ── */}
-      <text x="330" y="400" textAnchor="middle" fill="rgba(15,10,40,0.45)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
+      <text x="330" y="400" textAnchor="middle" fill="rgba(20,20,40,0.3)" fontSize="8" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         INPUTS
       </text>
-      <text x="410" y="100" textAnchor="middle" fill="rgba(15,10,40,0.45)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
+      <text x="410" y="100" textAnchor="middle" fill="rgba(20,20,40,0.3)" fontSize="8" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         OUTPUTS
       </text>
     </svg>
@@ -305,48 +300,27 @@ const PlatformSection = () => {
             </motion.button>
           </motion.div>
 
-          {/* ── Right: 3D Floating Architecture Field ── */}
+          {/* ── Right: Glass Architecture Slab ── */}
           <motion.div
-            initial={{ opacity: 0, y: 40, rotateX: 0 }}
-            whileInView={{ opacity: 1, y: 0, rotateX: 24 }}
+            initial={{ opacity: 0, y: 24, scale: 0.97 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 1.2, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              perspective: "1200px",
-              transformStyle: "preserve-3d",
+              background: "linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.45) 100%)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              borderRadius: "40px",
+              border: "1px solid rgba(90, 70, 160, 0.12)",
+              boxShadow: `
+                0 80px 160px rgba(60, 40, 120, 0.15),
+                0 30px 80px rgba(60, 40, 120, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7)
+              `,
+              padding: "36px",
             }}
           >
-            <div
-              style={{
-                transform: "rotateX(24deg) rotateZ(-6deg)",
-                transformStyle: "preserve-3d",
-                position: "relative",
-              }}
-            >
-              {/* Ambient ground shadow — stronger for depth */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "-40px",
-                  left: "5%",
-                  right: "5%",
-                  height: "80px",
-                  background: "radial-gradient(ellipse at center, rgba(80,50,140,0.28) 0%, rgba(123,97,255,0.12) 40%, transparent 75%)",
-                  filter: "blur(28px)",
-                  transform: "translateZ(-40px)",
-                }}
-              />
-              {/* Breathing ambient glow behind the diagram */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background: "radial-gradient(circle at 50% 50%, rgba(212,97,107,0.12) 0%, rgba(123,97,255,0.06) 50%, transparent 75%)",
-                  animation: "s3Breathe 8s ease-in-out infinite",
-                  borderRadius: "32px",
-                }}
-              />
-              <LivingArchitecture />
-            </div>
+            <LivingArchitecture />
           </motion.div>
         </div>
       </div>
