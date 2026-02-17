@@ -245,7 +245,7 @@ const DeploymentSection = () => {
       id="deployment"
       style={{
         padding: "clamp(80px, 9vw, 140px) 0 clamp(60px, 6vw, 100px)",
-        background: `radial-gradient(circle at 50% 40%, #1a0833 0%, #120622 40%, #0b0417 100%)`,
+        background: `linear-gradient(180deg, #140022 0%, #1a0833 30%, #2A0B4E 70%, #120622 100%)`,
       }}
     >
       {/* Noise texture */}
@@ -283,9 +283,9 @@ const DeploymentSection = () => {
             <h2
               style={{
                 color: "#F3EFFF",
-                fontWeight: 700,
-                fontSize: "clamp(36px, 4.5vw, 58px)",
-                lineHeight: 1.1,
+                fontWeight: 800,
+                fontSize: "clamp(44px, 5.2vw, 84px)",
+                lineHeight: 0.95,
                 letterSpacing: "-0.02em",
               }}
             >
@@ -296,7 +296,7 @@ const DeploymentSection = () => {
               className="mt-5"
               style={{
                 color: "rgba(243,239,255,0.5)",
-                fontSize: "17px",
+                fontSize: "clamp(15px, 1.25vw, 18px)",
                 lineHeight: 1.65,
                 maxWidth: "420px",
               }}
