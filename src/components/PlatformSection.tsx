@@ -1,5 +1,10 @@
 import { motion } from "framer-motion";
 
+/* Breathing glow keyframe */
+const s3Style = document.createElement("style");
+s3Style.textContent = `@keyframes s3Breathe { 0%,100%{opacity:.5;transform:scale(1)} 50%{opacity:.85;transform:scale(1.06)} }`;
+if (!document.getElementById("s3-breathe-style")) { s3Style.id = "s3-breathe-style"; document.head.appendChild(s3Style); }
+
 /* ─── DATA (pulled inward for engineered spacing) ─── */
 const inputNodes = [
   { label: "EMR", x: 65, y: 420 },
@@ -300,27 +305,48 @@ const PlatformSection = () => {
             </motion.button>
           </motion.div>
 
-          {/* ── Right: Glass Architecture Slab ── */}
+          {/* ── Right: 3D Floating Architecture Field ── */}
           <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.97 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            initial={{ opacity: 0, y: 40, rotateX: 0 }}
+            whileInView={{ opacity: 1, y: 0, rotateX: 24 }}
             viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.2, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              background: "linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.45) 100%)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              borderRadius: "40px",
-              border: "1px solid rgba(90, 70, 160, 0.12)",
-              boxShadow: `
-                0 80px 160px rgba(60, 40, 120, 0.15),
-                0 30px 80px rgba(60, 40, 120, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.7)
-              `,
-              padding: "36px",
+              perspective: "1200px",
+              transformStyle: "preserve-3d",
             }}
           >
-            <LivingArchitecture />
+            <div
+              style={{
+                transform: "rotateX(24deg) rotateZ(-6deg)",
+                transformStyle: "preserve-3d",
+                position: "relative",
+              }}
+            >
+              {/* Ambient ground shadow */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "-30px",
+                  left: "10%",
+                  right: "10%",
+                  height: "60px",
+                  background: "radial-gradient(ellipse at center, rgba(123,97,255,0.18) 0%, transparent 70%)",
+                  filter: "blur(20px)",
+                  transform: "translateZ(-40px)",
+                }}
+              />
+              {/* Breathing ambient glow behind the diagram */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: "radial-gradient(circle at 50% 50%, rgba(212,97,107,0.12) 0%, rgba(123,97,255,0.06) 50%, transparent 75%)",
+                  animation: "s3Breathe 8s ease-in-out infinite",
+                  borderRadius: "32px",
+                }}
+              />
+              <LivingArchitecture />
+            </div>
           </motion.div>
         </div>
       </div>
