@@ -4,6 +4,7 @@ import ManifestoSection from "@/components/ManifestoSection";
 import PlatformSection from "@/components/PlatformSection";
 import Section4SystemTransformation from "@/components/Section4SystemTransformation";
 import ProofSection from "@/components/ProofSection";
+import DeploymentSection from "@/components/DeploymentSection";
 import InterfaceSection from "@/components/InterfaceSection";
 import TrustSection from "@/components/TrustSection";
 
@@ -16,6 +17,7 @@ const Index = () => {
       <PlatformSection />
       <Section4SystemTransformation />
       <ProofSection />
+      <DeploymentSection />
       <InterfaceSection />
       <TrustSection />
       
