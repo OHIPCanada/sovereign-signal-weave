@@ -43,6 +43,18 @@ function SystemField() {
         filter: "blur(18px)",
         pointerEvents: "none",
       }} />
+      {/* Ambient glow */}
+      <div style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        width: "110%",
+        height: "110%",
+        transform: "translate(-50%, -50%)",
+        background: "radial-gradient(circle, rgba(123,97,255,0.07) 0%, rgba(232,150,124,0.05) 40%, transparent 65%)",
+        filter: "blur(30px)",
+        pointerEvents: "none",
+      }} />
       <div style={{ transform: "rotateX(35deg) rotateZ(-10deg)", transformStyle: "preserve-3d", position: "relative", width: "100%", height: "100%" }}>
       {/* Signal pulse ring */}
       <div className="pulse-ring" />
