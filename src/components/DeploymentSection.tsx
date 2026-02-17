@@ -1,281 +1,358 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 
-/* ─── TOPOLOGY CONFIGURATIONS ─── */
-type Mode = "on-prem" | "hybrid" | "sovereign";
+/* ─── REASONING PULSE (Left) ─── */
+const ReasoningAnimation = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-interface TopoNode {
-  id: string;
-  label: string;
-  x: number;
-  y: number;
-  type: "core" | "edge" | "cloud" | "shield";
-}
-
-interface TopoLink {
-  from: string;
-  to: string;
-}
-
-const topologies: Record<Mode, { nodes: TopoNode[]; links: TopoLink[] }> = {
-  "on-prem": {
-    nodes: [
-      { id: "core", label: "DocG AI", x: 300, y: 220, type: "core" },
-      { id: "emr", label: "EMR", x: 100, y: 120, type: "edge" },
-      { id: "pacs", label: "PACS", x: 500, y: 120, type: "edge" },
-      { id: "firewall", label: "Firewall", x: 100, y: 320, type: "shield" },
-      { id: "vault", label: "Data Vault", x: 500, y: 320, type: "shield" },
-      { id: "his", label: "HIS", x: 300, y: 380, type: "edge" },
-    ],
-    links: [
-      { from: "core", to: "emr" },
-      { from: "core", to: "pacs" },
-      { from: "core", to: "firewall" },
-      { from: "core", to: "vault" },
-      { from: "core", to: "his" },
-      { from: "firewall", to: "emr" },
-      { from: "vault", to: "pacs" },
-    ],
-  },
-  hybrid: {
-    nodes: [
-      { id: "core", label: "DocG AI", x: 300, y: 220, type: "core" },
-      { id: "local", label: "Local Node", x: 120, y: 140, type: "edge" },
-      { id: "cloud-gw", label: "Cloud GW", x: 480, y: 140, type: "cloud" },
-      { id: "emr", label: "EMR", x: 80, y: 310, type: "edge" },
-      { id: "cdn", label: "CDN Edge", x: 520, y: 310, type: "cloud" },
-      { id: "sync", label: "Sync Layer", x: 300, y: 380, type: "shield" },
-    ],
-    links: [
-      { from: "core", to: "local" },
-      { from: "core", to: "cloud-gw" },
-      { from: "core", to: "sync" },
-      { from: "local", to: "emr" },
-      { from: "cloud-gw", to: "cdn" },
-      { from: "sync", to: "emr" },
-      { from: "sync", to: "cdn" },
-    ],
-  },
-  sovereign: {
-    nodes: [
-      { id: "core", label: "DocG AI", x: 300, y: 220, type: "core" },
-      { id: "gov", label: "Gov Cloud", x: 140, y: 100, type: "cloud" },
-      { id: "compliance", label: "Compliance", x: 460, y: 100, type: "shield" },
-      { id: "nat-db", label: "National DB", x: 100, y: 340, type: "shield" },
-      { id: "region", label: "Region Node", x: 500, y: 340, type: "edge" },
-      { id: "audit", label: "Audit Trail", x: 300, y: 400, type: "shield" },
-    ],
-    links: [
-      { from: "core", to: "gov" },
-      { from: "core", to: "compliance" },
-      { from: "core", to: "nat-db" },
-      { from: "core", to: "region" },
-      { from: "core", to: "audit" },
-      { from: "gov", to: "compliance" },
-      { from: "nat-db", to: "audit" },
-    ],
-  },
-};
-
-const tabs: { key: Mode; label: string }[] = [
-  { key: "on-prem", label: "On-Prem" },
-  { key: "hybrid", label: "Hybrid" },
-  { key: "sovereign", label: "Sovereign Cloud" },
-];
-
-/* ─── NODE SHAPES ─── */
-const nodeColors: Record<string, { fill: string; stroke: string; glow: string }> = {
-  core: { fill: "#D4616B", stroke: "#E8967C", glow: "rgba(212,97,107,0.4)" },
-  edge: { fill: "rgba(110,43,255,0.15)", stroke: "rgba(110,43,255,0.5)", glow: "rgba(110,43,255,0.15)" },
-  cloud: { fill: "rgba(0,180,255,0.12)", stroke: "rgba(0,180,255,0.5)", glow: "rgba(0,180,255,0.15)" },
-  shield: { fill: "rgba(212,97,107,0.1)", stroke: "rgba(212,97,107,0.45)", glow: "rgba(212,97,107,0.12)" },
-};
-
-/* ─── TOPOLOGY VISUALIZATION ─── */
-const StateMachinePanel = () => {
-  const [active, setActive] = useState<Mode>("on-prem");
-  const topo = topologies[active];
-
-  /* Pulse signal state */
-  const [pulseIdx, setPulseIdx] = useState(0);
   useEffect(() => {
-    const iv = setInterval(() => setPulseIdx((p) => (p + 1) % topo.links.length), 4000);
-    return () => clearInterval(iv);
-  }, [active, topo.links.length]);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+    const W = 300, H = 300;
+    canvas.width = W; canvas.height = H;
+    const cx = W / 2, cy = H / 2;
 
-  const nodeMap = Object.fromEntries(topo.nodes.map((n) => [n.id, n]));
+    const satellites = Array.from({ length: 6 }, (_, i) => ({
+      angle: (Math.PI * 2 * i) / 6,
+      dist: 80 + Math.random() * 30,
+      size: 3 + Math.random() * 2,
+      speed: 0.15 + Math.random() * 0.1,
+    }));
+
+    let t = 0;
+    let raf: number;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      t += 0.012;
+
+      // Expanding rings
+      for (let r = 0; r < 3; r++) {
+        const radius = ((t * 40 + r * 40) % 120);
+        const alpha = Math.max(0, 1 - radius / 120) * 0.25;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(232,150,124,${alpha})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Core glow
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 24);
+      grad.addColorStop(0, "rgba(232,150,124,0.9)");
+      grad.addColorStop(0.5, "rgba(212,97,107,0.6)");
+      grad.addColorStop(1, "rgba(212,97,107,0)");
+      ctx.beginPath();
+      ctx.arc(cx, cy, 24, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Core center
+      const coreSize = 10 + Math.sin(t * 2) * 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, coreSize, 0, Math.PI * 2);
+      ctx.fillStyle = "#E8967C";
+      ctx.fill();
+
+      // Satellite nodes
+      satellites.forEach((s) => {
+        const a = s.angle + t * s.speed;
+        const sx = cx + Math.cos(a) * s.dist;
+        const sy = cy + Math.sin(a) * s.dist;
+
+        // Connection line
+        const pulsePhase = (Math.sin(t * 3 + s.angle) + 1) / 2;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(sx, sy);
+        ctx.strokeStyle = `rgba(110,43,255,${0.08 + pulsePhase * 0.15})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Pulse traveling along line
+        const px = cx + (sx - cx) * pulsePhase;
+        const py = cy + (sy - cy) * pulsePhase;
+        ctx.beginPath();
+        ctx.arc(px, py, 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(232,150,124,${0.4 + pulsePhase * 0.5})`;
+        ctx.fill();
+
+        // Node
+        const nodeAlpha = 0.3 + pulsePhase * 0.7;
+        ctx.beginPath();
+        ctx.arc(sx, sy, s.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(110,43,255,${nodeAlpha})`;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(sx, sy, s.size + 4, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(110,43,255,${nodeAlpha * 0.3})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   return (
-    <div
-      style={{
-        background: "linear-gradient(180deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.32) 100%)",
-        backdropFilter: "blur(28px)",
-        WebkitBackdropFilter: "blur(28px)",
-        borderRadius: "32px",
-        border: "1px solid rgba(110,43,255,0.1)",
-        boxShadow: `
-          0 60px 140px rgba(60,40,120,0.12),
-          0 20px 60px rgba(60,40,120,0.06),
-          inset 0 1px 0 rgba(255,255,255,0.7)
-        `,
-        overflow: "hidden",
-      }}
-    >
-      {/* Tabs */}
-      <div className="flex border-b" style={{ borderColor: "rgba(110,43,255,0.08)" }}>
-        {tabs.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => { setActive(t.key); setPulseIdx(0); }}
-            className="relative flex-1 py-4 text-xs font-semibold tracking-widest uppercase transition-colors duration-300"
-            style={{
-              color: active === t.key ? "#6E2BFF" : "rgba(30,30,40,0.45)",
-              background: active === t.key ? "rgba(110,43,255,0.04)" : "transparent",
-            }}
-          >
-            {t.label}
-            {active === t.key && (
-              <motion.div
-                layoutId="tab-indicator"
-                className="absolute bottom-0 left-[15%] right-[15%] h-[2px]"
-                style={{ background: "linear-gradient(90deg, #D4616B, #E8967C, #F2C1AE)" }}
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              />
-            )}
-          </button>
-        ))}
-      </div>
+    <div className="flex flex-col items-center gap-4">
+      <canvas ref={canvasRef} className="w-[240px] h-[240px] md:w-[280px] md:h-[280px]" style={{ imageRendering: "auto" }} />
+      <span className="text-[11px] font-mono tracking-[0.18em] uppercase" style={{ color: "rgba(243,239,255,0.4)" }}>
+        Reasoning
+      </span>
+    </div>
+  );
+};
 
-      {/* SVG topology */}
-      <div className="relative p-6">
-        <svg viewBox="0 0 600 460" className="w-full" style={{ aspectRatio: "600/460" }}>
-          <defs>
-            <filter id="dp-core-glow">
-              <feGaussianBlur stdDeviation="14" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-            <filter id="dp-node-glow">
-              <feGaussianBlur stdDeviation="4" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-            <filter id="dp-pulse-glow">
-              <feGaussianBlur stdDeviation="6" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-            <radialGradient id="dp-core-grad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#D4616B" stopOpacity="0.9" />
-              <stop offset="60%" stopColor="#E8967C" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#F2C1AE" stopOpacity="0" />
-            </radialGradient>
-          </defs>
+/* ─── WORKFLOW ROUTING (Center) ─── */
+const WorkflowAnimation = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-          {/* Links with animated transition */}
-          <AnimatePresence mode="wait">
-            <motion.g
-              key={active + "-links"}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              {topo.links.map((link, i) => {
-                const from = nodeMap[link.from];
-                const to = nodeMap[link.to];
-                if (!from || !to) return null;
-                const isActive = i === pulseIdx;
-                return (
-                  <g key={`${link.from}-${link.to}`}>
-                    <motion.line
-                      x1={from.x} y1={from.y} x2={to.x} y2={to.y}
-                      stroke={isActive ? "rgba(212,97,107,0.5)" : "rgba(110,43,255,0.15)"}
-                      strokeWidth={isActive ? 2 : 1.2}
-                      strokeLinecap="round"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ duration: 0.8, delay: i * 0.06 }}
-                    />
-                    {/* Pulse signal dot */}
-                    {isActive && (
-                      <>
-                        <circle r="6" fill="rgba(212,97,107,0.35)" filter="url(#dp-pulse-glow)">
-                          <animateMotion dur="1.5s" repeatCount="indefinite" path={`M${from.x},${from.y} L${to.x},${to.y}`} />
-                          <animate attributeName="opacity" values="0;0.8;0.8;0" keyTimes="0;0.1;0.8;1" dur="1.5s" repeatCount="indefinite" />
-                        </circle>
-                        <circle r="2.5" fill="#fff" opacity="0.9">
-                          <animateMotion dur="1.5s" repeatCount="indefinite" path={`M${from.x},${from.y} L${to.x},${to.y}`} />
-                          <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.8;1" dur="1.5s" repeatCount="indefinite" />
-                        </circle>
-                      </>
-                    )}
-                  </g>
-                );
-              })}
-            </motion.g>
-          </AnimatePresence>
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+    const W = 300, H = 300;
+    canvas.width = W; canvas.height = H;
 
-          {/* Nodes */}
-          <AnimatePresence mode="wait">
-            <motion.g
-              key={active + "-nodes"}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              {topo.nodes.map((node, i) => {
-                const c = nodeColors[node.type];
-                const isCore = node.type === "core";
-                return (
-                  <motion.g
-                    key={node.id}
-                    initial={{ x: 300 - node.x, y: 220 - node.y, opacity: 0 }}
-                    animate={{ x: 0, y: 0, opacity: 1 }}
-                    transition={{ duration: 0.85, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    {isCore ? (
-                      <>
-                        {/* Core breathing halo */}
-                        <circle cx={node.x} cy={node.y} r="55" fill="url(#dp-core-grad)" opacity="0.3">
-                          <animate attributeName="r" values="55;62;55" dur="6s" repeatCount="indefinite" />
-                          <animate attributeName="opacity" values="0.3;0.15;0.3" dur="6s" repeatCount="indefinite" />
-                        </circle>
-                        <circle cx={node.x} cy={node.y} r="32" fill={c.fill} filter="url(#dp-core-glow)" opacity="0.85">
-                          <animate attributeName="r" values="32;35;32" dur="5s" repeatCount="indefinite" />
-                        </circle>
-                        <circle cx={node.x} cy={node.y} r="14" fill="#fff" opacity="0.9">
-                          <animate attributeName="r" values="14;16;14" dur="4s" repeatCount="indefinite" />
-                        </circle>
-                        <text x={node.x} y={node.y + 55} textAnchor="middle" fill="rgba(30,20,50,0.8)" fontSize="13" fontWeight="700" fontFamily="Inter, sans-serif" letterSpacing="0.04em">
-                          {node.label}
-                        </text>
-                      </>
-                    ) : (
-                      <>
-                        {/* Edge nodes */}
-                        <circle cx={node.x} cy={node.y} r="18" fill={c.fill} stroke={c.stroke} strokeWidth="1.5" filter="url(#dp-node-glow)">
-                          <animate attributeName="r" values="18;20;18" dur={`${5 + i * 0.5}s`} repeatCount="indefinite" />
-                        </circle>
-                        <circle cx={node.x} cy={node.y} r="6" fill={c.stroke} opacity="0.7" />
-                        <text x={node.x} y={node.y + 32} textAnchor="middle" fill="rgba(30,20,50,0.65)" fontSize="11" fontWeight="600" fontFamily="Inter, sans-serif" letterSpacing="0.03em">
-                          {node.label}
-                        </text>
-                      </>
-                    )}
-                  </motion.g>
-                );
-              })}
-            </motion.g>
-          </AnimatePresence>
-        </svg>
+    const lines = [
+      { y: 60, branches: [{ at: 0.4, to: 120, mergeAt: 0.75 }] },
+      { y: 120, branches: [] },
+      { y: 150, branches: [{ at: 0.55, to: 200, mergeAt: 0.85 }] },
+      { y: 200, branches: [] },
+      { y: 240, branches: [{ at: 0.3, to: 200, mergeAt: 0.6 }] },
+    ];
 
-        {/* Status line */}
-        <div className="flex items-center gap-2 mt-2">
-          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#D4616B" }} />
-          <span className="text-[10px] font-mono tracking-wider" style={{ color: "rgba(30,20,50,0.4)" }}>
-            MODE: {active.toUpperCase().replace("-", "_")} — ALL NODES ACTIVE
-          </span>
-        </div>
-      </div>
+    const dots = lines.flatMap((line, li) => 
+      Array.from({ length: 2 + Math.floor(Math.random() * 2) }, (_, di) => ({
+        lineIdx: li,
+        offset: (di * 0.4 + Math.random() * 0.3) % 1,
+        speed: 0.002 + Math.random() * 0.0015,
+        size: 3 + Math.random() * 2,
+        branching: false,
+        branchProgress: 0,
+      }))
+    );
+
+    let raf: number;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+
+      // Draw lines
+      lines.forEach((line) => {
+        ctx.beginPath();
+        ctx.moveTo(0, line.y);
+        ctx.lineTo(W, line.y);
+        ctx.strokeStyle = "rgba(122,92,255,0.12)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Branch paths
+        line.branches.forEach((b) => {
+          ctx.beginPath();
+          ctx.moveTo(W * b.at, line.y);
+          ctx.quadraticCurveTo(W * ((b.at + b.mergeAt) / 2), b.to, W * b.mergeAt, line.y);
+          ctx.strokeStyle = "rgba(122,92,255,0.08)";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        });
+      });
+
+      // Animate dots
+      dots.forEach((dot) => {
+        dot.offset = (dot.offset + dot.speed) % 1;
+        const line = lines[dot.lineIdx];
+        let x = dot.offset * W;
+        let y = line.y;
+
+        // Check if dot is on a branch
+        line.branches.forEach((b) => {
+          if (dot.offset > b.at && dot.offset < b.mergeAt) {
+            const branchT = (dot.offset - b.at) / (b.mergeAt - b.at);
+            const t = branchT;
+            // Quadratic bezier
+            y = (1 - t) * (1 - t) * line.y + 2 * (1 - t) * t * b.to + t * t * line.y;
+            x = (1 - t) * (1 - t) * (W * b.at) + 2 * (1 - t) * t * (W * ((b.at + b.mergeAt) / 2)) + t * t * (W * b.mergeAt);
+          }
+        });
+
+        // Dot glow
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, 8);
+        grad.addColorStop(0, "rgba(255,255,255,0.8)");
+        grad.addColorStop(1, "rgba(122,92,255,0)");
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Dot core
+        ctx.beginPath();
+        ctx.arc(x, y, dot.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(122,92,255,0.7)";
+        ctx.fill();
+
+        // Trail
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x - 15, y);
+        ctx.strokeStyle = "rgba(122,92,255,0.15)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      });
+
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <canvas ref={canvasRef} className="w-[240px] h-[240px] md:w-[280px] md:h-[280px]" style={{ imageRendering: "auto" }} />
+      <span className="text-[11px] font-mono tracking-[0.18em] uppercase" style={{ color: "rgba(243,239,255,0.4)" }}>
+        Workflow
+      </span>
+    </div>
+  );
+};
+
+/* ─── GOVERNANCE LOGGING (Right) ─── */
+const GovernanceAnimation = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+    const W = 300, H = 300;
+    canvas.width = W; canvas.height = H;
+
+    // Grid nodes
+    const gridSize = 5;
+    const spacing = 44;
+    const offsetX = (W - (gridSize - 1) * spacing) / 2;
+    const offsetY = 30;
+    const nodes = Array.from({ length: gridSize * gridSize }, (_, i) => ({
+      x: offsetX + (i % gridSize) * spacing,
+      y: offsetY + Math.floor(i / gridSize) * spacing,
+      active: false,
+      activatedAt: 0,
+    }));
+
+    // Connections
+    const connections: [number, number][] = [];
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const idx = i * gridSize + j;
+        if (j < gridSize - 1) connections.push([idx, idx + 1]);
+        if (i < gridSize - 1) connections.push([idx, idx + gridSize]);
+      }
+    }
+
+    const logDots: { x: number; y: number; alpha: number; createdAt: number }[] = [];
+    let t = 0;
+    let lastActivation = 0;
+    let raf: number;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      t += 0.016;
+
+      // Grid lines
+      connections.forEach(([a, b]) => {
+        ctx.beginPath();
+        ctx.moveTo(nodes[a].x, nodes[a].y);
+        ctx.lineTo(nodes[b].x, nodes[b].y);
+        ctx.strokeStyle = "rgba(110,43,255,0.06)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+
+      // Activate random node every ~1.5s
+      if (t - lastActivation > 1.5) {
+        const idx = Math.floor(Math.random() * nodes.length);
+        nodes[idx].active = true;
+        nodes[idx].activatedAt = t;
+        // Add log dot
+        logDots.push({
+          x: 30 + logDots.length * 12,
+          y: H - 25,
+          alpha: 1,
+          createdAt: t,
+        });
+        if (logDots.length > 18) logDots.shift();
+        lastActivation = t;
+      }
+
+      // Draw nodes
+      nodes.forEach((node) => {
+        const timeSinceActive = t - node.activatedAt;
+        const isGlowing = node.active && timeSinceActive < 3;
+
+        if (isGlowing) {
+          // Activation ring
+          const ringSize = Math.min(timeSinceActive * 8, 16);
+          const ringAlpha = Math.max(0, 1 - timeSinceActive / 3) * 0.4;
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, ringSize, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(232,150,124,${ringAlpha})`;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, isGlowing ? 5 : 3, 0, Math.PI * 2);
+        ctx.fillStyle = isGlowing
+          ? `rgba(232,150,124,${0.5 + Math.max(0, 1 - timeSinceActive / 2) * 0.5})`
+          : "rgba(110,43,255,0.15)";
+        ctx.fill();
+
+        if (node.active && timeSinceActive > 4) {
+          node.active = false;
+        }
+      });
+
+      // Audit trail label
+      ctx.fillStyle = "rgba(243,239,255,0.15)";
+      ctx.font = "9px monospace";
+      ctx.fillText("AUDIT LOG", 10, H - 40);
+
+      // Log line
+      ctx.beginPath();
+      ctx.moveTo(10, H - 35);
+      ctx.lineTo(W - 10, H - 35);
+      ctx.strokeStyle = "rgba(110,43,255,0.08)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Log dots
+      logDots.forEach((dot, i) => {
+        const age = t - dot.createdAt;
+        const x = 20 + i * 14;
+        ctx.beginPath();
+        ctx.arc(x, H - 20, 3, 0, Math.PI * 2);
+        ctx.fillStyle = age < 1
+          ? `rgba(232,150,124,${0.9})`
+          : `rgba(242,193,174,${Math.max(0.2, 0.7 - age * 0.05)})`;
+        ctx.fill();
+      });
+
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <canvas ref={canvasRef} className="w-[240px] h-[240px] md:w-[280px] md:h-[280px]" style={{ imageRendering: "auto" }} />
+      <span className="text-[11px] font-mono tracking-[0.18em] uppercase" style={{ color: "rgba(243,239,255,0.4)" }}>
+        Governance
+      </span>
     </div>
   );
 };
@@ -284,86 +361,130 @@ const StateMachinePanel = () => {
 const DeploymentSection = () => {
   return (
     <section
-      className="relative overflow-hidden flex items-center"
+      className="relative overflow-hidden"
       id="deployment"
       style={{
-        padding: "clamp(64px, 7vw, 110px) 0",
-        minHeight: "100vh",
-        background: `
-          radial-gradient(900px 500px at 80% 70%, rgba(212,97,107,0.08), transparent 60%),
-          radial-gradient(800px 600px at 15% 30%, rgba(110,43,255,0.07), transparent 65%),
-          linear-gradient(180deg, #F6F2FF 0%, #F0ECF8 50%, #F4F0FA 100%)
-        `,
+        padding: "clamp(80px, 9vw, 140px) 0",
+        background: `radial-gradient(circle at 50% 40%, #1a0833 0%, #120622 40%, #0b0417 100%)`,
       }}
     >
-      {/* Top gradient separator */}
-      <div className="absolute top-0 left-0 right-0 h-[2px]" style={{
-        background: "linear-gradient(90deg, transparent 5%, rgba(110,43,255,0.35) 30%, rgba(212,97,107,0.3) 70%, transparent 95%)",
+      {/* Noise texture overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.035]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundSize: "128px 128px",
+        }}
+      />
+
+      {/* Top edge line */}
+      <div className="absolute top-0 left-0 right-0 h-px" style={{
+        background: "linear-gradient(90deg, transparent 10%, rgba(110,43,255,0.2) 50%, transparent 90%)",
       }} />
 
       <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] items-center w-full" style={{ gap: "clamp(24px, 4vw, 64px)" }}>
-          {/* ── Left: Text ── */}
+        {/* Header */}
+        <motion.div
+          className="text-center mb-16 md:mb-24"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7 }}
+        >
+          <span
+            className="inline-block mb-5 text-[11px] font-mono tracking-[0.22em] uppercase"
+            style={{ color: "rgba(243,239,255,0.35)" }}
+          >
+            [ LIVE SYSTEM STATE ]
+          </span>
+
+          <h2
+            style={{
+              color: "#F3EFFF",
+              fontWeight: 700,
+              fontSize: "clamp(40px, 5vw, 64px)",
+              lineHeight: 1.1,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Intelligence operating in real time.
+          </h2>
+
+          <p
+            className="mx-auto mt-5"
+            style={{
+              color: "rgba(243,239,255,0.5)",
+              fontSize: "18px",
+              lineHeight: 1.6,
+              maxWidth: "540px",
+            }}
+          >
+            Clinical signals flow, branch, resolve, and log — continuously.
+          </p>
+        </motion.div>
+
+        {/* 3-column animation grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
+          {/* Reasoning */}
           <motion.div
+            className="flex justify-center relative"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.7 }}
-            className="flex flex-col gap-7"
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0 }}
           >
-            <span className="mono-label" style={{ color: "rgba(17,17,17,0.55)" }}>
-              [ DEPLOYMENT MODES ]
-            </span>
-
-            <h2 style={{
-              color: "#111111",
-              fontWeight: 800,
-              fontSize: "clamp(42px, 5.5vw, 72px)",
-              lineHeight: 1.08,
-              letterSpacing: "-0.02em",
-              fontFamily: "Inter, sans-serif",
-            }}>
-              Sovereign by
-              <br />design. Flexible
-              <br />by default.
-            </h2>
-
-            <p style={{
-              color: "rgba(30,30,30,0.72)",
-              fontSize: "18px",
-              fontWeight: 400,
-              lineHeight: 1.65,
-              maxWidth: "480px",
-            }}>
-              DocG AI ships across hospital networks, national programs, and
-              private systems—without breaking workflows.
-            </p>
-
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              className="self-start px-8 py-4 rounded-full text-sm font-semibold tracking-wide transition-all duration-300"
-              style={{
-                background: "linear-gradient(135deg, #6E2BFF, #9B6BFF)",
-                color: "#FFFAF8",
-                border: "none",
-                boxShadow: "0 8px 32px rgba(110,43,255,0.25)",
-              }}
-            >
-              Request Deployment Brief
-            </motion.button>
+            {/* Faint circular glow behind */}
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] rounded-full pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(212,97,107,0.08) 0%, transparent 70%)" }}
+            />
+            <ReasoningAnimation />
           </motion.div>
 
-          {/* ── Right: State Machine Panel ── */}
+          {/* Workflow */}
           <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.97 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="flex justify-center relative"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.15 }}
           >
-            <StateMachinePanel />
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] rounded-full pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(110,43,255,0.08) 0%, transparent 70%)" }}
+            />
+            <WorkflowAnimation />
+          </motion.div>
+
+          {/* Governance */}
+          <motion.div
+            className="flex justify-center relative"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+          >
+            <div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] rounded-full pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(232,150,124,0.08) 0%, transparent 70%)" }}
+            />
+            <GovernanceAnimation />
           </motion.div>
         </div>
+
+        {/* System status bar */}
+        <motion.div
+          className="flex items-center justify-center gap-3 mt-16"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.5 }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#E8967C" }} />
+          <span className="text-[10px] font-mono tracking-[0.2em] uppercase" style={{ color: "rgba(243,239,255,0.25)" }}>
+            ALL SUBSYSTEMS NOMINAL
+          </span>
+        </motion.div>
       </div>
     </section>
   );
