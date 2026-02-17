@@ -1,187 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
-
-/* ── Throughput Rings (Light Theme) ── */
-function ThroughputRings() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const wrapRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const wrap = wrapRef.current;
-    if (!canvas || !wrap) return;
-    const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) return;
-
-    const DPR = Math.min(window.devicePixelRatio, 2);
-    let w = 0, h = 0;
-    let raf: number;
-
-    interface Packet {
-      ring: number;
-      angle: number;
-      speed: number;
-      r: number;
-      color: string;
-      pulsePhase: number;
-      splitting: boolean;
-      splitTime: number;
-      opacity: number;
-    }
-
-    const rings = [
-      { radius: 0.22, strokeW: 1.5, speed: 0.035, color: "rgba(212,97,107,0.7)" },
-      { radius: 0.32, strokeW: 2, speed: -0.025, color: "rgba(123,97,255,0.6)" },
-      { radius: 0.42, strokeW: 2.5, speed: 0.018, color: "rgba(123,97,255,0.45)" },
-    ];
-
-    const packetColors = ["rgba(180,70,90,0.85)", "rgba(100,70,220,0.8)", "rgba(100,70,220,0.65)"];
-
-    let packets: Packet[] = [];
-
-    function initPackets() {
-      packets = [];
-      for (let r = 0; r < 3; r++) {
-        const count = r === 0 ? 4 : r === 1 ? 6 : 5;
-        for (let i = 0; i < count; i++) {
-          packets.push({
-            ring: r,
-            angle: (Math.PI * 2 * i) / count + Math.random() * 0.3,
-            speed: rings[r].speed * (0.8 + Math.random() * 0.4),
-            r: 2.5 + Math.random() * 1.5,
-            color: packetColors[r],
-            pulsePhase: Math.random() * Math.PI * 2,
-            splitting: false,
-            splitTime: 0,
-            opacity: 0.7 + Math.random() * 0.3,
-          });
-        }
-      }
-    }
-
-    function resize() {
-      const rect = wrap!.getBoundingClientRect();
-      w = rect.width;
-      h = rect.height;
-      canvas!.width = w * DPR;
-      canvas!.height = h * DPR;
-      canvas!.style.width = w + "px";
-      canvas!.style.height = h + "px";
-      ctx!.setTransform(DPR, 0, 0, DPR, 0, 0);
-    }
-
-    let lastPulse = 0;
-
-    function draw(now: number) {
-      ctx!.clearRect(0, 0, w, h);
-      const cx = w * 0.5;
-      const cy = h * 0.5;
-      const baseR = Math.min(w, h) * 0.5;
-      const dt = 1 / 60;
-
-      // Draw rings
-      for (const ring of rings) {
-        const rr = baseR * ring.radius;
-        ctx!.beginPath();
-        ctx!.arc(cx, cy, rr, 0, Math.PI * 2);
-        ctx!.strokeStyle = ring.color;
-        ctx!.globalAlpha = 0.35;
-        ctx!.lineWidth = ring.strokeW;
-        ctx!.stroke();
-        ctx!.globalAlpha = 1;
-      }
-
-      // Pulse trigger
-      if (now - lastPulse > 4200) {
-        lastPulse = now;
-        const idx = Math.floor(Math.random() * packets.length);
-        packets[idx].splitting = true;
-        packets[idx].splitTime = now;
-      }
-
-      // Update & draw packets
-      const newPackets: Packet[] = [];
-      for (const p of packets) {
-        p.angle += p.speed * dt;
-        const rr = baseR * rings[p.ring].radius;
-        const px = cx + Math.cos(p.angle) * rr;
-        const py = cy + Math.sin(p.angle) * rr;
-
-        let scale = 1;
-        let glow = 0;
-        if (p.splitting && now - p.splitTime < 600) {
-          const t = (now - p.splitTime) / 600;
-          scale = 1 + Math.sin(t * Math.PI) * 0.6;
-          glow = Math.sin(t * Math.PI) * 7;
-        } else if (p.splitting && now - p.splitTime >= 600) {
-          p.splitting = false;
-          if (packets.length + newPackets.length < 22) {
-            newPackets.push({
-              ring: p.ring,
-              angle: p.angle + 0.3,
-              speed: p.speed * (0.9 + Math.random() * 0.2),
-              r: p.r * 0.7,
-              color: p.ring === 0 ? "rgba(212,97,107,0.7)" : p.color,
-              pulsePhase: Math.random() * Math.PI * 2,
-              splitting: false,
-              splitTime: 0,
-              opacity: 0.5,
-            });
-          }
-        }
-
-        const breath = 1 + Math.sin(now * 0.002 + p.pulsePhase) * 0.12;
-        const finalR = p.r * scale * breath;
-
-        // Reduced glow
-        if (glow > 0) {
-          ctx!.beginPath();
-          ctx!.arc(px, py, finalR + glow, 0, Math.PI * 2);
-          ctx!.fillStyle = p.splitting ? "rgba(212,97,107,0.25)" : p.color;
-          ctx!.globalAlpha = 0.1;
-          ctx!.fill();
-          ctx!.globalAlpha = 1;
-        }
-
-        ctx!.beginPath();
-        ctx!.arc(px, py, finalR, 0, Math.PI * 2);
-        ctx!.fillStyle = p.color;
-        ctx!.globalAlpha = p.opacity;
-        ctx!.fill();
-        ctx!.globalAlpha = 1;
-      }
-
-      for (const np of newPackets) packets.push(np);
-      while (packets.length > 22) packets.shift();
-
-      raf = requestAnimationFrame(draw);
-    }
-
-    initPackets();
-    resize();
-    raf = requestAnimationFrame(draw);
-    window.addEventListener("resize", resize);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
-  return (
-    <div ref={wrapRef} className="relative w-full h-full" style={{ minHeight: "clamp(320px, 40vw, 480px)" }}>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-    </div>
-  );
-}
-
-/* ── Proof Tiles ── */
-const proofTiles = [
-  { num: "4.3×", suffix: "faster", label: "Decision latency", desc: "From hours to minutes" },
-  { num: "27%", suffix: "more", label: "Coordination rate", desc: "Tasks resolved per pathway" },
-  { num: "38%", suffix: "fewer", label: "Workflow leakage", desc: "Dropped handoffs reduced" },
-  { num: "100%", suffix: "traceable", label: "Audit readiness", desc: "Continuous system memory" },
-];
+import React, { useRef } from "react";
+import { useInView } from "framer-motion";
 
 /* ── Reveal wrapper ── */
 function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -197,6 +15,171 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
       }}
     >
       {children}
+    </div>
+  );
+}
+
+/* ── Proof Tiles ── */
+const proofTiles = [
+  { num: "4.3×", suffix: "faster", label: "Decision latency", desc: "From hours to minutes" },
+  { num: "27%", suffix: "more", label: "Coordination rate", desc: "Tasks resolved per pathway" },
+  { num: "38%", suffix: "fewer", label: "Workflow leakage", desc: "Dropped handoffs reduced" },
+  { num: "100%", suffix: "traceable", label: "Audit readiness", desc: "Continuous system memory" },
+];
+
+/* ── Orbit System Field ── */
+function SystemField() {
+  return (
+    <div className="measure-visual">
+      {/* Signal pulse ring */}
+      <div className="pulse-ring" />
+      <div className="pulse-ring" style={{ animationDelay: "2s" }} />
+
+      {/* Core */}
+      <div className="core" />
+
+      {/* Orbit 1 — innermost, warm */}
+      <div className="orbit orbit-1">
+        <div className="node" style={{ top: 0, left: "50%", transform: "translate(-50%,-50%)", background: "rgba(212,97,107,0.8)" }} />
+        <div className="node" style={{ bottom: 0, left: "50%", transform: "translate(-50%,50%)", background: "rgba(232,150,124,0.75)" }} />
+        <div className="node" style={{ top: "50%", left: 0, transform: "translate(-50%,-50%)", background: "rgba(212,97,107,0.7)" }} />
+      </div>
+
+      {/* Orbit 2 — middle, violet */}
+      <div className="orbit orbit-2">
+        <div className="node" style={{ top: 0, left: "30%", transform: "translate(-50%,-50%)" }} />
+        <div className="node" style={{ top: "25%", right: 0, transform: "translate(50%,-50%)" }} />
+        <div className="node" style={{ bottom: "10%", left: "15%", transform: "translate(-50%,50%)" }} />
+        <div className="node" style={{ bottom: 0, right: "30%", transform: "translate(50%,50%)" }} />
+      </div>
+
+      {/* Orbit 3 — outer, cool purple */}
+      <div className="orbit orbit-3">
+        <div className="node node-lg" style={{ top: 0, left: "40%", transform: "translate(-50%,-50%)" }} />
+        <div className="node" style={{ top: "20%", right: 0, transform: "translate(50%,-50%)" }} />
+        <div className="node node-lg" style={{ bottom: 0, left: "60%", transform: "translate(-50%,50%)" }} />
+        <div className="node" style={{ top: "70%", left: 0, transform: "translate(-50%,-50%)" }} />
+        <div className="node" style={{ top: "50%", right: "5%", transform: "translate(50%,-50%)" }} />
+      </div>
+
+      {/* Orbit 4 — outermost, faint */}
+      <div className="orbit orbit-4">
+        <div className="node node-sm" style={{ top: 0, left: "25%", transform: "translate(-50%,-50%)" }} />
+        <div className="node node-sm" style={{ bottom: "15%", right: "10%", transform: "translate(50%,50%)" }} />
+        <div className="node node-sm" style={{ top: "40%", left: 0, transform: "translate(-50%,-50%)" }} />
+      </div>
+
+      <style>{`
+        .measure-visual {
+          position: relative;
+          width: clamp(340px, 42vw, 480px);
+          height: clamp(340px, 42vw, 480px);
+          margin: 0 auto;
+        }
+
+        .core {
+          position: absolute;
+          width: 72px;
+          height: 72px;
+          background: radial-gradient(circle, #E8967C 0%, #D4616B 55%, transparent 70%);
+          border-radius: 50%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          animation: corePulse 4s ease-in-out infinite;
+          box-shadow: 0 0 40px rgba(212,97,107,0.25), 0 0 80px rgba(232,150,124,0.12);
+        }
+
+        @keyframes corePulse {
+          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
+          50% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+        }
+
+        .orbit {
+          position: absolute;
+          border: 1px solid rgba(123,97,255,0.12);
+          border-radius: 50%;
+          top: 50%;
+          left: 50%;
+        }
+
+        .orbit-1 {
+          width: 160px;
+          height: 160px;
+          transform: translate(-50%, -50%);
+          animation: orbitRotate 28s linear infinite;
+          border-color: rgba(212,97,107,0.2);
+        }
+
+        .orbit-2 {
+          width: 260px;
+          height: 260px;
+          transform: translate(-50%, -50%);
+          animation: orbitRotate 42s linear infinite reverse;
+          border-color: rgba(123,97,255,0.15);
+        }
+
+        .orbit-3 {
+          width: 360px;
+          height: 360px;
+          transform: translate(-50%, -50%);
+          animation: orbitRotate 58s linear infinite;
+          border-color: rgba(123,97,255,0.1);
+        }
+
+        .orbit-4 {
+          width: 440px;
+          height: 440px;
+          transform: translate(-50%, -50%);
+          animation: orbitRotate 75s linear infinite reverse;
+          border-color: rgba(123,97,255,0.06);
+        }
+
+        @keyframes orbitRotate {
+          from { transform: translate(-50%, -50%) rotate(0deg); }
+          to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .node {
+          position: absolute;
+          width: 8px;
+          height: 8px;
+          background: rgba(123,97,255,0.65);
+          border-radius: 50%;
+          box-shadow: 0 0 6px rgba(123,97,255,0.3);
+        }
+
+        .node-lg {
+          width: 10px;
+          height: 10px;
+          background: rgba(123,97,255,0.5);
+          box-shadow: 0 0 10px rgba(123,97,255,0.25);
+        }
+
+        .node-sm {
+          width: 5px;
+          height: 5px;
+          background: rgba(123,97,255,0.35);
+          box-shadow: 0 0 4px rgba(123,97,255,0.15);
+        }
+
+        .pulse-ring {
+          position: absolute;
+          width: 80px;
+          height: 80px;
+          border: 1px solid rgba(232,150,124,0.4);
+          border-radius: 50%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          animation: signalPulse 4.5s ease-out infinite;
+        }
+
+        @keyframes signalPulse {
+          0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+          100% { transform: translate(-50%, -50%) scale(4.5); opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -217,7 +200,7 @@ export default function ProofSection() {
       }}
     >
       <div className="relative z-10 mx-auto" style={{ width: "min(1400px, 94vw)" }}>
-        {/* Top: Left text + Right rings */}
+        {/* Top: Left text + Right system field */}
         <div
           className="grid grid-cols-1 lg:grid-cols-[0.45fr_1.55fr] items-center"
           style={{ gap: "clamp(28px, 4vw, 56px)" }}
@@ -276,48 +259,23 @@ export default function ProofSection() {
             </Reveal>
           </div>
 
-          {/* Right: Throughput Rings */}
+          {/* Right: System Field — no card, floating in space */}
           <Reveal delay={0.25}>
-            <div
-              style={{
-                borderRadius: 24,
-                background: "rgba(255,255,255,0.55)",
-                backdropFilter: "blur(14px)",
-                border: "1px solid rgba(27,15,46,0.08)",
-                overflow: "hidden",
-                boxShadow: "0 20px 50px rgba(27,15,46,0.08)",
-              }}
-            >
-              <ThroughputRings />
-            </div>
+            <SystemField />
           </Reveal>
         </div>
 
-        {/* Proof Tiles Grid */}
+        {/* Instrument-grade metrics */}
         <div
           className="grid grid-cols-2 md:grid-cols-4"
-          style={{ gap: 20, marginTop: 72 }}
+          style={{ gap: "clamp(20px, 3vw, 40px)", marginTop: 72 }}
         >
           {proofTiles.map((tile, i) => (
             <Reveal key={tile.label} delay={0.3 + i * 0.08}>
               <div
-                className="group"
                 style={{
-                  background: "rgba(255,255,255,0.55)",
-                  backdropFilter: "blur(14px)",
-                  border: "1px solid rgba(27,15,46,0.08)",
-                  borderRadius: 18,
-                  padding: 20,
-                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                  cursor: "default",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "0 20px 50px rgba(27,15,46,0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                  borderTop: "1px solid rgba(27,15,46,0.15)",
+                  paddingTop: 20,
                 }}
               >
                 <p style={{ fontSize: 32, fontWeight: 700, letterSpacing: "-0.02em", color: "#1B0F2E" }}>
@@ -327,7 +285,7 @@ export default function ProofSection() {
                 <p style={{ marginTop: 6, fontSize: 14, fontWeight: 600, color: "#1B0F2E" }}>
                   {tile.label}
                 </p>
-                <p style={{ marginTop: 6, fontSize: 14, opacity: 0.7 }}>
+                <p style={{ marginTop: 4, fontSize: 13, opacity: 0.6 }}>
                   {tile.desc}
                 </p>
               </div>
