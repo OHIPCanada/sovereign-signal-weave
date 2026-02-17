@@ -30,7 +30,19 @@ const proofTiles = [
 /* ── Orbit System Field ── */
 function SystemField() {
   return (
-    <div className="measure-visual" style={{ perspective: "900px" }}>
+    <div className="measure-visual" style={{ perspective: "900px", position: "relative" }}>
+      {/* Ground shadow */}
+      <div style={{
+        position: "absolute",
+        bottom: "-18%",
+        left: "10%",
+        width: "80%",
+        height: "40%",
+        background: "radial-gradient(ellipse at center, rgba(123,97,255,0.12) 0%, rgba(27,15,46,0.06) 40%, transparent 70%)",
+        borderRadius: "50%",
+        filter: "blur(18px)",
+        pointerEvents: "none",
+      }} />
       <div style={{ transform: "rotateX(35deg) rotateZ(-10deg)", transformStyle: "preserve-3d", position: "relative", width: "100%", height: "100%" }}>
       {/* Signal pulse ring */}
       <div className="pulse-ring" />
