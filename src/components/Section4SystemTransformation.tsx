@@ -203,9 +203,9 @@ export default function Section4SystemTransformation() {
           ctx!.shadowBlur = 10 * litIntensity;
         } else {
           ctx!.strokeStyle = link.type === "inter"
-            ? "rgba(210,180,255,0.28)"
-            : "rgba(210,180,255,0.18)";
-          ctx!.lineWidth = link.type === "inter" ? 1.5 : 1;
+            ? "rgba(200,170,255,0.38)"
+            : "rgba(200,170,255,0.28)";
+          ctx!.lineWidth = link.type === "inter" ? 1.8 : 1;
           ctx!.shadowBlur = 0;
         }
 
@@ -412,7 +412,7 @@ export default function Section4SystemTransformation() {
               style={{
                 aspectRatio: "11/8",
                 borderRadius: 28,
-                background: "rgba(255,255,255,0.06)",
+                background: "radial-gradient(circle at 55% 48%, rgba(123,97,255,0.22), transparent 60%), rgba(255,255,255,0.05)",
                 border: "1px solid rgba(255,255,255,0.12)",
                 backdropFilter: "blur(18px)",
                 WebkitBackdropFilter: "blur(18px)",
@@ -441,18 +441,6 @@ export default function Section4SystemTransformation() {
                 National-scale coordination layer
               </div>
 
-              <div className="absolute inset-0 z-[1] flex items-center justify-center pointer-events-none select-none">
-                <div
-                  style={{
-                    color: "rgba(255,255,255,0.04)",
-                    fontWeight: 900,
-                    letterSpacing: "-0.02em",
-                    fontSize: 88,
-                  }}
-                >
-                  DOCG AI
-                </div>
-              </div>
             </motion.div>
           </div>
         </div>
