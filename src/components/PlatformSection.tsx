@@ -100,11 +100,11 @@ const LivingArchitecture = () => (
       {/* ── Connection lines with gradient (0.4 base opacity) ── */}
       {inputNodes.map((inp, i) => (
         <line key={`il-${i}`} x1={inp.x} y1={inp.y} x2={core.x} y2={core.y}
-          stroke="url(#line-grad-in)" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+          stroke="url(#line-grad-in)" strokeWidth="2.2" strokeLinecap="round" opacity="0.7" />
       ))}
       {outputNodes.map((out, i) => (
         <line key={`ol-${i}`} x1={core.x} y1={core.y} x2={out.x} y2={out.y}
-          stroke="url(#line-grad-out)" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+          stroke="url(#line-grad-out)" strokeWidth="2.2" strokeLinecap="round" opacity="0.7" />
       ))}
 
       {/* ── Input nodes (ambient breathing) ── */}
@@ -123,7 +123,7 @@ const LivingArchitecture = () => (
             <circle cx={inp.x} cy={inp.y} r="6" fill={col} filter="url(#node-glow)">
               <animate attributeName="opacity" values="0.7;0.9;0.7" dur={`${5 + i * 0.7}s`} repeatCount="indefinite" />
             </circle>
-            <text x={inp.x} y={inp.y + 26} textAnchor="middle" fill="rgba(20,20,40,0.75)" fontSize="12" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.05em">
+            <text x={inp.x} y={inp.y + 26} textAnchor="middle" fill="rgba(15,10,40,0.95)" fontSize="13" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.04em">
               {inp.label}
             </text>
           </g>
@@ -145,7 +145,7 @@ const LivingArchitecture = () => (
             <circle cx={out.x} cy={out.y} r="6" fill={col} filter="url(#node-glow)">
               <animate attributeName="opacity" values="0.7;0.9;0.7" dur={`${5.5 + i * 0.5}s`} repeatCount="indefinite" />
             </circle>
-            <text x={out.x} y={out.y - 20} textAnchor="middle" fill="rgba(20,20,40,0.75)" fontSize="12" fontFamily="Inter, sans-serif" fontWeight="600" letterSpacing="0.05em">
+            <text x={out.x} y={out.y - 20} textAnchor="middle" fill="rgba(15,10,40,0.95)" fontSize="13" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.04em">
               {out.label}
             </text>
           </g>
@@ -217,10 +217,10 @@ const LivingArchitecture = () => (
       ))}
 
       {/* ── Zone labels ── */}
-      <text x="330" y="400" textAnchor="middle" fill="rgba(20,20,40,0.3)" fontSize="8" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
+      <text x="330" y="400" textAnchor="middle" fill="rgba(15,10,40,0.45)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         INPUTS
       </text>
-      <text x="410" y="100" textAnchor="middle" fill="rgba(20,20,40,0.3)" fontSize="8" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
+      <text x="410" y="100" textAnchor="middle" fill="rgba(15,10,40,0.45)" fontSize="9" fontFamily="Inter, sans-serif" fontWeight="700" letterSpacing="0.22em">
         OUTPUTS
       </text>
     </svg>
@@ -323,16 +323,16 @@ const PlatformSection = () => {
                 position: "relative",
               }}
             >
-              {/* Ambient ground shadow */}
+              {/* Ambient ground shadow — stronger for depth */}
               <div
                 style={{
                   position: "absolute",
-                  bottom: "-30px",
-                  left: "10%",
-                  right: "10%",
-                  height: "60px",
-                  background: "radial-gradient(ellipse at center, rgba(123,97,255,0.18) 0%, transparent 70%)",
-                  filter: "blur(20px)",
+                  bottom: "-40px",
+                  left: "5%",
+                  right: "5%",
+                  height: "80px",
+                  background: "radial-gradient(ellipse at center, rgba(80,50,140,0.28) 0%, rgba(123,97,255,0.12) 40%, transparent 75%)",
+                  filter: "blur(28px)",
                   transform: "translateZ(-40px)",
                 }}
               />
