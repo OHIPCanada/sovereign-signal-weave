@@ -1,359 +1,216 @@
 import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
-/* ─── REASONING PULSE (Left) ─── */
-const ReasoningAnimation = () => {
+/* ─── PARTICLE FIELD CANVAS ─── */
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  color: "purple" | "coral";
+  baseAlpha: number;
+}
+
+interface Bloom {
+  x: number;
+  y: number;
+  radius: number;
+  alpha: number;
+  createdAt: number;
+}
+
+const ParticleField = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particlesRef = useRef<Particle[]>([]);
+  const bloomsRef = useRef<Bloom[]>([]);
+  const rafRef = useRef<number>(0);
+  const tRef = useRef(0);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-    const W = 300, H = 300;
-    canvas.width = W; canvas.height = H;
-    const cx = W / 2, cy = H / 2;
-
-    const satellites = Array.from({ length: 6 }, (_, i) => ({
-      angle: (Math.PI * 2 * i) / 6,
-      dist: 80 + Math.random() * 30,
-      size: 3 + Math.random() * 2,
-      speed: 0.15 + Math.random() * 0.1,
-    }));
-
-    let t = 0;
-    let raf: number;
-
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-      t += 0.012;
-
-      // Expanding rings
-      for (let r = 0; r < 3; r++) {
-        const radius = ((t * 40 + r * 40) % 120);
-        const alpha = Math.max(0, 1 - radius / 120) * 0.25;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(232,150,124,${alpha})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-      }
-
-      // Core glow
-      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 24);
-      grad.addColorStop(0, "rgba(232,150,124,0.9)");
-      grad.addColorStop(0.5, "rgba(212,97,107,0.6)");
-      grad.addColorStop(1, "rgba(212,97,107,0)");
-      ctx.beginPath();
-      ctx.arc(cx, cy, 24, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      // Core center
-      const coreSize = 10 + Math.sin(t * 2) * 2;
-      ctx.beginPath();
-      ctx.arc(cx, cy, coreSize, 0, Math.PI * 2);
-      ctx.fillStyle = "#E8967C";
-      ctx.fill();
-
-      // Satellite nodes
-      satellites.forEach((s) => {
-        const a = s.angle + t * s.speed;
-        const sx = cx + Math.cos(a) * s.dist;
-        const sy = cy + Math.sin(a) * s.dist;
-
-        // Connection line
-        const pulsePhase = (Math.sin(t * 3 + s.angle) + 1) / 2;
-        ctx.beginPath();
-        ctx.moveTo(cx, cy);
-        ctx.lineTo(sx, sy);
-        ctx.strokeStyle = `rgba(110,43,255,${0.08 + pulsePhase * 0.15})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Pulse traveling along line
-        const px = cx + (sx - cx) * pulsePhase;
-        const py = cy + (sy - cy) * pulsePhase;
-        ctx.beginPath();
-        ctx.arc(px, py, 2, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(232,150,124,${0.4 + pulsePhase * 0.5})`;
-        ctx.fill();
-
-        // Node
-        const nodeAlpha = 0.3 + pulsePhase * 0.7;
-        ctx.beginPath();
-        ctx.arc(sx, sy, s.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(110,43,255,${nodeAlpha})`;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(sx, sy, s.size + 4, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(110,43,255,${nodeAlpha * 0.3})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
+  const initParticles = useCallback((W: number, H: number) => {
+    const count = 65;
+    const particles: Particle[] = [];
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: 1.5 + Math.random() * 2,
+        color: Math.random() > 0.35 ? "purple" : "coral",
+        baseAlpha: 0.4 + Math.random() * 0.4,
       });
-
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => cancelAnimationFrame(raf);
+    }
+    return particles;
   }, []);
 
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <canvas ref={canvasRef} className="w-[240px] h-[240px] md:w-[280px] md:h-[280px]" style={{ imageRendering: "auto" }} />
-      <span className="text-[11px] font-mono tracking-[0.18em] uppercase" style={{ color: "rgba(243,239,255,0.4)" }}>
-        Reasoning
-      </span>
-    </div>
-  );
-};
-
-/* ─── WORKFLOW ROUTING (Center) ─── */
-const WorkflowAnimation = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
-    const W = 300, H = 300;
-    canvas.width = W; canvas.height = H;
 
-    const lines = [
-      { y: 60, branches: [{ at: 0.4, to: 120, mergeAt: 0.75 }] },
-      { y: 120, branches: [] },
-      { y: 150, branches: [{ at: 0.55, to: 200, mergeAt: 0.85 }] },
-      { y: 200, branches: [] },
-      { y: 240, branches: [{ at: 0.3, to: 200, mergeAt: 0.6 }] },
-    ];
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      if (particlesRef.current.length === 0) {
+        particlesRef.current = initParticles(rect.width, rect.height);
+      }
+    };
+    resize();
+    window.addEventListener("resize", resize);
 
-    const dots = lines.flatMap((line, li) => 
-      Array.from({ length: 2 + Math.floor(Math.random() * 2) }, (_, di) => ({
-        lineIdx: li,
-        offset: (di * 0.4 + Math.random() * 0.3) % 1,
-        speed: 0.002 + Math.random() * 0.0015,
-        size: 3 + Math.random() * 2,
-        branching: false,
-        branchProgress: 0,
-      }))
-    );
-
-    let raf: number;
+    const CONNECT_DIST = 90;
+    const CLUSTER_DIST = 60;
+    const CLUSTER_MIN = 3;
 
     const draw = () => {
+      const rect = canvas.getBoundingClientRect();
+      const W = rect.width;
+      const H = rect.height;
       ctx.clearRect(0, 0, W, H);
+      tRef.current += 0.016;
+      const t = tRef.current;
 
-      // Draw lines
-      lines.forEach((line) => {
-        ctx.beginPath();
-        ctx.moveTo(0, line.y);
-        ctx.lineTo(W, line.y);
-        ctx.strokeStyle = "rgba(122,92,255,0.12)";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+      const particles = particlesRef.current;
+      const blooms = bloomsRef.current;
 
-        // Branch paths
-        line.branches.forEach((b) => {
-          ctx.beginPath();
-          ctx.moveTo(W * b.at, line.y);
-          ctx.quadraticCurveTo(W * ((b.at + b.mergeAt) / 2), b.to, W * b.mergeAt, line.y);
-          ctx.strokeStyle = "rgba(122,92,255,0.08)";
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        });
+      // Update positions
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) { p.x = 0; p.vx *= -1; }
+        if (p.x > W) { p.x = W; p.vx *= -1; }
+        if (p.y < 0) { p.y = 0; p.vy *= -1; }
+        if (p.y > H) { p.y = H; p.vy *= -1; }
+
+        // Slight drift variation
+        p.vx += (Math.random() - 0.5) * 0.01;
+        p.vy += (Math.random() - 0.5) * 0.01;
+        const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+        if (speed > 0.7) {
+          p.vx *= 0.7 / speed;
+          p.vy *= 0.7 / speed;
+        }
       });
 
-      // Animate dots
-      dots.forEach((dot) => {
-        dot.offset = (dot.offset + dot.speed) % 1;
-        const line = lines[dot.lineIdx];
-        let x = dot.offset * W;
-        let y = line.y;
-
-        // Check if dot is on a branch
-        line.branches.forEach((b) => {
-          if (dot.offset > b.at && dot.offset < b.mergeAt) {
-            const branchT = (dot.offset - b.at) / (b.mergeAt - b.at);
-            const t = branchT;
-            // Quadratic bezier
-            y = (1 - t) * (1 - t) * line.y + 2 * (1 - t) * t * b.to + t * t * line.y;
-            x = (1 - t) * (1 - t) * (W * b.at) + 2 * (1 - t) * t * (W * ((b.at + b.mergeAt) / 2)) + t * t * (W * b.mergeAt);
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < CONNECT_DIST) {
+            const alpha = (1 - dist / CONNECT_DIST) * 0.35;
+            const isCoralPair = particles[i].color === "coral" || particles[j].color === "coral";
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = isCoralPair
+              ? `rgba(232,150,124,${alpha})`
+              : `rgba(155,123,255,${alpha})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
           }
-        });
+        }
+      }
 
-        // Dot glow
-        const grad = ctx.createRadialGradient(x, y, 0, x, y, 8);
-        grad.addColorStop(0, "rgba(255,255,255,0.8)");
-        grad.addColorStop(1, "rgba(122,92,255,0)");
+      // Detect clusters and spawn blooms
+      if (Math.floor(t * 2) % 3 === 0 && Math.random() < 0.008) {
+        for (let i = 0; i < particles.length; i++) {
+          let neighbors = 0;
+          let cx = particles[i].x;
+          let cy = particles[i].y;
+          for (let j = 0; j < particles.length; j++) {
+            if (i === j) continue;
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            if (Math.sqrt(dx * dx + dy * dy) < CLUSTER_DIST) {
+              neighbors++;
+              cx += particles[j].x;
+              cy += particles[j].y;
+            }
+          }
+          if (neighbors >= CLUSTER_MIN) {
+            cx /= (neighbors + 1);
+            cy /= (neighbors + 1);
+            // Don't stack blooms
+            const tooClose = blooms.some(
+              (b) => Math.abs(b.x - cx) < 80 && Math.abs(b.y - cy) < 80 && t - b.createdAt < 3
+            );
+            if (!tooClose) {
+              blooms.push({ x: cx, y: cy, radius: 0, alpha: 0.5, createdAt: t });
+            }
+            break;
+          }
+        }
+      }
+
+      // Draw + update blooms
+      for (let i = blooms.length - 1; i >= 0; i--) {
+        const b = blooms[i];
+        const age = t - b.createdAt;
+        b.radius = age * 25;
+        b.alpha = Math.max(0, 0.4 - age * 0.1);
+        if (b.alpha <= 0) {
+          blooms.splice(i, 1);
+          continue;
+        }
+        const grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.radius);
+        grad.addColorStop(0, `rgba(232,150,124,${b.alpha * 0.6})`);
+        grad.addColorStop(0.4, `rgba(155,123,255,${b.alpha * 0.3})`);
+        grad.addColorStop(1, `rgba(155,123,255,0)`);
         ctx.beginPath();
-        ctx.arc(x, y, 8, 0, Math.PI * 2);
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+
+      // Draw particles
+      particles.forEach((p) => {
+        const pulse = Math.sin(t * 1.5 + p.x * 0.01) * 0.15;
+        const alpha = p.baseAlpha + pulse;
+
+        // Glow
+        const gRad = p.radius * 4;
+        const gColor = p.color === "coral"
+          ? `rgba(232,150,124,${alpha * 0.3})`
+          : `rgba(155,123,255,${alpha * 0.3})`;
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, gRad);
+        grad.addColorStop(0, gColor);
+        grad.addColorStop(1, "transparent");
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, gRad, 0, Math.PI * 2);
         ctx.fillStyle = grad;
         ctx.fill();
 
-        // Dot core
+        // Core
         ctx.beginPath();
-        ctx.arc(x, y, dot.size, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(122,92,255,0.7)";
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color === "coral"
+          ? `rgba(232,150,124,${alpha})`
+          : `rgba(155,123,255,${alpha})`;
         ctx.fill();
-
-        // Trail
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x - 15, y);
-        ctx.strokeStyle = "rgba(122,92,255,0.15)";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
       });
 
-      raf = requestAnimationFrame(draw);
+      rafRef.current = requestAnimationFrame(draw);
     };
+
     draw();
-    return () => cancelAnimationFrame(raf);
-  }, []);
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", resize);
+    };
+  }, [initParticles]);
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <canvas ref={canvasRef} className="w-[240px] h-[240px] md:w-[280px] md:h-[280px]" style={{ imageRendering: "auto" }} />
-      <span className="text-[11px] font-mono tracking-[0.18em] uppercase" style={{ color: "rgba(243,239,255,0.4)" }}>
-        Workflow
-      </span>
-    </div>
-  );
-};
-
-/* ─── GOVERNANCE LOGGING (Right) ─── */
-const GovernanceAnimation = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-    const W = 300, H = 300;
-    canvas.width = W; canvas.height = H;
-
-    // Grid nodes
-    const gridSize = 5;
-    const spacing = 44;
-    const offsetX = (W - (gridSize - 1) * spacing) / 2;
-    const offsetY = 30;
-    const nodes = Array.from({ length: gridSize * gridSize }, (_, i) => ({
-      x: offsetX + (i % gridSize) * spacing,
-      y: offsetY + Math.floor(i / gridSize) * spacing,
-      active: false,
-      activatedAt: 0,
-    }));
-
-    // Connections
-    const connections: [number, number][] = [];
-    for (let i = 0; i < gridSize; i++) {
-      for (let j = 0; j < gridSize; j++) {
-        const idx = i * gridSize + j;
-        if (j < gridSize - 1) connections.push([idx, idx + 1]);
-        if (i < gridSize - 1) connections.push([idx, idx + gridSize]);
-      }
-    }
-
-    const logDots: { x: number; y: number; alpha: number; createdAt: number }[] = [];
-    let t = 0;
-    let lastActivation = 0;
-    let raf: number;
-
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-      t += 0.016;
-
-      // Grid lines
-      connections.forEach(([a, b]) => {
-        ctx.beginPath();
-        ctx.moveTo(nodes[a].x, nodes[a].y);
-        ctx.lineTo(nodes[b].x, nodes[b].y);
-        ctx.strokeStyle = "rgba(110,43,255,0.06)";
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      });
-
-      // Activate random node every ~1.5s
-      if (t - lastActivation > 1.5) {
-        const idx = Math.floor(Math.random() * nodes.length);
-        nodes[idx].active = true;
-        nodes[idx].activatedAt = t;
-        // Add log dot
-        logDots.push({
-          x: 30 + logDots.length * 12,
-          y: H - 25,
-          alpha: 1,
-          createdAt: t,
-        });
-        if (logDots.length > 18) logDots.shift();
-        lastActivation = t;
-      }
-
-      // Draw nodes
-      nodes.forEach((node) => {
-        const timeSinceActive = t - node.activatedAt;
-        const isGlowing = node.active && timeSinceActive < 3;
-
-        if (isGlowing) {
-          // Activation ring
-          const ringSize = Math.min(timeSinceActive * 8, 16);
-          const ringAlpha = Math.max(0, 1 - timeSinceActive / 3) * 0.4;
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, ringSize, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(232,150,124,${ringAlpha})`;
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-        }
-
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, isGlowing ? 5 : 3, 0, Math.PI * 2);
-        ctx.fillStyle = isGlowing
-          ? `rgba(232,150,124,${0.5 + Math.max(0, 1 - timeSinceActive / 2) * 0.5})`
-          : "rgba(110,43,255,0.15)";
-        ctx.fill();
-
-        if (node.active && timeSinceActive > 4) {
-          node.active = false;
-        }
-      });
-
-      // Audit trail label
-      ctx.fillStyle = "rgba(243,239,255,0.15)";
-      ctx.font = "9px monospace";
-      ctx.fillText("AUDIT LOG", 10, H - 40);
-
-      // Log line
-      ctx.beginPath();
-      ctx.moveTo(10, H - 35);
-      ctx.lineTo(W - 10, H - 35);
-      ctx.strokeStyle = "rgba(110,43,255,0.08)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // Log dots
-      logDots.forEach((dot, i) => {
-        const age = t - dot.createdAt;
-        const x = 20 + i * 14;
-        ctx.beginPath();
-        ctx.arc(x, H - 20, 3, 0, Math.PI * 2);
-        ctx.fillStyle = age < 1
-          ? `rgba(232,150,124,${0.9})`
-          : `rgba(242,193,174,${Math.max(0.2, 0.7 - age * 0.05)})`;
-        ctx.fill();
-      });
-
-      raf = requestAnimationFrame(draw);
-    };
-    draw();
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <canvas ref={canvasRef} className="w-[240px] h-[240px] md:w-[280px] md:h-[280px]" style={{ imageRendering: "auto" }} />
-      <span className="text-[11px] font-mono tracking-[0.18em] uppercase" style={{ color: "rgba(243,239,255,0.4)" }}>
-        Governance
-      </span>
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="w-full"
+      style={{ height: "clamp(400px, 50vh, 600px)", display: "block" }}
+    />
   );
 };
 
@@ -364,11 +221,11 @@ const DeploymentSection = () => {
       className="relative overflow-hidden"
       id="deployment"
       style={{
-        padding: "clamp(80px, 9vw, 140px) 0",
+        padding: "clamp(80px, 9vw, 140px) 0 clamp(60px, 6vw, 100px)",
         background: `radial-gradient(circle at 50% 40%, #1a0833 0%, #120622 40%, #0b0417 100%)`,
       }}
     >
-      {/* Noise texture overlay */}
+      {/* Noise texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.035]"
         style={{
@@ -377,114 +234,80 @@ const DeploymentSection = () => {
         }}
       />
 
-      {/* Top edge line */}
+      {/* Top edge */}
       <div className="absolute top-0 left-0 right-0 h-px" style={{
         background: "linear-gradient(90deg, transparent 10%, rgba(110,43,255,0.2) 50%, transparent 90%)",
       }} />
 
-      <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12 w-full">
-        {/* Header */}
-        <motion.div
-          className="text-center mb-16 md:mb-24"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7 }}
-        >
-          <span
-            className="inline-block mb-5 text-[11px] font-mono tracking-[0.22em] uppercase"
-            style={{ color: "rgba(243,239,255,0.35)" }}
-          >
-            [ LIVE SYSTEM STATE ]
-          </span>
-
-          <h2
-            style={{
-              color: "#F3EFFF",
-              fontWeight: 700,
-              fontSize: "clamp(40px, 5vw, 64px)",
-              lineHeight: 1.1,
-              letterSpacing: "-0.02em",
-            }}
-          >
-            Intelligence operating in real time.
-          </h2>
-
-          <p
-            className="mx-auto mt-5"
-            style={{
-              color: "rgba(243,239,255,0.5)",
-              fontSize: "18px",
-              lineHeight: 1.6,
-              maxWidth: "540px",
-            }}
-          >
-            Clinical signals flow, branch, resolve, and log — continuously.
-          </p>
-        </motion.div>
-
-        {/* 3-column animation grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
-          {/* Reasoning */}
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 w-full">
+        {/* 2-column: text left, canvas right */}
+        <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-16">
+          {/* Left: Text */}
           <motion.div
-            className="flex justify-center relative"
-            initial={{ opacity: 0, y: 30 }}
+            className="lg:w-[38%] flex-shrink-0 lg:sticky lg:top-32"
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.7 }}
           >
-            {/* Faint circular glow behind */}
-            <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] rounded-full pointer-events-none"
-              style={{ background: "radial-gradient(circle, rgba(212,97,107,0.08) 0%, transparent 70%)" }}
-            />
-            <ReasoningAnimation />
+            <span
+              className="inline-block mb-5 text-[11px] font-mono tracking-[0.22em] uppercase"
+              style={{ color: "rgba(243,239,255,0.35)" }}
+            >
+              [ SYSTEM CONSCIOUSNESS ]
+            </span>
+
+            <h2
+              style={{
+                color: "#F3EFFF",
+                fontWeight: 700,
+                fontSize: "clamp(36px, 4.5vw, 58px)",
+                lineHeight: 1.1,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Intelligence operating as a living system.
+            </h2>
+
+            <p
+              className="mt-5"
+              style={{
+                color: "rgba(243,239,255,0.5)",
+                fontSize: "17px",
+                lineHeight: 1.65,
+                maxWidth: "420px",
+              }}
+            >
+              Signals converge, align, resolve — continuously across the field.
+            </p>
+
+            {/* Status */}
+            <div className="flex items-center gap-2.5 mt-10">
+              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#E8967C" }} />
+              <span className="text-[10px] font-mono tracking-[0.2em] uppercase" style={{ color: "rgba(243,239,255,0.25)" }}>
+                FIELD ACTIVE
+              </span>
+            </div>
           </motion.div>
 
-          {/* Workflow */}
+          {/* Right: Particle field */}
           <motion.div
-            className="flex justify-center relative"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            className="lg:w-[62%] w-full relative"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.15 }}
+            transition={{ duration: 1, delay: 0.2 }}
           >
+            {/* Subtle radial glow behind canvas */}
             <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] rounded-full pointer-events-none"
-              style={{ background: "radial-gradient(circle, rgba(110,43,255,0.08) 0%, transparent 70%)" }}
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: "radial-gradient(ellipse at 50% 50%, rgba(110,43,255,0.06) 0%, transparent 70%)",
+              }}
             />
-            <WorkflowAnimation />
-          </motion.div>
-
-          {/* Governance */}
-          <motion.div
-            className="flex justify-center relative"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-          >
-            <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[260px] h-[260px] rounded-full pointer-events-none"
-              style={{ background: "radial-gradient(circle, rgba(232,150,124,0.08) 0%, transparent 70%)" }}
-            />
-            <GovernanceAnimation />
+            <ParticleField />
           </motion.div>
         </div>
-
-        {/* System status bar */}
-        <motion.div
-          className="flex items-center justify-center gap-3 mt-16"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.5 }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#E8967C" }} />
-          <span className="text-[10px] font-mono tracking-[0.2em] uppercase" style={{ color: "rgba(243,239,255,0.25)" }}>
-            ALL SUBSYSTEMS NOMINAL
-          </span>
-        </motion.div>
       </div>
     </section>
   );
