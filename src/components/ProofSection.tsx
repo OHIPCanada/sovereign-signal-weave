@@ -31,7 +31,7 @@ const proofTiles = [
 function SystemField() {
   return (
     <div className="measure-visual" style={{ perspective: "900px" }}>
-      <div style={{ transform: "rotateX(55deg) rotateZ(-15deg)", transformStyle: "preserve-3d", position: "relative", width: "100%", height: "100%" }}>
+      <div style={{ transform: "rotateX(35deg) rotateZ(-10deg)", transformStyle: "preserve-3d", position: "relative", width: "100%", height: "100%" }}>
       {/* Signal pulse ring */}
       <div className="pulse-ring" />
       <div className="pulse-ring" style={{ animationDelay: "2s" }} />
