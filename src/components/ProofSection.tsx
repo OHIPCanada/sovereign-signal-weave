@@ -44,7 +44,7 @@ function SystemField() {
         pointerEvents: "none",
       }} />
       {/* Ambient glow */}
-      <div style={{
+      <div className="ambient-breathe" style={{
         position: "absolute",
         top: "50%",
         left: "50%",
@@ -203,6 +203,15 @@ function SystemField() {
         @keyframes signalPulse {
           0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
           100% { transform: translate(-50%, -50%) scale(4.5); opacity: 0; }
+        }
+
+        .ambient-breathe {
+          animation: ambientBreathe 6s ease-in-out infinite;
+        }
+
+        @keyframes ambientBreathe {
+          0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+          50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
         }
       `}</style>
       </div>
