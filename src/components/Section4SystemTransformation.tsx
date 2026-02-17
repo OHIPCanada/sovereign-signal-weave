@@ -1,97 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
-/* ── Cluster Network Data ── */
-interface NetNode {
-  x: number; y: number; r: number; isHub: boolean;
-  clusterId: number; phase: number;
-}
-interface NetLink {
-  a: number; b: number; type: "intra" | "inter";
-}
-
-function buildNetwork(w: number, h: number) {
-  const pad = 0.08;
-  const clusterCenters = [
-    { cx: 0.20, cy: 0.22 }, // top-left
-    { cx: 0.80, cy: 0.18 }, // top-right
-    { cx: 0.50, cy: 0.50 }, // center
-    { cx: 0.18, cy: 0.78 }, // bottom-left
-    { cx: 0.82, cy: 0.80 }, // bottom-right
-  ];
-
-  const nodes: NetNode[] = [];
-  const links: NetLink[] = [];
-  const clusterNodeIndices: number[][] = [[], [], [], [], []];
-  const hubIndices: number[] = [];
-
-  const rand = (min: number, max: number) => min + Math.random() * (max - min);
-
-  // Build nodes per cluster
-  clusterCenters.forEach((cc, ci) => {
-    const count = Math.floor(rand(8, 12));
-    const spread = 0.12;
-    // Hub node first
-    const hubIdx = nodes.length;
-    hubIndices.push(hubIdx);
-    nodes.push({
-      x: cc.cx * w, y: cc.cy * h, r: rand(8, 10),
-      isHub: true, clusterId: ci, phase: rand(0, Math.PI * 2),
-    });
-    clusterNodeIndices[ci].push(hubIdx);
-
-    for (let i = 1; i < count; i++) {
-      const idx = nodes.length;
-      const angle = rand(0, Math.PI * 2);
-      const dist = rand(0.03, spread);
-      const nx = Math.max(pad, Math.min(1 - pad, cc.cx + Math.cos(angle) * dist)) * w;
-      const ny = Math.max(pad, Math.min(1 - pad, cc.cy + Math.sin(angle) * dist)) * h;
-      nodes.push({
-        x: nx, y: ny, r: rand(2.5, 5),
-        isHub: false, clusterId: ci, phase: rand(0, Math.PI * 2),
-      });
-      clusterNodeIndices[ci].push(idx);
-    }
-  });
-
-  // Intra-cluster links – connect each node to hub + 1-2 neighbors
-  clusterNodeIndices.forEach((indices) => {
-    const hub = indices[0];
-    for (let i = 1; i < indices.length; i++) {
-      links.push({ a: hub, b: indices[i], type: "intra" });
-      // Connect to one random neighbor
-      if (i > 1 && Math.random() > 0.4) {
-        const neighbor = indices[Math.floor(rand(1, i))];
-        if (neighbor !== indices[i]) {
-          links.push({ a: indices[i], b: neighbor, type: "intra" });
-        }
-      }
-    }
-  });
-
-  // Inter-cluster links – 6-10 intentional long links between hubs + a few non-hubs
-  const interPairs: [number, number][] = [
-    [0, 2], [1, 2], [2, 3], [2, 4], [0, 1], [3, 4], [0, 3], [1, 4],
-  ];
-  const interLinks: number[] = [];
-  interPairs.forEach(([ca, cb]) => {
-    const aIdx = hubIndices[ca];
-    const bIdx = hubIndices[cb];
-    const li = links.length;
-    links.push({ a: aIdx, b: bIdx, type: "inter" });
-    interLinks.push(li);
-  });
-
-  return { nodes, links, hubIndices, interLinks, clusterNodeIndices };
-}
-
-/* ── Signal Pulse along path ── */
-interface PulseSignal {
-  links: number[];       // link indices to light up
-  progress: number;      // 0→1
-  warm: boolean;
-}
-
 export default function Section4SystemTransformation() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -103,249 +12,217 @@ export default function Section4SystemTransformation() {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    let w = 0, h = 0;
-    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    const DPR_LIMIT = 2;
+    const PARTICLES = 110;
+    const LOOP_SECONDS = 10.0;
+    const SWEEP_WIDTH = 0.22;
+    const ALIGN_STRENGTH = 0.75;
+    const GRID_SPACING = 28;
 
-    let net = buildNetwork(1, 1);
+    const WARM1 = [0xD4, 0x61, 0x6B];
+    const WARM2 = [0xE8, 0x96, 0x7C];
+    const WARM3 = [0xF2, 0xC1, 0xAE];
+
+    let w = 0, h = 0, dpr = 1;
+    let t0 = performance.now();
+
+    const rand = (a: number, b: number) => a + Math.random() * (b - a);
+
+    interface Particle {
+      x: number; y: number;
+      vx: number; vy: number;
+      r: number; phase: number;
+    }
+
+    const pts: Particle[] = Array.from({ length: PARTICLES }, () => ({
+      x: rand(0, 1), y: rand(0, 1),
+      vx: rand(-0.02, 0.02), vy: rand(-0.015, 0.015),
+      r: rand(1.2, 2.2), phase: rand(0, Math.PI * 2),
+    }));
+
+    function noise2(x: number, y: number) {
+      return Math.sin(x * 1.3 + y * 0.9) * 0.55 + Math.cos(x * 0.7 - y * 1.1) * 0.45;
+    }
+
+    function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
+    function clamp(x: number, a: number, b: number) { return Math.max(a, Math.min(b, x)); }
+
+    function mixRGB(a: number[], b: number[], t: number) {
+      return [
+        Math.round(lerp(a[0], b[0], t)),
+        Math.round(lerp(a[1], b[1], t)),
+        Math.round(lerp(a[2], b[2], t)),
+      ];
+    }
+
+    function warmAt(u: number) {
+      if (u < 0.5) return mixRGB(WARM1, WARM2, u / 0.5);
+      return mixRGB(WARM2, WARM3, (u - 0.5) / 0.5);
+    }
 
     function resize() {
       const rect = wrap!.getBoundingClientRect();
-      w = Math.floor(rect.width);
-      h = Math.floor(rect.height);
-      canvas!.width = Math.floor(w * dpr);
-      canvas!.height = Math.floor(h * dpr);
-      canvas!.style.width = `${w}px`;
-      canvas!.style.height = `${h}px`;
-      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-      net = buildNetwork(w, h);
+      dpr = Math.min(window.devicePixelRatio || 1, DPR_LIMIT);
+      w = Math.floor(rect.width * dpr);
+      h = Math.floor(rect.height * dpr);
+      canvas!.width = w;
+      canvas!.height = h;
+      canvas!.style.width = `${rect.width}px`;
+      canvas!.style.height = `${rect.height}px`;
     }
 
-    // Animation state
-    let t = 0;
-    const activePulses: PulseSignal[] = [];
-    let lastPulseTime = 0;
-    let lastWarmTime = 0;
-    const pulseInterval = 180; // ~3s at 60fps
-    const warmInterval = 720;  // ~12s at 60fps
-    const pulseDuration = 65;  // ~1.1s at 60fps
-
-    function findPath(startHub: number): number[] {
-      // Find 2-4 inter links from startHub outward
-      const path: number[] = [];
-      let current = startHub;
-      const visited = new Set<number>([current]);
-      const hops = 2 + Math.floor(Math.random() * 3);
-      
-      for (let i = 0; i < hops; i++) {
-        const candidates = net.interLinks.filter(li => {
-          const link = net.links[li];
-          const other = link.a === net.hubIndices[current] ? 
-            net.hubIndices.indexOf(link.b === net.hubIndices[current] ? link.a : link.b) :
-            (link.b === net.hubIndices[current] ? net.hubIndices.indexOf(link.a) : -1);
-          // Check if either end matches current hub
-          const aHub = net.hubIndices.indexOf(link.a);
-          const bHub = net.hubIndices.indexOf(link.b);
-          if (aHub === current && !visited.has(bHub)) return true;
-          if (bHub === current && !visited.has(aHub)) return true;
-          return false;
-        });
-        if (candidates.length === 0) break;
-        const li = candidates[Math.floor(Math.random() * candidates.length)];
-        path.push(li);
-        const link = net.links[li];
-        const aHub = net.hubIndices.indexOf(link.a);
-        const bHub = net.hubIndices.indexOf(link.b);
-        const next = aHub === current ? bHub : aHub;
-        visited.add(next);
-        current = next;
-      }
-      return path;
-    }
-
-    function drawBackground() {
-      ctx!.clearRect(0, 0, w, h);
-      // No card-level background fill — transparent canvas on glass card
-    }
-
-    function drawLinks() {
-      for (let i = 0; i < net.links.length; i++) {
-        const link = net.links[i];
-        const a = net.nodes[link.a];
-        const b = net.nodes[link.b];
-
-        // Check if this link is in any active pulse
-        let lit = false;
-        let warm = false;
-        let litIntensity = 0;
-        for (const pulse of activePulses) {
-          const idx = pulse.links.indexOf(i);
-          if (idx !== -1) {
-            lit = true;
-            warm = pulse.warm;
-            // Intensity based on progress reaching this link
-            const linkProgress = idx / pulse.links.length;
-            const dist = pulse.progress - linkProgress;
-            if (dist > 0 && dist < 0.5) {
-              litIntensity = Math.max(litIntensity, 1 - dist * 2);
-            }
-          }
-        }
-
-        if (warm && litIntensity > 0) {
-          ctx!.strokeStyle = `rgba(232,150,124,${0.15 + litIntensity * 0.55})`;
-          ctx!.lineWidth = link.type === "inter" ? 2 : 1.2;
-          ctx!.shadowColor = "rgba(232,150,124,0.4)";
-          ctx!.shadowBlur = 12 * litIntensity;
-        } else if (lit && litIntensity > 0) {
-          ctx!.strokeStyle = `rgba(210,180,255,${0.22 + litIntensity * 0.55})`;
-          ctx!.lineWidth = link.type === "inter" ? 2 : 1.2;
-          ctx!.shadowColor = "rgba(123,97,255,0.3)";
-          ctx!.shadowBlur = 10 * litIntensity;
-        } else {
-          ctx!.strokeStyle = link.type === "inter"
-            ? "rgba(200,170,255,0.38)"
-            : "rgba(200,170,255,0.28)";
-          ctx!.lineWidth = link.type === "inter" ? 1.8 : 1;
-          ctx!.shadowBlur = 0;
-        }
-
+    function drawGrid(time: number) {
+      const spacing = GRID_SPACING * dpr;
+      ctx!.save();
+      const warp = 6 * dpr;
+      for (let x = 0; x <= w; x += spacing) {
+        const n = noise2(x * 0.003, time * 0.00025) * warp;
+        ctx!.strokeStyle = "rgba(255,255,255,0.07)";
+        ctx!.lineWidth = 1;
         ctx!.beginPath();
-        ctx!.moveTo(a.x, a.y);
-        ctx!.lineTo(b.x, b.y);
+        ctx!.moveTo(x + n, 0);
+        ctx!.lineTo(x - n, h);
         ctx!.stroke();
-        ctx!.shadowBlur = 0;
       }
+      for (let y = 0; y <= h; y += spacing) {
+        const n = noise2(time * 0.00025, y * 0.003) * warp;
+        ctx!.strokeStyle = "rgba(255,255,255,0.06)";
+        ctx!.lineWidth = 1;
+        ctx!.beginPath();
+        ctx!.moveTo(0, y + n);
+        ctx!.lineTo(w, y - n);
+        ctx!.stroke();
+      }
+      ctx!.restore();
     }
 
-    function drawNodes() {
-      for (const n of net.nodes) {
-        // Check if node is near an active pulse
-        let lit = false;
-        let warm = false;
-        let litIntensity = 0;
+    function drawSweep(sweepX: number) {
+      const half = (SWEEP_WIDTH * w) * 0.5;
+      const grad = ctx!.createRadialGradient(sweepX, h * 0.5, 0, sweepX, h * 0.5, half * 1.8);
+      grad.addColorStop(0.0, "rgba(242,193,174,0.12)");
+      grad.addColorStop(0.35, "rgba(232,150,124,0.10)");
+      grad.addColorStop(1.0, "rgba(212,97,107,0.00)");
+      ctx!.fillStyle = grad;
+      ctx!.fillRect(0, 0, w, h);
 
-        for (const pulse of activePulses) {
-          for (const li of pulse.links) {
-            const link = net.links[li];
-            if (link.a === net.nodes.indexOf(n) || link.b === net.nodes.indexOf(n)) {
-              const linkIdx = pulse.links.indexOf(li);
-              const linkProgress = linkIdx / pulse.links.length;
-              const dist = pulse.progress - linkProgress;
-              if (dist > -0.1 && dist < 0.5) {
-                lit = true;
-                warm = pulse.warm;
-                litIntensity = Math.max(litIntensity, Math.max(0, 1 - Math.abs(dist) * 2.5));
-              }
-            }
-          }
+      ctx!.save();
+      ctx!.globalAlpha = 0.28;
+      ctx!.fillStyle = "rgba(242,193,174,0.35)";
+      ctx!.fillRect(sweepX - 1.2 * dpr, 0, 2.4 * dpr, h);
+      ctx!.restore();
+    }
+
+    function draw(time: number) {
+      const dt = (time - t0) / 1000;
+      t0 = time;
+
+      const loopT = (time / 1000) % LOOP_SECONDS;
+      const p = loopT / LOOP_SECONDS;
+      const sweepX = p * w;
+
+      ctx!.clearRect(0, 0, w, h);
+
+      // Background vignette
+      const bg = ctx!.createRadialGradient(w * 0.55, h * 0.45, 0, w * 0.55, h * 0.45, Math.max(w, h) * 0.75);
+      bg.addColorStop(0.0, "rgba(123,97,255,0.18)");
+      bg.addColorStop(0.6, "rgba(123,97,255,0.05)");
+      bg.addColorStop(1.0, "rgba(0,0,0,0.35)");
+      ctx!.fillStyle = bg;
+      ctx!.fillRect(0, 0, w, h);
+
+      drawGrid(time);
+
+      const half = (SWEEP_WIDTH * w) * 0.5;
+
+      for (const pt of pts) {
+        pt.x += pt.vx * dt;
+        pt.y += pt.vy * dt;
+
+        if (pt.x < -0.05) pt.x = 1.05;
+        if (pt.x > 1.05) pt.x = -0.05;
+        if (pt.y < -0.05) pt.y = 1.05;
+        if (pt.y > 1.05) pt.y = -0.05;
+
+        const fx = noise2(pt.x * 2.2 + time * 0.00015, pt.y * 2.0) * 0.003;
+        const fy = noise2(pt.y * 2.1, pt.x * 2.0 + time * 0.00012) * 0.003;
+        pt.x += fx * dt;
+        pt.y += fy * dt;
+
+        const px = pt.x * w;
+        const py = pt.y * h;
+
+        const d = Math.abs(px - sweepX);
+        const influence = clamp(1 - (d / half), 0, 1);
+
+        if (influence > 0) {
+          const gx = Math.round(px / (GRID_SPACING * dpr)) * (GRID_SPACING * dpr);
+          const gy = Math.round(py / (GRID_SPACING * dpr)) * (GRID_SPACING * dpr);
+          pt.x = lerp(px, gx, influence * ALIGN_STRENGTH) / w;
+          pt.y = lerp(py, gy, influence * ALIGN_STRENGTH) / h;
         }
 
-        const breathe = 0.65 + 0.15 * Math.sin(t * 0.008 + n.phase);
-        const alpha = Math.min(1, breathe + litIntensity * 0.35);
+        const warmMix = Math.pow(influence, 1.6);
+        const warmRGB = warmAt(clamp((px - (sweepX - half)) / (half * 2), 0, 1));
+        const baseAlpha = 0.55 + 0.35 * (0.5 + 0.5 * Math.sin(time * 0.001 + pt.phase));
 
-        // Glow
-        if (n.isHub || (lit && litIntensity > 0.3)) {
-          const glowR = n.r + (lit ? 14 : 10);
-          if (warm && lit) {
-            ctx!.fillStyle = `rgba(232,150,124,${(lit ? 0.25 : 0.08) * litIntensity})`;
-          } else {
-            ctx!.fillStyle = `rgba(123,97,255,${n.isHub ? 0.15 : 0.08 + litIntensity * 0.15})`;
-          }
+        const finalPx = pt.x * w;
+        const finalPy = pt.y * h;
+
+        ctx!.save();
+        if (warmMix > 0.02) {
+          ctx!.fillStyle = `rgba(${warmRGB[0]},${warmRGB[1]},${warmRGB[2]},${(0.20 * warmMix).toFixed(3)})`;
           ctx!.beginPath();
-          ctx!.arc(n.x, n.y, glowR, 0, Math.PI * 2);
+          ctx!.arc(finalPx, finalPy, pt.r * 6.5 * dpr, 0, Math.PI * 2);
+          ctx!.fill();
+        } else {
+          ctx!.fillStyle = `rgba(123,97,255,${(0.14 * baseAlpha).toFixed(3)})`;
+          ctx!.beginPath();
+          ctx!.arc(finalPx, finalPy, pt.r * 6.0 * dpr, 0, Math.PI * 2);
           ctx!.fill();
         }
 
-        // Node dot
-        if (warm && lit && litIntensity > 0.3) {
-          ctx!.fillStyle = `rgba(242,193,174,${alpha})`;
+        const coreA = baseAlpha * (0.65 + 0.6 * influence);
+        if (warmMix > 0.02) {
+          ctx!.fillStyle = `rgba(${warmRGB[0]},${warmRGB[1]},${warmRGB[2]},${coreA.toFixed(3)})`;
         } else {
-          ctx!.fillStyle = `rgba(235,225,255,${alpha})`;
+          ctx!.fillStyle = `rgba(255,255,255,${coreA.toFixed(3)})`;
         }
         ctx!.beginPath();
-        ctx!.arc(n.x, n.y, n.r + (lit ? litIntensity * 1.5 : 0), 0, Math.PI * 2);
+        ctx!.arc(finalPx, finalPy, pt.r * dpr * (1.0 + 0.35 * influence), 0, Math.PI * 2);
         ctx!.fill();
-      }
-    }
-
-    // Pre-compute node indices for fast lookup
-    let nodeIndexMap: Map<NetNode, number>;
-    function buildIndexMap() {
-      nodeIndexMap = new Map();
-      net.nodes.forEach((n, i) => nodeIndexMap.set(n, i));
-    }
-
-    function step() {
-      t++;
-
-      // Ambient breathing via subtle scale is handled by transform below
-
-      // Trigger signal pulses
-      if (t - lastPulseTime > pulseInterval) {
-        lastPulseTime = t;
-        const startHub = Math.floor(Math.random() * 5);
-        const path = findPath(startHub);
-        if (path.length > 0) {
-          activePulses.push({ links: path, progress: 0, warm: false });
-        }
+        ctx!.restore();
       }
 
-      // Trigger warm governance event
-      if (t - lastWarmTime > warmInterval) {
-        lastWarmTime = t;
-        if (net.interLinks.length > 0) {
-          const li = net.interLinks[Math.floor(Math.random() * net.interLinks.length)];
-          activePulses.push({ links: [li], progress: 0, warm: true });
-        }
-      }
-
-      // Update pulses
-      for (let i = activePulses.length - 1; i >= 0; i--) {
-        activePulses[i].progress += 1 / pulseDuration;
-        if (activePulses[i].progress > 1.5) {
-          activePulses.splice(i, 1);
-        }
-      }
-
-      drawBackground();
-      drawLinks();
-      drawNodes();
-
-      raf = requestAnimationFrame(step);
+      drawSweep(sweepX);
+      raf = requestAnimationFrame(draw);
     }
 
     let raf: number;
     resize();
-    buildIndexMap();
-    raf = requestAnimationFrame(step);
+    raf = requestAnimationFrame(draw);
 
-    const onResize = () => { resize(); buildIndexMap(); };
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", resize);
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", resize);
     };
   }, []);
 
   return (
     <motion.section
       className="relative overflow-hidden flex items-center"
-      style={{
-        padding: "clamp(64px, 7vw, 110px) 0",
-        minHeight: "100vh",
-      }}
+      style={{ padding: "clamp(56px, 7vw, 96px) 0", minHeight: "100vh" }}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.8fr] gap-16 lg:gap-20 items-center w-full">
+      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1200px, 92vw)" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] items-center" style={{ gap: "clamp(28px, 4vw, 56px)" }}>
           {/* Left content */}
-          <div className="flex flex-col gap-7">
+          <div className="flex flex-col gap-5">
             <motion.p
-              className="mono-label"
-              style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}
+              style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase" }}
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
@@ -356,12 +233,9 @@ export default function Section4SystemTransformation() {
 
             <motion.h2
               style={{
-                color: "rgba(255,255,255,0.95)",
-                fontWeight: 800,
-                fontSize: "clamp(44px, 5.2vw, 84px)",
-                lineHeight: 0.95,
+                color: "rgba(255,255,255,0.95)", fontWeight: 800,
+                fontSize: "clamp(44px, 5.4vw, 84px)", lineHeight: 0.95,
                 letterSpacing: "-0.02em",
-                textShadow: "0 10px 40px rgba(0,0,0,0.22)",
               }}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -373,11 +247,8 @@ export default function Section4SystemTransformation() {
 
             <motion.p
               style={{
-                color: "rgba(255,255,255,0.72)",
-                fontWeight: 400,
-                fontSize: "clamp(15px, 1.25vw, 18px)",
-                lineHeight: 1.55,
-                maxWidth: "46ch",
+                color: "rgba(255,255,255,0.72)", fontSize: 16,
+                lineHeight: 1.6, maxWidth: "48ch",
               }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -388,72 +259,65 @@ export default function Section4SystemTransformation() {
               Care becomes continuous — across the entire system.
             </motion.p>
 
-            <motion.p
-              style={{
-                color: "rgba(255,255,255,0.42)",
-                fontSize: 13,
-                letterSpacing: "0.01em",
-                lineHeight: 1.5,
-              }}
+            <motion.div
+              className="flex flex-wrap gap-2.5"
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              Coordination at national scale — routing + governance in the same loop.
-            </motion.p>
+              {["Routing", "Orchestration", "Policy Enforcement", "Audit Trails"].map((label) => (
+                <span
+                  key={label}
+                  style={{
+                    fontSize: 12, color: "rgba(255,255,255,0.72)",
+                    border: "1px solid rgba(255,255,255,0.16)",
+                    background: "rgba(255,255,255,0.06)",
+                    padding: "8px 12px", borderRadius: 999,
+                    backdropFilter: "blur(10px)",
+                  }}
+                >
+                  {label}
+                </span>
+              ))}
+            </motion.div>
           </div>
 
-          {/* Right visual – glass card */}
+          {/* Right visual – viewport card */}
           <div>
             <motion.div
               ref={wrapRef}
               className="relative overflow-hidden"
               style={{
-                aspectRatio: "11/8",
-                borderRadius: 28,
-                background: "radial-gradient(circle at 55% 48%, rgba(123,97,255,0.22), transparent 60%), rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                backdropFilter: "blur(18px)",
-                WebkitBackdropFilter: "blur(18px)",
-                boxShadow: "0 20px 80px rgba(0,0,0,0.45)",
-                padding: "28px",
-              }}
-              animate={{
-                scale: [1, 1.008, 1],
-              }}
-              transition={{
-                duration: 11,
-                repeat: Infinity,
-                ease: "easeInOut",
+                borderRadius: 32,
+                background: "linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03))",
+                border: "1px solid rgba(255,255,255,0.14)",
+                overflow: "hidden",
+                minHeight: "clamp(320px, 40vw, 460px)",
+                boxShadow: "0 0 0 1px rgba(255,255,255,0.05) inset, 0 30px 80px rgba(0,0,0,0.35)",
               }}
             >
-              <canvas ref={canvasRef} className="absolute inset-0 z-[2]" />
+              <canvas ref={canvasRef} className="absolute inset-0 z-[2]" style={{ width: "100%", height: "100%", display: "block" }} />
 
               <div
-                className="absolute left-7 top-7 z-[3] uppercase"
-                style={{
-                  color: "rgba(255,255,255,0.75)",
-                  fontSize: 12,
-                  letterSpacing: "0.22em",
-                }}
+                className="absolute left-[18px] top-[18px] z-[3] uppercase"
+                style={{ color: "rgba(255,255,255,0.60)", fontSize: 12, letterSpacing: "0.22em" }}
               >
                 National-scale coordination layer
               </div>
-
             </motion.div>
           </div>
         </div>
       </div>
 
-      {/* Section background with system glow */}
+      {/* Section background */}
       <div
         className="absolute inset-0 -z-10"
         style={{
           background: `
-            radial-gradient(circle at 70% 50%, rgba(123,97,255,0.22), rgba(0,0,0,0) 55%),
-            radial-gradient(circle at 85% 75%, rgba(232,150,124,0.10), rgba(0,0,0,0) 60%),
-            linear-gradient(135deg, #1A062D 0%, #3A0B66 55%, #22063A 100%)
+            radial-gradient(1200px 700px at 20% 20%, rgba(123,97,255,0.22), transparent 55%),
+            radial-gradient(900px 600px at 80% 30%, rgba(214,97,107,0.10), transparent 60%),
+            linear-gradient(135deg, #14002a, #2a0b52)
           `,
         }}
       />
