@@ -415,6 +415,13 @@ export default function Section4SystemTransformation() {
               }}
             >
               <canvas ref={canvasRef} className="absolute inset-0 z-[2]" style={{ width: "100%", height: "100%", display: "block" }} />
+              {/* Edge fade masks */}
+              <div className="absolute inset-0 z-[3] pointer-events-none" style={{
+                background: `
+                  linear-gradient(to right, rgba(20,0,42,1) 0%, transparent 18%, transparent 82%, rgba(20,0,42,1) 100%),
+                  linear-gradient(to bottom, rgba(20,0,42,1) 0%, transparent 15%, transparent 85%, rgba(20,0,42,1) 100%)
+                `,
+              }} />
 
               <div
                 className="absolute left-[18px] top-[18px] z-[3] uppercase"
