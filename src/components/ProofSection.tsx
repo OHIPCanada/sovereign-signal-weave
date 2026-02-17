@@ -40,9 +40,9 @@ function SystemField() {
 
       {/* Orbit 1 — innermost, warm */}
       <div className="orbit orbit-1">
-        <div className="node" style={{ top: 0, left: "50%", transform: "translate(-50%,-50%)", background: "rgba(212,97,107,0.8)" }} />
-        <div className="node" style={{ bottom: 0, left: "50%", transform: "translate(-50%,50%)", background: "rgba(232,150,124,0.75)" }} />
-        <div className="node" style={{ top: "50%", left: 0, transform: "translate(-50%,-50%)", background: "rgba(212,97,107,0.7)" }} />
+        <div className="node node-coral" style={{ top: 0, left: "50%", transform: "translate(-50%,-50%)" }} />
+        <div className="node node-coral" style={{ bottom: 0, left: "50%", transform: "translate(-50%,50%)" }} />
+        <div className="node node-coral" style={{ top: "50%", left: 0, transform: "translate(-50%,-50%)" }} />
       </div>
 
       {/* Orbit 2 — middle, violet */}
@@ -186,6 +186,15 @@ function SystemField() {
           width: 14px;
           height: 4px;
           background: linear-gradient(90deg, rgba(123,97,255,0.15), transparent);
+        }
+
+        .node-coral {
+          background: rgba(212,97,107,0.8);
+          box-shadow: 0 0 10px rgba(212,97,107,0.35), 0 0 24px rgba(232,150,124,0.15);
+        }
+
+        .node-coral::after {
+          background: linear-gradient(90deg, rgba(232,150,124,0.3), transparent);
         }
 
         .pulse-ring {
