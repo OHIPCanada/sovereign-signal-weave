@@ -40,9 +40,9 @@ function SystemField() {
 
       {/* Orbit 1 — innermost, warm */}
       <div className="orbit orbit-1">
-        <div className="node node-coral" style={{ top: 0, left: "50%", transform: "translate(-50%,-50%)" }} />
-        <div className="node node-coral" style={{ bottom: 0, left: "50%", transform: "translate(-50%,50%)" }} />
-        <div className="node node-coral" style={{ top: "50%", left: 0, transform: "translate(-50%,-50%)" }} />
+        <div className="node" style={{ top: 0, left: "50%", transform: "translate(-50%,-50%)", background: "rgba(212,97,107,0.8)" }} />
+        <div className="node" style={{ bottom: 0, left: "50%", transform: "translate(-50%,50%)", background: "rgba(232,150,124,0.75)" }} />
+        <div className="node" style={{ top: "50%", left: 0, transform: "translate(-50%,-50%)", background: "rgba(212,97,107,0.7)" }} />
       </div>
 
       {/* Orbit 2 — middle, violet */}
@@ -72,8 +72,8 @@ function SystemField() {
       <style>{`
         .measure-visual {
           position: relative;
-          width: clamp(380px, 50vw, 580px);
-          height: clamp(380px, 50vw, 580px);
+          width: clamp(340px, 42vw, 480px);
+          height: clamp(340px, 42vw, 480px);
           margin: 0 auto;
         }
 
@@ -142,59 +142,25 @@ function SystemField() {
 
         .node {
           position: absolute;
-          width: 11px;
-          height: 11px;
-          background: rgba(123,97,255,0.7);
+          width: 8px;
+          height: 8px;
+          background: rgba(123,97,255,0.65);
           border-radius: 50%;
-          box-shadow: 0 0 8px rgba(123,97,255,0.35), 0 0 20px rgba(123,97,255,0.12);
-        }
-
-        .node::after {
-          content: '';
-          position: absolute;
-          width: 22px;
-          height: 6px;
-          background: linear-gradient(90deg, rgba(123,97,255,0.25), transparent);
-          border-radius: 50%;
-          top: 50%;
-          right: 100%;
-          transform: translateY(-50%);
-          filter: blur(2px);
+          box-shadow: 0 0 6px rgba(123,97,255,0.3);
         }
 
         .node-lg {
-          width: 14px;
-          height: 14px;
-          background: rgba(123,97,255,0.55);
-          box-shadow: 0 0 12px rgba(123,97,255,0.3), 0 0 28px rgba(123,97,255,0.1);
-        }
-
-        .node-lg::after {
-          width: 28px;
-          height: 8px;
-          background: linear-gradient(90deg, rgba(123,97,255,0.2), transparent);
+          width: 10px;
+          height: 10px;
+          background: rgba(123,97,255,0.5);
+          box-shadow: 0 0 10px rgba(123,97,255,0.25);
         }
 
         .node-sm {
-          width: 7px;
-          height: 7px;
-          background: rgba(123,97,255,0.4);
-          box-shadow: 0 0 5px rgba(123,97,255,0.2);
-        }
-
-        .node-sm::after {
-          width: 14px;
-          height: 4px;
-          background: linear-gradient(90deg, rgba(123,97,255,0.15), transparent);
-        }
-
-        .node-coral {
-          background: rgba(212,97,107,0.8);
-          box-shadow: 0 0 10px rgba(212,97,107,0.35), 0 0 24px rgba(232,150,124,0.15);
-        }
-
-        .node-coral::after {
-          background: linear-gradient(90deg, rgba(232,150,124,0.3), transparent);
+          width: 5px;
+          height: 5px;
+          background: rgba(123,97,255,0.35);
+          box-shadow: 0 0 4px rgba(123,97,255,0.15);
         }
 
         .pulse-ring {
