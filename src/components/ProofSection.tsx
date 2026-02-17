@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
 
-/* ── Throughput Rings Animation ── */
+/* ── Throughput Rings (Light Theme) ── */
 function ThroughputRings() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -17,10 +17,6 @@ function ThroughputRings() {
     let w = 0, h = 0;
     let raf: number;
 
-    const LAV = "#E6E6FA";
-    const VIO = "#7B61FF";
-    const CORAL = "#E8967C";
-
     interface Packet {
       ring: number;
       angle: number;
@@ -34,16 +30,17 @@ function ThroughputRings() {
     }
 
     const rings = [
-      { radius: 0.22, strokeW: 1.5, speed: 0.035, color: LAV },
-      { radius: 0.32, strokeW: 2, speed: -0.025, color: VIO },
-      { radius: 0.42, strokeW: 2.5, speed: 0.018, color: CORAL },
+      { radius: 0.22, strokeW: 1.5, speed: 0.035, color: "rgba(212,97,107,0.7)" },
+      { radius: 0.32, strokeW: 2, speed: -0.025, color: "rgba(123,97,255,0.6)" },
+      { radius: 0.42, strokeW: 2.5, speed: 0.018, color: "rgba(123,97,255,0.45)" },
     ];
+
+    const packetColors = ["rgba(180,70,90,0.85)", "rgba(100,70,220,0.8)", "rgba(100,70,220,0.65)"];
 
     let packets: Packet[] = [];
 
     function initPackets() {
       packets = [];
-      const colors = [LAV, VIO, CORAL];
       for (let r = 0; r < 3; r++) {
         const count = r === 0 ? 4 : r === 1 ? 6 : 5;
         for (let i = 0; i < count; i++) {
@@ -52,7 +49,7 @@ function ThroughputRings() {
             angle: (Math.PI * 2 * i) / count + Math.random() * 0.3,
             speed: rings[r].speed * (0.8 + Math.random() * 0.4),
             r: 2.5 + Math.random() * 1.5,
-            color: colors[r],
+            color: packetColors[r],
             pulsePhase: Math.random() * Math.PI * 2,
             splitting: false,
             splitTime: 0,
@@ -88,7 +85,7 @@ function ThroughputRings() {
         ctx!.beginPath();
         ctx!.arc(cx, cy, rr, 0, Math.PI * 2);
         ctx!.strokeStyle = ring.color;
-        ctx!.globalAlpha = 0.15;
+        ctx!.globalAlpha = 0.35;
         ctx!.lineWidth = ring.strokeW;
         ctx!.stroke();
         ctx!.globalAlpha = 1;
@@ -97,7 +94,6 @@ function ThroughputRings() {
       // Pulse trigger
       if (now - lastPulse > 4200) {
         lastPulse = now;
-        // Find a random packet to pulse
         const idx = Math.floor(Math.random() * packets.length);
         packets[idx].splitting = true;
         packets[idx].splitTime = now;
@@ -111,23 +107,21 @@ function ThroughputRings() {
         const px = cx + Math.cos(p.angle) * rr;
         const py = cy + Math.sin(p.angle) * rr;
 
-        // Pulse animation
         let scale = 1;
         let glow = 0;
         if (p.splitting && now - p.splitTime < 600) {
           const t = (now - p.splitTime) / 600;
-          scale = 1 + Math.sin(t * Math.PI) * 0.9;
-          glow = Math.sin(t * Math.PI) * 12;
+          scale = 1 + Math.sin(t * Math.PI) * 0.6;
+          glow = Math.sin(t * Math.PI) * 7;
         } else if (p.splitting && now - p.splitTime >= 600) {
           p.splitting = false;
-          // Spawn a new packet nearby
           if (packets.length + newPackets.length < 22) {
             newPackets.push({
               ring: p.ring,
               angle: p.angle + 0.3,
               speed: p.speed * (0.9 + Math.random() * 0.2),
               r: p.r * 0.7,
-              color: p.color,
+              color: p.ring === 0 ? "rgba(212,97,107,0.7)" : p.color,
               pulsePhase: Math.random() * Math.PI * 2,
               splitting: false,
               splitTime: 0,
@@ -136,21 +130,19 @@ function ThroughputRings() {
           }
         }
 
-        // Breathing
-        const breath = 1 + Math.sin(now * 0.002 + p.pulsePhase) * 0.15;
+        const breath = 1 + Math.sin(now * 0.002 + p.pulsePhase) * 0.12;
         const finalR = p.r * scale * breath;
 
-        // Glow
+        // Reduced glow
         if (glow > 0) {
           ctx!.beginPath();
           ctx!.arc(px, py, finalR + glow, 0, Math.PI * 2);
-          ctx!.fillStyle = p.color;
-          ctx!.globalAlpha = 0.15;
+          ctx!.fillStyle = p.splitting ? "rgba(212,97,107,0.25)" : p.color;
+          ctx!.globalAlpha = 0.1;
           ctx!.fill();
           ctx!.globalAlpha = 1;
         }
 
-        // Dot
         ctx!.beginPath();
         ctx!.arc(px, py, finalR, 0, Math.PI * 2);
         ctx!.fillStyle = p.color;
@@ -159,10 +151,7 @@ function ThroughputRings() {
         ctx!.globalAlpha = 1;
       }
 
-      // Add new spawned packets
       for (const np of newPackets) packets.push(np);
-
-      // Cap packets
       while (packets.length > 22) packets.shift();
 
       raf = requestAnimationFrame(draw);
@@ -188,151 +177,164 @@ function ThroughputRings() {
 
 /* ── Proof Tiles ── */
 const proofTiles = [
-  { num: "X× faster", label: "Decision latency", desc: "From hours to minutes" },
-  { num: "Y% more", label: "Coordination rate", desc: "More tasks resolved per pathway" },
-  { num: "Y% fewer", label: "Workflow leakage", desc: "Fewer dropped handoffs" },
-  { num: "100%", label: "Audit readiness", desc: "Continuous trace, zero scramble" },
+  { num: "4.3×", suffix: "faster", label: "Decision latency", desc: "From hours to minutes" },
+  { num: "27%", suffix: "more", label: "Coordination rate", desc: "Tasks resolved per pathway" },
+  { num: "38%", suffix: "fewer", label: "Workflow leakage", desc: "Dropped handoffs reduced" },
+  { num: "100%", suffix: "traceable", label: "Audit readiness", desc: "Continuous system memory" },
 ];
+
+/* ── Reveal wrapper ── */
+function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.3 });
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(8px)",
+        transition: `all 0.8s cubic-bezier(.22,.65,.3,1) ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 /* ── Section 5 ── */
 export default function ProofSection() {
   return (
-    <motion.section
+    <section
       className="relative overflow-hidden"
       style={{
-        padding: "clamp(56px, 7vw, 96px) 0",
-        minHeight: "100vh",
+        padding: "140px 8vw",
         background: `
-          radial-gradient(900px 700px at 85% 85%, rgba(232,150,124,0.18), transparent 60%),
-          radial-gradient(700px 500px at 75% 90%, rgba(212,97,107,0.12), transparent 60%),
-          linear-gradient(135deg, #140A2A, #2A0B4F)
+          radial-gradient(900px 600px at 85% 85%, rgba(242,193,174,0.35), transparent 60%),
+          radial-gradient(800px 500px at 15% 10%, rgba(205,188,232,0.45), transparent 60%),
+          linear-gradient(135deg, #F4EFFA 0%, #E9DFF4 50%, #F8F4FB 100%)
         `,
-        color: "#F6F2FF",
+        color: "#1B0F2E",
       }}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      {/* Subtle noise overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
-        }}
-      />
-
-      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
+      <div className="relative z-10 mx-auto" style={{ width: "min(1400px, 94vw)" }}>
         {/* Top: Left text + Right rings */}
         <div
           className="grid grid-cols-1 lg:grid-cols-[0.45fr_1.55fr] items-center"
           style={{ gap: "clamp(28px, 4vw, 56px)" }}
         >
           {/* Left content */}
-          <div className="flex flex-col gap-5">
-            <motion.p
-              style={{
-                fontSize: 12,
-                letterSpacing: "0.28em",
-                textTransform: "uppercase",
-                color: "rgba(246,242,255,0.55)",
-              }}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              System Proof
-            </motion.p>
+          <div className="flex flex-col">
+            <Reveal>
+              <p
+                style={{
+                  fontSize: 12,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  opacity: 0.6,
+                  fontWeight: 500,
+                }}
+              >
+                [ System Proof ]
+              </p>
+            </Reveal>
 
-            <motion.h2
-              style={{
-                fontSize: "clamp(44px, 4.6vw, 72px)",
-                lineHeight: 0.95,
-                letterSpacing: "-0.02em",
-                fontWeight: 700,
-              }}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-            >
-              Intelligence you{" "}
-              <span style={{ color: "#E8967C" }}>can measure.</span>
-            </motion.h2>
+            <Reveal delay={0.1}>
+              <h2
+                style={{
+                  marginTop: 24,
+                  fontSize: "clamp(56px, 5.5vw, 88px)",
+                  lineHeight: 0.95,
+                  letterSpacing: "-0.02em",
+                  fontWeight: 700,
+                }}
+              >
+                Intelligence you can{" "}
+                <span
+                  style={{
+                    background: "linear-gradient(90deg, #D4616B, #E8967C)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  measure.
+                </span>
+              </h2>
+            </Reveal>
 
-            <motion.p
-              style={{
-                fontSize: 16,
-                lineHeight: 1.6,
-                color: "rgba(246,242,255,0.72)",
-                maxWidth: "46ch",
-              }}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.35 }}
-            >
-              DocG AI turns fragmented clinical signals into coordinated actions—at system scale.
-            </motion.p>
+            <Reveal delay={0.2}>
+              <p
+                style={{
+                  marginTop: 20,
+                  fontSize: 18,
+                  lineHeight: 1.6,
+                  maxWidth: "48ch",
+                  opacity: 0.75,
+                }}
+              >
+                DocG AI turns fragmented clinical signals into coordinated actions—at system scale.
+              </p>
+            </Reveal>
           </div>
 
           {/* Right: Throughput Rings */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            style={{
-              borderRadius: 24,
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.10)",
-              overflow: "hidden",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
-            }}
-          >
-            <ThroughputRings />
-          </motion.div>
+          <Reveal delay={0.25}>
+            <div
+              style={{
+                borderRadius: 24,
+                background: "rgba(255,255,255,0.55)",
+                backdropFilter: "blur(14px)",
+                border: "1px solid rgba(27,15,46,0.08)",
+                overflow: "hidden",
+                boxShadow: "0 20px 50px rgba(27,15,46,0.08)",
+              }}
+            >
+              <ThroughputRings />
+            </div>
+          </Reveal>
         </div>
 
         {/* Proof Tiles Grid */}
-        <motion.div
-          className="grid grid-cols-2 md:grid-cols-4 mt-8"
-          style={{ gap: 14, marginTop: "clamp(28px, 3vw, 48px)" }}
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.5 }}
+        <div
+          className="grid grid-cols-2 md:grid-cols-4"
+          style={{ gap: 20, marginTop: 72 }}
         >
           {proofTiles.map((tile, i) => (
-            <motion.div
-              key={tile.label}
-              style={{
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.10)",
-                borderRadius: 18,
-                padding: "16px 16px",
-                boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
-              }}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.55 + i * 0.1 }}
-            >
-              <p style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em" }}>
-                {tile.num}
-              </p>
-              <p style={{ marginTop: 4, fontSize: 14, fontWeight: 600 }}>
-                {tile.label}
-              </p>
-              <p style={{ marginTop: 6, fontSize: 13, color: "rgba(246,242,255,0.55)" }}>
-                {tile.desc}
-              </p>
-            </motion.div>
+            <Reveal key={tile.label} delay={0.3 + i * 0.08}>
+              <div
+                className="group"
+                style={{
+                  background: "rgba(255,255,255,0.55)",
+                  backdropFilter: "blur(14px)",
+                  border: "1px solid rgba(27,15,46,0.08)",
+                  borderRadius: 18,
+                  padding: 20,
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  cursor: "default",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "0 20px 50px rgba(27,15,46,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "none";
+                }}
+              >
+                <p style={{ fontSize: 32, fontWeight: 700, letterSpacing: "-0.02em", color: "#1B0F2E" }}>
+                  {tile.num}{" "}
+                  <span style={{ fontSize: 18, fontWeight: 600, opacity: 0.7 }}>{tile.suffix}</span>
+                </p>
+                <p style={{ marginTop: 6, fontSize: 14, fontWeight: 600, color: "#1B0F2E" }}>
+                  {tile.label}
+                </p>
+                <p style={{ marginTop: 6, fontSize: 14, opacity: 0.7 }}>
+                  {tile.desc}
+                </p>
+              </div>
+            </Reveal>
           ))}
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
