@@ -50,122 +50,157 @@ const InterfaceSection = () => {
     const timeline = svg.querySelector("#timeline") as SVGGElement;
     const pulse = svg.querySelector("#pulse") as SVGCircleElement;
     const lens = svg.querySelector("#lens") as SVGGElement;
+    const lensFlash = svg.querySelector("#lensFlash");
 
-    // Setup trace dash
+    // Store original trace lengths for reset
+    const traceLengths: number[] = [];
     tracePaths.forEach((p) => {
       const len = p.getTotalLength();
+      traceLengths.push(len);
       p.style.strokeDasharray = `6 10`;
       p.style.strokeDashoffset = `${len}`;
     });
 
-    // 1) Idle drift loop
-    const drift = gsap.timeline({ repeat: -1, yoyo: true });
+    // --- MASTER LOOPING TIMELINE (10s cycle) ---
+    const CYCLE_DURATION = 10;
+    const master = gsap.timeline({ repeat: -1, paused: true });
+
+    // Phase 1: Fragmented drift (0s - 3.2s)
+    // Drift signals randomly
     sigs.forEach((el, i) => {
-      drift.to(
-        el,
-        {
-          x: gsap.utils.random(-12, 12),
-          y: gsap.utils.random(-10, 10),
-          duration: gsap.utils.random(2.8, 4.4),
-          ease: "sine.inOut",
-        },
-        i * 0.06
-      );
+      master.to(el, {
+        x: gsap.utils.random(-12, 12),
+        y: gsap.utils.random(-10, 10),
+        duration: 2.8,
+        ease: "sine.inOut",
+      }, i * 0.05);
     });
 
-    // Lens breathing
-    const lensBreath = gsap.to(lens, {
+    // Lens breathing during drift phase
+    master.to(lens, {
       scale: 1.04,
       transformOrigin: "600px 260px",
-      yoyo: true,
-      repeat: -1,
-      duration: 2.8,
+      duration: 1.4,
       ease: "sine.inOut",
-    });
+    }, 0);
+    master.to(lens, {
+      scale: 1.0,
+      transformOrigin: "600px 260px",
+      duration: 1.4,
+      ease: "sine.inOut",
+    }, 1.4);
 
-    // 2) Transform timeline (triggered on scroll)
-    const transformTL = gsap.timeline({ paused: true });
-    const lensFlash = svg.querySelector("#lensFlash");
+    // Phase 2: Convergence (3.2s - 5.5s)
+    const CONV_START = 3.2;
 
-    // Reveal traces
-    transformTL.to(traces, { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.0);
-
-    // Draw traces — brighter during convergence
+    // Reveal & brighten traces
+    master.to(traces, { opacity: 1, duration: 0.5, ease: "power2.out" }, CONV_START);
     tracePaths.forEach((p, idx) => {
-      transformTL.to(p, {
+      master.to(p, {
         strokeDashoffset: 0,
-        duration: 0.9 + idx * 0.12,
+        duration: 0.8 + idx * 0.1,
         ease: "expo.out",
-      }, 0.1);
+      }, CONV_START + 0.1);
     });
-    transformTL.to(tracePaths, {
+    master.to(tracePaths, {
       attr: { "stroke-width": 3.5 },
       opacity: 1,
-      duration: 0.5,
+      duration: 0.4,
       ease: "power2.in",
-    }, 0.6);
+    }, CONV_START + 0.5);
 
-    // Move signals toward lens center (600, 260)
+    // Move signals toward lens center
     sigs.forEach((el, i) => {
       const targetX = 600 - SIGNALS[i].x + gsap.utils.random(-30, 30);
       const targetY = 260 - SIGNALS[i].y + gsap.utils.random(-20, 20);
-      transformTL.to(el, {
+      master.to(el, {
         x: targetX,
         y: targetY,
         opacity: 0,
-        duration: 1.2,
+        duration: 1.0,
         ease: "power3.inOut",
-      }, 0.2 + i * 0.03);
+      }, CONV_START + 0.15 + i * 0.025);
     });
 
-    // Lens flash — dramatic burst when signals converge
+    // Lens flash burst
     if (lensFlash) {
-      transformTL.to(lensFlash, {
+      master.to(lensFlash, {
         attr: { r: 120 },
         fill: "rgba(110,59,255,0.45)",
-        duration: 0.4,
+        duration: 0.35,
         ease: "power2.in",
-      }, 0.8);
-      transformTL.to(lensFlash, {
+      }, CONV_START + 0.7);
+      master.to(lensFlash, {
         attr: { r: 200 },
         fill: "rgba(110,59,255,0.0)",
-        duration: 0.7,
-        ease: "power2.out",
-      }, 1.2);
-    }
-
-    // Lens scale pulse on convergence
-    if (lens) {
-      transformTL.to(lens, {
-        scale: 1.15,
-        transformOrigin: "600px 260px",
-        duration: 0.4,
-        ease: "power2.in",
-      }, 0.8);
-      transformTL.to(lens, {
-        scale: 1.0,
-        transformOrigin: "600px 260px",
         duration: 0.6,
-        ease: "elastic.out(1, 0.5)",
-      }, 1.2);
+        ease: "power2.out",
+      }, CONV_START + 1.05);
     }
 
-    // Bring in harmonized timeline
-    transformTL.to(timeline, { opacity: 1, duration: 0.8, ease: "power2.out" }, 1.4);
+    // Lens scale pulse
+    master.to(lens, {
+      scale: 1.15,
+      transformOrigin: "600px 260px",
+      duration: 0.35,
+      ease: "power2.in",
+    }, CONV_START + 0.7);
+    master.to(lens, {
+      scale: 1.0,
+      transformOrigin: "600px 260px",
+      duration: 0.5,
+      ease: "elastic.out(1, 0.5)",
+    }, CONV_START + 1.05);
 
-    // Soften traces back down
-    transformTL.to(traces, { opacity: 0.2, duration: 0.8, ease: "power2.out" }, 1.5);
-    transformTL.to(tracePaths, { attr: { "stroke-width": 2 }, duration: 0.6 }, 1.5);
+    // Phase 3: Harmonized (5.5s - 8.5s)
+    const HARM_START = 5.5;
 
-    // 3) Post-transform pulse loop
-    const pulseTL = gsap.timeline({ repeat: -1, paused: true });
-    pulseTL
-      .set(pulse, { attr: { cx: 720, r: 10 }, opacity: 0.9 })
-      .to(pulse, { attr: { cx: 1090 }, duration: 2.8, ease: "sine.inOut" })
-      .to(pulse, { opacity: 0.0, duration: 0.15 }, ">-0.1")
-      .set(pulse, { opacity: 0.9, attr: { cx: 720 } });
+    // Show timeline, soften traces
+    master.to(timeline, { opacity: 1, duration: 0.6, ease: "power2.out" }, HARM_START);
+    master.to(traces, { opacity: 0.2, duration: 0.6, ease: "power2.out" }, HARM_START + 0.2);
+    master.to(tracePaths, { attr: { "stroke-width": 2 }, duration: 0.5 }, HARM_START + 0.2);
 
-    // --- TRIGGER LOGIC: scroll guard + delayed convergence ---
+    // Traveling pulse across timeline
+    master.set(pulse, { attr: { cx: 720 }, opacity: 0.9 }, HARM_START + 0.3);
+    master.to(pulse, { attr: { cx: 1060 }, duration: 2.2, ease: "sine.inOut" }, HARM_START + 0.4);
+    master.to(pulse, { opacity: 0, duration: 0.15 }, HARM_START + 2.5);
+
+    // Phase 4: Reset (8.5s - 10s) — fade everything out, restore signals
+    const RESET_START = 8.5;
+
+    // Fade out harmonized elements
+    master.to(timeline, { opacity: 0, duration: 0.5, ease: "power2.in" }, RESET_START);
+    master.to(traces, { opacity: 0, duration: 0.5, ease: "power2.in" }, RESET_START);
+
+    // Reset lens flash
+    if (lensFlash) {
+      master.set(lensFlash, { attr: { r: 30 }, fill: "rgba(110,59,255,0.0)" }, RESET_START + 0.5);
+    }
+
+    // Reset trace dash offsets
+    tracePaths.forEach((p, idx) => {
+      master.set(p, {
+        strokeDashoffset: traceLengths[idx],
+        attr: { "stroke-width": 2 },
+        opacity: 1,
+      }, RESET_START + 0.5);
+    });
+
+    // Restore signals to original positions
+    sigs.forEach((el, i) => {
+      master.to(el, {
+        x: 0,
+        y: 0,
+        opacity: 1,
+        duration: 0.6,
+        ease: "power2.out",
+      }, RESET_START + 0.3 + i * 0.02);
+    });
+
+    // Pad to exactly CYCLE_DURATION
+    master.set({}, {}, CYCLE_DURATION);
+
+    // --- TRIGGER: scroll guard + delayed start ---
     const stageEl = stageRef.current;
     if (!stageEl || hasTriggered.current) return;
 
@@ -177,40 +212,22 @@ const InterfaceSection = () => {
     const onFirstScroll = () => { userHasScrolled = true; };
     window.addEventListener("scroll", onFirstScroll, { once: true });
 
-    function startConvergence() {
+    function startAnimation() {
       if (started) return;
       started = true;
       hasTriggered.current = true;
-
-      // Slow drift instead of killing it instantly
-      gsap.to(drift, { timeScale: 0.25, duration: 0.8, ease: "sine.out" });
-
-      transformTL.play(0);
-
-      // Start pulse after transform completes, and kill drift permanently
-      transformTL.eventCallback("onComplete", () => {
-        drift.kill();
-        lensBreath.kill();
-        pulseTL.play(0);
-      });
+      master.play(0);
     }
 
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           if (!e.isIntersecting || started) return;
-
-          // Don't auto-trigger if page loads at this section
           if (!userHasScrolled) return;
-
-          // Record first visible moment
           if (!enteredAt) enteredAt = Date.now();
-
-          // Ensure fragmented state is visible for MIN_FRAGMENTED_MS
           const elapsed = Date.now() - enteredAt;
           const remaining = Math.max(0, (MIN_FRAGMENTED_MS - elapsed) / 1000);
-
-          gsap.delayedCall(remaining, startConvergence);
+          gsap.delayedCall(remaining, startAnimation);
         });
       },
       { threshold: 0.65, rootMargin: "0px 0px -10% 0px" }
@@ -221,10 +238,7 @@ const InterfaceSection = () => {
     return () => {
       io.disconnect();
       window.removeEventListener("scroll", onFirstScroll);
-      drift.kill();
-      lensBreath.kill();
-      transformTL.kill();
-      pulseTL.kill();
+      master.kill();
     };
   }, []);
 
