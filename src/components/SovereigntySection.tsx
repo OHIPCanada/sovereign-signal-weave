@@ -265,11 +265,12 @@ const SovereigntySection = () => {
           className="relative overflow-hidden"
           style={{
             borderRadius: 24,
-            background: "rgba(255,255,255,0.025)",
-            border: "1px solid rgba(255,255,255,0.06)",
-            boxShadow: "0 30px 80px rgba(0,0,0,0.4)",
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(123,77,255,0.15)",
+            boxShadow: "0 30px 80px rgba(123,77,255,0.15), inset 0 0 80px rgba(123,77,255,0.05)",
             aspectRatio: "1",
-            maxWidth: 600,
+            maxWidth: 700,
+            width: "100%",
             justifySelf: "end",
           }}
         >
@@ -281,12 +282,13 @@ const SovereigntySection = () => {
           >
             <defs>
               <radialGradient id="sovCoreGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#7B4DFF" stopOpacity={0.6} />
-                <stop offset="60%" stopColor="#7B4DFF" stopOpacity={0.15} />
+                <stop offset="0%" stopColor="#7B61FF" stopOpacity={0.9} />
+                <stop offset="40%" stopColor="#7B4DFF" stopOpacity={0.4} />
                 <stop offset="100%" stopColor="#7B4DFF" stopOpacity={0} />
               </radialGradient>
-              <radialGradient id="sovAmbient" cx="50%" cy="50%" r="60%">
-                <stop offset="0%" stopColor="#241034" stopOpacity={0.8} />
+              <radialGradient id="sovAmbient" cx="50%" cy="50%" r="55%">
+                <stop offset="0%" stopColor="#3D1F7A" stopOpacity={0.9} />
+                <stop offset="60%" stopColor="#241034" stopOpacity={0.4} />
                 <stop offset="100%" stopColor="#0B0613" stopOpacity={0} />
               </radialGradient>
               <filter id="sovGlow" x="-50%" y="-50%" width="200%" height="200%">
@@ -317,8 +319,8 @@ const SovereigntySection = () => {
                 y1={l.y1}
                 x2={l.x2}
                 y2={l.y2}
-                stroke="rgba(123,77,255,0.06)"
-                strokeWidth={0.5}
+                stroke="rgba(123,77,255,0.15)"
+                strokeWidth={1}
               />
             ))}
 
@@ -327,21 +329,21 @@ const SovereigntySection = () => {
               id="sov-outer"
               cx="300"
               cy="300"
-              r="220"
+              r="240"
               fill="none"
-              stroke="rgba(255,255,255,0.06)"
-              strokeWidth={1.5}
-              strokeDasharray="8 16"
+              stroke="rgba(123,77,255,0.2)"
+              strokeWidth={2}
+              strokeDasharray="10 18"
             />
 
             {/* Second subtle ring */}
             <circle
               cx="300"
               cy="300"
-              r="180"
+              r="190"
               fill="none"
-              stroke="rgba(123,77,255,0.08)"
-              strokeWidth={1}
+              stroke="rgba(123,77,255,0.2)"
+              strokeWidth={1.5}
             />
 
             {/* Light rays from core to anchors */}
@@ -353,8 +355,8 @@ const SovereigntySection = () => {
                 y1="300"
                 x2={a.cx}
                 y2={a.cy}
-                stroke="rgba(123,77,255,0.12)"
-                strokeWidth={1}
+                stroke="rgba(123,77,255,0.3)"
+                strokeWidth={1.5}
               />
             ))}
 
@@ -365,9 +367,9 @@ const SovereigntySection = () => {
                 className="sov-anchor"
                 cx={a.cx}
                 cy={a.cy}
-                r={6}
-                fill="rgba(123,77,255,0.6)"
-                opacity={0.5}
+                r={8}
+                fill="rgba(123,77,255,0.85)"
+                opacity={0.8}
               />
             ))}
 
@@ -376,55 +378,55 @@ const SovereigntySection = () => {
               id="sov-pulse-1"
               cx="300"
               cy="300"
-              r="60"
+              r="70"
               fill="none"
-              stroke="rgba(212,97,107,0.25)"
-              strokeWidth={2}
+              stroke="rgba(123,77,255,0.45)"
+              strokeWidth={3}
             />
             <circle
               id="sov-pulse-2"
               cx="300"
               cy="300"
-              r="60"
+              r="70"
               fill="none"
-              stroke="rgba(123,77,255,0.18)"
-              strokeWidth={1.5}
+              stroke="rgba(212,97,107,0.35)"
+              strokeWidth={2.5}
             />
 
             {/* Core glow backdrop */}
-            <circle cx="300" cy="300" r="80" fill="url(#sovCoreGlow)" filter="url(#sovCoreFilter)" />
+            <circle cx="300" cy="300" r="120" fill="url(#sovCoreGlow)" filter="url(#sovCoreFilter)" />
 
             {/* Central core block */}
             <g id="sov-core" filter="url(#sovGlow)">
               <rect
-                x="260"
-                y="260"
-                width="80"
-                height="80"
-                rx="14"
+                x="240"
+                y="240"
+                width="120"
+                height="120"
+                rx="18"
                 fill="#7B4DFF"
-                opacity={0.85}
+                opacity={0.9}
               />
               <rect
-                x="260"
-                y="260"
-                width="80"
-                height="80"
-                rx="14"
+                x="240"
+                y="240"
+                width="120"
+                height="120"
+                rx="18"
                 fill="none"
-                stroke="rgba(255,255,255,0.15)"
-                strokeWidth={1}
+                stroke="rgba(255,255,255,0.25)"
+                strokeWidth={1.5}
               />
               {/* Inner detail */}
               <rect
-                x="278"
-                y="278"
-                width="44"
-                height="44"
-                rx="8"
-                fill="rgba(255,255,255,0.1)"
+                x="265"
+                y="265"
+                width="70"
+                height="70"
+                rx="12"
+                fill="rgba(255,255,255,0.12)"
               />
-              <circle cx="300" cy="300" r="8" fill="rgba(255,255,255,0.35)" />
+              <circle cx="300" cy="300" r="14" fill="rgba(255,255,255,0.5)" />
             </g>
           </svg>
         </div>
