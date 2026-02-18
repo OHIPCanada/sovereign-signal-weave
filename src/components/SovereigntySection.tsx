@@ -76,7 +76,7 @@ const SovereigntySection = () => {
     const loop = gsap.timeline({ repeat: -1, repeatDelay: 1.5, delay: 0 });
 
     // Reset state at start of each cycle
-    loop.set(perimeterSegments, { attr: { "stroke-dashoffset": (i: number) => [340, 340, 340, 340][i] }, opacity: 0 });
+    loop.set(perimeterSegments, { attr: { "stroke-dashoffset": (i: number) => [340, 340, 340, 340][i] } });
     loop.set(cornerAnchors, { opacity: 0 });
     loop.set(lockIcon, { opacity: 0, scale: 0 });
     loop.set(sealGlow, { opacity: 0 });
@@ -132,11 +132,17 @@ const SovereigntySection = () => {
     // Hold the locked state
     loop.to({}, { duration: 2.5 });
 
-    // Fade out ONLY the cycling elements (core + grid stay)
-    loop.to([lockIcon, ...Array.from(cornerAnchors), ...Array.from(perimeterSegments)], {
-      opacity: 0, duration: 0.8, ease: "power2.inOut",
-    });
-    loop.to(gridLines, { opacity: 0.07, duration: 0.6, ease: "power2.inOut" }, "-=0.6");
+    // Fade out only lock icon & corners — perimeter lines STAY visible
+    loop.to(lockIcon, { opacity: 0, duration: 0.6, ease: "power2.inOut" });
+    loop.to(cornerAnchors, { opacity: 0, duration: 0.6, ease: "power2.inOut" }, "-=0.4");
+    loop.to(particles, { opacity: 0, duration: 0.3 }, "-=0.6");
+
+    // Reset perimeter dashoffset so they re-draw on next cycle (lines stay visible via opacity)
+    loop.set(perimeterSegments, { attr: { "stroke-dashoffset": (i: number) => {
+      const lengths = [340, 340, 340, 340];
+      return lengths[i] || 340;
+    }}});
+    loop.to(gridLines, { opacity: 0.07, duration: 0.6, ease: "power2.inOut" }, "-=0.3");
 
     // Start loop after intro finishes
     intro.call(() => loop.play(), [], "+=0.2");
