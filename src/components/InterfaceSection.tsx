@@ -74,7 +74,7 @@ const InterfaceSection = () => {
     });
 
     // Lens breathing
-    gsap.to(lens, {
+    const lensBreath = gsap.to(lens, {
       scale: 1.04,
       transformOrigin: "600px 260px",
       yoyo: true,
@@ -187,11 +187,10 @@ const InterfaceSection = () => {
 
       transformTL.play(0);
 
-      // Pause drift after signals have converged (~2.1s)
-      gsap.delayedCall(2.1, () => drift.pause());
-
-      // Start pulse after transform completes
+      // Start pulse after transform completes, and kill drift permanently
       transformTL.eventCallback("onComplete", () => {
+        drift.kill();
+        lensBreath.kill();
         pulseTL.play(0);
       });
     }
@@ -223,6 +222,7 @@ const InterfaceSection = () => {
       io.disconnect();
       window.removeEventListener("scroll", onFirstScroll);
       drift.kill();
+      lensBreath.kill();
       transformTL.kill();
       pulseTL.kill();
     };
