@@ -62,13 +62,15 @@ const InterfaceSection = () => {
     });
 
     // --- MASTER LOOPING TIMELINE ---
-    // Signals go one-by-one from left to convergence, then harmonized, then loop
     const sigCount = sigs.length;
-    const DRIFT_DUR = 2.5;              // initial drift phase
-    const SIG_FLY_DUR = 0.5;            // each signal's flight to lens
-    const SIG_STAGGER = 0.18;           // delay between each signal
-    const CONV_START = DRIFT_DUR;
-    const CONV_END = CONV_START + SIG_FLY_DUR + (sigCount - 1) * SIG_STAGGER + 0.5;
+    const SIG_FLY_DUR = 0.6;            // each signal's flight to lens
+    const SIG_STAGGER = 0.25;           // delay between each signal departure
+    // Sort signals left-to-right so leftmost departs first
+    const sortedIndices = [...Array(sigCount).keys()].sort((a, b) => SIGNALS[a].x - SIGNALS[b].x);
+    // Total convergence phase = time for all signals to depart + fly
+    const CONV_PHASE_DUR = (sigCount - 1) * SIG_STAGGER + SIG_FLY_DUR + 0.3;
+    const CONV_START = 0; // convergence starts immediately — signals peel off one by one while others keep drifting
+    const CONV_END = CONV_START + CONV_PHASE_DUR;
     const HARM_START = CONV_END + 0.3;
     const HARM_DUR = 3.0;
     const HARM_END = HARM_START + HARM_DUR;
@@ -78,62 +80,67 @@ const InterfaceSection = () => {
 
     const master = gsap.timeline({ repeat: -1, paused: true });
 
-    // ── Phase 1: Fragmented drift (0 → CONV_START) ──
+    // ── Gentle idle drift on ALL signals for the entire convergence window ──
+    // Each signal bobs gently until it's its turn to fly
     sigs.forEach((el, i) => {
+      // Gentle floating — yoyo so it keeps moving until killed by the fly tween
+      const driftDur = CONV_PHASE_DUR; // drift the whole convergence window
       master.to(el, {
-        x: gsap.utils.random(-14, 14),
-        y: gsap.utils.random(-12, 12),
-        duration: DRIFT_DUR - 0.2,
+        x: gsap.utils.random(-10, 10),
+        y: gsap.utils.random(-8, 8),
+        duration: driftDur,
         ease: "sine.inOut",
-      }, i * 0.04);
+        yoyo: true,
+        repeat: 1,
+      }, 0);
     });
 
-    // Lens breathing
-    master.to(lens, { scale: 1.04, transformOrigin: "600px 260px", duration: 1.2, ease: "sine.inOut" }, 0);
-    master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 1.2, ease: "sine.inOut" }, 1.2);
+    // Lens breathing while signals are drifting/departing
+    master.to(lens, { scale: 1.04, transformOrigin: "600px 260px", duration: 1.5, ease: "sine.inOut" }, 0);
+    master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 1.5, ease: "sine.inOut" }, 1.5);
 
-    // ── Phase 2: Convergence — signals fly one-by-one to lens ──
-    // Reveal traces as convergence starts
-    master.to(traces, { opacity: 1, duration: 0.5, ease: "power2.out" }, CONV_START);
+    // ── Convergence: signals fly one-by-one to lens ──
+    // Reveal traces gradually
+    master.to(traces, { opacity: 1, duration: 0.8, ease: "power2.out" }, 0.5);
     tracePaths.forEach((p, idx) => {
       master.to(p, {
         strokeDashoffset: 0,
-        duration: 0.8 + idx * 0.1,
+        duration: CONV_PHASE_DUR * 0.7 + idx * 0.1,
         ease: "expo.out",
-      }, CONV_START + 0.1);
+      }, 0.3);
     });
     master.to(tracePaths, {
       attr: { "stroke-width": 3.5 },
       opacity: 1,
-      duration: 0.4,
+      duration: 0.6,
       ease: "power2.in",
-    }, CONV_START + 0.4);
+    }, CONV_PHASE_DUR * 0.4);
 
-    // Each signal flies one-by-one (from left-most first)
-    // Sort by x position so left signals go first
-    const sortedIndices = [...Array(sigCount).keys()].sort((a, b) => SIGNALS[a].x - SIGNALS[b].x);
+    // Each signal peels off one-by-one from left to right
     sortedIndices.forEach((origIdx, order) => {
       const el = sigs[origIdx];
-      const targetX = 600 - SIGNALS[origIdx].x + gsap.utils.random(-20, 20);
-      const targetY = 260 - SIGNALS[origIdx].y + gsap.utils.random(-15, 15);
-      const t = CONV_START + order * SIG_STAGGER;
+      const targetX = 600 - SIGNALS[origIdx].x + gsap.utils.random(-18, 18);
+      const targetY = 260 - SIGNALS[origIdx].y + gsap.utils.random(-12, 12);
+      const departTime = order * SIG_STAGGER;
+      // Overrides the drift tween at this point
       master.to(el, {
         x: targetX,
         y: targetY,
         opacity: 0,
         duration: SIG_FLY_DUR,
         ease: "power3.in",
-      }, t);
+        overwrite: false,
+      }, departTime);
 
-      // Small lens pulse on each signal arrival
+      // Small lens pulse every 3rd signal
       if (order % 3 === 0) {
-        master.to(lens, { scale: 1.06, transformOrigin: "600px 260px", duration: 0.12, ease: "power2.in" }, t + SIG_FLY_DUR * 0.8);
-        master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 0.2, ease: "power2.out" }, t + SIG_FLY_DUR * 0.8 + 0.12);
+        master.to(lens, { scale: 1.06, transformOrigin: "600px 260px", duration: 0.1, ease: "power2.in" }, departTime + SIG_FLY_DUR * 0.85);
+        master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 0.18, ease: "power2.out" }, departTime + SIG_FLY_DUR * 0.85 + 0.1);
       }
     });
 
     // Lens flash burst after last signal arrives
-    const lastArrival = CONV_START + (sigCount - 1) * SIG_STAGGER + SIG_FLY_DUR;
+    const lastArrival = (sigCount - 1) * SIG_STAGGER + SIG_FLY_DUR;
     if (lensFlash) {
       master.to(lensFlash, {
         attr: { r: 140 },
