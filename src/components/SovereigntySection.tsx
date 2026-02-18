@@ -60,7 +60,11 @@ const SovereigntySection = () => {
 
     /* Initial state */
     gsap.set(ringGroups, { opacity: 0, transformOrigin: `${cx}px ${cy}px` });
-    gsap.set(arcPaths, { strokeDashoffset: (_, target: SVGPathElement) => target.getTotalLength() });
+    // Set dashoffset via attr to match SVG attribute animation
+    arcPaths.forEach((p) => {
+      const len = p.getTotalLength();
+      gsap.set(p, { attr: { "stroke-dasharray": len, "stroke-dashoffset": len } });
+    });
     gsap.set(arcNodes, { opacity: 0, scale: 0, transformOrigin: "center center" });
     gsap.set(coreBg, { opacity: 0, scale: 0.6, transformOrigin: `${cx}px ${cy}px` });
     gsap.set(coreIcon, { opacity: 0 });
@@ -84,9 +88,9 @@ const SovereigntySection = () => {
       intro.to(ringGroups[i], { opacity: 1, duration: 0.6, ease: "power2.out" }, `-=${i === 0 ? 0.3 : 0.4}`);
     });
 
-    // Arcs draw in
+    // Arcs draw in via attribute
     intro.to(arcPaths, {
-      strokeDashoffset: 0,
+      attr: { "stroke-dashoffset": 0 },
       duration: 1.2,
       stagger: 0.08,
       ease: "power2.inOut",
@@ -378,21 +382,21 @@ const SovereigntySection = () => {
                         opacity={0.7}
                         data-base-opacity="0.7"
                         data-base-width={ring.width}
-                        style={{
-                          strokeDasharray: `${(arc.sweep / 360) * 2 * Math.PI * ring.r}`,
-                          strokeDashoffset: `${(arc.sweep / 360) * 2 * Math.PI * ring.r}`,
-                        }}
                         filter="url(#vaultGlow)"
                       />
                       {/* Endpoint nodes */}
                       <circle
                         className="vault-node"
-                        cx={startX} cy={startY} r={NODE_RADIUS}
+                        cx={Math.round(startX * 100) / 100}
+                        cy={Math.round(startY * 100) / 100}
+                        r="2"
                         fill={ring.color} opacity={0.8}
                       />
                       <circle
                         className="vault-node"
-                        cx={endX} cy={endY} r={NODE_RADIUS}
+                        cx={Math.round(endX * 100) / 100}
+                        cy={Math.round(endY * 100) / 100}
+                        r="2"
                         fill={ring.color} opacity={0.8}
                       />
                     </g>
