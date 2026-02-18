@@ -85,45 +85,77 @@ const InterfaceSection = () => {
 
     // 2) Transform timeline (triggered on scroll)
     const transformTL = gsap.timeline({ paused: true });
+    const lensFlash = svg.querySelector("#lensFlash");
 
     // Reveal traces
     transformTL.to(traces, { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.0);
 
-    // Draw traces
+    // Draw traces — brighter during convergence
     tracePaths.forEach((p, idx) => {
-      transformTL.to(
-        p,
-        {
-          strokeDashoffset: 0,
-          duration: 1.0 + idx * 0.12,
-          ease: "expo.out",
-        },
-        0.1
-      );
+      transformTL.to(p, {
+        strokeDashoffset: 0,
+        duration: 0.9 + idx * 0.12,
+        ease: "expo.out",
+      }, 0.1);
     });
+    transformTL.to(tracePaths, {
+      attr: { "stroke-width": 3.5 },
+      opacity: 1,
+      duration: 0.5,
+      ease: "power2.in",
+    }, 0.6);
 
     // Move signals toward lens center (600, 260)
     sigs.forEach((el, i) => {
       const targetX = 600 - SIGNALS[i].x + gsap.utils.random(-30, 30);
       const targetY = 260 - SIGNALS[i].y + gsap.utils.random(-20, 20);
-      transformTL.to(
-        el,
-        {
-          x: targetX,
-          y: targetY,
-          opacity: 0,
-          duration: 1.2,
-          ease: "power3.inOut",
-        },
-        0.2 + i * 0.03
-      );
+      transformTL.to(el, {
+        x: targetX,
+        y: targetY,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power3.inOut",
+      }, 0.2 + i * 0.03);
     });
 
-    // Bring in harmonized timeline
-    transformTL.to(timeline, { opacity: 1, duration: 0.8, ease: "power2.out" }, 1.0);
+    // Lens flash — dramatic burst when signals converge
+    if (lensFlash) {
+      transformTL.to(lensFlash, {
+        attr: { r: 120 },
+        fill: "rgba(110,59,255,0.45)",
+        duration: 0.4,
+        ease: "power2.in",
+      }, 0.8);
+      transformTL.to(lensFlash, {
+        attr: { r: 200 },
+        fill: "rgba(110,59,255,0.0)",
+        duration: 0.7,
+        ease: "power2.out",
+      }, 1.2);
+    }
 
-    // Soften traces
-    transformTL.to(traces, { opacity: 0.2, duration: 0.8, ease: "power2.out" }, 1.2);
+    // Lens scale pulse on convergence
+    if (lens) {
+      transformTL.to(lens, {
+        scale: 1.15,
+        transformOrigin: "600px 260px",
+        duration: 0.4,
+        ease: "power2.in",
+      }, 0.8);
+      transformTL.to(lens, {
+        scale: 1.0,
+        transformOrigin: "600px 260px",
+        duration: 0.6,
+        ease: "elastic.out(1, 0.5)",
+      }, 1.2);
+    }
+
+    // Bring in harmonized timeline
+    transformTL.to(timeline, { opacity: 1, duration: 0.8, ease: "power2.out" }, 1.4);
+
+    // Soften traces back down
+    transformTL.to(traces, { opacity: 0.2, duration: 0.8, ease: "power2.out" }, 1.5);
+    transformTL.to(tracePaths, { attr: { "stroke-width": 2 }, duration: 0.6 }, 1.5);
 
     // 3) Post-transform pulse loop
     const pulseTL = gsap.timeline({ repeat: -1, paused: true });
@@ -312,6 +344,15 @@ const InterfaceSection = () => {
                 </feMerge>
               </filter>
 
+              {/* Intense flash filter */}
+              <filter id="s7flash" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="18" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+
               {/* Warm lens gradient */}
               <radialGradient id="lensWarm" cx="50%" cy="50%" r="60%">
                 <stop offset="0%" stopColor="#F2C1AE" stopOpacity={0.85} />
@@ -343,6 +384,9 @@ const InterfaceSection = () => {
               <circle cx="600" cy="260" r="72" fill="none" stroke="rgba(110,59,255,0.18)" strokeWidth={2} />
               <circle cx="600" cy="260" r="92" fill="none" stroke="rgba(110,59,255,0.10)" strokeWidth={2} />
             </g>
+
+            {/* Lens flash (animated during convergence) */}
+            <circle id="lensFlash" cx="600" cy="260" r="30" fill="rgba(110,59,255,0.0)" filter="url(#s7flash)" />
 
             {/* Dashed traces (drawn during convergence) */}
             <g id="traces" opacity={0}>
