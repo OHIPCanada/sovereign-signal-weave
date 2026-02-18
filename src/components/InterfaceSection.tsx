@@ -61,39 +61,39 @@ const InterfaceSection = () => {
       p.style.strokeDashoffset = `${len}`;
     });
 
-    // --- MASTER LOOPING TIMELINE (10s cycle) ---
-    const CYCLE_DURATION = 10;
+    // --- MASTER LOOPING TIMELINE ---
+    // Signals go one-by-one from left to convergence, then harmonized, then loop
+    const sigCount = sigs.length;
+    const DRIFT_DUR = 2.5;              // initial drift phase
+    const SIG_FLY_DUR = 0.5;            // each signal's flight to lens
+    const SIG_STAGGER = 0.18;           // delay between each signal
+    const CONV_START = DRIFT_DUR;
+    const CONV_END = CONV_START + SIG_FLY_DUR + (sigCount - 1) * SIG_STAGGER + 0.5;
+    const HARM_START = CONV_END + 0.3;
+    const HARM_DUR = 3.0;
+    const HARM_END = HARM_START + HARM_DUR;
+    const RESET_START = HARM_END + 0.3;
+    const RESET_DUR = 1.2;
+    const CYCLE_DURATION = RESET_START + RESET_DUR;
+
     const master = gsap.timeline({ repeat: -1, paused: true });
 
-    // Phase 1: Fragmented drift (0s - 3.2s)
-    // Drift signals randomly
+    // ── Phase 1: Fragmented drift (0 → CONV_START) ──
     sigs.forEach((el, i) => {
       master.to(el, {
-        x: gsap.utils.random(-12, 12),
-        y: gsap.utils.random(-10, 10),
-        duration: 2.8,
+        x: gsap.utils.random(-14, 14),
+        y: gsap.utils.random(-12, 12),
+        duration: DRIFT_DUR - 0.2,
         ease: "sine.inOut",
-      }, i * 0.05);
+      }, i * 0.04);
     });
 
-    // Lens breathing during drift phase
-    master.to(lens, {
-      scale: 1.04,
-      transformOrigin: "600px 260px",
-      duration: 1.4,
-      ease: "sine.inOut",
-    }, 0);
-    master.to(lens, {
-      scale: 1.0,
-      transformOrigin: "600px 260px",
-      duration: 1.4,
-      ease: "sine.inOut",
-    }, 1.4);
+    // Lens breathing
+    master.to(lens, { scale: 1.04, transformOrigin: "600px 260px", duration: 1.2, ease: "sine.inOut" }, 0);
+    master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 1.2, ease: "sine.inOut" }, 1.2);
 
-    // Phase 2: Convergence (3.2s - 5.5s)
-    const CONV_START = 3.2;
-
-    // Reveal & brighten traces
+    // ── Phase 2: Convergence — signals fly one-by-one to lens ──
+    // Reveal traces as convergence starts
     master.to(traces, { opacity: 1, duration: 0.5, ease: "power2.out" }, CONV_START);
     tracePaths.forEach((p, idx) => {
       master.to(p, {
@@ -107,97 +107,90 @@ const InterfaceSection = () => {
       opacity: 1,
       duration: 0.4,
       ease: "power2.in",
-    }, CONV_START + 0.5);
+    }, CONV_START + 0.4);
 
-    // Move signals toward lens center
-    sigs.forEach((el, i) => {
-      const targetX = 600 - SIGNALS[i].x + gsap.utils.random(-30, 30);
-      const targetY = 260 - SIGNALS[i].y + gsap.utils.random(-20, 20);
+    // Each signal flies one-by-one (from left-most first)
+    // Sort by x position so left signals go first
+    const sortedIndices = [...Array(sigCount).keys()].sort((a, b) => SIGNALS[a].x - SIGNALS[b].x);
+    sortedIndices.forEach((origIdx, order) => {
+      const el = sigs[origIdx];
+      const targetX = 600 - SIGNALS[origIdx].x + gsap.utils.random(-20, 20);
+      const targetY = 260 - SIGNALS[origIdx].y + gsap.utils.random(-15, 15);
+      const t = CONV_START + order * SIG_STAGGER;
       master.to(el, {
         x: targetX,
         y: targetY,
         opacity: 0,
-        duration: 1.0,
-        ease: "power3.inOut",
-      }, CONV_START + 0.15 + i * 0.025);
+        duration: SIG_FLY_DUR,
+        ease: "power3.in",
+      }, t);
+
+      // Small lens pulse on each signal arrival
+      if (order % 3 === 0) {
+        master.to(lens, { scale: 1.06, transformOrigin: "600px 260px", duration: 0.12, ease: "power2.in" }, t + SIG_FLY_DUR * 0.8);
+        master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 0.2, ease: "power2.out" }, t + SIG_FLY_DUR * 0.8 + 0.12);
+      }
     });
 
-    // Lens flash burst
+    // Lens flash burst after last signal arrives
+    const lastArrival = CONV_START + (sigCount - 1) * SIG_STAGGER + SIG_FLY_DUR;
     if (lensFlash) {
       master.to(lensFlash, {
-        attr: { r: 120 },
-        fill: "rgba(110,59,255,0.45)",
-        duration: 0.35,
+        attr: { r: 140 },
+        fill: "rgba(110,59,255,0.5)",
+        duration: 0.3,
         ease: "power2.in",
-      }, CONV_START + 0.7);
+      }, lastArrival);
       master.to(lensFlash, {
         attr: { r: 200 },
         fill: "rgba(110,59,255,0.0)",
-        duration: 0.6,
+        duration: 0.5,
         ease: "power2.out",
-      }, CONV_START + 1.05);
+      }, lastArrival + 0.3);
     }
 
-    // Lens scale pulse
-    master.to(lens, {
-      scale: 1.15,
-      transformOrigin: "600px 260px",
-      duration: 0.35,
-      ease: "power2.in",
-    }, CONV_START + 0.7);
-    master.to(lens, {
-      scale: 1.0,
-      transformOrigin: "600px 260px",
-      duration: 0.5,
-      ease: "elastic.out(1, 0.5)",
-    }, CONV_START + 1.05);
+    // Big lens pulse
+    master.to(lens, { scale: 1.18, transformOrigin: "600px 260px", duration: 0.3, ease: "power2.in" }, lastArrival);
+    master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 0.5, ease: "elastic.out(1, 0.5)" }, lastArrival + 0.3);
 
-    // Phase 3: Harmonized (5.5s - 8.5s)
-    const HARM_START = 5.5;
-
-    // Show timeline, soften traces
+    // ── Phase 3: Harmonized ──
     master.to(timeline, { opacity: 1, duration: 0.6, ease: "power2.out" }, HARM_START);
     master.to(traces, { opacity: 0.2, duration: 0.6, ease: "power2.out" }, HARM_START + 0.2);
     master.to(tracePaths, { attr: { "stroke-width": 2 }, duration: 0.5 }, HARM_START + 0.2);
 
-    // Traveling pulse across timeline
+    // Traveling pulse
     master.set(pulse, { attr: { cx: 720 }, opacity: 0.9 }, HARM_START + 0.3);
     master.to(pulse, { attr: { cx: 1060 }, duration: 2.2, ease: "sine.inOut" }, HARM_START + 0.4);
     master.to(pulse, { opacity: 0, duration: 0.15 }, HARM_START + 2.5);
 
-    // Phase 4: Reset (8.5s - 10s) — fade everything out, restore signals
-    const RESET_START = 8.5;
+    // ── Phase 4: Reset — fade out, restore signals, loop ──
+    master.to(timeline, { opacity: 0, duration: 0.4, ease: "power2.in" }, RESET_START);
+    master.to(traces, { opacity: 0, duration: 0.4, ease: "power2.in" }, RESET_START);
 
-    // Fade out harmonized elements
-    master.to(timeline, { opacity: 0, duration: 0.5, ease: "power2.in" }, RESET_START);
-    master.to(traces, { opacity: 0, duration: 0.5, ease: "power2.in" }, RESET_START);
-
-    // Reset lens flash
     if (lensFlash) {
-      master.set(lensFlash, { attr: { r: 30 }, fill: "rgba(110,59,255,0.0)" }, RESET_START + 0.5);
+      master.set(lensFlash, { attr: { r: 30 }, fill: "rgba(110,59,255,0.0)" }, RESET_START + 0.4);
     }
 
-    // Reset trace dash offsets
     tracePaths.forEach((p, idx) => {
       master.set(p, {
         strokeDashoffset: traceLengths[idx],
         attr: { "stroke-width": 2 },
         opacity: 1,
-      }, RESET_START + 0.5);
+      }, RESET_START + 0.4);
     });
 
-    // Restore signals to original positions
+    // Restore signals back to original positions
     sigs.forEach((el, i) => {
       master.to(el, {
         x: 0,
         y: 0,
         opacity: 1,
-        duration: 0.6,
+        duration: 0.5,
         ease: "power2.out",
-      }, RESET_START + 0.3 + i * 0.02);
+      }, RESET_START + 0.3 + i * 0.015);
     });
 
-    // Pad to exactly CYCLE_DURATION
+    // Pad to cycle duration
     master.set({}, {}, CYCLE_DURATION);
 
     // --- TRIGGER: scroll guard + delayed start ---
