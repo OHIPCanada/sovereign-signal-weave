@@ -80,20 +80,7 @@ const InterfaceSection = () => {
 
     const master = gsap.timeline({ repeat: -1, paused: true });
 
-    // ── Gentle idle drift on ALL signals for the entire convergence window ──
-    // Each signal bobs gently until it's its turn to fly
-    sigs.forEach((el, i) => {
-      // Gentle floating — yoyo so it keeps moving until killed by the fly tween
-      const driftDur = CONV_PHASE_DUR; // drift the whole convergence window
-      master.to(el, {
-        x: gsap.utils.random(-10, 10),
-        y: gsap.utils.random(-8, 8),
-        duration: driftDur,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: 1,
-      }, 0);
-    });
+    // Signals stay at their original positions — no drift at load
 
     // Lens breathing while signals are drifting/departing
     master.to(lens, { scale: 1.04, transformOrigin: "600px 260px", duration: 1.5, ease: "sine.inOut" }, 0);
