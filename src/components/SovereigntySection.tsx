@@ -10,29 +10,7 @@ const PILLARS = [
   "Deployment Flexibility",
 ];
 
-/* Arc definitions — 3 concentric rings with partial arcs */
-const RINGS = [
-  { r: 140, arcs: [{ start: 0, sweep: 100 }, { start: 140, sweep: 80 }, { start: 260, sweep: 60 }], color: "#00CED1", width: 1.2, speed: 18 },
-  { r: 105, arcs: [{ start: 30, sweep: 120 }, { start: 200, sweep: 90 }], color: "#C084FC", width: 1, speed: -25 },
-  { r: 70,  arcs: [{ start: 60, sweep: 70 }, { start: 170, sweep: 100 }, { start: 310, sweep: 40 }], color: "#D4616B", width: 0.8, speed: 15 },
-];
-
-/* Small node dots at arc endpoints */
-const NODE_RADIUS = 2;
-
-function describeArc(cx: number, cy: number, r: number, startAngle: number, sweepAngle: number) {
-  const startRad = (startAngle - 90) * (Math.PI / 180);
-  const endRad = (startAngle + sweepAngle - 90) * (Math.PI / 180);
-  const x1 = cx + r * Math.cos(startRad);
-  const y1 = cy + r * Math.sin(startRad);
-  const x2 = cx + r * Math.cos(endRad);
-  const y2 = cy + r * Math.sin(endRad);
-  const large = sweepAngle > 180 ? 1 : 0;
-  return {
-    d: `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}`,
-    startX: x1, startY: y1, endX: x2, endY: y2,
-  };
-}
+const PARTICLE_COUNT = 16;
 
 const SovereigntySection = () => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -46,144 +24,155 @@ const SovereigntySection = () => {
     if (!svg || hasAnimated.current) return;
     hasAnimated.current = true;
 
-    const cx = 300, cy = 300;
+    const core = svg.querySelector("#lg-core") as SVGGElement;
+    const gridLines = svg.querySelectorAll<SVGLineElement>(".lg-grid");
+    const innerGridLines = svg.querySelectorAll<SVGLineElement>(".lg-inner-grid");
+    const cornerAnchors = svg.querySelectorAll<SVGGElement>(".lg-corner");
+    const perimeterSegments = svg.querySelectorAll<SVGLineElement>(".lg-peri-seg");
+    const sealGlow = svg.querySelector("#lg-seal-glow") as SVGRectElement;
+    const lockIcon = svg.querySelector("#lg-lock") as SVGGElement;
+    const particles = svg.querySelectorAll<SVGCircleElement>(".lg-particle");
+    const ambientGlow = svg.querySelector("#lg-ambient") as SVGCircleElement;
 
-    /* Query elements */
-    const ringGroups = svg.querySelectorAll<SVGGElement>(".vault-ring");
-    const arcPaths = svg.querySelectorAll<SVGPathElement>(".vault-arc");
-    const arcNodes = svg.querySelectorAll<SVGCircleElement>(".vault-node");
-    const coreBg = svg.querySelector("#vault-core-bg") as SVGElement;
-    const coreIcon = svg.querySelector("#vault-core-icon") as SVGElement;
-    const pulseRing = svg.querySelector("#vault-pulse") as SVGCircleElement;
-    const innerGlow = svg.querySelector("#vault-inner-glow") as SVGCircleElement;
-    const tickMarks = svg.querySelectorAll<SVGLineElement>(".vault-tick");
+    /* ── Initial state ── */
+    gsap.set(core, { opacity: 0, scale: 0.8, transformOrigin: "300px 300px" });
+    gsap.set(gridLines, { opacity: 0 });
+    gsap.set(innerGridLines, { opacity: 0 });
+    gsap.set(cornerAnchors, { opacity: 0 });
+    gsap.set(perimeterSegments, { opacity: 0 });
+    gsap.set(sealGlow, { opacity: 0 });
+    gsap.set(lockIcon, { opacity: 0, scale: 0, transformOrigin: "300px 300px" });
+    gsap.set(particles, { opacity: 0 });
+    gsap.set(ambientGlow, { opacity: 0.15 });
 
-    /* Initial state */
-    gsap.set(ringGroups, { opacity: 0, transformOrigin: `${cx}px ${cy}px` });
-    // Set dashoffset via attr to match SVG attribute animation
-    arcPaths.forEach((p) => {
-      const len = p.getTotalLength();
-      gsap.set(p, { attr: { "stroke-dasharray": len, "stroke-dashoffset": len } });
-    });
-    gsap.set(arcNodes, { opacity: 0, scale: 0, transformOrigin: "center center" });
-    gsap.set(coreBg, { opacity: 0, scale: 0.6, transformOrigin: `${cx}px ${cy}px` });
-    gsap.set(coreIcon, { opacity: 0 });
-    gsap.set(pulseRing, { opacity: 0, scale: 0.5, transformOrigin: `${cx}px ${cy}px` });
-    gsap.set(innerGlow, { opacity: 0 });
-    gsap.set(tickMarks, { opacity: 0 });
+    /* ══════════ INTRO (plays once) — grid + core fade in ══════════ */
+    const intro = gsap.timeline({ delay: 0.2 });
 
-    /* ═══ INTRO ═══ */
-    const intro = gsap.timeline({ delay: 0.3 });
-
-    // Core appears
-    intro.to(coreBg, { opacity: 1, scale: 1, duration: 0.9, ease: "power3.out" });
-    intro.to(innerGlow, { opacity: 0.4, duration: 0.6, ease: "power2.out" }, "-=0.5");
-    intro.to(coreIcon, { opacity: 0.8, duration: 0.5, ease: "power2.out" }, "-=0.3");
-
-    // Tick marks fade in
-    intro.to(tickMarks, { opacity: 0.15, duration: 0.8, stagger: 0.02, ease: "power2.out" }, "-=0.4");
-
-    // Rings appear and arcs draw
-    RINGS.forEach((_, i) => {
-      intro.to(ringGroups[i], { opacity: 1, duration: 0.6, ease: "power2.out" }, `-=${i === 0 ? 0.3 : 0.4}`);
-    });
-
-    // Arcs draw in via attribute
-    intro.to(arcPaths, {
-      attr: { "stroke-dashoffset": 0 },
+    intro.to(ambientGlow, { opacity: 0.35, duration: 1, ease: "power2.out" });
+    intro.to(gridLines, {
+      opacity: 0.07,
       duration: 1.2,
-      stagger: 0.08,
-      ease: "power2.inOut",
+      stagger: { each: 0.02, from: "center" },
+      ease: "power2.out",
+    }, "-=0.8");
+
+    intro.to(core, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.8,
+      ease: "power3.out",
+    }, "-=0.3");
+    intro.to(core, { scale: 1.08, duration: 0.25, ease: "power2.in" })
+      .to(core, { scale: 1, duration: 0.4, ease: "power3.out" });
+
+    intro.to(innerGridLines, {
+      opacity: 0.035,
+      duration: 0.8,
+      stagger: 0.015,
+      ease: "power2.out",
+    }, "-=0.4");
+
+    /* ══════════ LOOP — only perimeter, corners, particles, lock cycle ══════════ */
+    const loop = gsap.timeline({ repeat: -1, repeatDelay: 1.5, delay: 0 });
+
+    // Reset state at start of each cycle
+    loop.set(perimeterSegments, { attr: { "stroke-dashoffset": (i: number) => [340, 340, 340, 340][i] } });
+    loop.set(cornerAnchors, { opacity: 0 });
+    loop.set(lockIcon, { opacity: 0, scale: 0 });
+    loop.set(sealGlow, { opacity: 0 });
+    loop.set(particles, { opacity: 0, attr: { cx: 300, cy: 300 } });
+
+    // Perimeter draws sequentially
+    loop.to(perimeterSegments[0], {
+      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
+    }, "+=0.3");
+    loop.to(perimeterSegments[1], {
+      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
+    }, "-=0.1");
+    loop.to(perimeterSegments[2], {
+      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
+    }, "-=0.1");
+    loop.to(perimeterSegments[3], {
+      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
+    }, "-=0.1");
+
+    // Corner anchors snap in
+    const cornerOffsets = [
+      { x: -50, y: -50 }, { x: 50, y: -50 },
+      { x: 50, y: 50 }, { x: -50, y: 50 },
+    ];
+    loop.set(cornerAnchors, { x: (i: number) => cornerOffsets[i].x, y: (i: number) => cornerOffsets[i].y });
+    loop.to(cornerAnchors, {
+      opacity: 1, x: 0, y: 0,
+      duration: 0.45, stagger: 0.06, ease: "power3.out",
+    });
+
+    // Lock pulse — particles fly out
+    loop.to(sealGlow, { opacity: 0.45, duration: 0.3, ease: "power2.in" });
+    loop.to(particles, { opacity: 1, duration: 0.1 }, "-=0.2");
+
+    particles.forEach((p) => {
+      const tx = parseFloat(p.getAttribute("data-tx") || "0");
+      const ty = parseFloat(p.getAttribute("data-ty") || "0");
+      loop.to(p, { attr: { cx: tx, cy: ty }, duration: 0.4, ease: "power3.out" }, "<");
+    });
+
+    loop.to(particles, { opacity: 0, duration: 0.6, ease: "power2.out" }, "+=0.1");
+
+    // Lock icon
+    loop.to(lockIcon, {
+      opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)",
     }, "-=0.5");
 
-    // Nodes pop in
-    intro.to(arcNodes, {
-      opacity: 1, scale: 1,
-      duration: 0.4, stagger: 0.03, ease: "back.out(2)",
-    }, "-=0.5");
+    loop.to(sealGlow, { opacity: 0, duration: 1.0, ease: "power2.out" }, "-=0.3");
 
-    /* ═══ CONTINUOUS ROTATION ═══ */
-    RINGS.forEach((ring, i) => {
-      gsap.to(ringGroups[i], {
-        rotation: ring.speed > 0 ? 360 : -360,
-        duration: Math.abs(360 / ring.speed),
-        repeat: -1,
-        ease: "none",
-      });
-    });
+    // Grid brightens slightly when locked
+    loop.to(gridLines, { opacity: 0.12, duration: 0.6, ease: "power2.out" }, "-=0.8");
 
-    /* ═══ PULSE LOOP — periodic "lock" moment ═══ */
-    const pulse = gsap.timeline({ repeat: -1, repeatDelay: 4, delay: 2.5 });
+    // Hold the locked state
+    loop.to({}, { duration: 2.5 });
 
-    // Rings briefly pause (slow down and speed back up)
-    RINGS.forEach((ring, i) => {
-      pulse.to(ringGroups[i], {
-        timeScale: 0.1,
-        duration: 0.8,
-        ease: "power2.inOut",
-      }, 0);
-    });
+    // Fade out only lock icon & corners — perimeter lines STAY visible
+    loop.to(lockIcon, { opacity: 0, duration: 0.6, ease: "power2.inOut" });
+    loop.to(cornerAnchors, { opacity: 0, duration: 0.6, ease: "power2.inOut" }, "-=0.4");
+    loop.to(particles, { opacity: 0, duration: 0.3 }, "-=0.6");
 
-    // Glow pulse from center
-    pulse.to(pulseRing, {
-      opacity: 0.5, scale: 1, duration: 0.5, ease: "power2.out",
-    }, 0.4);
-    pulse.to(innerGlow, {
-      opacity: 0.7, duration: 0.4, ease: "power2.in",
-    }, 0.4);
+    // Reset perimeter dashoffset so they re-draw on next cycle (lines stay visible via opacity)
+    loop.set(perimeterSegments, { attr: { "stroke-dashoffset": (i: number) => {
+      const lengths = [340, 340, 340, 340];
+      return lengths[i] || 340;
+    }}});
+    loop.to(gridLines, { opacity: 0.07, duration: 0.6, ease: "power2.inOut" }, "-=0.3");
 
-    // Arc brightness boost
-    pulse.to(arcPaths, {
-      opacity: 1, strokeWidth: "+=0.5",
-      duration: 0.3, ease: "power2.out",
-    }, 0.5);
+    // Start loop after intro finishes
+    intro.call(() => loop.play(), [], "+=0.2");
 
-    // Hold
-    pulse.to({}, { duration: 1.2 });
+    // Core stays static — no breathing/movement
 
-    // Release — everything returns
-    RINGS.forEach((ring, i) => {
-      pulse.to(ringGroups[i], {
-        timeScale: 1,
-        duration: 1.0,
-        ease: "power2.inOut",
-      }, "release");
-    });
-
-    pulse.to(pulseRing, {
-      opacity: 0, scale: 0.5, duration: 1.0, ease: "power2.inOut",
-    }, "release");
-    pulse.to(innerGlow, {
-      opacity: 0.4, duration: 0.8, ease: "power2.out",
-    }, "release");
-    pulse.to(arcPaths, {
-      opacity: (_, target: SVGPathElement) => parseFloat(target.getAttribute("data-base-opacity") || "0.7"),
-      strokeWidth: (_, target: SVGPathElement) => parseFloat(target.getAttribute("data-base-width") || "1"),
-      duration: 0.6, ease: "power2.out",
-    }, "release");
-
-    /* ═══ Subtle tick shimmer ═══ */
-    tickMarks.forEach((tick, i) => {
-      gsap.to(tick, {
-        opacity: gsap.utils.random(0.08, 0.2),
-        duration: gsap.utils.random(3, 6),
-        yoyo: true, repeat: -1, delay: i * 0.1, ease: "sine.inOut",
+    // Grid shimmer
+    gridLines.forEach((line, i) => {
+      gsap.to(line, {
+        opacity: gsap.utils.random(0.04, 0.1),
+        duration: gsap.utils.random(3, 5),
+        yoyo: true, repeat: -1, delay: i * 0.08, ease: "sine.inOut",
       });
     });
 
     return () => {
       intro.kill();
-      pulse.kill();
-      ringGroups.forEach(g => gsap.killTweensOf(g));
-      arcPaths.forEach(p => gsap.killTweensOf(p));
-      arcNodes.forEach(n => gsap.killTweensOf(n));
-      tickMarks.forEach(t => gsap.killTweensOf(t));
-      gsap.killTweensOf([coreBg, coreIcon, pulseRing, innerGlow]);
+      loop.kill();
+      gsap.killTweensOf([core, sealGlow, lockIcon, ambientGlow]);
+      gridLines.forEach((l) => gsap.killTweensOf(l));
+      innerGridLines.forEach((l) => gsap.killTweensOf(l));
+      cornerAnchors.forEach((c) => gsap.killTweensOf(c));
+      perimeterSegments.forEach((s) => gsap.killTweensOf(s));
+      particles.forEach((p) => gsap.killTweensOf(p));
     };
   }, []);
 
   useEffect(() => {
     let cleanup: (() => void) | undefined;
+
     const textEl = textRef.current;
     const vaultEl = vaultRef.current;
     const section = sectionRef.current;
@@ -200,31 +189,67 @@ const SovereigntySection = () => {
           gsap.to(textEl, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" });
           gsap.to(vaultEl, {
             opacity: 1, y: 0, scale: 1, duration: 1.1, delay: 0.2, ease: "power3.out",
-            onComplete: () => { cleanup = setupAnimations(); },
+            onComplete: () => {
+              cleanup = setupAnimations();
+            },
           });
         },
       });
 
-      return () => { cleanup?.(); st.kill(); };
+      return () => {
+        cleanup?.();
+        st.kill();
+      };
     }
+
     return () => cleanup?.();
   }, [setupAnimations]);
 
-  const cx = 300, cy = 300;
-
-  /* Tick marks — subtle radial lines like a vault dial */
-  const tickData: { x1: number; y1: number; x2: number; y2: number }[] = [];
-  for (let i = 0; i < 72; i++) {
-    const angle = (i * 5 - 90) * (Math.PI / 180);
-    const inner = i % 6 === 0 ? 155 : 160;
-    const outer = i % 6 === 0 ? 175 : 168;
-    tickData.push({
-      x1: cx + inner * Math.cos(angle),
-      y1: cy + inner * Math.sin(angle),
-      x2: cx + outer * Math.cos(angle),
-      y2: cy + outer * Math.sin(angle),
-    });
+  /* Grid data */
+  const gridLinesData: { x1: number; y1: number; x2: number; y2: number }[] = [];
+  for (let i = 0; i <= 10; i++) {
+    const pos = 100 + i * 40;
+    gridLinesData.push({ x1: pos, y1: 100, x2: pos, y2: 500 });
+    gridLinesData.push({ x1: 100, y1: pos, x2: 500, y2: pos });
   }
+
+  const innerGridData: { x1: number; y1: number; x2: number; y2: number }[] = [];
+  for (let i = 0; i <= 8; i++) {
+    const pos = 140 + i * 40;
+    innerGridData.push({ x1: pos, y1: 130, x2: pos, y2: 470 });
+    innerGridData.push({ x1: 130, y1: pos, x2: 470, y2: pos });
+  }
+
+  const corners = [
+    { x: 130, y: 130 }, { x: 470, y: 130 },
+    { x: 470, y: 470 }, { x: 130, y: 470 },
+  ];
+  const bracketLen = 18;
+
+  const periSegments = [
+    { x1: 130, y1: 130, x2: 470, y2: 130, len: 340 },
+    { x1: 470, y1: 130, x2: 470, y2: 470, len: 340 },
+    { x1: 470, y1: 470, x2: 130, y2: 470, len: 340 },
+    { x1: 130, y1: 470, x2: 130, y2: 130, len: 340 },
+  ];
+
+  const particleData = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
+    const angle = (i / PARTICLE_COUNT) * Math.PI * 2;
+    const perimDist = 170;
+    const tx = 300 + Math.cos(angle) * perimDist;
+    const ty = 300 + Math.sin(angle) * perimDist;
+    const clampedX = Math.max(130, Math.min(470, tx));
+    const clampedY = Math.max(130, Math.min(470, ty));
+    return { cx: 300, cy: 300, tx: clampedX, ty: clampedY };
+  });
+
+  /* Color palette for particles — warm coral, cyan, gold, soft violet */
+  const particleColors = [
+    "#D4616B", "#E8937C", "#00CED1", "#FFD700",
+    "#D4616B", "#C084FC", "#00CED1", "#F2C1AE",
+    "#FFD700", "#E8937C", "#C084FC", "#00CED1",
+    "#D4616B", "#FFD700", "#F2C1AE", "#C084FC",
+  ];
 
   return (
     <section
@@ -232,7 +257,7 @@ const SovereigntySection = () => {
       className="relative overflow-hidden"
       style={{
         padding: "clamp(64px, 7vw, 110px) 0",
-        background: "radial-gradient(circle at 50% 40%, #0F1A3D 0%, #060B1E 70%)",
+        background: "radial-gradient(circle at 50% 40%, #241034 0%, #0B0613 70%)",
         color: "#EDE7F6",
         minHeight: "100vh",
         display: "flex",
@@ -307,7 +332,7 @@ const SovereigntySection = () => {
           </div>
         </div>
 
-        {/* Right — Vault Visual */}
+        {/* Right — Locking Grid */}
         <div
           ref={vaultRef}
           style={{ aspectRatio: "1", maxWidth: 700, width: "100%", justifySelf: "end" }}
@@ -319,121 +344,162 @@ const SovereigntySection = () => {
             fill="none"
           >
             <defs>
-              <radialGradient id="vaultCoreGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#7B61FF" stopOpacity={0.6} />
-                <stop offset="70%" stopColor="#4A3B8C" stopOpacity={0.4} />
-                <stop offset="100%" stopColor="#1A1040" stopOpacity={0.2} />
+              <radialGradient id="lgAmbient" cx="50%" cy="50%" r="40%">
+                <stop offset="0%" stopColor="#3D1F7A" stopOpacity={0.3} />
+                <stop offset="50%" stopColor="#1A0A3E" stopOpacity={0.15} />
+                <stop offset="100%" stopColor="#0B0613" stopOpacity={0} />
               </radialGradient>
-              <radialGradient id="vaultGlowGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#7B61FF" stopOpacity={0.3} />
-                <stop offset="100%" stopColor="#7B61FF" stopOpacity={0} />
+              <radialGradient id="lgCoreGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#D4616B" stopOpacity={0.9} />
+                <stop offset="60%" stopColor="#C084FC" stopOpacity={0.7} />
+                <stop offset="100%" stopColor="#7B4DFF" stopOpacity={0.5} />
               </radialGradient>
-              <filter id="vaultGlow" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation="4" result="blur" />
+              <filter id="lgGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
-              <filter id="vaultSoftGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="12" />
+              <filter id="lgSealFilter" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="8" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
               </filter>
+              <linearGradient id="lgPeriGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#00CED1" stopOpacity={0.7} />
+                <stop offset="50%" stopColor="#C084FC" stopOpacity={0.6} />
+                <stop offset="100%" stopColor="#D4616B" stopOpacity={0.7} />
+              </linearGradient>
             </defs>
 
-            {/* Inner glow */}
-            <circle id="vault-inner-glow" cx={cx} cy={cy} r="90" fill="url(#vaultGlowGrad)" />
+            {/* Ambient glow */}
+            <circle id="lg-ambient" cx="300" cy="300" r="180" fill="url(#lgAmbient)" />
 
-            {/* Tick marks — vault dial */}
-            {tickData.map((t, i) => (
+            {/* Outer grid — subtle warm-cool mix */}
+            {gridLinesData.map((l, i) => (
               <line
-                key={`tick-${i}`}
-                className="vault-tick"
-                x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2}
-                stroke="rgba(123,97,255,0.12)"
-                strokeWidth={i % 6 === 0 ? 0.8 : 0.4}
+                key={`g-${i}`}
+                className="lg-grid"
+                x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
+                stroke={i % 3 === 0 ? "rgba(0,206,209,0.06)" : i % 3 === 1 ? "rgba(192,132,252,0.06)" : "rgba(212,97,107,0.05)"}
+                strokeWidth={0.4}
               />
             ))}
 
-            {/* Concentric ring groups with arcs */}
-            {RINGS.map((ring, ri) => (
-              <g key={`ring-${ri}`} className="vault-ring" style={{ transformOrigin: `${cx}px ${cy}px` }}>
-                {/* Faint full circle guide */}
-                <circle
-                  cx={cx} cy={cy} r={ring.r}
-                  stroke={ring.color}
-                  strokeWidth={0.3}
-                  strokeDasharray="3 8"
-                  opacity={0.15}
-                  fill="none"
-                />
-
-                {/* Arc segments */}
-                {ring.arcs.map((arc, ai) => {
-                  const { d, startX, startY, endX, endY } = describeArc(cx, cy, ring.r, arc.start, arc.sweep);
-                  return (
-                    <g key={`arc-${ri}-${ai}`}>
-                      <path
-                        className="vault-arc"
-                        d={d}
-                        stroke={ring.color}
-                        strokeWidth={ring.width}
-                        strokeLinecap="round"
-                        fill="none"
-                        opacity={0.7}
-                        data-base-opacity="0.7"
-                        data-base-width={ring.width}
-                        filter="url(#vaultGlow)"
-                      />
-                      {/* Endpoint nodes */}
-                      <circle
-                        className="vault-node"
-                        cx={Math.round(startX * 100) / 100}
-                        cy={Math.round(startY * 100) / 100}
-                        r="2"
-                        fill={ring.color} opacity={0.8}
-                      />
-                      <circle
-                        className="vault-node"
-                        cx={Math.round(endX * 100) / 100}
-                        cy={Math.round(endY * 100) / 100}
-                        r="2"
-                        fill={ring.color} opacity={0.8}
-                      />
-                    </g>
-                  );
-                })}
-              </g>
+            {/* Inner grid */}
+            {innerGridData.map((l, i) => (
+              <line
+                key={`ig-${i}`}
+                className="lg-inner-grid"
+                x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
+                stroke={i % 2 === 0 ? "rgba(0,206,209,0.04)" : "rgba(192,132,252,0.04)"}
+                strokeWidth={0.3}
+              />
             ))}
 
-            {/* Pulse ring */}
-            <circle
-              id="vault-pulse"
-              cx={cx} cy={cy} r="160"
-              stroke="#7B61FF"
-              strokeWidth={1.5}
+            {/* Perimeter — gradient colored segments */}
+            {periSegments.map((seg, i) => {
+              const colors = ["#00CED1", "#C084FC", "#D4616B", "#FFD700"];
+              return (
+                <line
+                  key={`ps-${i}`}
+                  className="lg-peri-seg"
+                  x1={seg.x1} y1={seg.y1} x2={seg.x2} y2={seg.y2}
+                  stroke={colors[i]}
+                  strokeWidth={1}
+                  strokeLinecap="square"
+                  strokeDasharray={seg.len}
+                  strokeDashoffset={seg.len}
+                  opacity={0.7}
+                />
+              );
+            })}
+
+            {/* Seal glow — warm coral */}
+            <rect
+              id="lg-seal-glow"
+              x="125" y="125"
+              width="350" height="350"
+              rx="2"
               fill="none"
-              opacity={0}
-              filter="url(#vaultSoftGlow)"
+              stroke="#D4616B"
+              strokeWidth={2.5}
+              opacity={0.5}
+              filter="url(#lgSealFilter)"
             />
 
-            {/* Core */}
-            <g id="vault-core-bg">
-              <circle cx={cx} cy={cy} r="32" fill="url(#vaultCoreGrad)" />
-              <circle cx={cx} cy={cy} r="32" fill="none" stroke="rgba(123,97,255,0.25)" strokeWidth={0.8} />
-              <circle cx={cx} cy={cy} r="24" fill="none" stroke="rgba(123,97,255,0.12)" strokeWidth={0.5} />
+            {/* Particles — multi-colored */}
+            {particleData.map((p, i) => (
+              <circle
+                key={`part-${i}`}
+                className="lg-particle"
+                cx={p.cx} cy={p.cy}
+                r={1.5}
+                fill={particleColors[i]}
+                data-tx={p.tx}
+                data-ty={p.ty}
+              />
+            ))}
+
+            {/* Corner brackets — alternating cyan and coral */}
+            {corners.map((c, i) => {
+              const dx = i === 0 || i === 3 ? 1 : -1;
+              const dy = i === 0 || i === 1 ? 1 : -1;
+              const color = i % 2 === 0 ? "#00CED1" : "#D4616B";
+
+              return (
+                <g key={`c-${i}`} className="lg-corner" style={{ transformOrigin: `${c.x}px ${c.y}px` }}>
+                  <line
+                    x1={c.x} y1={c.y}
+                    x2={c.x + bracketLen * dx} y2={c.y}
+                    stroke={color} strokeWidth={1.2} strokeLinecap="square" opacity={0.85}
+                  />
+                  <line
+                    x1={c.x} y1={c.y}
+                    x2={c.x} y2={c.y + bracketLen * dy}
+                    stroke={color} strokeWidth={1.2} strokeLinecap="square" opacity={0.85}
+                  />
+                  <circle
+                    cx={c.x} cy={c.y} r={2.5}
+                    fill={color} filter="url(#lgGlow)"
+                  />
+                </g>
+              );
+            })}
+
+            {/* Core block — coral-to-violet gradient */}
+            <g id="lg-core">
+              <rect
+                x="268" y="268" width="64" height="64" rx="3"
+                fill="url(#lgCoreGrad)"
+                opacity={0.85}
+                filter="url(#lgGlow)"
+              />
+              <rect
+                x="268" y="268" width="64" height="64" rx="3"
+                fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={0.8}
+              />
+              <rect
+                x="280" y="280" width="40" height="40" rx="2"
+                fill="rgba(255,255,255,0.06)"
+              />
+              <circle cx="300" cy="300" r="5" fill="rgba(255,255,255,0.45)" />
             </g>
 
-            {/* Lock icon in core */}
-            <g id="vault-core-icon">
+            {/* Lock icon */}
+            <g id="lg-lock" style={{ transformOrigin: "300px 300px" }}>
               <rect
                 x="291" y="298" width="18" height="13" rx="2"
-                fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth={0.9}
+                fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth={1}
               />
               <path
-                d="M294 298 V294 A6 6 0 0 1 306 294 V298"
-                fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth={0.9} strokeLinecap="round"
+                d="M294 298 V293 A6 6 0 0 1 306 293 V298"
+                fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth={1} strokeLinecap="round"
               />
-              <circle cx="300" cy="304" r="1.3" fill="rgba(255,255,255,0.5)" />
+              <circle cx="300" cy="304" r="1.5" fill="rgba(255,255,255,0.45)" />
             </g>
           </svg>
         </div>
