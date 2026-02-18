@@ -362,9 +362,10 @@ const InterfaceSection = () => {
 
               {/* Violet stroke gradient */}
               <linearGradient id="violetStroke" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#6E3BFF" stopOpacity={0} />
-                <stop offset="35%" stopColor="#6E3BFF" stopOpacity={0.35} />
-                <stop offset="100%" stopColor="#6E3BFF" stopOpacity={0} />
+                <stop offset="0%" stopColor="#6E3BFF" stopOpacity={0.15} />
+                <stop offset="20%" stopColor="#6E3BFF" stopOpacity={0.6} />
+                <stop offset="80%" stopColor="#6E3BFF" stopOpacity={0.6} />
+                <stop offset="100%" stopColor="#6E3BFF" stopOpacity={0.15} />
               </linearGradient>
             </defs>
 
@@ -397,7 +398,7 @@ const InterfaceSection = () => {
 
             {/* Harmonized timeline */}
             <g id="timeline" opacity={0}>
-              <path d="M720 260 H 1090" stroke="url(#violetStroke)" strokeWidth={3} strokeLinecap="round" fill="none" />
+              <path d="M720 260 H 1090" stroke="url(#violetStroke)" strokeWidth={3.5} strokeLinecap="round" fill="none" />
               <g filter="url(#s7glow)">
                 {CHECKPOINTS.map((cx, i) => (
                   <circle
@@ -405,13 +406,13 @@ const InterfaceSection = () => {
                     className="ck"
                     cx={cx}
                     cy={260}
-                    r={7}
-                    fill={i === CHECKPOINTS.length - 1 ? "rgba(212,97,107,0.85)" : "rgba(110,59,255,0.75)"}
+                    r={8}
+                    fill={i === CHECKPOINTS.length - 1 ? "rgba(212,97,107,0.9)" : "rgba(110,59,255,0.8)"}
                   />
                 ))}
               </g>
               {/* Traveling pulse */}
-              <circle id="pulse" cx={720} cy={260} r={10} fill="rgba(242,193,174,0.9)" filter="url(#s7glow)" />
+              <circle id="pulse" cx={720} cy={260} r={12} fill="rgba(242,193,174,1)" filter="url(#s7glow)" />
             </g>
 
             {/* Signal pills (fragmented state) */}
