@@ -28,7 +28,7 @@ const SovereigntySection = () => {
     const gridLines = svg.querySelectorAll<SVGLineElement>(".lg-grid");
     const innerGridLines = svg.querySelectorAll<SVGLineElement>(".lg-inner-grid");
     const cornerAnchors = svg.querySelectorAll<SVGGElement>(".lg-corner");
-    const perimeterSegments = svg.querySelectorAll<SVGLineElement>(".lg-peri-seg");
+    const orbitDots = svg.querySelectorAll<SVGCircleElement>(".lg-orbit-dot");
     const sealGlow = svg.querySelector("#lg-seal-glow") as SVGRectElement;
     const lockIcon = svg.querySelector("#lg-lock") as SVGGElement;
     const particles = svg.querySelectorAll<SVGCircleElement>(".lg-particle");
@@ -39,7 +39,7 @@ const SovereigntySection = () => {
     gsap.set(gridLines, { opacity: 0 });
     gsap.set(innerGridLines, { opacity: 0 });
     gsap.set(cornerAnchors, { opacity: 0 });
-    gsap.set(perimeterSegments, { opacity: 0 });
+    gsap.set(orbitDots, { opacity: 0 });
     gsap.set(sealGlow, { opacity: 0 });
     gsap.set(lockIcon, { opacity: 0, scale: 0, transformOrigin: "300px 300px" });
     gsap.set(particles, { opacity: 0 });
@@ -72,29 +72,64 @@ const SovereigntySection = () => {
       ease: "power2.out",
     }, "-=0.4");
 
-    /* ══════════ LOOP — only perimeter, corners, particles, lock cycle ══════════ */
+    /* ══════════ ORBIT DOTS — continuous loop along perimeter ══════════ */
+    // Each dot travels around the rectangle path: top→right→bottom→left
+    // Perimeter path waypoints (clockwise from top-left)
+    const pathPoints = [
+      { x: 130, y: 130 }, { x: 470, y: 130 }, // top edge
+      { x: 470, y: 470 }, // right edge
+      { x: 130, y: 470 }, // bottom edge
+      { x: 130, y: 130 }, // left edge (back to start)
+    ];
+
+    // Total perimeter = 4 * 340 = 1360
+    const edgeLengths = [340, 340, 340, 340];
+    const totalPerimeter = 1360;
+
+    orbitDots.forEach((dot, i) => {
+      const offset = (i / orbitDots.length) * totalPerimeter;
+      const duration = 8; // seconds for full loop
+
+      // Create a repeating tween using motionPath-like manual approach
+      const tl = gsap.timeline({ repeat: -1, delay: 0.5 });
+
+      // We'll use an object to track progress around the perimeter
+      const proxy = { progress: 0 };
+      tl.to(proxy, {
+        progress: 1,
+        duration: duration,
+        ease: "none",
+        onUpdate: () => {
+          // Calculate position along perimeter
+          let dist = ((proxy.progress * totalPerimeter) + offset) % totalPerimeter;
+          let accumulated = 0;
+          for (let edge = 0; edge < 4; edge++) {
+            if (dist <= accumulated + edgeLengths[edge]) {
+              const t = (dist - accumulated) / edgeLengths[edge];
+              const x1 = pathPoints[edge].x;
+              const y1 = pathPoints[edge].y;
+              const x2 = pathPoints[edge + 1].x;
+              const y2 = pathPoints[edge + 1].y;
+              gsap.set(dot, { attr: { cx: x1 + (x2 - x1) * t, cy: y1 + (y2 - y1) * t } });
+              break;
+            }
+            accumulated += edgeLengths[edge];
+          }
+        },
+      });
+    });
+
+    // Fade dots in after intro
+    gsap.to(orbitDots, { opacity: 1, duration: 1, delay: 0.3 });
+
+    /* ══════════ LOOP — corners, particles, lock cycle ══════════ */
     const loop = gsap.timeline({ repeat: -1, repeatDelay: 1.5, delay: 0 });
 
     // Reset state at start of each cycle
-    loop.set(perimeterSegments, { attr: { "stroke-dashoffset": (i: number) => [340, 340, 340, 340][i] } });
     loop.set(cornerAnchors, { opacity: 0 });
     loop.set(lockIcon, { opacity: 0, scale: 0 });
     loop.set(sealGlow, { opacity: 0 });
     loop.set(particles, { opacity: 0, attr: { cx: 300, cy: 300 } });
-
-    // Perimeter draws sequentially
-    loop.to(perimeterSegments[0], {
-      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
-    }, "+=0.3");
-    loop.to(perimeterSegments[1], {
-      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
-    }, "-=0.1");
-    loop.to(perimeterSegments[2], {
-      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
-    }, "-=0.1");
-    loop.to(perimeterSegments[3], {
-      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
-    }, "-=0.1");
 
     // Corner anchors snap in
     const cornerOffsets = [
@@ -105,7 +140,7 @@ const SovereigntySection = () => {
     loop.to(cornerAnchors, {
       opacity: 1, x: 0, y: 0,
       duration: 0.45, stagger: 0.06, ease: "power3.out",
-    });
+    }, "+=0.5");
 
     // Lock pulse — particles fly out
     loop.to(sealGlow, { opacity: 0.45, duration: 0.3, ease: "power2.in" });
@@ -132,16 +167,10 @@ const SovereigntySection = () => {
     // Hold the locked state
     loop.to({}, { duration: 2.5 });
 
-    // Fade out only lock icon & corners — perimeter lines STAY visible
+    // Fade out only lock icon & corners
     loop.to(lockIcon, { opacity: 0, duration: 0.6, ease: "power2.inOut" });
     loop.to(cornerAnchors, { opacity: 0, duration: 0.6, ease: "power2.inOut" }, "-=0.4");
     loop.to(particles, { opacity: 0, duration: 0.3 }, "-=0.6");
-
-    // Reset perimeter dashoffset so they re-draw on next cycle (lines stay visible via opacity)
-    loop.set(perimeterSegments, { attr: { "stroke-dashoffset": (i: number) => {
-      const lengths = [340, 340, 340, 340];
-      return lengths[i] || 340;
-    }}});
     loop.to(gridLines, { opacity: 0.07, duration: 0.6, ease: "power2.inOut" }, "-=0.3");
 
     // Start loop after intro finishes
@@ -165,7 +194,7 @@ const SovereigntySection = () => {
       gridLines.forEach((l) => gsap.killTweensOf(l));
       innerGridLines.forEach((l) => gsap.killTweensOf(l));
       cornerAnchors.forEach((c) => gsap.killTweensOf(c));
-      perimeterSegments.forEach((s) => gsap.killTweensOf(s));
+      orbitDots.forEach((d) => gsap.killTweensOf(d));
       particles.forEach((p) => gsap.killTweensOf(p));
     };
   }, []);
@@ -226,11 +255,10 @@ const SovereigntySection = () => {
   ];
   const bracketLen = 18;
 
-  const periSegments = [
-    { x1: 130, y1: 130, x2: 470, y2: 130, len: 340 },
-    { x1: 470, y1: 130, x2: 470, y2: 470, len: 340 },
-    { x1: 470, y1: 470, x2: 130, y2: 470, len: 340 },
-    { x1: 130, y1: 470, x2: 130, y2: 130, len: 340 },
+  const ORBIT_DOT_COUNT = 8;
+  const orbitDotColors = [
+    "#C084FC", "#D4616B", "#7B61FF", "#E8937C",
+    "#C084FC", "#D4616B", "#7B61FF", "#F2C1AE",
   ];
 
   const particleData = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
@@ -400,23 +428,18 @@ const SovereigntySection = () => {
               />
             ))}
 
-            {/* Perimeter — gradient colored segments */}
-            {periSegments.map((seg, i) => {
-              const colors = ["#C084FC", "#7B61FF", "#D4616B", "#C084FC"];
-              return (
-                <line
-                  key={`ps-${i}`}
-                  className="lg-peri-seg"
-                  x1={seg.x1} y1={seg.y1} x2={seg.x2} y2={seg.y2}
-                  stroke={colors[i]}
-                  strokeWidth={1}
-                  strokeLinecap="square"
-                  strokeDasharray={seg.len}
-                  strokeDashoffset={seg.len}
-                  opacity={0.7}
-                />
-              );
-            })}
+            {/* Orbit dots — circles traveling along perimeter */}
+            {Array.from({ length: ORBIT_DOT_COUNT }, (_, i) => (
+              <circle
+                key={`od-${i}`}
+                className="lg-orbit-dot"
+                cx={130}
+                cy={130}
+                r={3}
+                fill={orbitDotColors[i]}
+                filter="url(#lgGlow)"
+              />
+            ))}
 
             {/* Seal glow — warm coral */}
             <rect
