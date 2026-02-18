@@ -133,34 +133,63 @@ const InterfaceSection = () => {
       .to(pulse, { opacity: 0.0, duration: 0.15 }, ">-0.1")
       .set(pulse, { opacity: 0.9, attr: { cx: 720 } });
 
-    // IntersectionObserver trigger — observe the stage container, not the section
+    // --- TRIGGER LOGIC: scroll guard + delayed convergence ---
     const stageEl = stageRef.current;
     if (!stageEl || hasTriggered.current) return;
+
+    let started = false;
+    let enteredAt = 0;
+    const MIN_FRAGMENTED_MS = 3200;
+    let userHasScrolled = false;
+
+    const onFirstScroll = () => { userHasScrolled = true; };
+    window.addEventListener("scroll", onFirstScroll, { once: true });
+
+    function startConvergence() {
+      if (started) return;
+      started = true;
+      hasTriggered.current = true;
+
+      // Slow drift instead of killing it instantly
+      gsap.to(drift, { timeScale: 0.25, duration: 0.8, ease: "sine.out" });
+
+      transformTL.play(0);
+
+      // Pause drift after signals have converged (~2.1s)
+      gsap.delayedCall(2.1, () => drift.pause());
+
+      // Start pulse after transform completes
+      transformTL.eventCallback("onComplete", () => {
+        pulseTL.play(0);
+      });
+    }
 
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting && !hasTriggered.current) {
-            hasTriggered.current = true;
-            // Let drift run for 3s before converging
-            gsap.delayedCall(3, () => {
-              drift.pause();
-              transformTL.play(0);
-              transformTL.eventCallback("onComplete", () => {
-                pulseTL.play(0);
-              });
-            });
-            io.disconnect();
-          }
+          if (!e.isIntersecting || started) return;
+
+          // Don't auto-trigger if page loads at this section
+          if (!userHasScrolled) return;
+
+          // Record first visible moment
+          if (!enteredAt) enteredAt = Date.now();
+
+          // Ensure fragmented state is visible for MIN_FRAGMENTED_MS
+          const elapsed = Date.now() - enteredAt;
+          const remaining = Math.max(0, (MIN_FRAGMENTED_MS - elapsed) / 1000);
+
+          gsap.delayedCall(remaining, startConvergence);
         });
       },
-      { threshold: 0.6 }
+      { threshold: 0.65, rootMargin: "0px 0px -10% 0px" }
     );
 
     io.observe(stageEl);
 
     return () => {
       io.disconnect();
+      window.removeEventListener("scroll", onFirstScroll);
       drift.kill();
       transformTL.kill();
       pulseTL.kill();
