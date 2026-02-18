@@ -245,10 +245,10 @@ const SovereigntySection = () => {
 
   /* Color palette for particles — warm coral, cyan, gold, soft violet */
   const particleColors = [
-    "#D4616B", "#E8937C", "#00CED1", "#FFD700",
-    "#D4616B", "#C084FC", "#00CED1", "#F2C1AE",
-    "#FFD700", "#E8937C", "#C084FC", "#00CED1",
-    "#D4616B", "#FFD700", "#F2C1AE", "#C084FC",
+    "#D4616B", "#C084FC", "#7B61FF", "#E8937C",
+    "#C084FC", "#D4616B", "#7B61FF", "#F2C1AE",
+    "#D4616B", "#C084FC", "#E8937C", "#7B61FF",
+    "#C084FC", "#D4616B", "#F2C1AE", "#7B61FF",
   ];
 
   return (
@@ -345,14 +345,14 @@ const SovereigntySection = () => {
           >
             <defs>
               <radialGradient id="lgAmbient" cx="50%" cy="50%" r="40%">
-                <stop offset="0%" stopColor="#0E3D4A" stopOpacity={0.3} />
-                <stop offset="50%" stopColor="#091E2A" stopOpacity={0.15} />
-                <stop offset="100%" stopColor="#060B1E" stopOpacity={0} />
+                <stop offset="0%" stopColor="#7B61FF" stopOpacity={0.2} />
+                <stop offset="50%" stopColor="#1A0A3E" stopOpacity={0.12} />
+                <stop offset="100%" stopColor="#0B0613" stopOpacity={0} />
               </radialGradient>
               <radialGradient id="lgCoreGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="rgba(255,255,255,0.15)" stopOpacity={1} />
-                <stop offset="40%" stopColor="#00CED1" stopOpacity={0.35} />
-                <stop offset="100%" stopColor="#0B1A2E" stopOpacity={0.9} />
+                <stop offset="0%" stopColor="rgba(255,255,255,0.12)" stopOpacity={1} />
+                <stop offset="40%" stopColor="#7B61FF" stopOpacity={0.4} />
+                <stop offset="100%" stopColor="#1A0630" stopOpacity={0.85} />
               </radialGradient>
               <filter id="lgGlow" x="-30%" y="-30%" width="160%" height="160%">
                 <feGaussianBlur stdDeviation="3" result="blur" />
@@ -369,8 +369,8 @@ const SovereigntySection = () => {
                 </feMerge>
               </filter>
               <linearGradient id="lgPeriGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#00CED1" stopOpacity={0.7} />
-                <stop offset="50%" stopColor="#C084FC" stopOpacity={0.6} />
+                <stop offset="0%" stopColor="#C084FC" stopOpacity={0.7} />
+                <stop offset="50%" stopColor="#7B61FF" stopOpacity={0.6} />
                 <stop offset="100%" stopColor="#D4616B" stopOpacity={0.7} />
               </linearGradient>
             </defs>
@@ -384,7 +384,7 @@ const SovereigntySection = () => {
                 key={`g-${i}`}
                 className="lg-grid"
                 x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
-                stroke={i % 3 === 0 ? "rgba(0,206,209,0.06)" : i % 3 === 1 ? "rgba(192,132,252,0.06)" : "rgba(212,97,107,0.05)"}
+                stroke={i % 3 === 0 ? "rgba(123,97,255,0.06)" : i % 3 === 1 ? "rgba(192,132,252,0.06)" : "rgba(212,97,107,0.05)"}
                 strokeWidth={0.4}
               />
             ))}
@@ -395,14 +395,14 @@ const SovereigntySection = () => {
                 key={`ig-${i}`}
                 className="lg-inner-grid"
                 x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
-                stroke={i % 2 === 0 ? "rgba(0,206,209,0.04)" : "rgba(192,132,252,0.04)"}
+                stroke={i % 2 === 0 ? "rgba(123,97,255,0.04)" : "rgba(192,132,252,0.04)"}
                 strokeWidth={0.3}
               />
             ))}
 
             {/* Perimeter — gradient colored segments */}
             {periSegments.map((seg, i) => {
-              const colors = ["#00CED1", "#C084FC", "#D4616B", "#FFD700"];
+              const colors = ["#C084FC", "#7B61FF", "#D4616B", "#C084FC"];
               return (
                 <line
                   key={`ps-${i}`}
@@ -448,7 +448,7 @@ const SovereigntySection = () => {
             {corners.map((c, i) => {
               const dx = i === 0 || i === 3 ? 1 : -1;
               const dy = i === 0 || i === 1 ? 1 : -1;
-              const color = i % 2 === 0 ? "#00CED1" : "#D4616B";
+              const color = i % 2 === 0 ? "#C084FC" : "#D4616B";
 
               return (
                 <g key={`c-${i}`} className="lg-corner" style={{ transformOrigin: `${c.x}px ${c.y}px` }}>
