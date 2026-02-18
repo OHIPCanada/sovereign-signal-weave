@@ -88,7 +88,7 @@ const SovereigntySection = () => {
 
     orbitDots.forEach((dot, i) => {
       const offset = (i / orbitDots.length) * totalPerimeter;
-      const duration = 8; // seconds for full loop
+      const duration = 20; // seconds for full loop
 
       // Create a repeating tween using motionPath-like manual approach
       const tl = gsap.timeline({ repeat: -1, delay: 0.5 });
