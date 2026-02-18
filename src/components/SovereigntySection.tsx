@@ -262,12 +262,7 @@ const SovereigntySection = () => {
         {/* Right — Secure Core Chamber */}
         <div
           ref={vaultRef}
-          className="relative overflow-hidden"
           style={{
-            borderRadius: 24,
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(123,77,255,0.15)",
-            boxShadow: "0 30px 80px rgba(123,77,255,0.15), inset 0 0 80px rgba(123,77,255,0.05)",
             aspectRatio: "1",
             maxWidth: 700,
             width: "100%",
