@@ -36,6 +36,7 @@ const CHECKPOINTS = [760, 820, 900, 980, 1060];
 
 const InterfaceSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const hasTriggered = useRef(false);
 
@@ -132,29 +133,31 @@ const InterfaceSection = () => {
       .to(pulse, { opacity: 0.0, duration: 0.15 }, ">-0.1")
       .set(pulse, { opacity: 0.9, attr: { cx: 720 } });
 
-    // IntersectionObserver trigger
-    const stage = sectionRef.current;
-    if (!stage || hasTriggered.current) return;
+    // IntersectionObserver trigger — observe the stage container, not the section
+    const stageEl = stageRef.current;
+    if (!stageEl || hasTriggered.current) return;
 
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           if (e.isIntersecting && !hasTriggered.current) {
             hasTriggered.current = true;
-            drift.pause();
-            transformTL.play(0);
-            // Start pulse loop after transform completes
-            transformTL.eventCallback("onComplete", () => {
-              pulseTL.play(0);
+            // Let drift run for 3s before converging
+            gsap.delayedCall(3, () => {
+              drift.pause();
+              transformTL.play(0);
+              transformTL.eventCallback("onComplete", () => {
+                pulseTL.play(0);
+              });
             });
             io.disconnect();
           }
         });
       },
-      { threshold: 0.35 }
+      { threshold: 0.6 }
     );
 
-    io.observe(stage);
+    io.observe(stageEl);
 
     return () => {
       io.disconnect();
@@ -229,6 +232,7 @@ const InterfaceSection = () => {
 
         {/* Transformation Stage */}
         <div
+          ref={stageRef}
           className="relative overflow-hidden"
           style={{
             borderRadius: 28,
