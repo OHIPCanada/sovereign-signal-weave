@@ -69,7 +69,8 @@ const InterfaceSection = () => {
     // ── Timing constants ──
     const SIG_FLY_DUR = 0.5;       // flight to lens
     const CHECKPOINT_DUR = 0.4;    // appear on timeline
-    const PER_SIGNAL = SIG_FLY_DUR + CHECKPOINT_DUR + 0.15; // total per signal
+    const PULSE_TRAVEL = 0.5;     // pulse travels across timeline
+    const PER_SIGNAL = SIG_FLY_DUR + PULSE_TRAVEL + 0.2; // total per signal
     const sortedIndices = [...Array(sigCount).keys()].sort((a, b) => SIGNALS[a].x - SIGNALS[b].x);
 
     // Show traces early
@@ -93,10 +94,10 @@ const InterfaceSection = () => {
     const ckEls = svg.querySelectorAll<SVGCircleElement>(".ck");
     ckEls.forEach(ck => { ck.style.opacity = "0"; });
 
-    // ── Each signal: fly to lens → lens pulse → checkpoint appears ──
+    // ── Each signal: fly to lens → pulse travels harmonized timeline ──
     sortedIndices.forEach((origIdx, order) => {
       const el = sigs[origIdx];
-      const t = order * PER_SIGNAL; // start time for this signal
+      const t = order * PER_SIGNAL;
 
       // Fly signal to lens center
       master.to(el, {
@@ -112,10 +113,18 @@ const InterfaceSection = () => {
       master.to(lens, { scale: 1.08, transformOrigin: "600px 260px", duration: 0.1, ease: "power2.in" }, t + SIG_FLY_DUR * 0.9);
       master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 0.15, ease: "power2.out" }, t + SIG_FLY_DUR * 0.9 + 0.1);
 
-      // Checkpoint appears on timeline (harmonized output)
+      // Pulse dot travels through harmonized timeline after each merge
+      const pulseStart = t + SIG_FLY_DUR + 0.05;
+      master.set(pulse, { attr: { cx: 720 }, opacity: 0.9 }, pulseStart);
+      master.to(pulse, { attr: { cx: 1060 }, duration: PULSE_TRAVEL, ease: "power2.inOut" }, pulseStart);
+      master.to(pulse, { opacity: 0, duration: 0.1 }, pulseStart + PULSE_TRAVEL);
+
+      // Light up a checkpoint on this pass
       const ckIdx = order % CHECKPOINTS.length;
       if (ckEls[ckIdx]) {
-        master.to(ckEls[ckIdx], { opacity: 1, scale: 1, duration: 0.2, ease: "back.out(2)", transformOrigin: "center" }, t + SIG_FLY_DUR + 0.1);
+        const ckTime = pulseStart + PULSE_TRAVEL * ((CHECKPOINTS[ckIdx] - 720) / 340);
+        master.to(ckEls[ckIdx], { opacity: 1, scale: 1.3, duration: 0.1, ease: "power2.in", transformOrigin: "center" }, ckTime);
+        master.to(ckEls[ckIdx], { scale: 1, duration: 0.15, ease: "power2.out", transformOrigin: "center" }, ckTime + 0.1);
       }
     });
 
@@ -128,14 +137,8 @@ const InterfaceSection = () => {
     master.to(lens, { scale: 1.18, transformOrigin: "600px 260px", duration: 0.3, ease: "power2.in" }, lastArrival);
     master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 0.5, ease: "elastic.out(1, 0.5)" }, lastArrival + 0.3);
 
-    // ── Harmonized hold: traveling pulse ──
-    const HARM_START = lastArrival + 1.0;
-    master.set(pulse, { attr: { cx: 720 }, opacity: 0.9 }, HARM_START);
-    master.to(pulse, { attr: { cx: 1060 }, duration: 2.2, ease: "sine.inOut" }, HARM_START + 0.1);
-    master.to(pulse, { opacity: 0, duration: 0.15 }, HARM_START + 2.2);
-
     // ── Reset: fade out everything, restore signals ──
-    const RESET_START = HARM_START + 2.8;
+    const RESET_START = lastArrival + 1.5;
     master.to(timeline, { opacity: 0, duration: 0.4, ease: "power2.in" }, RESET_START);
     master.to(traces, { opacity: 0, duration: 0.4, ease: "power2.in" }, RESET_START);
 
