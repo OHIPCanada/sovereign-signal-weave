@@ -1,484 +1,353 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useCallback } from "react";
+import gsap from "gsap";
 
-/* ── Single Continuous Transformation Canvas ── */
-const TransformationCanvas = () => {
-  return (
-    <div
-      className="relative w-full overflow-hidden rounded-[32px]"
-      style={{
-        height: 420,
-        background: "rgba(255,255,255,0.22)",
-        boxShadow: "0 40px 120px rgba(18,10,34,0.10)",
-      }}
-    >
-      {/* Horizontal transformation gradient beam */}
-      <motion.div
-        className="absolute inset-y-0 pointer-events-none"
-        style={{
-          width: 260,
-          background: "linear-gradient(90deg, transparent, rgba(232,150,124,0.22), rgba(110,43,255,0.12), transparent)",
-          filter: "blur(30px)",
-        }}
-        animate={{ left: ["-260px", "110%"] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-      />
+/* ── Signal pill data ── */
+const SIGNALS = [
+  { x: 120, y: 120, w: 90, stroke: "rgba(110,59,255,0.18)", fill: "rgba(110,59,255,0.75)" },
+  { x: 190, y: 180, w: 120, stroke: "rgba(212,97,107,0.16)", fill: "rgba(212,97,107,0.75)" },
+  { x: 150, y: 240, w: 140, stroke: "rgba(110,59,255,0.16)", fill: "rgba(110,59,255,0.72)" },
+  { x: 260, y: 290, w: 100, stroke: "rgba(232,150,124,0.18)", fill: "rgba(232,150,124,0.75)" },
+  { x: 110, y: 330, w: 130, stroke: "rgba(110,59,255,0.14)", fill: "rgba(110,59,255,0.65)" },
+  { x: 220, y: 380, w: 110, stroke: "rgba(212,97,107,0.14)", fill: "rgba(212,97,107,0.7)" },
+  { x: 320, y: 130, w: 100, stroke: "rgba(110,59,255,0.14)", fill: "rgba(110,59,255,0.6)" },
+  { x: 330, y: 210, w: 140, stroke: "rgba(242,193,174,0.18)", fill: "rgba(242,193,174,0.9)" },
+  { x: 300, y: 360, w: 120, stroke: "rgba(110,59,255,0.14)", fill: "rgba(110,59,255,0.62)" },
+  { x: 160, y: 90, w: 80, stroke: "rgba(212,97,107,0.16)", fill: "rgba(212,97,107,0.68)" },
+  { x: 240, y: 150, w: 95, stroke: "rgba(110,59,255,0.12)", fill: "rgba(110,59,255,0.58)" },
+  { x: 100, y: 420, w: 115, stroke: "rgba(232,150,124,0.14)", fill: "rgba(232,150,124,0.65)" },
+  { x: 350, y: 310, w: 85, stroke: "rgba(110,59,255,0.16)", fill: "rgba(110,59,255,0.7)" },
+  { x: 280, y: 440, w: 105, stroke: "rgba(212,97,107,0.12)", fill: "rgba(212,97,107,0.6)" },
+  { x: 180, y: 460, w: 130, stroke: "rgba(110,59,255,0.14)", fill: "rgba(110,59,255,0.55)" },
+  { x: 370, y: 400, w: 75, stroke: "rgba(232,150,124,0.16)", fill: "rgba(232,150,124,0.72)" },
+  { x: 130, y: 60, w: 100, stroke: "rgba(110,59,255,0.12)", fill: "rgba(110,59,255,0.5)" },
+  { x: 310, y: 80, w: 110, stroke: "rgba(212,97,107,0.14)", fill: "rgba(212,97,107,0.62)" },
+];
 
-      {/* Zone labels */}
-      {[
-        { label: "FRAGMENTED", left: "10%" },
-        { label: "CONVERGENCE", left: "45%" },
-        { label: "HARMONIZED", left: "80%" },
-      ].map((z) => (
-        <div
-          key={z.label}
-          className="absolute font-mono uppercase pointer-events-none"
-          style={{
-            left: z.left,
-            top: 24,
-            transform: "translateX(-50%)",
-            fontSize: 10,
-            letterSpacing: "0.22em",
-            color: "rgba(18,10,34,0.30)",
-          }}
-        >
-          {z.label}
-        </div>
-      ))}
+const TRACES = [
+  { d: "M180 120 C 340 80, 430 120, 600 260", stroke: "rgba(110,59,255,0.35)" },
+  { d: "M220 300 C 360 340, 480 320, 600 260", stroke: "rgba(212,97,107,0.28)" },
+  { d: "M260 420 C 420 430, 520 360, 600 260", stroke: "rgba(110,59,255,0.25)" },
+  { d: "M360 220 C 460 200, 520 220, 600 260", stroke: "rgba(232,150,124,0.22)" },
+  { d: "M140 200 C 300 160, 440 200, 600 260", stroke: "rgba(110,59,255,0.20)" },
+  { d: "M300 400 C 440 380, 530 330, 600 260", stroke: "rgba(212,97,107,0.18)" },
+];
 
-      {/* Subtle vertical zone dividers */}
-      {[33.3, 66.6].map((pct) => (
-        <div
-          key={pct}
-          className="absolute pointer-events-none"
-          style={{
-            left: `${pct}%`,
-            top: 50,
-            bottom: 20,
-            width: 1,
-            background: "linear-gradient(to bottom, transparent, rgba(110,43,255,0.08), transparent)",
-          }}
-        />
-      ))}
+const CHECKPOINTS = [760, 820, 900, 980, 1060];
 
-      {/* ═══ LEFT ZONE: Fragmented chaos ═══ */}
-      {[
-        { w: 72, x: 3, y: 22, d: 0, r: -3 },
-        { w: 55, x: 18, y: 35, d: 0.3, r: 4 },
-        { w: 90, x: 5, y: 48, d: 0.6, r: -2 },
-        { w: 42, x: 22, y: 60, d: 0.9, r: 5 },
-        { w: 68, x: 8, y: 72, d: 1.2, r: -4 },
-        { w: 50, x: 15, y: 84, d: 1.5, r: 2 },
-      ].map((p, i) => (
-        <motion.div
-          key={`frag-${i}`}
-          className="absolute rounded-full"
-          style={{
-            width: p.w,
-            height: 12,
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            background: "rgba(18,10,34,0.06)",
-            border: "1px solid rgba(18,10,34,0.05)",
-            rotate: `${p.r}deg`,
-          }}
-          animate={{
-            x: [0, 6, -4, 3, -2, 0],
-            y: [0, -4, 3, -2, 1, 0],
-            opacity: [0.6, 0.2, 0.75, 0.15, 0.55, 0.6],
-            rotate: [p.r, p.r + 2, p.r - 1.5, p.r + 1, p.r],
-          }}
-          transition={{
-            duration: 2.8 + i * 0.2,
-            delay: p.d,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-
-      {/* Fragmented disconnected lines */}
-      {[
-        { x1: 4, y1: 40, x2: 14, y2: 38 },
-        { x1: 20, y1: 55, x2: 28, y2: 58 },
-        { x1: 6, y1: 68, x2: 16, y2: 65 },
-      ].map((l, i) => (
-        <motion.div
-          key={`fline-${i}`}
-          className="absolute"
-          style={{
-            left: `${l.x1}%`,
-            top: `${l.y1}%`,
-            width: `${l.x2 - l.x1}%`,
-            height: 1,
-            background: "rgba(18,10,34,0.08)",
-            transformOrigin: "left center",
-          }}
-          animate={{
-            opacity: [0.3, 0.08, 0.25, 0.05, 0.3],
-            scaleX: [1, 0.7, 1.1, 0.8, 1],
-          }}
-          transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" }}
-        />
-      ))}
-
-      {/* Noise overlay for left zone */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          left: 0,
-          top: 0,
-          width: "33%",
-          height: "100%",
-          backgroundImage: "radial-gradient(rgba(18,10,34,0.05) 1px, transparent 1px)",
-          backgroundSize: "18px 18px",
-          opacity: 0.2,
-        }}
-      />
-
-      {/* Flicker overlay left zone */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{ left: 0, top: 0, width: "33%", height: "100%", background: "rgba(18,10,34,0.015)" }}
-        animate={{ opacity: [0, 0.05, 0, 0.08, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-
-      {/* ═══ CENTER ZONE: Convergence engine ═══ */}
-      {/* Central vortex glow */}
-      <motion.div
-        className="absolute pointer-events-none rounded-full"
-        style={{
-          left: "50%",
-          top: "50%",
-          width: 140,
-          height: 140,
-          transform: "translate(-50%, -50%)",
-          background: "radial-gradient(circle, rgba(110,43,255,0.12) 0%, rgba(232,150,124,0.08) 40%, transparent 70%)",
-          filter: "blur(20px)",
-        }}
-        animate={{
-          scale: [1, 1.3, 1],
-          opacity: [0.6, 1, 0.6],
-        }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      {/* SVG convergence network */}
-      <svg
-        className="absolute pointer-events-none"
-        style={{ left: "28%", top: 0, width: "44%", height: "100%" }}
-        viewBox="0 0 400 420"
-        preserveAspectRatio="xMidYMid meet"
-      >
-        {/* Spline paths converging to center */}
-        {[
-          { d: "M 30 80 C 80 90, 140 140, 200 200", color: "110,43,255", w: 2, dur: 2.4 },
-          { d: "M 370 60 C 320 100, 260 150, 200 200", color: "191,167,255", w: 2, dur: 2.8 },
-          { d: "M 50 340 C 100 300, 150 250, 200 210", color: "232,150,124", w: 1.8, dur: 3.0 },
-          { d: "M 360 350 C 310 310, 260 260, 200 210", color: "110,43,255", w: 1.8, dur: 2.6 },
-          { d: "M 200 30 C 200 80, 200 140, 200 200", color: "191,167,255", w: 1.5, dur: 3.2 },
-          { d: "M 200 390 C 200 340, 200 270, 200 210", color: "232,150,124", w: 1.5, dur: 2.9 },
-        ].map((p, i) => (
-          <g key={`wire-${i}`}>
-            <motion.path
-              d={p.d}
-              fill="none"
-              stroke={`rgba(${p.color},0.18)`}
-              strokeWidth={p.w}
-              strokeDasharray="5 7"
-              animate={{ strokeDashoffset: [0, -120] }}
-              transition={{ duration: p.dur, repeat: Infinity, ease: "linear" }}
-            />
-            {/* Signal particle */}
-            <circle r="3.5" fill={`rgba(${p.color},0.85)`}>
-              <animateMotion dur={`${p.dur}s`} repeatCount="indefinite" path={p.d} />
-            </circle>
-          </g>
-        ))}
-
-        {/* Central convergence node */}
-        <motion.circle
-          cx={200}
-          cy={205}
-          r={8}
-          fill="rgba(110,43,255,0.6)"
-          animate={{
-            r: [8, 12, 8],
-            opacity: [0.6, 1, 0.6],
-          }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.circle
-          cx={200}
-          cy={205}
-          r={20}
-          fill="none"
-          stroke="rgba(110,43,255,0.15)"
-          strokeWidth={1.5}
-          animate={{
-            r: [20, 35, 20],
-            opacity: [0.3, 0, 0.3],
-          }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </svg>
-
-      {/* Satellite nodes in convergence zone */}
-      {[
-        { x: 35, y: 25, color: "110,43,255", delay: 0 },
-        { x: 62, y: 18, color: "191,167,255", delay: 0.5 },
-        { x: 37, y: 80, color: "232,150,124", delay: 1.0 },
-        { x: 63, y: 82, color: "110,43,255", delay: 1.5 },
-        { x: 50, y: 12, color: "191,167,255", delay: 0.8 },
-        { x: 50, y: 92, color: "232,150,124", delay: 1.3 },
-      ].map((n, i) => (
-        <motion.div
-          key={`node-${i}`}
-          className="absolute rounded-full"
-          style={{
-            left: `${n.x}%`,
-            top: `${n.y}%`,
-            width: 8,
-            height: 8,
-            background: `rgba(${n.color},0.7)`,
-            transform: "translate(-50%, -50%)",
-          }}
-          animate={{
-            scale: [1, 1.6, 1],
-            boxShadow: [
-              `0 0 0 0 rgba(${n.color},0.4)`,
-              `0 0 0 16px rgba(${n.color},0)`,
-              `0 0 0 0 rgba(${n.color},0.4)`,
-            ],
-          }}
-          transition={{
-            duration: 2.2,
-            delay: n.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-
-      {/* ═══ RIGHT ZONE: Harmonized resolution ═══ */}
-      {/* Clean horizontal flow line */}
-      <div
-        className="absolute"
-        style={{
-          left: "70%",
-          right: "4%",
-          top: "50%",
-          height: 2,
-          background: "linear-gradient(90deg, rgba(110,43,255,0.06), rgba(232,150,124,0.35), rgba(110,43,255,0.06))",
-        }}
-      />
-
-      {/* Checkpoints on flow line */}
-      {[
-        { pos: "74%", delay: 0 },
-        { pos: "84%", delay: 1.2 },
-        { pos: "94%", delay: 2.4 },
-      ].map((cp, i) => (
-        <motion.div
-          key={`cp-${i}`}
-          className="absolute rounded-full"
-          style={{
-            left: cp.pos,
-            top: "50%",
-            width: 16,
-            height: 16,
-            transform: "translate(-50%, -50%)",
-            background: "rgba(255,255,255,0.92)",
-            border: "2px solid rgba(232,150,124,0.5)",
-          }}
-          animate={{
-            boxShadow: [
-              "0 0 0 0 rgba(232,150,124,0)",
-              "0 0 0 0 rgba(232,150,124,0)",
-              "0 0 0 18px rgba(232,150,124,0.12)",
-              "0 0 0 0 rgba(232,150,124,0)",
-            ],
-            borderColor: [
-              "rgba(232,150,124,0.35)",
-              "rgba(232,150,124,0.35)",
-              "rgba(232,150,124,0.8)",
-              "rgba(232,150,124,0.35)",
-            ],
-          }}
-          transition={{
-            duration: 4.2,
-            delay: cp.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          <motion.div
-            className="absolute rounded-full"
-            style={{ inset: 3, background: "rgba(232,150,124,0.6)" }}
-            animate={{
-              opacity: [0.2, 0.2, 1, 0.2],
-              scale: [0.6, 0.6, 1, 0.6],
-            }}
-            transition={{
-              duration: 4.2,
-              delay: cp.delay,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        </motion.div>
-      ))}
-
-      {/* Traveling pulse */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{
-          top: "50%",
-          width: 8,
-          height: 8,
-          transform: "translateY(-50%)",
-          background: "rgba(232,150,124,0.95)",
-        }}
-        animate={{
-          left: ["70%", "74%", "84%", "94%", "97%", "70%"],
-          boxShadow: [
-            "0 0 0 0 rgba(232,150,124,0.6)",
-            "0 0 0 12px rgba(232,150,124,0)",
-            "0 0 0 12px rgba(232,150,124,0)",
-            "0 0 0 12px rgba(232,150,124,0)",
-            "0 0 0 0 rgba(232,150,124,0.4)",
-            "0 0 0 0 rgba(232,150,124,0)",
-          ],
-        }}
-        transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      {/* Stable aligned bars — resolved state */}
-      {[
-        { y: 28, w: "18%", l: "74%" },
-        { y: 36, w: "14%", l: "78%" },
-        { y: 66, w: "16%", l: "75%" },
-        { y: 74, w: "20%", l: "73%" },
-      ].map((b, i) => (
-        <motion.div
-          key={`bar-${i}`}
-          className="absolute rounded-md"
-          style={{
-            top: `${b.y}%`,
-            left: b.l,
-            width: b.w,
-            height: 8,
-            background: "rgba(110,43,255,0.035)",
-            border: "1px solid rgba(110,43,255,0.06)",
-          }}
-          animate={{ opacity: [0.5, 0.85, 0.5] }}
-          transition={{ duration: 4, delay: i * 0.5, repeat: Infinity }}
-        />
-      ))}
-
-      {/* Calm breathing glow — right zone */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{
-          right: 0,
-          top: 0,
-          width: "34%",
-          height: "100%",
-          background: "radial-gradient(ellipse at 80% 50%, rgba(232,150,124,0.06), transparent 70%)",
-        }}
-        animate={{ opacity: [0.4, 0.8, 0.4] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      />
-    </div>
-  );
-};
-
-/* ── Main Section ── */
 const InterfaceSection = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.2 });
+  const sectionRef = useRef<HTMLElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const hasTriggered = useRef(false);
+
+  const setupAnimations = useCallback(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+
+    const sigs = svg.querySelectorAll<SVGGElement>(".sig");
+    const traces = svg.querySelector("#traces") as SVGGElement;
+    const tracePaths = svg.querySelectorAll<SVGPathElement>("#traces path");
+    const timeline = svg.querySelector("#timeline") as SVGGElement;
+    const pulse = svg.querySelector("#pulse") as SVGCircleElement;
+    const lens = svg.querySelector("#lens") as SVGGElement;
+
+    // Setup trace dash
+    tracePaths.forEach((p) => {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = `6 10`;
+      p.style.strokeDashoffset = `${len}`;
+    });
+
+    // 1) Idle drift loop
+    const drift = gsap.timeline({ repeat: -1, yoyo: true });
+    sigs.forEach((el, i) => {
+      drift.to(
+        el,
+        {
+          x: gsap.utils.random(-12, 12),
+          y: gsap.utils.random(-10, 10),
+          duration: gsap.utils.random(2.8, 4.4),
+          ease: "sine.inOut",
+        },
+        i * 0.06
+      );
+    });
+
+    // Lens breathing
+    gsap.to(lens, {
+      scale: 1.04,
+      transformOrigin: "600px 260px",
+      yoyo: true,
+      repeat: -1,
+      duration: 2.8,
+      ease: "sine.inOut",
+    });
+
+    // 2) Transform timeline (triggered on scroll)
+    const transformTL = gsap.timeline({ paused: true });
+
+    // Reveal traces
+    transformTL.to(traces, { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.0);
+
+    // Draw traces
+    tracePaths.forEach((p, idx) => {
+      transformTL.to(
+        p,
+        {
+          strokeDashoffset: 0,
+          duration: 1.0 + idx * 0.12,
+          ease: "expo.out",
+        },
+        0.1
+      );
+    });
+
+    // Move signals toward lens center (600, 260)
+    sigs.forEach((el, i) => {
+      const targetX = 600 - SIGNALS[i].x + gsap.utils.random(-30, 30);
+      const targetY = 260 - SIGNALS[i].y + gsap.utils.random(-20, 20);
+      transformTL.to(
+        el,
+        {
+          x: targetX,
+          y: targetY,
+          opacity: 0,
+          duration: 1.2,
+          ease: "power3.inOut",
+        },
+        0.2 + i * 0.03
+      );
+    });
+
+    // Bring in harmonized timeline
+    transformTL.to(timeline, { opacity: 1, duration: 0.8, ease: "power2.out" }, 1.0);
+
+    // Soften traces
+    transformTL.to(traces, { opacity: 0.2, duration: 0.8, ease: "power2.out" }, 1.2);
+
+    // 3) Post-transform pulse loop
+    const pulseTL = gsap.timeline({ repeat: -1, paused: true });
+    pulseTL
+      .set(pulse, { attr: { cx: 720, r: 10 }, opacity: 0.9 })
+      .to(pulse, { attr: { cx: 1090 }, duration: 2.8, ease: "sine.inOut" })
+      .to(pulse, { opacity: 0.0, duration: 0.15 }, ">-0.1")
+      .set(pulse, { opacity: 0.9, attr: { cx: 720 } });
+
+    // IntersectionObserver trigger
+    const stage = sectionRef.current;
+    if (!stage || hasTriggered.current) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && !hasTriggered.current) {
+            hasTriggered.current = true;
+            drift.pause();
+            transformTL.play(0);
+            // Start pulse loop after transform completes
+            transformTL.eventCallback("onComplete", () => {
+              pulseTL.play(0);
+            });
+            io.disconnect();
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
+
+    io.observe(stage);
+
+    return () => {
+      io.disconnect();
+      drift.kill();
+      transformTL.kill();
+      pulseTL.kill();
+    };
+  }, []);
+
+  useEffect(() => {
+    const cleanup = setupAnimations();
+    return () => cleanup?.();
+  }, [setupAnimations]);
 
   return (
     <section
-      ref={ref}
+      ref={sectionRef}
       id="features"
       className="relative overflow-hidden"
       style={{
-        padding: "120px 0 130px",
+        padding: "clamp(64px, 8vw, 120px) 0",
         background: `
-          radial-gradient(900px 600px at 18% 18%, rgba(191,167,255,0.55), transparent 65%),
-          radial-gradient(900px 600px at 78% 78%, rgba(242,193,174,0.55), transparent 60%),
-          linear-gradient(135deg, #F7F3FF, #FFFFFF)
+          radial-gradient(1100px 700px at 20% 20%, rgba(110,59,255,0.18), transparent 55%),
+          radial-gradient(900px 600px at 80% 70%, rgba(232,150,124,0.20), transparent 60%),
+          linear-gradient(180deg, #FBF7FF 0%, #FFF7F1 55%, #FBF7FF 100%)
         `,
+        color: "#140A2A",
       }}
     >
-      {/* Warm glow overlay */}
-      <div
-        className="absolute inset-[-2px] pointer-events-none"
-        style={{
-          background: "radial-gradient(600px 380px at 62% 48%, rgba(232,150,124,0.18), transparent 70%)",
-        }}
-      />
-
       <div
         className="relative z-10 mx-auto"
-        style={{ width: "min(1180px, calc(100% - 64px))" }}
+        style={{ width: "min(1200px, 92vw)" }}
       >
         {/* Header */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-        >
-          <span
-            className="inline-block mb-4 font-mono uppercase"
+        <div className="mb-7">
+          <div
+            className="font-mono uppercase"
             style={{
               fontSize: 12,
-              letterSpacing: "0.28em",
-              color: "rgba(18,10,34,0.55)",
+              letterSpacing: "0.22em",
+              opacity: 0.65,
+              marginBottom: 14,
             }}
           >
             [ APPLIED INTELLIGENCE ]
-          </span>
+          </div>
           <h2
             style={{
               fontSize: "clamp(44px, 5vw, 72px)",
               fontWeight: 900,
-              lineHeight: 1.03,
-              color: "#120A22",
+              lineHeight: 1.02,
+              margin: "0 0 14px 0",
               letterSpacing: "-0.02em",
-              margin: "0 0 16px",
             }}
           >
-            Where intelligence meets
-            <br />
-            care delivery.
+            Where intelligence meets care delivery.
           </h2>
           <p
-            className="mx-auto"
             style={{
-              maxWidth: 760,
               fontSize: 18,
-              lineHeight: 1.6,
-              color: "rgba(18,10,34,0.68)",
+              lineHeight: 1.5,
+              opacity: 0.78,
+              maxWidth: "58ch",
               margin: 0,
             }}
           >
             DocG AI integrates directly into clinical operations — without
-            replacing systems, without adding friction.
+            replacing systems, without adding friction. It turns fragmented
+            signals into coordinated action.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Single continuous transformation canvas */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.9, delay: 0.3 }}
+        {/* Transformation Stage */}
+        <div
+          className="relative overflow-hidden"
+          style={{
+            borderRadius: 28,
+            background: "rgba(255,255,255,0.30)",
+            border: "1px solid rgba(20,10,42,0.10)",
+            boxShadow: "0 20px 60px rgba(20,10,42,0.12)",
+          }}
         >
-          <TransformationCanvas />
-        </motion.div>
+          {/* Stage labels */}
+          <div
+            className="absolute flex justify-between pointer-events-none z-10"
+            style={{
+              top: 18,
+              left: 22,
+              right: 22,
+              fontSize: 11,
+              letterSpacing: "0.28em",
+              textTransform: "uppercase" as const,
+              opacity: 0.55,
+            }}
+          >
+            <span>FRAGMENTED</span>
+            <span>CONVERGENCE</span>
+            <span>HARMONIZED</span>
+          </div>
+
+          {/* SVG Stage */}
+          <svg
+            ref={svgRef}
+            className="w-full block"
+            viewBox="0 0 1200 520"
+            fill="none"
+            style={{ height: "auto" }}
+          >
+            <defs>
+              {/* Glow filter */}
+              <filter id="s7glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="6" result="blur" />
+                <feColorMatrix
+                  in="blur"
+                  type="matrix"
+                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.9 0"
+                  result="glow"
+                />
+                <feMerge>
+                  <feMergeNode in="glow" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+
+              {/* Warm lens gradient */}
+              <radialGradient id="lensWarm" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stopColor="#F2C1AE" stopOpacity={0.85} />
+                <stop offset="45%" stopColor="#E8967C" stopOpacity={0.35} />
+                <stop offset="100%" stopColor="#D4616B" stopOpacity={0} />
+              </radialGradient>
+
+              {/* Violet stroke gradient */}
+              <linearGradient id="violetStroke" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#6E3BFF" stopOpacity={0} />
+                <stop offset="35%" stopColor="#6E3BFF" stopOpacity={0.35} />
+                <stop offset="100%" stopColor="#6E3BFF" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+
+            {/* Background wash */}
+            <rect x="24" y="24" width="1152" height="472" rx="28" fill="rgba(255,255,255,0.40)" />
+            <rect x="24" y="24" width="1152" height="472" rx="28" fill="none" stroke="rgba(20,10,42,0.10)" />
+
+            {/* Warm glow anchors */}
+            <circle cx="230" cy="120" r="180" fill="url(#lensWarm)" opacity={0.35} />
+            <circle cx="980" cy="380" r="220" fill="url(#lensWarm)" opacity={0.22} />
+
+            {/* Central cortex lens */}
+            <g id="lens" filter="url(#s7glow)">
+              <circle cx="600" cy="260" r="54" fill="url(#lensWarm)" opacity={0.9} />
+              <circle cx="600" cy="260" r="34" fill="rgba(110,59,255,0.12)" />
+              <circle cx="600" cy="260" r="18" fill="rgba(110,59,255,0.55)" />
+              <circle cx="600" cy="260" r="72" fill="none" stroke="rgba(110,59,255,0.18)" strokeWidth={2} />
+              <circle cx="600" cy="260" r="92" fill="none" stroke="rgba(110,59,255,0.10)" strokeWidth={2} />
+            </g>
+
+            {/* Dashed traces (drawn during convergence) */}
+            <g id="traces" opacity={0}>
+              {TRACES.map((t, i) => (
+                <path key={i} d={t.d} stroke={t.stroke} strokeWidth={2} strokeDasharray="6 10" fill="none" />
+              ))}
+            </g>
+
+            {/* Harmonized timeline */}
+            <g id="timeline" opacity={0}>
+              <path d="M720 260 H 1090" stroke="url(#violetStroke)" strokeWidth={3} strokeLinecap="round" fill="none" />
+              <g filter="url(#s7glow)">
+                {CHECKPOINTS.map((cx, i) => (
+                  <circle
+                    key={i}
+                    className="ck"
+                    cx={cx}
+                    cy={260}
+                    r={7}
+                    fill={i === CHECKPOINTS.length - 1 ? "rgba(212,97,107,0.85)" : "rgba(110,59,255,0.75)"}
+                  />
+                ))}
+              </g>
+              {/* Traveling pulse */}
+              <circle id="pulse" cx={720} cy={260} r={10} fill="rgba(242,193,174,0.9)" filter="url(#s7glow)" />
+            </g>
+
+            {/* Signal pills (fragmented state) */}
+            <g id="signals" filter="url(#s7glow)">
+              {SIGNALS.map((s, i) => (
+                <g key={i} className="sig" transform={`translate(${s.x} ${s.y})`}>
+                  <rect rx={10} width={s.w} height={20} fill="rgba(20,10,42,0.06)" stroke={s.stroke} />
+                  <circle cx={14} cy={10} r={5} fill={s.fill} />
+                </g>
+              ))}
+            </g>
+          </svg>
+        </div>
       </div>
     </section>
   );
