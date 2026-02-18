@@ -141,7 +141,7 @@ const SovereigntySection = () => {
       ref={sectionRef}
       className="relative overflow-hidden"
       style={{
-        padding: "clamp(64px, 8vw, 160px) 0",
+        padding: "clamp(64px, 7vw, 110px) 0",
         background: "radial-gradient(circle at 50% 40%, #241034 0%, #0B0613 70%)",
         color: "#EDE7F6",
         minHeight: "100vh",
@@ -183,10 +183,10 @@ const SovereigntySection = () => {
 
           <h2
             style={{
-              fontSize: "clamp(40px, 4.5vw, 60px)",
-              fontWeight: 900,
-              lineHeight: 1.05,
-              margin: "0 0 20px 0",
+              fontSize: "clamp(44px, 5.2vw, 84px)",
+              fontWeight: 800,
+              lineHeight: 0.95,
+              margin: "0 0 24px 0",
               letterSpacing: "-0.02em",
             }}
           >
@@ -195,10 +195,10 @@ const SovereigntySection = () => {
 
           <p
             style={{
-              fontSize: 17,
+              fontSize: "clamp(15px, 1.25vw, 18px)",
               lineHeight: 1.65,
               opacity: 0.72,
-              maxWidth: "48ch",
+              maxWidth: "46ch",
               margin: "0 0 40px 0",
             }}
           >
