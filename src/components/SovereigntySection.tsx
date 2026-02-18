@@ -10,7 +10,6 @@ const PILLARS = [
   "Deployment Flexibility",
 ];
 
-/* Particle data — micro particles that hit the perimeter and stop */
 const PARTICLE_COUNT = 16;
 
 const SovereigntySection = () => {
@@ -35,171 +34,131 @@ const SovereigntySection = () => {
     const particles = svg.querySelectorAll<SVGCircleElement>(".lg-particle");
     const ambientGlow = svg.querySelector("#lg-ambient") as SVGCircleElement;
 
-    const tl = gsap.timeline({ delay: 0.2, repeat: -1, repeatDelay: 2 });
-
-    /* ── Initial state: everything hidden except faint ambient ── */
+    /* ── Initial state ── */
     gsap.set(core, { opacity: 0, scale: 0.8, transformOrigin: "300px 300px" });
     gsap.set(gridLines, { opacity: 0 });
     gsap.set(innerGridLines, { opacity: 0 });
     gsap.set(cornerAnchors, { opacity: 0 });
-    gsap.set(perimeterSegments, { drawSVG: "0%", opacity: 0 });
+    gsap.set(perimeterSegments, { opacity: 0 });
     gsap.set(sealGlow, { opacity: 0 });
     gsap.set(lockIcon, { opacity: 0, scale: 0, transformOrigin: "300px 300px" });
     gsap.set(particles, { opacity: 0 });
     gsap.set(ambientGlow, { opacity: 0.15 });
 
-    /* ══════════ Stage 1 — Empty space: faint grid + soft glow ══════════ */
-    tl.to(ambientGlow, { opacity: 0.3, duration: 1, ease: "power2.out" });
-    tl.to(gridLines, {
-      opacity: 0.06,
+    /* ══════════ INTRO (plays once) — grid + core fade in ══════════ */
+    const intro = gsap.timeline({ delay: 0.2 });
+
+    intro.to(ambientGlow, { opacity: 0.35, duration: 1, ease: "power2.out" });
+    intro.to(gridLines, {
+      opacity: 0.07,
       duration: 1.2,
       stagger: { each: 0.02, from: "center" },
       ease: "power2.out",
     }, "-=0.8");
 
-    /* ══════════ Stage 2 — Core appears: soft fade + pulse ══════════ */
-    tl.to(core, {
+    intro.to(core, {
       opacity: 1,
       scale: 1,
       duration: 0.8,
       ease: "power3.out",
     }, "-=0.3");
-    // Single arrival pulse
-    tl.to(core, {
-      scale: 1.08,
-      duration: 0.25,
-      ease: "power2.in",
-    }).to(core, {
-      scale: 1,
-      duration: 0.4,
-      ease: "power3.out",
-    });
+    intro.to(core, { scale: 1.08, duration: 0.25, ease: "power2.in" })
+      .to(core, { scale: 1, duration: 0.4, ease: "power3.out" });
 
-    /* ══════════ Stage 3 — Perimeter lines draw in (sequential edges) ══════════ */
-    // Top: left to right
-    tl.to(perimeterSegments[0], {
-      opacity: 1,
-      attr: { "stroke-dashoffset": 0 },
-      duration: 0.5,
-      ease: "power3.out",
-    });
-    // Right: top to bottom
-    tl.to(perimeterSegments[1], {
-      opacity: 1,
-      attr: { "stroke-dashoffset": 0 },
-      duration: 0.5,
-      ease: "power3.out",
-    }, "-=0.1");
-    // Bottom: right to left
-    tl.to(perimeterSegments[2], {
-      opacity: 1,
-      attr: { "stroke-dashoffset": 0 },
-      duration: 0.5,
-      ease: "power3.out",
-    }, "-=0.1");
-    // Left: bottom to top — closes the loop
-    tl.to(perimeterSegments[3], {
-      opacity: 1,
-      attr: { "stroke-dashoffset": 0 },
-      duration: 0.5,
-      ease: "power3.out",
-    }, "-=0.1");
-
-    // Inner grid fades in subtly after frame is built
-    tl.to(innerGridLines, {
+    intro.to(innerGridLines, {
       opacity: 0.035,
       duration: 0.8,
       stagger: 0.015,
       ease: "power2.out",
-    }, "-=0.3");
+    }, "-=0.4");
 
-    /* ══════════ Stage 4 — Corner nodes snap in from off-screen ══════════ */
+    /* ══════════ LOOP — only perimeter, corners, particles, lock cycle ══════════ */
+    const loop = gsap.timeline({ repeat: -1, repeatDelay: 1.5, delay: 0 });
+
+    // Reset state at start of each cycle
+    loop.set(perimeterSegments, { attr: { "stroke-dashoffset": (i: number) => [340, 340, 340, 340][i] }, opacity: 0 });
+    loop.set(cornerAnchors, { opacity: 0 });
+    loop.set(lockIcon, { opacity: 0, scale: 0 });
+    loop.set(sealGlow, { opacity: 0 });
+    loop.set(particles, { opacity: 0, attr: { cx: 300, cy: 300 } });
+
+    // Perimeter draws sequentially
+    loop.to(perimeterSegments[0], {
+      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
+    }, "+=0.3");
+    loop.to(perimeterSegments[1], {
+      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
+    }, "-=0.1");
+    loop.to(perimeterSegments[2], {
+      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
+    }, "-=0.1");
+    loop.to(perimeterSegments[3], {
+      opacity: 1, attr: { "stroke-dashoffset": 0 }, duration: 0.55, ease: "power3.out",
+    }, "-=0.1");
+
+    // Corner anchors snap in
     const cornerOffsets = [
-      { x: -60, y: -60 },
-      { x: 60, y: -60 },
-      { x: 60, y: 60 },
-      { x: -60, y: 60 },
+      { x: -50, y: -50 }, { x: 50, y: -50 },
+      { x: 50, y: 50 }, { x: -50, y: 50 },
     ];
-    cornerAnchors.forEach((c, i) => {
-      gsap.set(c, { x: cornerOffsets[i].x, y: cornerOffsets[i].y });
+    loop.set(cornerAnchors, { x: (i: number) => cornerOffsets[i].x, y: (i: number) => cornerOffsets[i].y });
+    loop.to(cornerAnchors, {
+      opacity: 1, x: 0, y: 0,
+      duration: 0.45, stagger: 0.06, ease: "power3.out",
     });
 
-    tl.to(cornerAnchors, {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      duration: 0.45,
-      stagger: 0.06,
-      ease: "power3.out",
-    });
-
-    /* ══════════ Stage 5 — Lock pulse: center emits glow wave + particles hit border ══════════ */
-    tl.to(sealGlow, {
-      opacity: 0.5,
-      duration: 0.3,
-      ease: "power2.in",
-    });
-
-    // Particles fly outward and stop at perimeter
-    tl.to(particles, {
-      opacity: 1,
-      duration: 0.1,
-    }, "-=0.2");
+    // Lock pulse — particles fly out
+    loop.to(sealGlow, { opacity: 0.45, duration: 0.3, ease: "power2.in" });
+    loop.to(particles, { opacity: 1, duration: 0.1 }, "-=0.2");
 
     particles.forEach((p) => {
       const tx = parseFloat(p.getAttribute("data-tx") || "0");
       const ty = parseFloat(p.getAttribute("data-ty") || "0");
-      tl.to(p, {
-        attr: { cx: tx, cy: ty },
-        duration: 0.4,
-        ease: "power3.out",
-      }, "<");
+      loop.to(p, { attr: { cx: tx, cy: ty }, duration: 0.4, ease: "power3.out" }, "<");
     });
 
-    // Particles fade after hitting border
-    tl.to(particles, {
-      opacity: 0,
-      duration: 0.6,
-      ease: "power2.out",
-    }, "+=0.1");
+    loop.to(particles, { opacity: 0, duration: 0.6, ease: "power2.out" }, "+=0.1");
 
-    // Lock icon appears
-    tl.to(lockIcon, {
-      opacity: 1,
-      scale: 1,
-      duration: 0.35,
-      ease: "back.out(2)",
+    // Lock icon
+    loop.to(lockIcon, {
+      opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)",
     }, "-=0.5");
 
-    // Seal glow fades
-    tl.to(sealGlow, {
-      opacity: 0,
-      duration: 1.0,
-      ease: "power2.out",
-    }, "-=0.3");
+    loop.to(sealGlow, { opacity: 0, duration: 1.0, ease: "power2.out" }, "-=0.3");
 
-    // Grid brightens slightly — system engaged
-    tl.to(gridLines, {
-      opacity: 0.1,
-      duration: 0.6,
-      ease: "power2.out",
-    }, "-=0.8");
+    // Grid brightens slightly when locked
+    loop.to(gridLines, { opacity: 0.12, duration: 0.6, ease: "power2.out" }, "-=0.8");
 
-    /* ══════════ Stage 6 — Hold briefly, then fade everything out for clean loop ══════════ */
-    tl.to({}, { duration: 1.5 }); // hold the locked state
+    // Hold the locked state
+    loop.to({}, { duration: 2.5 });
 
-    // Fade everything out
-    tl.to([core, lockIcon, ...Array.from(cornerAnchors), ...Array.from(perimeterSegments), ...Array.from(gridLines), ...Array.from(innerGridLines)], {
-      opacity: 0,
-      duration: 1.0,
-      ease: "power2.inOut",
+    // Fade out ONLY the cycling elements (core + grid stay)
+    loop.to([lockIcon, ...Array.from(cornerAnchors), ...Array.from(perimeterSegments)], {
+      opacity: 0, duration: 0.8, ease: "power2.inOut",
+    });
+    loop.to(gridLines, { opacity: 0.07, duration: 0.6, ease: "power2.inOut" }, "-=0.6");
+
+    // Start loop after intro finishes
+    intro.call(() => loop.play(), [], "+=0.2");
+
+    // Idle breathing on core (runs forever)
+    gsap.to(core, {
+      scale: 1.02, transformOrigin: "300px 300px",
+      duration: 4, yoyo: true, repeat: -1, ease: "sine.inOut",
     });
 
-    // Reset particle positions for next loop
-    tl.set(particles, { attr: { cx: 300, cy: 300 } });
+    // Grid shimmer
+    gridLines.forEach((line, i) => {
+      gsap.to(line, {
+        opacity: gsap.utils.random(0.04, 0.1),
+        duration: gsap.utils.random(3, 5),
+        yoyo: true, repeat: -1, delay: i * 0.08, ease: "sine.inOut",
+      });
+    });
 
     return () => {
-      tl.kill();
+      intro.kill();
+      loop.kill();
       gsap.killTweensOf([core, sealGlow, lockIcon, ambientGlow]);
       gridLines.forEach((l) => gsap.killTweensOf(l));
       innerGridLines.forEach((l) => gsap.killTweensOf(l));
@@ -244,7 +203,7 @@ const SovereigntySection = () => {
     return () => cleanup?.();
   }, [setupAnimations]);
 
-  /* Outer architectural grid — subtle structure */
+  /* Grid data */
   const gridLinesData: { x1: number; y1: number; x2: number; y2: number }[] = [];
   for (let i = 0; i <= 10; i++) {
     const pos = 100 + i * 40;
@@ -252,7 +211,6 @@ const SovereigntySection = () => {
     gridLinesData.push({ x1: 100, y1: pos, x2: 500, y2: pos });
   }
 
-  /* Inner grid — extremely faint, inside the perimeter */
   const innerGridData: { x1: number; y1: number; x2: number; y2: number }[] = [];
   for (let i = 0; i <= 8; i++) {
     const pos = 140 + i * 40;
@@ -260,34 +218,36 @@ const SovereigntySection = () => {
     innerGridData.push({ x1: 130, y1: pos, x2: 470, y2: pos });
   }
 
-  /* Corner bracket positions */
   const corners = [
-    { x: 130, y: 130 },
-    { x: 470, y: 130 },
-    { x: 470, y: 470 },
-    { x: 130, y: 470 },
+    { x: 130, y: 130 }, { x: 470, y: 130 },
+    { x: 470, y: 470 }, { x: 130, y: 470 },
   ];
   const bracketLen = 18;
 
-  /* Perimeter as 4 separate line segments for sequential draw */
   const periSegments = [
-    { x1: 130, y1: 130, x2: 470, y2: 130, len: 340 }, // top
-    { x1: 470, y1: 130, x2: 470, y2: 470, len: 340 }, // right
-    { x1: 470, y1: 470, x2: 130, y2: 470, len: 340 }, // bottom
-    { x1: 130, y1: 470, x2: 130, y2: 130, len: 340 }, // left
+    { x1: 130, y1: 130, x2: 470, y2: 130, len: 340 },
+    { x1: 470, y1: 130, x2: 470, y2: 470, len: 340 },
+    { x1: 470, y1: 470, x2: 130, y2: 470, len: 340 },
+    { x1: 130, y1: 470, x2: 130, y2: 130, len: 340 },
   ];
 
-  /* Generate particles — start near center, end at perimeter */
   const particleData = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
     const angle = (i / PARTICLE_COUNT) * Math.PI * 2;
-    const perimDist = 170; // distance to perimeter
+    const perimDist = 170;
     const tx = 300 + Math.cos(angle) * perimDist;
     const ty = 300 + Math.sin(angle) * perimDist;
-    // Clamp to square perimeter
     const clampedX = Math.max(130, Math.min(470, tx));
     const clampedY = Math.max(130, Math.min(470, ty));
     return { cx: 300, cy: 300, tx: clampedX, ty: clampedY };
   });
+
+  /* Color palette for particles — warm coral, cyan, gold, soft violet */
+  const particleColors = [
+    "#D4616B", "#E8937C", "#00CED1", "#FFD700",
+    "#D4616B", "#C084FC", "#00CED1", "#F2C1AE",
+    "#FFD700", "#E8937C", "#C084FC", "#00CED1",
+    "#D4616B", "#FFD700", "#F2C1AE", "#C084FC",
+  ];
 
   return (
     <section
@@ -302,7 +262,7 @@ const SovereigntySection = () => {
         alignItems: "center",
       }}
     >
-      {/* Subtle noise overlay */}
+      {/* Noise overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -324,12 +284,7 @@ const SovereigntySection = () => {
         <div ref={textRef}>
           <div
             className="font-mono uppercase"
-            style={{
-              fontSize: 12,
-              letterSpacing: "0.22em",
-              opacity: 0.5,
-              marginBottom: 20,
-            }}
+            style={{ fontSize: 12, letterSpacing: "0.22em", opacity: 0.5, marginBottom: 20 }}
           >
             [ TRUST & SOVEREIGNTY ]
           </div>
@@ -337,10 +292,8 @@ const SovereigntySection = () => {
           <h2
             style={{
               fontSize: "clamp(44px, 5.2vw, 84px)",
-              fontWeight: 800,
-              lineHeight: 0.95,
-              margin: "0 0 24px 0",
-              letterSpacing: "-0.02em",
+              fontWeight: 800, lineHeight: 0.95,
+              margin: "0 0 24px 0", letterSpacing: "-0.02em",
             }}
           >
             Sovereign by design.
@@ -349,10 +302,8 @@ const SovereigntySection = () => {
           <p
             style={{
               fontSize: "clamp(15px, 1.25vw, 18px)",
-              lineHeight: 1.65,
-              opacity: 0.72,
-              maxWidth: "46ch",
-              margin: "0 0 40px 0",
+              lineHeight: 1.65, opacity: 0.72,
+              maxWidth: "46ch", margin: "0 0 40px 0",
             }}
           >
             Every decision, signal, and action remains jurisdictionally anchored.
@@ -360,7 +311,6 @@ const SovereigntySection = () => {
             natively — not as overlays.
           </p>
 
-          {/* Pillars */}
           <div className="flex flex-wrap gap-3">
             {PILLARS.map((p) => (
               <div
@@ -368,10 +318,8 @@ const SovereigntySection = () => {
                 style={{
                   padding: "10px 20px",
                   border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: 999,
-                  fontSize: 13,
-                  letterSpacing: "0.04em",
-                  opacity: 0.8,
+                  borderRadius: 999, fontSize: 13,
+                  letterSpacing: "0.04em", opacity: 0.8,
                   backdropFilter: "blur(4px)",
                   background: "rgba(255,255,255,0.03)",
                 }}
@@ -382,15 +330,10 @@ const SovereigntySection = () => {
           </div>
         </div>
 
-        {/* Right — Locking Grid Chamber */}
+        {/* Right — Locking Grid */}
         <div
           ref={vaultRef}
-          style={{
-            aspectRatio: "1",
-            maxWidth: 700,
-            width: "100%",
-            justifySelf: "end",
-          }}
+          style={{ aspectRatio: "1", maxWidth: 700, width: "100%", justifySelf: "end" }}
         >
           <svg
             ref={svgRef}
@@ -400,10 +343,15 @@ const SovereigntySection = () => {
           >
             <defs>
               <radialGradient id="lgAmbient" cx="50%" cy="50%" r="40%">
-                <stop offset="0%" stopColor="#3D1F7A" stopOpacity={0.35} />
+                <stop offset="0%" stopColor="#3D1F7A" stopOpacity={0.3} />
+                <stop offset="50%" stopColor="#1A0A3E" stopOpacity={0.15} />
                 <stop offset="100%" stopColor="#0B0613" stopOpacity={0} />
               </radialGradient>
-              {/* Tighter glow filter */}
+              <radialGradient id="lgCoreGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#D4616B" stopOpacity={0.9} />
+                <stop offset="60%" stopColor="#C084FC" stopOpacity={0.7} />
+                <stop offset="100%" stopColor="#7B4DFF" stopOpacity={0.5} />
+              </radialGradient>
               <filter id="lgGlow" x="-30%" y="-30%" width="160%" height="160%">
                 <feGaussianBlur stdDeviation="3" result="blur" />
                 <feMerge>
@@ -412,155 +360,142 @@ const SovereigntySection = () => {
                 </feMerge>
               </filter>
               <filter id="lgSealFilter" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation="10" result="blur" />
+                <feGaussianBlur stdDeviation="8" result="blur" />
                 <feMerge>
                   <feMergeNode in="blur" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
+              <linearGradient id="lgPeriGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#00CED1" stopOpacity={0.7} />
+                <stop offset="50%" stopColor="#C084FC" stopOpacity={0.6} />
+                <stop offset="100%" stopColor="#D4616B" stopOpacity={0.7} />
+              </linearGradient>
             </defs>
 
-            {/* Ambient glow — controlled */}
+            {/* Ambient glow */}
             <circle id="lg-ambient" cx="300" cy="300" r="180" fill="url(#lgAmbient)" />
 
-            {/* Outer architectural grid */}
+            {/* Outer grid — subtle warm-cool mix */}
             {gridLinesData.map((l, i) => (
               <line
                 key={`g-${i}`}
                 className="lg-grid"
                 x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
-                stroke="rgba(123,77,255,0.08)"
+                stroke={i % 3 === 0 ? "rgba(0,206,209,0.06)" : i % 3 === 1 ? "rgba(192,132,252,0.06)" : "rgba(212,97,107,0.05)"}
                 strokeWidth={0.4}
               />
             ))}
 
-            {/* Inner grid — extremely faint */}
+            {/* Inner grid */}
             {innerGridData.map((l, i) => (
               <line
                 key={`ig-${i}`}
                 className="lg-inner-grid"
                 x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
-                stroke="rgba(123,77,255,0.05)"
+                stroke={i % 2 === 0 ? "rgba(0,206,209,0.04)" : "rgba(192,132,252,0.04)"}
                 strokeWidth={0.3}
               />
             ))}
 
-            {/* Perimeter — 4 separate segments for sequential draw */}
-            {periSegments.map((seg, i) => (
-              <line
-                key={`ps-${i}`}
-                className="lg-peri-seg"
-                x1={seg.x1} y1={seg.y1} x2={seg.x2} y2={seg.y2}
-                stroke="rgba(123,77,255,0.6)"
-                strokeWidth={1}
-                strokeLinecap="square"
-                strokeDasharray={seg.len}
-                strokeDashoffset={seg.len}
-              />
-            ))}
+            {/* Perimeter — gradient colored segments */}
+            {periSegments.map((seg, i) => {
+              const colors = ["#00CED1", "#C084FC", "#D4616B", "#FFD700"];
+              return (
+                <line
+                  key={`ps-${i}`}
+                  className="lg-peri-seg"
+                  x1={seg.x1} y1={seg.y1} x2={seg.x2} y2={seg.y2}
+                  stroke={colors[i]}
+                  strokeWidth={1}
+                  strokeLinecap="square"
+                  strokeDasharray={seg.len}
+                  strokeDashoffset={seg.len}
+                  opacity={0.7}
+                />
+              );
+            })}
 
-            {/* Seal glow — tighter */}
+            {/* Seal glow — warm coral */}
             <rect
               id="lg-seal-glow"
               x="125" y="125"
               width="350" height="350"
               rx="2"
               fill="none"
-              stroke="rgba(123,77,255,0.6)"
-              strokeWidth={3}
+              stroke="#D4616B"
+              strokeWidth={2.5}
+              opacity={0.5}
               filter="url(#lgSealFilter)"
             />
 
-            {/* Particles — fly from center to perimeter on lock */}
+            {/* Particles — multi-colored */}
             {particleData.map((p, i) => (
               <circle
                 key={`part-${i}`}
                 className="lg-particle"
                 cx={p.cx} cy={p.cy}
                 r={1.5}
-                fill="rgba(123,77,255,0.8)"
+                fill={particleColors[i]}
                 data-tx={p.tx}
                 data-ty={p.ty}
               />
             ))}
 
-            {/* Corner anchor brackets — thin, precise */}
+            {/* Corner brackets — alternating cyan and coral */}
             {corners.map((c, i) => {
               const dx = i === 0 || i === 3 ? 1 : -1;
               const dy = i === 0 || i === 1 ? 1 : -1;
+              const color = i % 2 === 0 ? "#00CED1" : "#D4616B";
 
               return (
                 <g key={`c-${i}`} className="lg-corner" style={{ transformOrigin: `${c.x}px ${c.y}px` }}>
                   <line
                     x1={c.x} y1={c.y}
                     x2={c.x + bracketLen * dx} y2={c.y}
-                    stroke="rgba(123,77,255,0.8)"
-                    strokeWidth={1.2}
-                    strokeLinecap="square"
+                    stroke={color} strokeWidth={1.2} strokeLinecap="square" opacity={0.85}
                   />
                   <line
                     x1={c.x} y1={c.y}
                     x2={c.x} y2={c.y + bracketLen * dy}
-                    stroke="rgba(123,77,255,0.8)"
-                    strokeWidth={1.2}
-                    strokeLinecap="square"
+                    stroke={color} strokeWidth={1.2} strokeLinecap="square" opacity={0.85}
                   />
                   <circle
                     cx={c.x} cy={c.y} r={2.5}
-                    fill="#7B4DFF"
-                    filter="url(#lgGlow)"
+                    fill={color} filter="url(#lgGlow)"
                   />
                 </g>
               );
             })}
 
-            {/* Central core block — tighter, engineered */}
+            {/* Core block — coral-to-violet gradient */}
             <g id="lg-core">
               <rect
-                x="268" y="268"
-                width="64" height="64"
-                rx="3"
-                fill="#7B4DFF"
-                opacity={0.8}
+                x="268" y="268" width="64" height="64" rx="3"
+                fill="url(#lgCoreGrad)"
+                opacity={0.85}
                 filter="url(#lgGlow)"
               />
               <rect
-                x="268" y="268"
-                width="64" height="64"
-                rx="3"
-                fill="none"
-                stroke="rgba(255,255,255,0.15)"
-                strokeWidth={0.8}
+                x="268" y="268" width="64" height="64" rx="3"
+                fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth={0.8}
               />
-              {/* Inner detail */}
               <rect
-                x="280" y="280"
-                width="40" height="40"
-                rx="2"
+                x="280" y="280" width="40" height="40" rx="2"
                 fill="rgba(255,255,255,0.06)"
               />
-              <circle
-                cx="300" cy="300" r="5"
-                fill="rgba(255,255,255,0.5)"
-              />
+              <circle cx="300" cy="300" r="5" fill="rgba(255,255,255,0.45)" />
             </g>
 
-            {/* Lock icon — appears after seal */}
+            {/* Lock icon */}
             <g id="lg-lock" style={{ transformOrigin: "300px 300px" }}>
               <rect
-                x="291" y="298"
-                width="18" height="13"
-                rx="2"
-                fill="none"
-                stroke="rgba(255,255,255,0.45)"
-                strokeWidth={1}
+                x="291" y="298" width="18" height="13" rx="2"
+                fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth={1}
               />
               <path
                 d="M294 298 V293 A6 6 0 0 1 306 293 V298"
-                fill="none"
-                stroke="rgba(255,255,255,0.45)"
-                strokeWidth={1}
-                strokeLinecap="round"
+                fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth={1} strokeLinecap="round"
               />
               <circle cx="300" cy="304" r="1.5" fill="rgba(255,255,255,0.45)" />
             </g>
