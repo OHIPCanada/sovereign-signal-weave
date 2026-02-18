@@ -6,6 +6,7 @@ import Section4SystemTransformation from "@/components/Section4SystemTransformat
 import ProofSection from "@/components/ProofSection";
 import DeploymentSection from "@/components/DeploymentSection";
 import InterfaceSection from "@/components/InterfaceSection";
+import SovereigntySection from "@/components/SovereigntySection";
 import TrustSection from "@/components/TrustSection";
 
 const Index = () => {
@@ -19,6 +20,7 @@ const Index = () => {
       <ProofSection />
       <DeploymentSection />
       <InterfaceSection />
+      <SovereigntySection />
       <TrustSection />
       
       {/* Footer */}
