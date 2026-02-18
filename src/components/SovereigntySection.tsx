@@ -257,7 +257,7 @@ const SovereigntySection = () => {
       className="relative overflow-hidden"
       style={{
         padding: "clamp(64px, 7vw, 110px) 0",
-        background: "radial-gradient(circle at 50% 40%, #241034 0%, #0B0613 70%)",
+        background: "radial-gradient(circle at 50% 40%, #0F1A3D 0%, #060B1E 70%)",
         color: "#EDE7F6",
         minHeight: "100vh",
         display: "flex",
@@ -345,9 +345,9 @@ const SovereigntySection = () => {
           >
             <defs>
               <radialGradient id="lgAmbient" cx="50%" cy="50%" r="40%">
-                <stop offset="0%" stopColor="#3D1F7A" stopOpacity={0.3} />
-                <stop offset="50%" stopColor="#1A0A3E" stopOpacity={0.15} />
-                <stop offset="100%" stopColor="#0B0613" stopOpacity={0} />
+                <stop offset="0%" stopColor="#1A2A5C" stopOpacity={0.3} />
+                <stop offset="50%" stopColor="#0D1630" stopOpacity={0.15} />
+                <stop offset="100%" stopColor="#060B1E" stopOpacity={0} />
               </radialGradient>
               <radialGradient id="lgCoreGrad" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stopColor="#D4616B" stopOpacity={0.9} />
