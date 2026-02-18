@@ -345,14 +345,14 @@ const SovereigntySection = () => {
           >
             <defs>
               <radialGradient id="lgAmbient" cx="50%" cy="50%" r="40%">
-                <stop offset="0%" stopColor="#3D1F7A" stopOpacity={0.3} />
-                <stop offset="50%" stopColor="#1A0A3E" stopOpacity={0.15} />
-                <stop offset="100%" stopColor="#0B0613" stopOpacity={0} />
+                <stop offset="0%" stopColor="#0E3D4A" stopOpacity={0.3} />
+                <stop offset="50%" stopColor="#091E2A" stopOpacity={0.15} />
+                <stop offset="100%" stopColor="#060B1E" stopOpacity={0} />
               </radialGradient>
               <radialGradient id="lgCoreGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#D4616B" stopOpacity={0.9} />
-                <stop offset="60%" stopColor="#C084FC" stopOpacity={0.7} />
-                <stop offset="100%" stopColor="#7B4DFF" stopOpacity={0.5} />
+                <stop offset="0%" stopColor="rgba(255,255,255,0.15)" stopOpacity={1} />
+                <stop offset="40%" stopColor="#00CED1" stopOpacity={0.35} />
+                <stop offset="100%" stopColor="#0B1A2E" stopOpacity={0.9} />
               </radialGradient>
               <filter id="lgGlow" x="-30%" y="-30%" width="160%" height="160%">
                 <feGaussianBlur stdDeviation="3" result="blur" />
