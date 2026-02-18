@@ -63,101 +63,79 @@ const InterfaceSection = () => {
 
     // --- MASTER LOOPING TIMELINE ---
     const sigCount = sigs.length;
-    const SIG_FLY_DUR = 0.6;            // each signal's flight to lens
-    const SIG_STAGGER = 0.25;           // delay between each signal departure
-    // Sort signals left-to-right so leftmost departs first
-    const sortedIndices = [...Array(sigCount).keys()].sort((a, b) => SIGNALS[a].x - SIGNALS[b].x);
-    // Total convergence phase = time for all signals to depart + fly
-    const CONV_PHASE_DUR = (sigCount - 1) * SIG_STAGGER + SIG_FLY_DUR + 0.3;
-    const CONV_START = 0; // convergence starts immediately — signals peel off one by one while others keep drifting
-    const CONV_END = CONV_START + CONV_PHASE_DUR;
-    const HARM_START = CONV_END + 0.3;
-    const HARM_DUR = 3.0;
-    const HARM_END = HARM_START + HARM_DUR;
-    const RESET_START = HARM_END + 0.3;
-    const RESET_DUR = 1.2;
-    const CYCLE_DURATION = RESET_START + RESET_DUR;
 
     const master = gsap.timeline({ repeat: -1, paused: true });
 
-    // Signals stay at their original positions — no drift at load
+    // ── Timing constants ──
+    const SIG_FLY_DUR = 0.5;       // flight to lens
+    const CHECKPOINT_DUR = 0.4;    // appear on timeline
+    const PER_SIGNAL = SIG_FLY_DUR + CHECKPOINT_DUR + 0.15; // total per signal
+    const sortedIndices = [...Array(sigCount).keys()].sort((a, b) => SIGNALS[a].x - SIGNALS[b].x);
 
-    // Lens breathing while signals are drifting/departing
-    master.to(lens, { scale: 1.04, transformOrigin: "600px 260px", duration: 1.5, ease: "sine.inOut" }, 0);
-    master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 1.5, ease: "sine.inOut" }, 1.5);
-
-    // ── Convergence: signals fly one-by-one to lens ──
-    // Reveal traces gradually
-    master.to(traces, { opacity: 1, duration: 0.8, ease: "power2.out" }, 0.5);
+    // Show traces early
+    master.to(traces, { opacity: 0.6, duration: 0.5, ease: "power2.out" }, 0);
     tracePaths.forEach((p, idx) => {
       master.to(p, {
         strokeDashoffset: 0,
-        duration: CONV_PHASE_DUR * 0.7 + idx * 0.1,
+        duration: sigCount * PER_SIGNAL * 0.5 + idx * 0.1,
         ease: "expo.out",
-      }, 0.3);
+      }, 0.2);
     });
-    master.to(tracePaths, {
-      attr: { "stroke-width": 3.5 },
-      opacity: 1,
-      duration: 0.6,
-      ease: "power2.in",
-    }, CONV_PHASE_DUR * 0.4);
 
-    // Each signal peels off one-by-one from left to right
+    // Gentle lens breathing in background
+    const totalConv = sigCount * PER_SIGNAL;
+    master.to(lens, { scale: 1.04, transformOrigin: "600px 260px", duration: totalConv / 2, ease: "sine.inOut", yoyo: true, repeat: 1 }, 0);
+
+    // Show timeline container early (line visible, checkpoints appear per signal)
+    master.to(timeline, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0.3);
+
+    // Hide all checkpoints initially
+    const ckEls = svg.querySelectorAll<SVGCircleElement>(".ck");
+    ckEls.forEach(ck => { ck.style.opacity = "0"; });
+
+    // ── Each signal: fly to lens → lens pulse → checkpoint appears ──
     sortedIndices.forEach((origIdx, order) => {
       const el = sigs[origIdx];
-      const targetX = 600 - SIGNALS[origIdx].x + gsap.utils.random(-18, 18);
-      const targetY = 260 - SIGNALS[origIdx].y + gsap.utils.random(-12, 12);
-      const departTime = order * SIG_STAGGER;
-      // Overrides the drift tween at this point
+      const t = order * PER_SIGNAL; // start time for this signal
+
+      // Fly signal to lens center
       master.to(el, {
-        x: targetX,
-        y: targetY,
+        x: 600 - SIGNALS[origIdx].x,
+        y: 260 - SIGNALS[origIdx].y,
         opacity: 0,
+        scale: 0.3,
         duration: SIG_FLY_DUR,
         ease: "power3.in",
-        overwrite: false,
-      }, departTime);
+      }, t);
 
-      // Small lens pulse every 3rd signal
-      if (order % 3 === 0) {
-        master.to(lens, { scale: 1.06, transformOrigin: "600px 260px", duration: 0.1, ease: "power2.in" }, departTime + SIG_FLY_DUR * 0.85);
-        master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 0.18, ease: "power2.out" }, departTime + SIG_FLY_DUR * 0.85 + 0.1);
+      // Lens pulse on arrival
+      master.to(lens, { scale: 1.08, transformOrigin: "600px 260px", duration: 0.1, ease: "power2.in" }, t + SIG_FLY_DUR * 0.9);
+      master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 0.15, ease: "power2.out" }, t + SIG_FLY_DUR * 0.9 + 0.1);
+
+      // Checkpoint appears on timeline (harmonized output)
+      const ckIdx = order % CHECKPOINTS.length;
+      if (ckEls[ckIdx]) {
+        master.to(ckEls[ckIdx], { opacity: 1, scale: 1, duration: 0.2, ease: "back.out(2)", transformOrigin: "center" }, t + SIG_FLY_DUR + 0.1);
       }
     });
 
-    // Lens flash burst after last signal arrives
-    const lastArrival = (sigCount - 1) * SIG_STAGGER + SIG_FLY_DUR;
+    // Lens flash after last signal
+    const lastArrival = (sigCount - 1) * PER_SIGNAL + SIG_FLY_DUR;
     if (lensFlash) {
-      master.to(lensFlash, {
-        attr: { r: 140 },
-        fill: "rgba(110,59,255,0.5)",
-        duration: 0.3,
-        ease: "power2.in",
-      }, lastArrival);
-      master.to(lensFlash, {
-        attr: { r: 200 },
-        fill: "rgba(110,59,255,0.0)",
-        duration: 0.5,
-        ease: "power2.out",
-      }, lastArrival + 0.3);
+      master.to(lensFlash, { attr: { r: 140 }, fill: "rgba(110,59,255,0.5)", duration: 0.3, ease: "power2.in" }, lastArrival);
+      master.to(lensFlash, { attr: { r: 200 }, fill: "rgba(110,59,255,0.0)", duration: 0.5, ease: "power2.out" }, lastArrival + 0.3);
     }
-
-    // Big lens pulse
     master.to(lens, { scale: 1.18, transformOrigin: "600px 260px", duration: 0.3, ease: "power2.in" }, lastArrival);
     master.to(lens, { scale: 1.0, transformOrigin: "600px 260px", duration: 0.5, ease: "elastic.out(1, 0.5)" }, lastArrival + 0.3);
 
-    // ── Phase 3: Harmonized ──
-    master.to(timeline, { opacity: 1, duration: 0.6, ease: "power2.out" }, HARM_START);
-    master.to(traces, { opacity: 0.2, duration: 0.6, ease: "power2.out" }, HARM_START + 0.2);
-    master.to(tracePaths, { attr: { "stroke-width": 2 }, duration: 0.5 }, HARM_START + 0.2);
+    // ── Harmonized hold: traveling pulse ──
+    const HARM_START = lastArrival + 1.0;
+    master.set(pulse, { attr: { cx: 720 }, opacity: 0.9 }, HARM_START);
+    master.to(pulse, { attr: { cx: 1060 }, duration: 2.2, ease: "sine.inOut" }, HARM_START + 0.1);
+    master.to(pulse, { opacity: 0, duration: 0.15 }, HARM_START + 2.2);
 
-    // Traveling pulse
-    master.set(pulse, { attr: { cx: 720 }, opacity: 0.9 }, HARM_START + 0.3);
-    master.to(pulse, { attr: { cx: 1060 }, duration: 2.2, ease: "sine.inOut" }, HARM_START + 0.4);
-    master.to(pulse, { opacity: 0, duration: 0.15 }, HARM_START + 2.5);
-
-    // ── Phase 4: Reset — fade out, restore signals, loop ──
+    // ── Reset: fade out everything, restore signals ──
+    const RESET_START = HARM_START + 2.8;
     master.to(timeline, { opacity: 0, duration: 0.4, ease: "power2.in" }, RESET_START);
     master.to(traces, { opacity: 0, duration: 0.4, ease: "power2.in" }, RESET_START);
 
@@ -166,25 +144,18 @@ const InterfaceSection = () => {
     }
 
     tracePaths.forEach((p, idx) => {
-      master.set(p, {
-        strokeDashoffset: traceLengths[idx],
-        attr: { "stroke-width": 2 },
-        opacity: 1,
-      }, RESET_START + 0.4);
+      master.set(p, { strokeDashoffset: traceLengths[idx], attr: { "stroke-width": 2 }, opacity: 1 }, RESET_START + 0.4);
     });
 
-    // Restore signals back to original positions
+    // Restore signals and checkpoints
     sigs.forEach((el, i) => {
-      master.to(el, {
-        x: 0,
-        y: 0,
-        opacity: 1,
-        duration: 0.5,
-        ease: "power2.out",
-      }, RESET_START + 0.3 + i * 0.015);
+      master.to(el, { x: 0, y: 0, opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" }, RESET_START + 0.3 + i * 0.01);
+    });
+    ckEls.forEach(ck => {
+      master.set(ck, { opacity: 0 }, RESET_START + 0.3);
     });
 
-    // Pad to cycle duration
+    const CYCLE_DURATION = RESET_START + 1.2;
     master.set({}, {}, CYCLE_DURATION);
 
     // --- TRIGGER: scroll guard + delayed start ---
