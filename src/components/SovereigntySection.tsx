@@ -141,11 +141,7 @@ const SovereigntySection = () => {
     // Start loop after intro finishes
     intro.call(() => loop.play(), [], "+=0.2");
 
-    // Idle breathing on core (runs forever)
-    gsap.to(core, {
-      scale: 1.02, transformOrigin: "300px 300px",
-      duration: 4, yoyo: true, repeat: -1, ease: "sine.inOut",
-    });
+    // Core stays static — no breathing/movement
 
     // Grid shimmer
     gridLines.forEach((line, i) => {
