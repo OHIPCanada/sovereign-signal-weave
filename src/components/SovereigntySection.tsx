@@ -1,5 +1,8 @@
 import { useRef, useEffect, useCallback } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const PILLARS = [
   "Jurisdiction Control",
@@ -18,6 +21,8 @@ const ANCHORS = [
 const SovereigntySection = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const vaultRef = useRef<HTMLDivElement>(null);
 
   const setupAnimations = useCallback(() => {
     const svg = svgRef.current;
@@ -125,6 +130,31 @@ const SovereigntySection = () => {
 
   useEffect(() => {
     const cleanup = setupAnimations();
+
+    // Scroll-triggered entrance
+    const textEl = textRef.current;
+    const vaultEl = vaultRef.current;
+    const section = sectionRef.current;
+    if (textEl && vaultEl && section) {
+      gsap.set(textEl, { opacity: 0, y: 40 });
+      gsap.set(vaultEl, { opacity: 0, y: 60, scale: 0.95 });
+
+      const st = ScrollTrigger.create({
+        trigger: section,
+        start: "top 75%",
+        once: true,
+        onEnter: () => {
+          gsap.to(textEl, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" });
+          gsap.to(vaultEl, { opacity: 1, y: 0, scale: 1, duration: 1.1, delay: 0.2, ease: "power3.out" });
+        },
+      });
+
+      return () => {
+        cleanup?.();
+        st.kill();
+      };
+    }
+
     return () => cleanup?.();
   }, [setupAnimations]);
 
@@ -168,7 +198,7 @@ const SovereigntySection = () => {
         }}
       >
         {/* Left — Text */}
-        <div>
+        <div ref={textRef}>
           <div
             className="font-mono uppercase"
             style={{
@@ -231,6 +261,7 @@ const SovereigntySection = () => {
 
         {/* Right — Secure Core Chamber */}
         <div
+          ref={vaultRef}
           className="relative overflow-hidden"
           style={{
             borderRadius: 24,
