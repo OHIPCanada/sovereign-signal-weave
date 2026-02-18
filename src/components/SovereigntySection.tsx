@@ -35,7 +35,7 @@ const SovereigntySection = () => {
     const particles = svg.querySelectorAll<SVGCircleElement>(".lg-particle");
     const ambientGlow = svg.querySelector("#lg-ambient") as SVGCircleElement;
 
-    const tl = gsap.timeline({ delay: 0.2 });
+    const tl = gsap.timeline({ delay: 0.2, repeat: -1, repeatDelay: 2 });
 
     /* ── Initial state: everything hidden except faint ambient ── */
     gsap.set(core, { opacity: 0, scale: 0.8, transformOrigin: "300px 300px" });
@@ -185,54 +185,18 @@ const SovereigntySection = () => {
       ease: "power2.out",
     }, "-=0.8");
 
-    /* ══════════ Stage 6 — Subtle idle: breathing glow + micro shimmer ══════════ */
-    tl.call(() => {
-      // Very slow core breathing
-      gsap.to(core, {
-        scale: 1.02,
-        transformOrigin: "300px 300px",
-        duration: 4,
-        yoyo: true,
-        repeat: -1,
-        ease: "sine.inOut",
-      });
+    /* ══════════ Stage 6 — Hold briefly, then fade everything out for clean loop ══════════ */
+    tl.to({}, { duration: 1.5 }); // hold the locked state
 
-      // Micro shimmer on border segments
-      perimeterSegments.forEach((seg, i) => {
-        gsap.to(seg, {
-          opacity: gsap.utils.random(0.5, 0.9),
-          duration: gsap.utils.random(2.5, 4),
-          yoyo: true,
-          repeat: -1,
-          delay: i * 0.6,
-          ease: "sine.inOut",
-        });
-      });
-
-      // Grid shimmer — barely perceptible
-      gridLines.forEach((line, i) => {
-        gsap.to(line, {
-          opacity: gsap.utils.random(0.04, 0.12),
-          duration: gsap.utils.random(3, 6),
-          yoyo: true,
-          repeat: -1,
-          delay: i * 0.1,
-          ease: "sine.inOut",
-        });
-      });
-
-      // Corner anchors subtle pulse
-      cornerAnchors.forEach((c, i) => {
-        gsap.to(c, {
-          opacity: gsap.utils.random(0.7, 1),
-          duration: gsap.utils.random(2.5, 4),
-          yoyo: true,
-          repeat: -1,
-          delay: i * 0.4,
-          ease: "sine.inOut",
-        });
-      });
+    // Fade everything out
+    tl.to([core, lockIcon, ...Array.from(cornerAnchors), ...Array.from(perimeterSegments), ...Array.from(gridLines), ...Array.from(innerGridLines)], {
+      opacity: 0,
+      duration: 1.0,
+      ease: "power2.inOut",
     });
+
+    // Reset particle positions for next loop
+    tl.set(particles, { attr: { cx: 300, cy: 300 } });
 
     return () => {
       tl.kill();
