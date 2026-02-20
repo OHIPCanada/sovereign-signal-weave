@@ -117,7 +117,7 @@ const SignalIntegritySection = () => {
 
       // Subtle grid lines
       ctx.globalAlpha = 0.06;
-      ctx.strokeStyle = "#BFA7FF";
+      ctx.strokeStyle = "#5A20B8";
       ctx.lineWidth = 1;
       for (let i = 0; i < 12; i++) {
         const y = (i / 11) * h;
@@ -130,10 +130,10 @@ const SignalIntegritySection = () => {
 
       // Mouse cursor glow
       if (mouse.active) {
-      const mg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, MOUSE_RADIUS * DPR);
-        mg.addColorStop(0, "rgba(100,180,255,0.16)");
-        mg.addColorStop(0.5, "rgba(120,170,255,0.06)");
-        mg.addColorStop(1, "rgba(100,180,255,0)");
+        const mg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, MOUSE_RADIUS * DPR);
+        mg.addColorStop(0, "rgba(123,97,255,0.12)");
+        mg.addColorStop(0.5, "rgba(123,97,255,0.04)");
+        mg.addColorStop(1, "rgba(123,97,255,0)");
         ctx.fillStyle = mg;
         ctx.fillRect(0, 0, w, h);
       }
@@ -141,15 +141,14 @@ const SignalIntegritySection = () => {
       // Field glow
       const gx = ((fieldX0 + fieldX1) / 2) * w;
       const grad = ctx.createRadialGradient(gx, h * 0.5, h * 0.05, gx, h * 0.5, h * 0.65);
-      grad.addColorStop(0, "rgba(100,180,255,0.22)");
-      grad.addColorStop(0.35, "rgba(120,160,255,0.10)");
-      grad.addColorStop(0.65, "rgba(130,200,255,0.04)");
-      grad.addColorStop(1, "rgba(100,180,255,0)");
+      grad.addColorStop(0, "rgba(123,97,255,0.18)");
+      grad.addColorStop(0.45, "rgba(123,97,255,0.06)");
+      grad.addColorStop(1, "rgba(123,97,255,0)");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
       // Rails on right
-      ctx.strokeStyle = "rgba(191,167,255,0.18)";
+      ctx.strokeStyle = "rgba(90,32,184,0.12)";
       ctx.lineWidth = 1;
       rails.forEach((r) => {
         const y = r * h;
@@ -206,8 +205,8 @@ const SignalIntegritySection = () => {
           else ctx.lineTo(tr.x, tr.y);
         }
         ctx.strokeStyle = p.verified
-          ? "rgba(212,97,107,0.22)"
-          : "rgba(191,167,255,0.18)";
+          ? "rgba(212,97,107,0.18)"
+          : "rgba(123,97,255,0.10)";
         ctx.lineWidth = p.verified ? 1.6 : 1.2;
         ctx.stroke();
 
@@ -219,15 +218,15 @@ const SignalIntegritySection = () => {
         ctx.arc(px, py, r, 0, Math.PI * 2);
         ctx.fillStyle = isWarmPulse
           ? "rgba(212,97,107,0.9)"
-          : "rgba(191,167,255,0.85)";
+          : "rgba(123,97,255,0.75)";
         ctx.fill();
 
         // Halo
         ctx.beginPath();
         ctx.arc(px, py, r * 2.5, 0, Math.PI * 2);
         ctx.fillStyle = isWarmPulse
-          ? "rgba(212,97,107,0.12)"
-          : "rgba(191,167,255,0.12)";
+          ? "rgba(212,97,107,0.1)"
+          : "rgba(123,97,255,0.08)";
         ctx.fill();
 
         // Respawn
@@ -364,12 +363,12 @@ const SignalIntegritySection = () => {
             position: "relative",
             width: "100%",
             height: "520px",
-        background: "linear-gradient(135deg, rgba(180,220,255,0.14) 0%, rgba(140,200,255,0.08) 30%, rgba(200,230,255,0.06) 60%, rgba(160,210,255,0.10) 100%)",
-            backdropFilter: "blur(4px)",
-            WebkitBackdropFilter: "blur(4px)",
-            border: "1px solid rgba(130,190,255,0.18)",
+            background: "rgba(255,255,255,0.08)",
+            backdropFilter: "blur(3px)",
+            WebkitBackdropFilter: "blur(3px)",
+            border: "1px solid rgba(123,97,255,0.12)",
             borderRadius: 24,
-            boxShadow: "0 4px 30px rgba(100,170,255,0.10), 0 0 60px rgba(130,200,255,0.06)",
+            boxShadow: "0 4px 20px rgba(123,97,255,0.04)",
             overflow: "hidden",
             padding: 2,
             transformStyle: "preserve-3d",
@@ -425,8 +424,8 @@ const SignalIntegritySection = () => {
               position: "absolute",
               inset: 0,
               borderRadius: 24,
-              border: "1px solid rgba(160,210,255,0.20)",
-              boxShadow: "inset 0 1px 0 rgba(180,220,255,0.25), inset 0 -1px 0 rgba(100,170,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(90,32,184,0.04)",
               pointerEvents: "none",
               zIndex: 3,
             }}
@@ -444,7 +443,7 @@ const SignalIntegritySection = () => {
             left: "10%",
             right: "10%",
             height: "32px",
-            background: "radial-gradient(ellipse at center, rgba(100,170,255,0.18) 0%, rgba(130,200,255,0.06) 50%, transparent 70%)",
+            background: "radial-gradient(ellipse at center, rgba(123,97,255,0.15) 0%, transparent 70%)",
             filter: "blur(10px)",
             pointerEvents: "none",
           }}
