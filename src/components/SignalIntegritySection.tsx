@@ -10,6 +10,7 @@ const SignalIntegritySection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -62,23 +63,38 @@ const SignalIntegritySection = () => {
 
     const t0 = performance.now();
 
-    // Mouse tracking
+    // Mouse tracking (for particles + 3D tilt)
     const mouse = { x: -9999, y: -9999, active: false };
-    const MOUSE_RADIUS = 120; // px influence radius
-    const MOUSE_FORCE = 0.06; // push strength
+    const cardMouse = { nx: 0, ny: 0 }; // normalized -1 to 1
+    const smoothCard = { rx: 0, ry: 0 };
+    const MOUSE_RADIUS = 120;
+    const MOUSE_FORCE = 0.06;
+
+    const cardEl = cardRef.current;
 
     const onMouseMove = (e: MouseEvent) => {
       const rect = canvas!.getBoundingClientRect();
       mouse.x = (e.clientX - rect.left) * DPR;
       mouse.y = (e.clientY - rect.top) * DPR;
       mouse.active = true;
+
+      // 3D tilt calc based on card bounds
+      if (cardEl) {
+        const cr = cardEl.getBoundingClientRect();
+        cardMouse.nx = ((e.clientX - cr.left) / cr.width - 0.5) * 2;
+        cardMouse.ny = ((e.clientY - cr.top) / cr.height - 0.5) * 2;
+      }
     };
     const onMouseLeave = () => {
       mouse.active = false;
+      cardMouse.nx = 0;
+      cardMouse.ny = 0;
     };
 
-    canvas.addEventListener("mousemove", onMouseMove);
-    canvas.addEventListener("mouseleave", onMouseLeave);
+    if (cardEl) {
+      cardEl.addEventListener("mousemove", onMouseMove);
+      cardEl.addEventListener("mouseleave", onMouseLeave);
+    }
 
     function snapToRail(yNorm: number) {
       let bestR = rails[0];
@@ -229,6 +245,13 @@ const SignalIntegritySection = () => {
       ctx.fillText("INTELLIGENCE FIELD", fieldX0 * w + 12 * DPR, 34 * DPR);
       ctx.globalAlpha = 1;
 
+      // 3D tilt — smooth lerp
+      smoothCard.rx += (cardMouse.ny * -8 - smoothCard.rx) * 0.08;
+      smoothCard.ry += (cardMouse.nx * 12 - smoothCard.ry) * 0.08;
+      if (cardEl) {
+        cardEl.style.transform = `rotateX(${smoothCard.rx}deg) rotateY(${smoothCard.ry}deg) scale3d(1.01,1.01,1)`;
+      }
+
       raf = requestAnimationFrame(draw);
     }
 
@@ -251,8 +274,10 @@ const SignalIntegritySection = () => {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
-      canvas!.removeEventListener("mousemove", onMouseMove);
-      canvas!.removeEventListener("mouseleave", onMouseLeave);
+      if (cardEl) {
+        cardEl.removeEventListener("mousemove", onMouseMove);
+        cardEl.removeEventListener("mouseleave", onMouseLeave);
+      }
       ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, []);
@@ -329,54 +354,99 @@ const SignalIntegritySection = () => {
         </div>
       </div>
 
-      {/* Bottom — Glass card around canvas */}
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          maxWidth: "min(1280px, 94vw)",
-          height: "520px",
-          background: "rgba(255,255,255,0.06)",
-          backdropFilter: "blur(2px)",
-          WebkitBackdropFilter: "blur(2px)",
-          border: "1px solid rgba(123,97,255,0.10)",
-          borderRadius: 24,
-          boxShadow: "0 4px 20px rgba(123,97,255,0.04)",
-          overflow: "hidden",
-          padding: 2,
-        }}
-      >
-        {/* Top highlight — glass edge catch */}
+      {/* Bottom — 3D perspective wrapper */}
+      <div style={{ perspective: "900px", width: "100%", maxWidth: "min(1280px, 94vw)", position: "relative" }}>
+        {/* Glass card with 3D tilt */}
+        <div
+          ref={cardRef}
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "520px",
+            background: "rgba(255,255,255,0.08)",
+            backdropFilter: "blur(3px)",
+            WebkitBackdropFilter: "blur(3px)",
+            border: "1px solid rgba(123,97,255,0.12)",
+            borderRadius: 24,
+            boxShadow: "0 4px 20px rgba(123,97,255,0.04)",
+            overflow: "hidden",
+            padding: 2,
+            transformStyle: "preserve-3d",
+            transition: "none",
+            willChange: "transform",
+          }}
+        >
+          {/* Top highlight — glass edge catch */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "5%",
+              right: "15%",
+              height: "40%",
+              background: "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 50%)",
+              borderRadius: "24px 24px 0 0",
+              pointerEvents: "none",
+              zIndex: 2,
+            }}
+          />
+          {/* Diagonal specular streak */}
+          <div
+            style={{
+              position: "absolute",
+              top: "5%",
+              left: "-10%",
+              width: "55%",
+              height: "120%",
+              background: "linear-gradient(125deg, transparent 35%, rgba(255,255,255,0.06) 48%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 52%, transparent 65%)",
+              transform: "rotate(-15deg)",
+              pointerEvents: "none",
+              zIndex: 2,
+            }}
+          />
+          {/* Bottom edge shadow — glass thickness */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: "18%",
+              background: "linear-gradient(0deg, rgba(90,32,184,0.05) 0%, transparent 100%)",
+              borderRadius: "0 0 24px 24px",
+              pointerEvents: "none",
+              zIndex: 2,
+            }}
+          />
+          {/* Subtle inset border for glass edge */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 24,
+              border: "1px solid rgba(255,255,255,0.15)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(90,32,184,0.04)",
+              pointerEvents: "none",
+              zIndex: 3,
+            }}
+          />
+          <canvas
+            ref={canvasRef}
+            style={{ width: "100%", height: "100%", display: "block", borderRadius: 22, position: "relative", zIndex: 1 }}
+          />
+        </div>
+        {/* Ground shadow for 3D floating effect */}
         <div
           style={{
             position: "absolute",
-            top: 0,
-            left: "5%",
-            right: "15%",
-            height: "40%",
-            background: "linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 50%)",
-            borderRadius: "24px 24px 0 0",
+            bottom: "-16px",
+            left: "10%",
+            right: "10%",
+            height: "32px",
+            background: "radial-gradient(ellipse at center, rgba(123,97,255,0.15) 0%, transparent 70%)",
+            filter: "blur(10px)",
             pointerEvents: "none",
-            zIndex: 2,
           }}
-        />
-        {/* Diagonal specular streak */}
-        <div
-          style={{
-            position: "absolute",
-            top: "5%",
-            left: "-10%",
-            width: "55%",
-            height: "120%",
-            background: "linear-gradient(125deg, transparent 35%, rgba(255,255,255,0.04) 48%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.04) 52%, transparent 65%)",
-            transform: "rotate(-15deg)",
-            pointerEvents: "none",
-            zIndex: 2,
-          }}
-        />
-        <canvas
-          ref={canvasRef}
-          style={{ width: "100%", height: "100%", display: "block", borderRadius: 22, position: "relative", zIndex: 1 }}
         />
       </div>
     </section>
