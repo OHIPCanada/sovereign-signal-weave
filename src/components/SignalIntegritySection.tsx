@@ -30,10 +30,8 @@ const SignalIntegritySection = () => {
     resize();
     window.addEventListener("resize", resize);
 
-    // Rails (coordinated care lanes)
     const rails = [0.28, 0.42, 0.56, 0.70];
 
-    // Particles
     const N = 46;
     interface Particle {
       x: number;
@@ -59,7 +57,6 @@ const SignalIntegritySection = () => {
       trail: [],
     }));
 
-    // Intelligence field bounds
     const fieldX0 = 0.38;
     const fieldX1 = 0.70;
 
@@ -84,9 +81,9 @@ const SignalIntegritySection = () => {
 
       ctx.clearRect(0, 0, w, h);
 
-      // Subtle grid fog
-      ctx.globalAlpha = 0.08;
-      ctx.strokeStyle = "#ffffff";
+      // Subtle grid lines (dark on light bg)
+      ctx.globalAlpha = 0.06;
+      ctx.strokeStyle = "#5A20B8";
       ctx.lineWidth = 1;
       for (let i = 0; i < 12; i++) {
         const y = (i / 11) * h;
@@ -97,17 +94,17 @@ const SignalIntegritySection = () => {
       }
       ctx.globalAlpha = 1;
 
-      // Field glow (center intelligence layer)
+      // Field glow (center intelligence layer) — violet on light
       const gx = ((fieldX0 + fieldX1) / 2) * w;
       const grad = ctx.createRadialGradient(gx, h * 0.5, h * 0.05, gx, h * 0.5, h * 0.65);
-      grad.addColorStop(0, "rgba(152,80,255,0.25)");
-      grad.addColorStop(0.45, "rgba(152,80,255,0.08)");
-      grad.addColorStop(1, "rgba(152,80,255,0)");
+      grad.addColorStop(0, "rgba(123,97,255,0.18)");
+      grad.addColorStop(0.45, "rgba(123,97,255,0.06)");
+      grad.addColorStop(1, "rgba(123,97,255,0)");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Rails on right
-      ctx.strokeStyle = "rgba(255,255,255,0.18)";
+      // Rails on right — dark toned
+      ctx.strokeStyle = "rgba(90,32,184,0.12)";
       ctx.lineWidth = 1;
       rails.forEach((r) => {
         const y = r * h;
@@ -124,7 +121,6 @@ const SignalIntegritySection = () => {
 
         let y = p.y + Math.sin(t * p.freq + p.phase) * p.amp;
 
-        // Inside field: converge to lane
         if (xn > fieldX0 && xn < fieldX1) {
           const k = (xn - fieldX0) / (fieldX1 - fieldX0);
           const target = snapToRail(y);
@@ -132,7 +128,6 @@ const SignalIntegritySection = () => {
           if (k > 0.7) p.verified = true;
         }
 
-        // After field: stick to rail
         if (xn >= fieldX1) {
           const target = snapToRail(y);
           y = y * 0.15 + target * 0.85;
@@ -142,10 +137,10 @@ const SignalIntegritySection = () => {
         const px = p.x;
         const py = y * h;
 
-        // Trail (audit ghost)
         p.trail.push({ x: px, y: py, v: p.verified });
         if (p.trail.length > 46) p.trail.shift();
 
+        // Trail — darker for light bg
         ctx.beginPath();
         for (let i = 0; i < p.trail.length; i++) {
           const tr = p.trail[i];
@@ -153,28 +148,28 @@ const SignalIntegritySection = () => {
           else ctx.lineTo(tr.x, tr.y);
         }
         ctx.strokeStyle = p.verified
-          ? "rgba(242,193,174,0.14)"
-          : "rgba(255,255,255,0.07)";
+          ? "rgba(212,97,107,0.18)"
+          : "rgba(123,97,255,0.10)";
         ctx.lineWidth = p.verified ? 1.6 : 1.2;
         ctx.stroke();
 
-        // Particle glow
+        // Particle dot
         const isWarmPulse = p.verified && p.warm && Math.sin(t * 0.9 + p.phase) > 0.6;
         const r = isWarmPulse ? 6 : 4;
 
         ctx.beginPath();
         ctx.arc(px, py, r, 0, Math.PI * 2);
         ctx.fillStyle = isWarmPulse
-          ? "rgba(242,193,174,0.95)"
-          : "rgba(180,140,255,0.88)";
+          ? "rgba(212,97,107,0.9)"
+          : "rgba(123,97,255,0.75)";
         ctx.fill();
 
         // Halo
         ctx.beginPath();
         ctx.arc(px, py, r * 2.5, 0, Math.PI * 2);
         ctx.fillStyle = isWarmPulse
-          ? "rgba(232,150,124,0.12)"
-          : "rgba(152,80,255,0.10)";
+          ? "rgba(212,97,107,0.1)"
+          : "rgba(123,97,255,0.08)";
         ctx.fill();
 
         // Respawn
@@ -186,9 +181,9 @@ const SignalIntegritySection = () => {
         }
       });
 
-      // Label the intelligence field
-      ctx.globalAlpha = 0.6;
-      ctx.fillStyle = "rgba(255,255,255,0.55)";
+      // Label
+      ctx.globalAlpha = 0.5;
+      ctx.fillStyle = "rgba(90,32,184,0.5)";
       ctx.font = `${12 * DPR}px system-ui, -apple-system, Segoe UI, Inter`;
       ctx.fillText("INTELLIGENCE FIELD", fieldX0 * w + 12 * DPR, 34 * DPR);
       ctx.globalAlpha = 1;
@@ -196,7 +191,7 @@ const SignalIntegritySection = () => {
       raf = requestAnimationFrame(draw);
     }
 
-    // Entrance animation
+    // Entrance
     gsap.set(textEl, { opacity: 0, y: 40 });
     gsap.set(canvas, { opacity: 0, y: 50 });
 
@@ -224,25 +219,24 @@ const SignalIntegritySection = () => {
       ref={sectionRef}
       className="relative overflow-hidden"
       style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1.4fr",
-        gap: "64px",
+        display: "flex",
+        flexDirection: "column",
         alignItems: "center",
-        padding: "clamp(64px, 7vw, 120px) clamp(24px, 5vw, 80px)",
+        padding: "clamp(64px, 7vw, 110px) clamp(24px, 5vw, 80px) clamp(48px, 5vw, 80px)",
         background: `
-          radial-gradient(900px 600px at 20% 30%, rgba(90,32,184,0.35), transparent 60%),
-          radial-gradient(900px 700px at 80% 70%, rgba(232,150,124,0.18), transparent 65%),
-          linear-gradient(180deg, #16002A, #2B0060)
+          radial-gradient(1100px 700px at 20% 20%, rgba(110,59,255,0.10), transparent 55%),
+          radial-gradient(900px 600px at 80% 70%, rgba(232,150,124,0.12), transparent 60%),
+          linear-gradient(180deg, #F7F3FF 0%, #FFFFFF 50%, #FFF7F2 100%)
         `,
-        color: "#fff",
+        color: "#140A2A",
         minHeight: "100vh",
       }}
     >
-      {/* Left — Copy */}
-      <div ref={textRef}>
+      {/* Top — Copy (centered) */}
+      <div ref={textRef} style={{ maxWidth: "min(720px, 90vw)", textAlign: "center", marginBottom: "clamp(40px, 5vw, 64px)" }}>
         <div
           className="font-mono uppercase"
-          style={{ fontSize: 12, letterSpacing: "3px", opacity: 0.6, marginBottom: 18 }}
+          style={{ fontSize: 12, letterSpacing: "3px", color: "rgba(90,32,184,0.55)", marginBottom: 18 }}
         >
           [ TRUST AT SYSTEM SCALE ]
         </div>
@@ -254,6 +248,7 @@ const SignalIntegritySection = () => {
             lineHeight: 1.0,
             letterSpacing: "-0.02em",
             margin: "0 0 18px 0",
+            color: "#1A1A2E",
           }}
         >
           Trusted by systems that cannot fail.
@@ -263,23 +258,23 @@ const SignalIntegritySection = () => {
           style={{
             fontSize: 18,
             lineHeight: 1.6,
-            opacity: 0.78,
-            maxWidth: "460px",
-            margin: "0 0 18px 0",
+            color: "rgba(26,26,46,0.65)",
+            maxWidth: "520px",
+            margin: "0 auto 22px",
           }}
         >
           Signals enter fragmented. DocG routes, verifies, and records decisions — continuously.
         </p>
 
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap gap-2.5 justify-center">
           {CHIPS.map((chip) => (
             <span
               key={chip}
               style={{
                 fontSize: 13,
-                opacity: 0.8,
-                border: "1px solid rgba(255,255,255,0.18)",
-                background: "rgba(255,255,255,0.05)",
+                color: "rgba(26,26,46,0.7)",
+                border: "1px solid rgba(90,32,184,0.15)",
+                background: "rgba(123,97,255,0.05)",
                 padding: "10px 14px",
                 borderRadius: 999,
                 backdropFilter: "blur(10px)",
@@ -291,8 +286,8 @@ const SignalIntegritySection = () => {
         </div>
       </div>
 
-      {/* Right — Full-bleed canvas animation (no card/frame) */}
-      <div style={{ position: "relative", height: "520px" }}>
+      {/* Bottom — Full-width canvas animation (no frame) */}
+      <div style={{ position: "relative", width: "100%", maxWidth: "min(1280px, 94vw)", height: "520px" }}>
         <canvas
           ref={canvasRef}
           style={{ width: "100%", height: "100%", display: "block" }}
