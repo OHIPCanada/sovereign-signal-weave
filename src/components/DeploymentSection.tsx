@@ -263,75 +263,49 @@ const DeploymentSection = () => {
       }} />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 w-full">
-        {/* 2-column: text left, canvas right */}
-        <div className="flex flex-col lg:flex-row items-start" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
-          {/* Left: Text */}
-          <motion.div
-            className="lg:w-[38%] flex-shrink-0 lg:sticky lg:top-32"
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.7 }}
-          >
-            <span
-              className="inline-block mb-5 text-[12px] font-mono tracking-[0.22em] uppercase"
-              style={{ color: "rgba(255,255,255,0.45)" }}
-            >
-              [ SYSTEM CONSCIOUSNESS ]
+        {/* ── Centered text block ── */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.7 }}
+        >
+          <span className="inline-block mb-5 text-[12px] font-mono tracking-[0.22em] uppercase" style={{ color: "rgba(255,255,255,0.45)" }}>
+            [ SYSTEM CONSCIOUSNESS ]
+          </span>
+          <h2 className="mb-6" style={{
+            color: "rgba(255,255,255,0.95)",
+            fontWeight: 800,
+            fontSize: "clamp(52px, 7.5vw, 112px)",
+            lineHeight: 0.95,
+            letterSpacing: "-0.03em",
+            textShadow: "0 10px 40px rgba(0,0,0,0.22)",
+          }}>
+            Intelligence operating as a living system.
+          </h2>
+          <p className="mx-auto mb-8" style={{ color: "rgba(255,255,255,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "56ch" }}>
+            Signals converge, align, resolve — continuously across the field.
+          </p>
+          <div className="flex items-center justify-center gap-2.5">
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#E8967C" }} />
+            <span className="text-[10px] font-mono tracking-[0.2em] uppercase" style={{ color: "rgba(243,239,255,0.25)" }}>
+              FIELD ACTIVE
             </span>
+          </div>
+        </motion.div>
 
-            <h2
-              className="mb-5"
-              style={{
-                color: "rgba(255,255,255,0.95)",
-                fontWeight: 800,
-                fontSize: "clamp(44px, 5.2vw, 84px)",
-                lineHeight: 0.95,
-                letterSpacing: "-0.02em",
-                textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-              }}
-            >
-              Intelligence operating as a living system.
-            </h2>
-
-            <p
-              style={{
-                color: "rgba(255,255,255,0.72)",
-                fontSize: "clamp(15px, 1.25vw, 18px)",
-                lineHeight: 1.55,
-                maxWidth: "46ch",
-              }}
-            >
-              Signals converge, align, resolve — continuously across the field.
-            </p>
-
-            {/* Status */}
-            <div className="flex items-center gap-2.5 mt-10">
-              <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#E8967C" }} />
-              <span className="text-[10px] font-mono tracking-[0.2em] uppercase" style={{ color: "rgba(243,239,255,0.25)" }}>
-                FIELD ACTIVE
-              </span>
-            </div>
-          </motion.div>
-
-          {/* Right: Particle field */}
-          <motion.div
-            className="lg:w-[62%] w-full relative"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, delay: 0.2 }}
-          >
-            {/* Subtle radial glow behind canvas */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: "radial-gradient(ellipse at 50% 50%, rgba(110,43,255,0.06) 0%, transparent 70%)",
-              }}
-            />
-            <ParticleField />
-          </motion.div>
-        </div>
+        {/* ── Wide particle field ── */}
+        <motion.div
+          className="relative w-full"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.2 }}
+        >
+          <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(110,43,255,0.06) 0%, transparent 70%)" }} />
+          <ParticleField />
+        </motion.div>
       </div>
     </section>
   );
