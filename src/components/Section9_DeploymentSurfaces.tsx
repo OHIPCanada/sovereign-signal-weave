@@ -43,6 +43,7 @@ const Section9_DeploymentSurfaces = () => {
   const seedCoreRef = useRef<SVGCircleElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const hasAutoRun = useRef(false);
+  const currentSeedIdxRef = useRef(0);
   const [activeSeed, setActiveSeed] = useState("ops");
 
   /* ── stamp helper ── */
@@ -129,7 +130,10 @@ const Section9_DeploymentSurfaces = () => {
   }, []);
 
   /* ── run diffusion ── */
-  const runDiffusion = useCallback((seedKey: string) => {
+  const runDiffusion = useCallback((seedKey: string, manualIdx?: number) => {
+    // Sync button index
+    const idx = manualIdx ?? SURFACES.findIndex((s) => s.key === seedKey);
+    if (idx !== -1) currentSeedIdxRef.current = idx;
     const cellsG = cellsRef.current;
     const stampsG = stampsRef.current;
     const linesG = linesRef.current;
@@ -212,7 +216,7 @@ const Section9_DeploymentSurfaces = () => {
 
     const total = sorted.length;
     const WAVE_DUR = 5;
-    const tl = gsap.timeline({ defaults: { ease: "power2.out" }, repeat: -1, repeatDelay: 2 });
+    const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
     tlRef.current = tl;
 
     // Track activated cells for connection lines
@@ -284,7 +288,7 @@ const Section9_DeploymentSurfaces = () => {
       tl.add(() => spawnRipple(seed.x, seed.y, seed.accent), t0);
     });
 
-    // Reset at end for clean loop
+    // Reset + auto-advance to next surface
     tl.add(() => {
       cells.forEach((cell) => {
         cell.rect.setAttribute("stroke", "rgba(189,166,255,0.08)");
@@ -299,6 +303,12 @@ const Section9_DeploymentSurfaces = () => {
       activated.length = 0;
       fillEl.style.width = "0%";
       valEl.textContent = "0%";
+
+      // Advance to next surface after a short pause
+      setTimeout(() => {
+        const nextIdx = (currentSeedIdxRef.current + 1) % SURFACES.length;
+        runDiffusion(SURFACES[nextIdx].key, nextIdx);
+      }, 800);
     }, WAVE_DUR + 2);
   }, [stamp, spawnRipple, drawConnection]);
 
@@ -312,7 +322,8 @@ const Section9_DeploymentSurfaces = () => {
         entries.forEach((e) => {
           if (!hasAutoRun.current && e.isIntersecting && e.intersectionRatio > 0.3) {
             hasAutoRun.current = true;
-            runDiffusion("ops");
+            currentSeedIdxRef.current = 0;
+            runDiffusion(SURFACES[0].key, 0);
             io.disconnect();
           }
         });
@@ -418,7 +429,7 @@ const Section9_DeploymentSurfaces = () => {
             {SURFACES.map((s, i) => (
               <button
                 key={s.key}
-                onClick={() => runDiffusion(s.key)}
+                onClick={() => runDiffusion(s.key, i)}
                 style={{
                   position: "relative",
                   padding: "10px 18px",
