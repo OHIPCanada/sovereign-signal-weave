@@ -218,7 +218,7 @@ const ManifestoSection = () => {
       }} />
 
       <div className="relative z-10" style={{ width: "min(1180px, calc(100% - 48px))", margin: "0 auto" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] items-center" style={{ gap: "clamp(48px, 6vw, 96px)" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] items-center" style={{ gap: "clamp(80px, 10vw, 160px)" }}>
           {/* Left — Copy */}
           <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
             <p className="mb-5 mono-label" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>

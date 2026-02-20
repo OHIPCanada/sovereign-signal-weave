@@ -357,7 +357,7 @@ const Section9_DeploymentSurfaces = () => {
           width: "min(1180px, calc(100% - 48px))",
           display: "grid",
           gridTemplateColumns: "5fr 7fr",
-          gap: "clamp(48px, 6vw, 96px)",
+          gap: "clamp(80px, 10vw, 160px)",
           alignItems: "center",
         }}
       >

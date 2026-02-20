@@ -264,7 +264,7 @@ const DeploymentSection = () => {
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 w-full">
         {/* 2-column: text left, canvas right */}
-        <div className="flex flex-col lg:flex-row items-start" style={{ gap: "clamp(48px, 6vw, 96px)" }}>
+        <div className="flex flex-col lg:flex-row items-start" style={{ gap: "clamp(80px, 10vw, 160px)" }}>
           {/* Left: Text */}
           <motion.div
             className="lg:w-[38%] flex-shrink-0 lg:sticky lg:top-32"
