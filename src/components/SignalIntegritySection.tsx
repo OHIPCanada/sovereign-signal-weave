@@ -350,11 +350,11 @@ const SignalIntegritySection = () => {
       style={{
         padding: "110px 0",
         background: `
-          radial-gradient(900px 600px at 20% 40%, rgba(90,32,184,0.18), transparent 60%),
-          radial-gradient(800px 600px at 78% 55%, rgba(232,150,124,0.14), transparent 60%),
-          linear-gradient(180deg, #FBF7FF, #FFF7F2)
+          radial-gradient(800px 600px at 25% 45%, rgba(90,32,184,0.25), transparent 55%),
+          radial-gradient(700px 500px at 75% 50%, rgba(212,97,107,0.12), transparent 55%),
+          linear-gradient(180deg, #0E0620 0%, #140A2A 40%, #1A0833 70%, #0E0620 100%)
         `,
-        color: "#140A2A",
+        color: "#E8E0F0",
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
@@ -372,7 +372,7 @@ const SignalIntegritySection = () => {
         <div ref={textRef}>
           <div
             className="font-mono uppercase"
-            style={{ fontSize: 12, letterSpacing: "0.28em", color: "rgba(90,32,184,0.55)", marginBottom: 16 }}
+            style={{ fontSize: 12, letterSpacing: "0.28em", color: "rgba(191,167,255,0.6)", marginBottom: 16 }}
           >
             [ TRUST AT SYSTEM SCALE ]
           </div>
@@ -384,7 +384,7 @@ const SignalIntegritySection = () => {
               lineHeight: 0.98,
               letterSpacing: "-0.02em",
               margin: "0 0 18px 0",
-              color: "#1A1A2E",
+              color: "#F0E8FA",
             }}
           >
             Trusted by systems that cannot fail.
@@ -394,7 +394,7 @@ const SignalIntegritySection = () => {
             style={{
               fontSize: 16,
               lineHeight: 1.65,
-              color: "rgba(26,26,46,0.65)",
+              color: "rgba(240,232,250,0.6)",
               maxWidth: "44ch",
               margin: "0 0 22px 0",
             }}
@@ -408,8 +408,8 @@ const SignalIntegritySection = () => {
               <div
                 key={p}
                 style={{
-                  border: "1px solid rgba(90,32,184,0.15)",
-                  color: "rgba(26,26,46,0.7)",
+                  border: "1px solid rgba(191,167,255,0.2)",
+                  color: "rgba(240,232,250,0.7)",
                   padding: "8px 12px",
                   borderRadius: 999,
                   fontSize: 12,
@@ -512,7 +512,7 @@ const SignalIntegritySection = () => {
               left: "8%",
               right: "8%",
               height: "36px",
-              background: "radial-gradient(ellipse at center, rgba(90,32,184,0.12) 0%, transparent 70%)",
+              background: "radial-gradient(ellipse at center, rgba(123,97,255,0.2) 0%, transparent 70%)",
               filter: "blur(8px)",
               transform: "rotateX(60deg)",
               pointerEvents: "none",
