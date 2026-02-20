@@ -246,7 +246,7 @@ const PlatformSection = () => {
         background: "linear-gradient(180deg, rgba(123, 97, 255, 0.08) 0%, transparent 100%)",
       }} />
 
-      <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12">
+      <div className="relative z-10 max-w-[1600px] mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-[0.55fr_1.45fr] items-center w-full" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
           {/* ── Left: Narrative ── */}
           <motion.div

@@ -225,7 +225,7 @@ const InterfaceSection = () => {
     >
       <div
         className="relative z-10 mx-auto"
-        style={{ width: "min(1200px, 92vw)" }}
+        style={{ width: "min(1600px, 96vw)" }}
       >
         {/* Header */}
         <div className="mb-7">
