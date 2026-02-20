@@ -154,17 +154,17 @@ const Section9_DeploymentSurfaces = () => {
     sorted.forEach((cell, i) => {
       const p = i / total;
       const delay = p * 2.2;
+      const warmFill = seed.accent === "warm";
 
-      tl.to(cell.rect, {
-        attr: {
-          stroke: "rgba(189,166,255,0.22)",
-          fill: seed.accent === "warm" ? "rgba(232,150,124,0.06)" : "rgba(189,166,255,0.05)",
-        },
-        duration: 0.18,
+      // Use gsap.set for color strings (can't tween strings), tween numeric attrs separately
+      tl.add(() => {
+        cell.rect.setAttribute("stroke", "rgba(189,166,255,0.22)");
+        cell.rect.setAttribute("fill", warmFill ? "rgba(232,150,124,0.06)" : "rgba(189,166,255,0.05)");
+        cell.dot.setAttribute("fill", warmFill ? "rgba(242,193,174,0.65)" : "rgba(189,166,255,0.55)");
       }, delay);
 
       tl.to(cell.dot, {
-        attr: { r: 3.4, fill: seed.accent === "warm" ? "rgba(242,193,174,0.65)" : "rgba(189,166,255,0.55)" },
+        attr: { r: 3.4 },
         duration: 0.18,
       }, delay);
 
