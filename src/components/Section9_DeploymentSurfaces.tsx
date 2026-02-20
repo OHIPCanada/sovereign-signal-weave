@@ -3,11 +3,11 @@ import gsap from "gsap";
 
 /* ── seed presets ── */
 const SEEDS: Record<string, { x: number; y: number; accent: "lav" | "warm" }> = {
-  emr:      { x: 210, y: 170, accent: "lav"  },
-  pathways: { x: 320, y: 360, accent: "warm" },
-  ops:      { x: 460, y: 240, accent: "lav"  },
-  audit:    { x: 660, y: 200, accent: "warm" },
-  access:   { x: 730, y: 360, accent: "lav"  },
+  emr:      { x: 210, y: 100, accent: "lav"  },
+  pathways: { x: 320, y: 220, accent: "warm" },
+  ops:      { x: 460, y: 150, accent: "lav"  },
+  audit:    { x: 660, y: 120, accent: "warm" },
+  access:   { x: 730, y: 220, accent: "lav"  },
 };
 
 const SURFACES = [
@@ -19,11 +19,11 @@ const SURFACES = [
 ];
 
 const COLS = 18;
-const ROWS = 10;
+const ROWS = 6;
 const PAD_X = 48;
-const PAD_Y = 48;
+const PAD_Y = 30;
 const W = 900;
-const H = 520;
+const H = 320;
 const CELL_W = (W - PAD_X * 2) / COLS;
 const CELL_H = (H - PAD_Y * 2) / ROWS;
 const TARGET_COVERAGE = 87;
@@ -446,15 +446,16 @@ const Section9_DeploymentSurfaces = () => {
           ref={stageRef}
           className="relative overflow-hidden"
           style={{
-            borderRadius: "26px",
+            borderRadius: "20px",
             border: "1px solid rgba(189,166,255,0.18)",
             background: `
-              radial-gradient(800px 520px at 40% 40%, rgba(91,29,179,0.25) 0%, transparent 60%),
-              radial-gradient(520px 520px at 75% 65%, rgba(232,150,124,0.16) 0%, transparent 55%),
+              radial-gradient(800px 340px at 40% 40%, rgba(91,29,179,0.25) 0%, transparent 60%),
+              radial-gradient(520px 340px at 75% 65%, rgba(232,150,124,0.16) 0%, transparent 55%),
               rgba(255,255,255,0.02)
             `,
-            boxShadow: "0 40px 120px rgba(0,0,0,0.45)",
-            minHeight: "520px",
+            boxShadow: "0 24px 80px rgba(0,0,0,0.40)",
+            minHeight: "320px",
+            maxHeight: "340px",
           }}
         >
           {/* Faint grid overlay */}
@@ -472,12 +473,12 @@ const Section9_DeploymentSurfaces = () => {
 
           <svg
             ref={svgRef}
-            viewBox="0 0 900 520"
+            viewBox="0 0 900 320"
             width="100%"
             height="100%"
             preserveAspectRatio="none"
             className="relative z-10"
-            style={{ minHeight: "520px" }}
+            style={{ minHeight: "320px", maxHeight: "340px" }}
           >
             <defs>
               <radialGradient id="s9SeedGlow" cx="50%" cy="50%" r="60%">
@@ -505,8 +506,8 @@ const Section9_DeploymentSurfaces = () => {
 
             {/* Seed */}
             <g>
-              <circle ref={seedHaloRef} cx="450" cy="260" r="90" fill="url(#s9SeedGlow)" />
-              <circle ref={seedCoreRef} cx="450" cy="260" r="8" fill="#BDA6FF" filter="url(#s9SoftGlow)" />
+              <circle ref={seedHaloRef} cx="450" cy="160" r="70" fill="url(#s9SeedGlow)" />
+              <circle ref={seedCoreRef} cx="450" cy="160" r="8" fill="#BDA6FF" filter="url(#s9SoftGlow)" />
             </g>
 
             {/* Stamps layer (on top) */}
