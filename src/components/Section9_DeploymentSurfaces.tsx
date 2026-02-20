@@ -411,13 +411,13 @@ const Section9_DeploymentSurfaces = () => {
                 className="text-left transition-all duration-250 ease-out"
                 style={{
                   position: "relative",
-                  padding: "12px 18px",
-                  borderRadius: "14px",
+                  padding: "8px 14px",
+                  borderRadius: "10px",
                   border: `1px solid ${activeSeed === s.key ? "rgba(189,166,255,0.45)" : "rgba(189,166,255,0.16)"}`,
                   background: activeSeed === s.key ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
                   backdropFilter: "blur(10px)",
                   cursor: "pointer",
-                  minWidth: "160px",
+                  minWidth: "130px",
                 }}
                 onMouseEnter={(e) => {
                   if (activeSeed !== s.key) {
@@ -434,10 +434,10 @@ const Section9_DeploymentSurfaces = () => {
                   }
                 }}
               >
-                <div style={{ fontSize: "14px", fontWeight: 600, color: "rgba(243,239,255,0.92)", marginBottom: "4px" }}>
+                <div style={{ fontSize: "12px", fontWeight: 600, color: "rgba(243,239,255,0.92)", marginBottom: "2px" }}>
                   {s.title}
                 </div>
-                <div style={{ fontSize: "12px", color: "rgba(243,239,255,0.62)" }}>
+                <div style={{ fontSize: "11px", color: "rgba(243,239,255,0.62)" }}>
                   {s.desc}
                 </div>
               </button>
