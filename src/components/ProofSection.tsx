@@ -234,7 +234,7 @@ export default function ProofSection() {
         color: "#1B0F2E",
       }}
     >
-      <div className="relative z-10 mx-auto" style={{ width: "min(1400px, 94vw)" }}>
+      <div className="relative z-10 mx-auto" style={{ width: "min(1600px, 96vw)" }}>
         {/* Top: Left text + Right system field */}
         <div
           className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center"

@@ -262,7 +262,7 @@ const DeploymentSection = () => {
         background: "linear-gradient(90deg, transparent 10%, rgba(110,43,255,0.2) 50%, transparent 90%)",
       }} />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 w-full">
+      <div className="relative z-10 max-w-[1600px] mx-auto px-6 md:px-12 w-full">
         {/* 2-column: text left, canvas right */}
         <div className="flex flex-col lg:flex-row items-start" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
           {/* Left: Text */}

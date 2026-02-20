@@ -354,7 +354,7 @@ const Section9_DeploymentSurfaces = () => {
       <div
         className="mx-auto"
         style={{
-          width: "min(1180px, calc(100% - 48px))",
+          width: "min(1600px, calc(100% - 48px))",
           display: "grid",
           gridTemplateColumns: "3fr 9fr",
           gap: "clamp(120px, 14vw, 220px)",
