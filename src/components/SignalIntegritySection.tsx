@@ -62,6 +62,24 @@ const SignalIntegritySection = () => {
 
     const t0 = performance.now();
 
+    // Mouse tracking
+    const mouse = { x: -9999, y: -9999, active: false };
+    const MOUSE_RADIUS = 120; // px influence radius
+    const MOUSE_FORCE = 0.06; // push strength
+
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = canvas!.getBoundingClientRect();
+      mouse.x = (e.clientX - rect.left) * DPR;
+      mouse.y = (e.clientY - rect.top) * DPR;
+      mouse.active = true;
+    };
+    const onMouseLeave = () => {
+      mouse.active = false;
+    };
+
+    canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("mouseleave", onMouseLeave);
+
     function snapToRail(yNorm: number) {
       let bestR = rails[0];
       let bestD = 999;
@@ -81,7 +99,7 @@ const SignalIntegritySection = () => {
 
       ctx.clearRect(0, 0, w, h);
 
-      // Subtle grid lines (dark on light bg)
+      // Subtle grid lines
       ctx.globalAlpha = 0.06;
       ctx.strokeStyle = "#5A20B8";
       ctx.lineWidth = 1;
@@ -94,7 +112,17 @@ const SignalIntegritySection = () => {
       }
       ctx.globalAlpha = 1;
 
-      // Field glow (center intelligence layer) — violet on light
+      // Mouse cursor glow
+      if (mouse.active) {
+        const mg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, MOUSE_RADIUS * DPR);
+        mg.addColorStop(0, "rgba(123,97,255,0.12)");
+        mg.addColorStop(0.5, "rgba(123,97,255,0.04)");
+        mg.addColorStop(1, "rgba(123,97,255,0)");
+        ctx.fillStyle = mg;
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      // Field glow
       const gx = ((fieldX0 + fieldX1) / 2) * w;
       const grad = ctx.createRadialGradient(gx, h * 0.5, h * 0.05, gx, h * 0.5, h * 0.65);
       grad.addColorStop(0, "rgba(123,97,255,0.18)");
@@ -103,7 +131,7 @@ const SignalIntegritySection = () => {
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
 
-      // Rails on right — dark toned
+      // Rails on right
       ctx.strokeStyle = "rgba(90,32,184,0.12)";
       ctx.lineWidth = 1;
       rails.forEach((r) => {
@@ -134,13 +162,26 @@ const SignalIntegritySection = () => {
         }
 
         y = Math.max(0.06, Math.min(0.94, y));
-        const px = p.x;
-        const py = y * h;
+        let px = p.x;
+        let py = y * h;
+
+        // Mouse repulsion
+        if (mouse.active) {
+          const dx = px - mouse.x;
+          const dy = py - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const radius = MOUSE_RADIUS * DPR;
+          if (dist < radius && dist > 0) {
+            const force = (1 - dist / radius) * MOUSE_FORCE * radius;
+            px += (dx / dist) * force;
+            py += (dy / dist) * force;
+          }
+        }
 
         p.trail.push({ x: px, y: py, v: p.verified });
         if (p.trail.length > 46) p.trail.shift();
 
-        // Trail — darker for light bg
+        // Trail
         ctx.beginPath();
         for (let i = 0; i < p.trail.length; i++) {
           const tr = p.trail[i];
@@ -210,6 +251,8 @@ const SignalIntegritySection = () => {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      canvas!.removeEventListener("mousemove", onMouseMove);
+      canvas!.removeEventListener("mouseleave", onMouseLeave);
       ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, []);
