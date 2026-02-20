@@ -355,11 +355,11 @@ const Section9_DeploymentSurfaces = () => {
         className="mx-auto flex flex-col"
         style={{
           width: "min(1600px, calc(100% - 48px))",
-          gap: "clamp(48px, 6vw, 80px)",
+          gap: "clamp(40px, 5vw, 64px)",
         }}
       >
-        {/* ── Left column ── */}
-        <div>
+        {/* ── Text block — centered ── */}
+        <div style={{ textAlign: "center" }}>
           <p
             className="font-mono mb-5"
             style={{
@@ -393,7 +393,8 @@ const Section9_DeploymentSurfaces = () => {
               fontSize: "clamp(15px, 1.25vw, 18px)",
               lineHeight: 1.55,
               color: "rgba(255,255,255,0.72)",
-              maxWidth: "46ch",
+              maxWidth: "56ch",
+              margin: "0 auto 32px",
             }}
           >
             DocG enters through a single surface — then spreads routing,
@@ -401,43 +402,40 @@ const Section9_DeploymentSurfaces = () => {
             replacing.
           </p>
 
-          {/* Surface tiles */}
-          <div className="flex flex-col gap-3 mt-8">
+          {/* Surface pills — compact horizontal row */}
+          <div className="flex flex-wrap justify-center" style={{ gap: "10px" }}>
             {SURFACES.map((s) => (
               <button
                 key={s.key}
                 onClick={() => runDiffusion(s.key)}
-                className="text-left transition-all duration-250 ease-out"
                 style={{
-                  position: "relative",
-                  padding: "14px",
-                  borderRadius: "14px",
-                  border: `1px solid ${activeSeed === s.key ? "rgba(189,166,255,0.45)" : "rgba(189,166,255,0.16)"}`,
-                  background: activeSeed === s.key ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
-                  backdropFilter: "blur(10px)",
+                  padding: "8px 18px",
+                  borderRadius: 999,
+                  border: `1px solid ${activeSeed === s.key ? "rgba(189,166,255,0.55)" : "rgba(189,166,255,0.20)"}`,
+                  background: activeSeed === s.key ? "rgba(189,166,255,0.12)" : "rgba(255,255,255,0.04)",
+                  backdropFilter: "blur(8px)",
                   cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: activeSeed === s.key ? "rgba(243,239,255,0.95)" : "rgba(243,239,255,0.60)",
+                  letterSpacing: "0.02em",
+                  whiteSpace: "nowrap",
                 }}
                 onMouseEnter={(e) => {
                   if (activeSeed !== s.key) {
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.35)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.40)";
+                    e.currentTarget.style.color = "rgba(243,239,255,0.85)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeSeed !== s.key) {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.16)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.20)";
+                    e.currentTarget.style.color = "rgba(243,239,255,0.60)";
                   }
                 }}
               >
-                <div style={{ fontSize: "14px", fontWeight: 600, color: "rgba(243,239,255,0.92)", marginBottom: "4px" }}>
-                  {s.title}
-                </div>
-                <div style={{ fontSize: "12px", color: "rgba(243,239,255,0.62)" }}>
-                  {s.desc}
-                </div>
+                {s.title}
               </button>
             ))}
           </div>
