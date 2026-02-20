@@ -329,11 +329,54 @@ const SignalIntegritySection = () => {
         </div>
       </div>
 
-      {/* Bottom — Full-width canvas animation (no frame) */}
-      <div style={{ position: "relative", width: "100%", maxWidth: "min(1280px, 94vw)", height: "520px" }}>
+      {/* Bottom — Glass card around canvas */}
+      <div
+        style={{
+          position: "relative",
+          width: "100%",
+          maxWidth: "min(1280px, 94vw)",
+          height: "520px",
+          background: "rgba(255,255,255,0.35)",
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
+          border: "1px solid rgba(255,255,255,0.55)",
+          borderRadius: 24,
+          boxShadow: "0 8px 40px rgba(123,97,255,0.08), 0 1.5px 0 rgba(255,255,255,0.7) inset",
+          overflow: "hidden",
+          padding: 2,
+        }}
+      >
+        {/* Top highlight — glass edge catch */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: "5%",
+            right: "15%",
+            height: "40%",
+            background: "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 40%, transparent 100%)",
+            borderRadius: "24px 24px 0 0",
+            pointerEvents: "none",
+            zIndex: 2,
+          }}
+        />
+        {/* Diagonal specular streak */}
+        <div
+          style={{
+            position: "absolute",
+            top: "5%",
+            left: "-10%",
+            width: "55%",
+            height: "120%",
+            background: "linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.1) 55%, transparent 70%)",
+            transform: "rotate(-15deg)",
+            pointerEvents: "none",
+            zIndex: 2,
+          }}
+        />
         <canvas
           ref={canvasRef}
-          style={{ width: "100%", height: "100%", display: "block" }}
+          style={{ width: "100%", height: "100%", display: "block", borderRadius: 22, position: "relative", zIndex: 1 }}
         />
       </div>
     </section>
