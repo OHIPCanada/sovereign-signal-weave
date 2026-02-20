@@ -365,16 +365,16 @@ const Section9_DeploymentSurfaces = () => {
       <div
         className="mx-auto flex flex-col items-center"
         style={{
-          width: "min(1180px, calc(100% - 48px))",
+          width: "min(1200px, 92vw)",
           gap: "clamp(48px, 6vw, 80px)",
         }}
       >
         {/* ── Text block (top, centered) ── */}
-        <div className="text-center" style={{ maxWidth: "720px" }}>
+        <div className="text-center">
           <p
             className="font-mono mb-5"
             style={{
-              fontSize: "12px",
+              fontSize: 12,
               letterSpacing: "0.22em",
               textTransform: "uppercase",
               color: "rgba(255,255,255,0.45)",

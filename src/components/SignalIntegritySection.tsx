@@ -451,76 +451,78 @@ const SignalIntegritySection = () => {
       ref={sectionRef}
       className="relative overflow-hidden"
       style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "clamp(64px, 7vw, 110px) clamp(24px, 5vw, 80px) clamp(48px, 5vw, 80px)",
+        padding: "clamp(64px, 8vw, 120px) 0",
         background: `
           radial-gradient(1100px 700px at 20% 20%, rgba(110,59,255,0.10), transparent 55%),
           radial-gradient(900px 600px at 80% 70%, rgba(232,150,124,0.12), transparent 60%),
           linear-gradient(180deg, #F7F3FF 0%, #FFFFFF 50%, #FFF7F2 100%)
         `,
         color: "#140A2A",
-        minHeight: "100vh",
       }}
     >
-      {/* Top — Copy (centered) */}
-      <div ref={textRef} style={{ maxWidth: "min(720px, 90vw)", textAlign: "center", marginBottom: "clamp(40px, 5vw, 64px)" }}>
-        <div
-          className="font-mono uppercase mb-5"
-          style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(90,32,184,0.45)" }}
-        >
-          [ TRUST AT SYSTEM SCALE ]
+      <div
+        className="relative z-10 mx-auto flex flex-col items-center"
+        style={{
+          width: "min(1200px, 92vw)",
+          gap: "clamp(48px, 6vw, 80px)",
+        }}
+      >
+        {/* Top — Copy (centered) */}
+        <div ref={textRef} className="text-center">
+          <div
+            className="font-mono uppercase mb-5"
+            style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(20, 10, 42, 0.45)" }}
+          >
+            [ TRUST AT SYSTEM SCALE ]
+          </div>
+
+          <h2
+            className="mb-5"
+            style={{
+              fontSize: "clamp(44px, 5.2vw, 84px)",
+              fontWeight: 800,
+              lineHeight: 0.95,
+              letterSpacing: "-0.02em",
+              textShadow: "0 10px 40px rgba(0,0,0,0.08)",
+            }}
+          >
+            Trusted by systems that cannot fail.
+          </h2>
+
+          <p
+            style={{
+              fontSize: "clamp(15px, 1.25vw, 18px)",
+              lineHeight: 1.55,
+              color: "rgba(20, 10, 42, 0.72)",
+              maxWidth: "46ch",
+              margin: "0 auto 22px",
+            }}
+          >
+            Signals enter fragmented. DocG routes, verifies, and records decisions — continuously.
+          </p>
+
+          <div className="flex flex-wrap gap-2.5 justify-center">
+            {CHIPS.map((chip) => (
+              <span
+                key={chip}
+                style={{
+                  fontSize: 13,
+                  color: "rgba(20, 10, 42, 0.7)",
+                  border: "1px solid rgba(90,32,184,0.15)",
+                  background: "rgba(123,97,255,0.05)",
+                  padding: "10px 14px",
+                  borderRadius: 999,
+                  backdropFilter: "blur(10px)",
+                }}
+              >
+                {chip}
+              </span>
+            ))}
+          </div>
         </div>
 
-        <h2
-          className="mb-5"
-          style={{
-            fontSize: "clamp(44px, 5.2vw, 84px)",
-            fontWeight: 800,
-            lineHeight: 0.95,
-            letterSpacing: "-0.02em",
-            color: "#1A1A2E",
-            textShadow: "0 10px 40px rgba(0,0,0,0.08)",
-          }}
-        >
-          Trusted by systems that cannot fail.
-        </h2>
-
-        <p
-          style={{
-            fontSize: "clamp(15px, 1.25vw, 18px)",
-            lineHeight: 1.55,
-            color: "rgba(26,26,46,0.72)",
-            maxWidth: "46ch",
-            margin: "0 auto 22px",
-          }}
-        >
-          Signals enter fragmented. DocG routes, verifies, and records decisions — continuously.
-        </p>
-
-        <div className="flex flex-wrap gap-2.5 justify-center">
-          {CHIPS.map((chip) => (
-            <span
-              key={chip}
-              style={{
-                fontSize: 13,
-                color: "rgba(26,26,46,0.7)",
-                border: "1px solid rgba(90,32,184,0.15)",
-                background: "rgba(123,97,255,0.05)",
-                padding: "10px 14px",
-                borderRadius: 999,
-                backdropFilter: "blur(10px)",
-              }}
-            >
-              {chip}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom — 3D perspective wrapper */}
-      <div style={{ perspective: "900px", width: "100%", maxWidth: "min(1280px, 94vw)", position: "relative" }}>
+        {/* Bottom — 3D perspective wrapper */}
+        <div style={{ perspective: "900px", width: "100%", position: "relative" }}>
         {/* Glass card with 3D tilt */}
         <div
           ref={cardRef}
@@ -600,19 +602,20 @@ const SignalIntegritySection = () => {
             style={{ width: "100%", height: "100%", display: "block", borderRadius: 22, position: "relative", zIndex: 1 }}
           />
         </div>
-        {/* Ground shadow for 3D floating effect */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "-16px",
-            left: "10%",
-            right: "10%",
-            height: "32px",
-            background: "radial-gradient(ellipse at center, rgba(123,97,255,0.15) 0%, transparent 70%)",
-            filter: "blur(10px)",
-            pointerEvents: "none",
-          }}
-        />
+          {/* Ground shadow for 3D floating effect */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "-16px",
+              left: "10%",
+              right: "10%",
+              height: "32px",
+              background: "radial-gradient(ellipse at center, rgba(123,97,255,0.15) 0%, transparent 70%)",
+              filter: "blur(10px)",
+              pointerEvents: "none",
+            }}
+          />
+        </div>
       </div>
     </section>
   );
