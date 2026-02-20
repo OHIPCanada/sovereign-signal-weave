@@ -237,7 +237,7 @@ export default function ProofSection() {
       <div className="relative z-10 mx-auto" style={{ width: "min(1400px, 94vw)" }}>
         {/* Top: Left text + Right system field */}
         <div
-          className="grid grid-cols-1 lg:grid-cols-[0.45fr_1.55fr] items-center"
+          className="grid grid-cols-1 lg:grid-cols-[0.35fr_1.65fr] items-center"
           style={{ gap: "clamp(120px, 14vw, 220px)" }}
         >
           {/* Left content */}
