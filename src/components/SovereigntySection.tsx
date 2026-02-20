@@ -282,14 +282,12 @@ const SovereigntySection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden"
+      className="relative overflow-hidden flex items-center"
       style={{
-        padding: "clamp(64px, 7vw, 110px) 0",
+        padding: "clamp(56px, 7vw, 96px) 0",
         background: "radial-gradient(circle at 50% 40%, #241034 0%, #0B0613 70%)",
         color: "#EDE7F6",
         minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
       }}
     >
       {/* Noise overlay */}
@@ -302,65 +300,58 @@ const SovereigntySection = () => {
         }}
       />
 
-      <div
-        className="relative z-10 mx-auto px-6 md:px-12 w-full grid items-center"
-        style={{
-          maxWidth: "min(1400px, 94vw)",
-          gridTemplateColumns: "0.28fr 1.72fr",
-          gap: "clamp(120px, 14vw, 220px)",
-        }}
-      >
-        {/* Left — Text */}
-        <div ref={textRef}>
-          <div
-            className="font-mono uppercase mb-5"
-            style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(255,255,255,0.45)" }}
-          >
-            [ TRUST & SOVEREIGNTY ]
+      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+          {/* Left — Text */}
+          <div ref={textRef} className="flex flex-col gap-5">
+            <div
+              className="font-mono uppercase"
+              style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(255,255,255,0.45)" }}
+            >
+              [ TRUST & SOVEREIGNTY ]
+            </div>
+
+            <h2
+              style={{
+                fontSize: "clamp(44px, 5.2vw, 84px)",
+                fontWeight: 800, lineHeight: 0.95,
+                letterSpacing: "-0.02em",
+                textShadow: "0 10px 40px rgba(0,0,0,0.22)",
+              }}
+            >
+              Sovereign by design.
+            </h2>
+
+            <p
+              style={{
+                fontSize: "clamp(15px, 1.25vw, 18px)",
+                lineHeight: 1.55, color: "rgba(255,255,255,0.72)",
+                maxWidth: "46ch",
+              }}
+            >
+              Every decision, signal, and action remains jurisdictionally anchored.
+              Policy enforcement, auditability, and storage governance operate
+              natively — not as overlays.
+            </p>
+
+            <div className="flex flex-wrap gap-3" style={{ marginTop: 4 }}>
+              {PILLARS.map((p) => (
+                <div
+                  key={p}
+                  style={{
+                    padding: "10px 20px",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 999, fontSize: 13,
+                    letterSpacing: "0.04em", opacity: 0.8,
+                    backdropFilter: "blur(4px)",
+                    background: "rgba(255,255,255,0.03)",
+                  }}
+                >
+                  {p}
+                </div>
+              ))}
+            </div>
           </div>
-
-          <h2
-            className="mb-5"
-            style={{
-              fontSize: "clamp(44px, 5.2vw, 84px)",
-              fontWeight: 800, lineHeight: 0.95,
-              letterSpacing: "-0.02em",
-              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-            }}
-          >
-            Sovereign by design.
-          </h2>
-
-          <p
-            style={{
-              fontSize: "clamp(15px, 1.25vw, 18px)",
-              lineHeight: 1.55, color: "rgba(255,255,255,0.72)",
-              maxWidth: "46ch", margin: "0 0 40px 0",
-            }}
-          >
-            Every decision, signal, and action remains jurisdictionally anchored.
-            Policy enforcement, auditability, and storage governance operate
-            natively — not as overlays.
-          </p>
-
-          <div className="flex flex-wrap gap-3">
-            {PILLARS.map((p) => (
-              <div
-                key={p}
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: 999, fontSize: 13,
-                  letterSpacing: "0.04em", opacity: 0.8,
-                  backdropFilter: "blur(4px)",
-                  background: "rgba(255,255,255,0.03)",
-                }}
-              >
-                {p}
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* Right — Locking Grid */}
         <div
@@ -527,6 +518,7 @@ const SovereigntySection = () => {
               <circle cx="300" cy="304" r="1.5" fill="rgba(255,255,255,0.45)" />
             </g>
           </svg>
+        </div>
         </div>
       </div>
     </section>

@@ -241,10 +241,11 @@ const ParticleField = () => {
 const DeploymentSection = () => {
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden flex items-center"
       id="deployment"
       style={{
-        padding: "clamp(80px, 9vw, 140px) 0 clamp(60px, 6vw, 100px)",
+        padding: "clamp(56px, 7vw, 96px) 0",
+        minHeight: "100vh",
         background: `linear-gradient(180deg, #140022 0%, #1a0833 30%, #2A0B4E 70%, #120622 100%)`,
       }}
     >
@@ -262,26 +263,24 @@ const DeploymentSection = () => {
         background: "linear-gradient(90deg, transparent 10%, rgba(110,43,255,0.2) 50%, transparent 90%)",
       }} />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 w-full">
-        {/* 2-column: text left, canvas right */}
-        <div className="flex flex-col lg:flex-row items-start" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
           {/* Left: Text */}
           <motion.div
-            className="lg:w-[38%] flex-shrink-0 lg:sticky lg:top-32"
+            className="flex flex-col gap-5"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7 }}
           >
-            <span
-              className="inline-block mb-5 text-[12px] font-mono tracking-[0.22em] uppercase"
-              style={{ color: "rgba(255,255,255,0.45)" }}
+            <p
+              className="font-mono uppercase"
+              style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}
             >
               [ SYSTEM CONSCIOUSNESS ]
-            </span>
+            </p>
 
             <h2
-              className="mb-5"
               style={{
                 color: "rgba(255,255,255,0.95)",
                 fontWeight: 800,
@@ -305,10 +304,9 @@ const DeploymentSection = () => {
               Signals converge, align, resolve — continuously across the field.
             </p>
 
-            {/* Status */}
-            <div className="flex items-center gap-2.5 mt-10">
+            <div className="flex items-center gap-2.5" style={{ marginTop: 4 }}>
               <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#E8967C" }} />
-              <span className="text-[10px] font-mono tracking-[0.2em] uppercase" style={{ color: "rgba(243,239,255,0.25)" }}>
+              <span style={{ fontSize: 10, fontFamily: "monospace", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(243,239,255,0.25)" }}>
                 FIELD ACTIVE
               </span>
             </div>
@@ -316,7 +314,7 @@ const DeploymentSection = () => {
 
           {/* Right: Particle field */}
           <motion.div
-            className="lg:w-[62%] w-full relative"
+            className="relative"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
