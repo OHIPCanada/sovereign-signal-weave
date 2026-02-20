@@ -238,7 +238,7 @@ export default function ProofSection() {
         {/* Top: Left text + Right system field */}
         <div
           className="grid grid-cols-1 lg:grid-cols-[0.45fr_1.55fr] items-center"
-          style={{ gap: "clamp(80px, 10vw, 160px)" }}
+          style={{ gap: "clamp(120px, 14vw, 220px)" }}
         >
           {/* Left content */}
           <div className="flex flex-col">
