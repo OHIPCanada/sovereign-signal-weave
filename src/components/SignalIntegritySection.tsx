@@ -116,7 +116,7 @@ const SignalIntegritySection = () => {
       ctx.clearRect(0, 0, w, h);
 
       // Subtle grid lines
-      ctx.globalAlpha = 0.06;
+      ctx.globalAlpha = 0.15;
       ctx.strokeStyle = "#5A20B8";
       ctx.lineWidth = 1;
       for (let i = 0; i < 12; i++) {
@@ -148,7 +148,7 @@ const SignalIntegritySection = () => {
       ctx.fillRect(0, 0, w, h);
 
       // Rails on right
-      ctx.strokeStyle = "rgba(90,32,184,0.12)";
+      ctx.strokeStyle = "rgba(90,32,184,0.30)";
       ctx.lineWidth = 1;
       rails.forEach((r) => {
         const y = r * h;
@@ -205,28 +205,28 @@ const SignalIntegritySection = () => {
           else ctx.lineTo(tr.x, tr.y);
         }
         ctx.strokeStyle = p.verified
-          ? "rgba(212,97,107,0.18)"
-          : "rgba(123,97,255,0.10)";
-        ctx.lineWidth = p.verified ? 1.6 : 1.2;
+          ? "rgba(212,97,107,0.45)"
+          : "rgba(123,97,255,0.30)";
+        ctx.lineWidth = p.verified ? 2.2 : 1.8;
         ctx.stroke();
 
         // Particle dot
         const isWarmPulse = p.verified && p.warm && Math.sin(t * 0.9 + p.phase) > 0.6;
-        const r = isWarmPulse ? 6 : 4;
+        const r = isWarmPulse ? 7 : 5;
 
         ctx.beginPath();
         ctx.arc(px, py, r, 0, Math.PI * 2);
         ctx.fillStyle = isWarmPulse
-          ? "rgba(212,97,107,0.9)"
-          : "rgba(123,97,255,0.75)";
+          ? "rgba(212,97,107,1)"
+          : "rgba(90,32,184,0.9)";
         ctx.fill();
 
         // Halo
         ctx.beginPath();
-        ctx.arc(px, py, r * 2.5, 0, Math.PI * 2);
+        ctx.arc(px, py, r * 3, 0, Math.PI * 2);
         ctx.fillStyle = isWarmPulse
-          ? "rgba(212,97,107,0.1)"
-          : "rgba(123,97,255,0.08)";
+          ? "rgba(212,97,107,0.2)"
+          : "rgba(123,97,255,0.15)";
         ctx.fill();
 
         // Respawn
