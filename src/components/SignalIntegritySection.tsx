@@ -221,11 +221,11 @@ const SignalIntegritySection = () => {
       style={{
         padding: "clamp(64px, 7vw, 110px) 0",
         background: `
-          radial-gradient(900px 500px at 70% 40%, rgba(90,32,184,0.25), transparent 60%),
-          radial-gradient(700px 500px at 55% 50%, rgba(232,150,124,0.10), transparent 60%),
-          linear-gradient(180deg, #2A0B4A, #0B0620)
+          radial-gradient(900px 500px at 70% 40%, rgba(90,32,184,0.06), transparent 60%),
+          radial-gradient(700px 500px at 55% 50%, rgba(232,150,124,0.05), transparent 60%),
+          linear-gradient(180deg, #F7F3FF, #FFFFFF)
         `,
-        color: "#EDE7F6",
+        color: "#1A1A2E",
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
@@ -253,7 +253,7 @@ const SignalIntegritySection = () => {
         <div ref={textRef}>
           <div
             className="font-mono uppercase"
-            style={{ fontSize: 12, letterSpacing: "0.28em", opacity: 0.45, marginBottom: 16 }}
+            style={{ fontSize: 12, letterSpacing: "0.28em", color: "rgba(90,32,184,0.55)", marginBottom: 16 }}
           >
             [ TRUST AT SYSTEM SCALE ]
           </div>
@@ -265,7 +265,7 @@ const SignalIntegritySection = () => {
               lineHeight: 0.98,
               letterSpacing: "-0.02em",
               margin: "0 0 18px 0",
-              color: "#FFFFFF",
+              color: "#1A1A2E",
             }}
           >
             Trusted by systems that cannot fail.
@@ -275,7 +275,7 @@ const SignalIntegritySection = () => {
             style={{
               fontSize: 16,
               lineHeight: 1.65,
-              opacity: 0.68,
+              color: "rgba(26,26,46,0.65)",
               maxWidth: "44ch",
               margin: "0 0 22px 0",
             }}
@@ -289,8 +289,8 @@ const SignalIntegritySection = () => {
               <div
                 key={p}
                 style={{
-                  border: "1px solid rgba(255,255,255,0.14)",
-                  color: "rgba(255,255,255,0.72)",
+                  border: "1px solid rgba(90,32,184,0.15)",
+                  color: "rgba(26,26,46,0.7)",
                   padding: "8px 12px",
                   borderRadius: 999,
                   fontSize: 12,
@@ -309,9 +309,9 @@ const SignalIntegritySection = () => {
           ref={stageRef}
           style={{
             borderRadius: 28,
-            border: "1px solid rgba(255,255,255,0.10)",
-            background: "rgba(255,255,255,0.03)",
-            boxShadow: "0 30px 90px rgba(0,0,0,0.45)",
+            border: "1px solid rgba(90,32,184,0.10)",
+            background: "linear-gradient(180deg, #1A0A30 0%, #0E0620 100%)",
+            boxShadow: "0 30px 90px rgba(0,0,0,0.2)",
             overflow: "hidden",
           }}
         >
