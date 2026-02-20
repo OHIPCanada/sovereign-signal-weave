@@ -430,6 +430,11 @@ const SignalIntegritySection = () => {
             width: "100%",
             aspectRatio: "3 / 1",
             perspective: "500px",
+            borderRadius: 28,
+            background: "rgba(255,255,255,0.30)",
+            border: "1px solid rgba(20,10,42,0.10)",
+            boxShadow: "0 20px 60px rgba(20,10,42,0.12)",
+            overflow: "hidden",
           }}
         >
           <canvas
