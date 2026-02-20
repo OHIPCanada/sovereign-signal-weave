@@ -352,14 +352,17 @@ const Section9_DeploymentSurfaces = () => {
       />
 
       <div
-        className="mx-auto flex flex-col items-center"
+        className="mx-auto"
         style={{
           width: "min(1180px, calc(100% - 48px))",
-          gap: "clamp(48px, 6vw, 80px)",
+          display: "grid",
+          gridTemplateColumns: "3fr 9fr",
+          gap: "clamp(120px, 14vw, 220px)",
+          alignItems: "center",
         }}
       >
-        {/* ── Top: text ── */}
-        <div className="text-center" style={{ maxWidth: "640px" }}>
+        {/* ── Left column ── */}
+        <div>
           <p
             className="font-mono mb-5"
             style={{

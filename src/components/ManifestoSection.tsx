@@ -218,9 +218,9 @@ const ManifestoSection = () => {
       }} />
 
       <div className="relative z-10" style={{ width: "min(1180px, calc(100% - 48px))", margin: "0 auto" }}>
-        <div className="flex flex-col" style={{ gap: "clamp(48px, 6vw, 80px)" }}>
-          {/* Top — Copy */}
-          <motion.div style={{ opacity: headlineOpacity, y: headlineY }} className="text-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[0.55fr_1.45fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+          {/* Left — Copy */}
+          <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
             <p className="mb-5 mono-label" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
               [ THE INTELLIGENCE LAYER ]
             </p>
@@ -233,12 +233,12 @@ const ManifestoSection = () => {
             }}>
               Healthcare<br />runs on<br />intelligence<br />now.
             </h2>
-            <p style={{ color: "rgba(255,255,255,0.72)", fontWeight: 400, fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch", margin: "0 auto" }}>
+            <p style={{ color: "rgba(255,255,255,0.72)", fontWeight: 400, fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}>
               Three system planes running beneath every clinical workflow — reasoning, orchestration, and sovereign data governance — engineered as infrastructure, not features.
             </p>
           </motion.div>
 
-          {/* Bottom — Cards */}
+          {/* Right — Cards */}
           <div className="relative">
             <div className="absolute pointer-events-none" style={{
               top: "-10%", left: "5%", width: "90%", height: "120%",

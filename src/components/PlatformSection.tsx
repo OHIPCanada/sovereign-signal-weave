@@ -247,14 +247,14 @@ const PlatformSection = () => {
       }} />
 
       <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12">
-        <div className="flex flex-col" style={{ gap: "clamp(48px, 6vw, 80px)" }}>
-          {/* ── Top: Narrative ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[0.55fr_1.45fr] items-center w-full" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+          {/* ── Left: Narrative ── */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7 }}
-            className="flex flex-col items-center text-center"
+            className="flex flex-col"
           >
             <span className="mono-label mb-5" style={{ color: "rgba(17, 17, 17, 0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
               [ PLATFORM ARCHITECTURE ]

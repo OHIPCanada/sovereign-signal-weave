@@ -235,13 +235,13 @@ export default function ProofSection() {
       }}
     >
       <div className="relative z-10 mx-auto" style={{ width: "min(1400px, 94vw)" }}>
-        {/* Top: text + system field below */}
+        {/* Top: Left text + Right system field */}
         <div
-          className="flex flex-col"
-          style={{ gap: "clamp(48px, 6vw, 80px)" }}
+          className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center"
+          style={{ gap: "clamp(120px, 14vw, 220px)" }}
         >
-          {/* Top: text */}
-          <div className="flex flex-col items-center text-center">
+          {/* Left content */}
+          <div className="flex flex-col">
             <Reveal>
               <p
                 className="font-mono uppercase mb-5"
