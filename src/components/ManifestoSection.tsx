@@ -218,31 +218,27 @@ const ManifestoSection = () => {
       }} />
 
       <div className="relative z-10" style={{ width: "min(1180px, calc(100% - 48px))", margin: "0 auto" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[0.55fr_1.45fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+          {/* Left — Copy */}
+          <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
+            <p className="mb-5 mono-label" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
+              [ THE INTELLIGENCE LAYER ]
+            </p>
+            <h2 className="mb-5" style={{
+              color: "rgba(255,255,255,0.95)",
+              fontWeight: 800,
+              lineHeight: 0.95,
+              fontSize: "clamp(44px, 5.2vw, 84px)",
+              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
+            }}>
+              Healthcare<br />runs on<br />intelligence<br />now.
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.72)", fontWeight: 400, fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}>
+              Three system planes running beneath every clinical workflow — reasoning, orchestration, and sovereign data governance — engineered as infrastructure, not features.
+            </p>
+          </motion.div>
 
-        {/* ── Text block: centered stacked ── */}
-        <motion.div
-          className="text-center mb-16"
-          style={{ opacity: headlineOpacity, y: headlineY }}
-        >
-          <p className="font-mono mb-5" style={{ color: "rgba(255,255,255,0.45)", fontSize: "12px", letterSpacing: "0.22em", textTransform: "uppercase" }}>
-            [ THE INTELLIGENCE LAYER ]
-          </p>
-          <h2 className="mb-6" style={{
-            color: "rgba(255,255,255,0.97)",
-            fontWeight: 800,
-            lineHeight: 0.95,
-            fontSize: "clamp(52px, 7.5vw, 112px)",
-            letterSpacing: "-0.03em",
-            textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-          }}>
-            Healthcare<br />runs on<br />intelligence<br />now.
-          </h2>
-          <p className="mx-auto" style={{ color: "rgba(255,255,255,0.72)", fontWeight: 400, fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "56ch" }}>
-            Three system planes running beneath every clinical workflow — reasoning, orchestration, and sovereign data governance — engineered as infrastructure, not features.
-          </p>
-        </motion.div>
-
-        <div className="relative">
+          {/* Right — Cards */}
           <div className="relative">
             <div className="absolute pointer-events-none" style={{
               top: "-10%", left: "5%", width: "90%", height: "120%",

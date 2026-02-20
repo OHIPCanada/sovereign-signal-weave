@@ -235,48 +235,70 @@ export default function ProofSection() {
       }}
     >
       <div className="relative z-10 mx-auto" style={{ width: "min(1400px, 94vw)" }}>
-        {/* ── Centered text block ── */}
-        <div className="text-center mb-16">
-          <Reveal>
-            <p
-              className="font-mono uppercase mb-5"
-              style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(20, 10, 42, 0.45)" }}
-            >
-              [ SYSTEM PROOF ]
-            </p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h2
-              className="mb-6"
-              style={{
-                fontSize: "clamp(52px, 7.5vw, 112px)",
-                lineHeight: 0.95,
-                letterSpacing: "-0.03em",
-                fontWeight: 800,
-                color: "#1B0F2E",
-                textShadow: "0 10px 40px rgba(0,0,0,0.08)",
-              }}
-            >
-              Intelligence you can{" "}
-              <span style={{ background: "linear-gradient(90deg, #D4616B, #E8967C)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                measure.
-              </span>
-            </h2>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <p
-              className="mx-auto"
-              style={{ fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "56ch", color: "rgba(27, 15, 46, 0.72)" }}
-            >
-              DocG AI turns fragmented clinical signals into coordinated actions—at system scale.
-            </p>
+        {/* Top: Left text + Right system field */}
+        <div
+          className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center"
+          style={{ gap: "clamp(120px, 14vw, 220px)" }}
+        >
+          {/* Left content */}
+          <div className="flex flex-col">
+            <Reveal>
+              <p
+                className="font-mono uppercase mb-5"
+                style={{
+                  fontSize: 12,
+                  letterSpacing: "0.22em",
+                  color: "rgba(20, 10, 42, 0.45)",
+                }}
+              >
+                [ SYSTEM PROOF ]
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <h2
+                className="mb-5"
+                style={{
+                  fontSize: "clamp(44px, 5.2vw, 84px)",
+                  lineHeight: 0.95,
+                  letterSpacing: "-0.02em",
+                  fontWeight: 800,
+                  color: "#1B0F2E",
+                  textShadow: "0 10px 40px rgba(0,0,0,0.08)",
+                }}
+              >
+                Intelligence you can{" "}
+                <span
+                  style={{
+                    background: "linear-gradient(90deg, #D4616B, #E8967C)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  measure.
+                </span>
+              </h2>
+            </Reveal>
+
+            <Reveal delay={0.2}>
+              <p
+                style={{
+                  fontSize: "clamp(15px, 1.25vw, 18px)",
+                  lineHeight: 1.55,
+                  maxWidth: "46ch",
+                  color: "rgba(27, 15, 46, 0.72)",
+                }}
+              >
+                DocG AI turns fragmented clinical signals into coordinated actions—at system scale.
+              </p>
+            </Reveal>
+          </div>
+
+          {/* Right: System Field — no card, floating in space */}
+          <Reveal delay={0.25}>
+            <SystemField />
           </Reveal>
         </div>
-
-        {/* ── System field — wide ── */}
-        <Reveal delay={0.25}>
-          <SystemField />
-        </Reveal>
 
         {/* Instrument-grade metrics */}
         <div
@@ -285,13 +307,22 @@ export default function ProofSection() {
         >
           {proofTiles.map((tile, i) => (
             <Reveal key={tile.label} delay={0.3 + i * 0.08}>
-              <div style={{ borderTop: "1px solid rgba(27,15,46,0.15)", paddingTop: 20 }}>
+              <div
+                style={{
+                  borderTop: "1px solid rgba(27,15,46,0.15)",
+                  paddingTop: 20,
+                }}
+              >
                 <p style={{ fontSize: 32, fontWeight: 700, letterSpacing: "-0.02em", color: "#1B0F2E" }}>
                   {tile.num}{" "}
                   <span style={{ fontSize: 18, fontWeight: 600, opacity: 0.7 }}>{tile.suffix}</span>
                 </p>
-                <p style={{ marginTop: 6, fontSize: 14, fontWeight: 600, color: "#1B0F2E" }}>{tile.label}</p>
-                <p style={{ marginTop: 4, fontSize: 13, opacity: 0.6 }}>{tile.desc}</p>
+                <p style={{ marginTop: 6, fontSize: 14, fontWeight: 600, color: "#1B0F2E" }}>
+                  {tile.label}
+                </p>
+                <p style={{ marginTop: 4, fontSize: 13, opacity: 0.6 }}>
+                  {tile.desc}
+                </p>
               </div>
             </Reveal>
           ))}

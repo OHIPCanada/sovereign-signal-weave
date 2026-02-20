@@ -351,96 +351,100 @@ const Section9_DeploymentSurfaces = () => {
         }}
       />
 
-      {/* ── Text block: centered stacked ── */}
-      <div
-        className="mx-auto text-center"
-        style={{ width: "min(1180px, calc(100% - 48px))" }}
-      >
-        <p
-          className="font-mono mb-5"
-          style={{
-            fontSize: "12px",
-            letterSpacing: "0.22em",
-            textTransform: "uppercase",
-            color: "rgba(255,255,255,0.45)",
-          }}
-        >
-          [ DEPLOYMENT SURFACES ]
-        </p>
-
-        <h2
-          className="mb-6"
-          style={{
-            fontSize: "clamp(52px, 7.5vw, 112px)",
-            lineHeight: 0.95,
-            letterSpacing: "-0.03em",
-            fontWeight: 800,
-            color: "rgba(255,255,255,0.97)",
-            textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-          }}
-        >
-          Start anywhere.
-          <br />
-          Coordinate everywhere.
-        </h2>
-
-        <p
-          className="mx-auto mb-10"
-          style={{
-            fontSize: "clamp(15px, 1.25vw, 18px)",
-            lineHeight: 1.55,
-            color: "rgba(255,255,255,0.72)",
-            maxWidth: "56ch",
-          }}
-        >
-          DocG enters through a single surface — then spreads routing,
-          orchestration, and governance across the system without ripping or
-          replacing.
-        </p>
-
-        {/* Surface pills — horizontal row */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {SURFACES.map((s) => (
-            <button
-              key={s.key}
-              onClick={() => runDiffusion(s.key)}
-              className="transition-all duration-250 ease-out"
-              style={{
-                padding: "10px 22px",
-                borderRadius: "999px",
-                border: `1px solid ${activeSeed === s.key ? "rgba(189,166,255,0.60)" : "rgba(189,166,255,0.22)"}`,
-                background: activeSeed === s.key ? "rgba(189,166,255,0.14)" : "rgba(255,255,255,0.04)",
-                backdropFilter: "blur(10px)",
-                cursor: "pointer",
-                fontSize: "14px",
-                fontWeight: activeSeed === s.key ? 600 : 400,
-                color: activeSeed === s.key ? "rgba(243,239,255,0.97)" : "rgba(243,239,255,0.72)",
-                letterSpacing: "0.01em",
-              }}
-              onMouseEnter={(e) => {
-                if (activeSeed !== s.key) {
-                  e.currentTarget.style.borderColor = "rgba(189,166,255,0.40)";
-                  e.currentTarget.style.color = "rgba(243,239,255,0.90)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeSeed !== s.key) {
-                  e.currentTarget.style.borderColor = "rgba(189,166,255,0.22)";
-                  e.currentTarget.style.color = "rgba(243,239,255,0.72)";
-                }
-              }}
-            >
-              {s.title}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Wide card: full-width ── */}
       <div
         className="mx-auto"
-        style={{ width: "min(1180px, calc(100% - 48px))" }}
+        style={{
+          width: "min(1180px, calc(100% - 48px))",
+          display: "grid",
+          gridTemplateColumns: "3fr 9fr",
+          gap: "clamp(120px, 14vw, 220px)",
+          alignItems: "center",
+        }}
       >
+        {/* ── Left column ── */}
+        <div>
+          <p
+            className="font-mono mb-5"
+            style={{
+              fontSize: "12px",
+              letterSpacing: "0.22em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.45)",
+            }}
+          >
+            [ DEPLOYMENT SURFACES ]
+          </p>
+
+          <h2
+            className="mb-5"
+            style={{
+              fontSize: "clamp(44px, 5.2vw, 84px)",
+              lineHeight: 0.95,
+              letterSpacing: "-0.02em",
+              fontWeight: 800,
+              color: "rgba(255,255,255,0.95)",
+              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
+            }}
+          >
+            Start anywhere.
+            <br />
+            Coordinate everywhere.
+          </h2>
+
+          <p
+            style={{
+              fontSize: "clamp(15px, 1.25vw, 18px)",
+              lineHeight: 1.55,
+              color: "rgba(255,255,255,0.72)",
+              maxWidth: "46ch",
+            }}
+          >
+            DocG enters through a single surface — then spreads routing,
+            orchestration, and governance across the system without ripping or
+            replacing.
+          </p>
+
+          {/* Surface tiles */}
+          <div className="flex flex-col gap-3 mt-8">
+            {SURFACES.map((s) => (
+              <button
+                key={s.key}
+                onClick={() => runDiffusion(s.key)}
+                className="text-left transition-all duration-250 ease-out"
+                style={{
+                  position: "relative",
+                  padding: "14px",
+                  borderRadius: "14px",
+                  border: `1px solid ${activeSeed === s.key ? "rgba(189,166,255,0.45)" : "rgba(189,166,255,0.16)"}`,
+                  background: activeSeed === s.key ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
+                  backdropFilter: "blur(10px)",
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  if (activeSeed !== s.key) {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.35)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeSeed !== s.key) {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.16)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                  }
+                }}
+              >
+                <div style={{ fontSize: "14px", fontWeight: 600, color: "rgba(243,239,255,0.92)", marginBottom: "4px" }}>
+                  {s.title}
+                </div>
+                <div style={{ fontSize: "12px", color: "rgba(243,239,255,0.62)" }}>
+                  {s.desc}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* ── Right column: Stage ── */}
         <div

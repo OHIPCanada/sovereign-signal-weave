@@ -247,77 +247,82 @@ const PlatformSection = () => {
       }} />
 
       <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12">
-        {/* ── Centered text block ── */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.7 }}
-        >
-          <span className="mono-label mb-5 block" style={{ color: "rgba(17, 17, 17, 0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-            [ PLATFORM ARCHITECTURE ]
-          </span>
-          <h2 className="mb-6" style={{
-            color: "#111111",
-            fontWeight: 800,
-            fontSize: "clamp(52px, 7.5vw, 112px)",
-            lineHeight: 0.95,
-            letterSpacing: "-0.03em",
-            textShadow: "0 10px 40px rgba(0,0,0,0.10)",
-          }}>
-            How intelligence
-            <br />moves through
-            <br />healthcare.
-          </h2>
-          <p className="mx-auto mb-8" style={{
-            color: "rgba(30, 30, 30, 0.72)",
-            fontSize: "clamp(15px, 1.25vw, 18px)",
-            fontWeight: 400,
-            lineHeight: 1.55,
-            maxWidth: "56ch",
-          }}>
-            DocG AI sits above clinical systems, routes signals through
-            workflows, and enforces sovereign governance — without adding
-            friction to care delivery.
-          </p>
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            className="px-8 py-4 rounded-full text-sm font-semibold tracking-wide transition-all duration-300"
+        <div className="grid grid-cols-1 lg:grid-cols-[0.55fr_1.45fr] items-center w-full" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+          {/* ── Left: Narrative ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.7 }}
+            className="flex flex-col"
+          >
+            <span className="mono-label mb-5" style={{ color: "rgba(17, 17, 17, 0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
+              [ PLATFORM ARCHITECTURE ]
+            </span>
+
+            <h2 className="mb-5" style={{
+              color: "#111111",
+              fontWeight: 800,
+              fontSize: "clamp(44px, 5.2vw, 84px)",
+              lineHeight: 0.95,
+              letterSpacing: "-0.02em",
+              textShadow: "0 10px 40px rgba(0,0,0,0.10)",
+            }}>
+              How intelligence
+              <br />moves through
+              <br />healthcare.
+            </h2>
+
+            <p style={{
+              color: "rgba(30, 30, 30, 0.72)",
+              fontSize: "clamp(15px, 1.25vw, 18px)",
+              fontWeight: 400,
+              lineHeight: 1.55,
+              maxWidth: "46ch",
+            }}>
+              DocG AI sits above clinical systems, routes signals through
+              workflows, and enforces sovereign governance — without adding
+              friction to care delivery.
+            </p>
+
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="self-start px-8 py-4 rounded-full text-sm font-semibold tracking-wide transition-all duration-300"
+              style={{
+                background: "linear-gradient(135deg, #D4616B, #E8967C)",
+                color: "#FFFAF8",
+                border: "none",
+                boxShadow: "0 8px 32px rgba(212, 97, 107, 0.3)",
+              }}
+            >
+              Explore the Platform
+            </motion.button>
+          </motion.div>
+
+          {/* ── Right: Glass Architecture Slab ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 24, scale: 0.97 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             style={{
-              background: "linear-gradient(135deg, #D4616B, #E8967C)",
-              color: "#FFFAF8",
-              border: "none",
-              boxShadow: "0 8px 32px rgba(212, 97, 107, 0.3)",
+              background: "linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.45) 100%)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              borderRadius: "40px",
+              border: "1px solid rgba(90, 70, 160, 0.12)",
+              boxShadow: `
+                0 80px 160px rgba(60, 40, 120, 0.15),
+                0 30px 80px rgba(60, 40, 120, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7)
+              `,
+              padding: "36px",
             }}
           >
-            Explore the Platform
-          </motion.button>
-        </motion.div>
-
-        {/* ── Wide card ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 24, scale: 0.97 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            background: "linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.45) 100%)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            borderRadius: "40px",
-            border: "1px solid rgba(90, 70, 160, 0.12)",
-            boxShadow: `
-              0 80px 160px rgba(60, 40, 120, 0.15),
-              0 30px 80px rgba(60, 40, 120, 0.08),
-              inset 0 1px 0 rgba(255, 255, 255, 0.7)
-            `,
-            padding: "36px",
-          }}
-        >
-          <LivingArchitecture />
-        </motion.div>
+            <LivingArchitecture />
+          </motion.div>
+        </div>
       </div>
     </section>
   );
