@@ -246,10 +246,10 @@ const SignalIntegritySection = () => {
       ctx.globalAlpha = 1;
 
       // 3D tilt — smooth lerp
-      smoothCard.rx += (cardMouse.ny * -8 - smoothCard.rx) * 0.08;
-      smoothCard.ry += (cardMouse.nx * 12 - smoothCard.ry) * 0.08;
+      smoothCard.rx += (cardMouse.ny * -18 - smoothCard.rx) * 0.06;
+      smoothCard.ry += (cardMouse.nx * 26 - smoothCard.ry) * 0.06;
       if (cardEl) {
-        cardEl.style.transform = `rotateX(${smoothCard.rx}deg) rotateY(${smoothCard.ry}deg) scale3d(1.01,1.01,1)`;
+        cardEl.style.transform = `rotateX(${smoothCard.rx}deg) rotateY(${smoothCard.ry}deg) scale3d(1.02,1.02,1)`;
       }
 
       raf = requestAnimationFrame(draw);
