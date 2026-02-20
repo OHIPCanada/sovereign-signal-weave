@@ -34,11 +34,26 @@ const TrustSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="mono-label text-secondary">[ SOVEREIGNTY AS A MOAT ]</span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground tracking-tight mt-4">
+          <p className="mono-label mb-5" style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(17,17,17,0.45)" }}>
+            [ SOVEREIGNTY AS A MOAT ]
+          </p>
+          <h2 className="mb-5" style={{
+            fontSize: "clamp(44px, 5.2vw, 84px)",
+            fontWeight: 800,
+            lineHeight: 0.95,
+            letterSpacing: "-0.02em",
+            color: "rgba(17,17,17,0.95)",
+            textShadow: "0 10px 40px rgba(0,0,0,0.08)",
+          }}>
             Trust Center
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mt-6">
+          <p style={{
+            fontSize: "clamp(15px, 1.25vw, 18px)",
+            lineHeight: 1.55,
+            color: "rgba(17,17,17,0.72)",
+            maxWidth: "46ch",
+            margin: "0 auto",
+          }}>
             Built for Canadian healthcare. Designed for data sovereignty. Audited for excellence.
           </p>
         </motion.div>

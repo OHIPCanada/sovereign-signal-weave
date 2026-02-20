@@ -313,17 +313,19 @@ const SovereigntySection = () => {
         {/* Left — Text */}
         <div ref={textRef}>
           <div
-            className="font-mono uppercase"
-            style={{ fontSize: 12, letterSpacing: "0.22em", opacity: 0.5, marginBottom: 20 }}
+            className="font-mono uppercase mb-5"
+            style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(255,255,255,0.45)" }}
           >
             [ TRUST & SOVEREIGNTY ]
           </div>
 
           <h2
+            className="mb-5"
             style={{
               fontSize: "clamp(44px, 5.2vw, 84px)",
               fontWeight: 800, lineHeight: 0.95,
-              margin: "0 0 24px 0", letterSpacing: "-0.02em",
+              letterSpacing: "-0.02em",
+              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
             }}
           >
             Sovereign by design.
@@ -332,7 +334,7 @@ const SovereigntySection = () => {
           <p
             style={{
               fontSize: "clamp(15px, 1.25vw, 18px)",
-              lineHeight: 1.65, opacity: 0.72,
+              lineHeight: 1.55, color: "rgba(255,255,255,0.72)",
               maxWidth: "46ch", margin: "0 0 40px 0",
             }}
           >

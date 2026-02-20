@@ -225,7 +225,7 @@ export default function ProofSection() {
     <section
       className="relative overflow-hidden"
       style={{
-        padding: "140px 8vw",
+        padding: "clamp(64px, 7vw, 110px) 0",
         background: `
           radial-gradient(900px 600px at 85% 85%, rgba(242,193,174,0.35), transparent 60%),
           radial-gradient(800px 500px at 15% 10%, rgba(205,188,232,0.45), transparent 60%),
@@ -244,26 +244,27 @@ export default function ProofSection() {
           <div className="flex flex-col">
             <Reveal>
               <p
+                className="font-mono uppercase mb-5"
                 style={{
                   fontSize: 12,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  opacity: 0.6,
-                  fontWeight: 500,
+                  letterSpacing: "0.22em",
+                  color: "rgba(20, 10, 42, 0.45)",
                 }}
               >
-                [ System Proof ]
+                [ SYSTEM PROOF ]
               </p>
             </Reveal>
 
             <Reveal delay={0.1}>
               <h2
+                className="mb-5"
                 style={{
-                  marginTop: 24,
-                  fontSize: "clamp(56px, 5.5vw, 88px)",
+                  fontSize: "clamp(44px, 5.2vw, 84px)",
                   lineHeight: 0.95,
                   letterSpacing: "-0.02em",
-                  fontWeight: 700,
+                  fontWeight: 800,
+                  color: "#1B0F2E",
+                  textShadow: "0 10px 40px rgba(0,0,0,0.08)",
                 }}
               >
                 Intelligence you can{" "}
@@ -282,11 +283,10 @@ export default function ProofSection() {
             <Reveal delay={0.2}>
               <p
                 style={{
-                  marginTop: 20,
-                  fontSize: 18,
-                  lineHeight: 1.6,
-                  maxWidth: "48ch",
-                  opacity: 0.75,
+                  fontSize: "clamp(15px, 1.25vw, 18px)",
+                  lineHeight: 1.55,
+                  maxWidth: "46ch",
+                  color: "rgba(27, 15, 46, 0.72)",
                 }}
               >
                 DocG AI turns fragmented clinical signals into coordinated actions—at system scale.

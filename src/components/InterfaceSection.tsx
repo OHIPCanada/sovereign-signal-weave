@@ -230,34 +230,33 @@ const InterfaceSection = () => {
         {/* Header */}
         <div className="mb-7">
           <div
-            className="font-mono uppercase"
+            className="font-mono uppercase mb-5"
             style={{
               fontSize: 12,
               letterSpacing: "0.22em",
-              opacity: 0.65,
-              marginBottom: 14,
+              color: "rgba(20, 10, 42, 0.45)",
             }}
           >
             [ APPLIED INTELLIGENCE ]
           </div>
           <h2
+            className="mb-5"
             style={{
-              fontSize: "clamp(44px, 5vw, 72px)",
-              fontWeight: 900,
-              lineHeight: 1.02,
-              margin: "0 0 14px 0",
+              fontSize: "clamp(44px, 5.2vw, 84px)",
+              fontWeight: 800,
+              lineHeight: 0.95,
               letterSpacing: "-0.02em",
+              textShadow: "0 10px 40px rgba(0,0,0,0.08)",
             }}
           >
             Where intelligence meets care delivery.
           </h2>
           <p
             style={{
-              fontSize: 18,
-              lineHeight: 1.5,
-              opacity: 0.78,
-              maxWidth: "58ch",
-              margin: 0,
+              fontSize: "clamp(15px, 1.25vw, 18px)",
+              lineHeight: 1.55,
+              color: "rgba(20, 10, 42, 0.72)",
+              maxWidth: "46ch",
             }}
           >
             DocG AI integrates directly into clinical operations — without

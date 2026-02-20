@@ -274,31 +274,32 @@ const DeploymentSection = () => {
             transition={{ duration: 0.7 }}
           >
             <span
-              className="inline-block mb-5 text-[11px] font-mono tracking-[0.22em] uppercase"
-              style={{ color: "rgba(243,239,255,0.35)" }}
+              className="inline-block mb-5 text-[12px] font-mono tracking-[0.22em] uppercase"
+              style={{ color: "rgba(255,255,255,0.45)" }}
             >
               [ SYSTEM CONSCIOUSNESS ]
             </span>
 
             <h2
+              className="mb-5"
               style={{
-                color: "#F3EFFF",
+                color: "rgba(255,255,255,0.95)",
                 fontWeight: 800,
                 fontSize: "clamp(44px, 5.2vw, 84px)",
                 lineHeight: 0.95,
                 letterSpacing: "-0.02em",
+                textShadow: "0 10px 40px rgba(0,0,0,0.22)",
               }}
             >
               Intelligence operating as a living system.
             </h2>
 
             <p
-              className="mt-5"
               style={{
-                color: "rgba(243,239,255,0.5)",
+                color: "rgba(255,255,255,0.72)",
                 fontSize: "clamp(15px, 1.25vw, 18px)",
-                lineHeight: 1.65,
-                maxWidth: "420px",
+                lineHeight: 1.55,
+                maxWidth: "46ch",
               }}
             >
               Signals converge, align, resolve — continuously across the field.

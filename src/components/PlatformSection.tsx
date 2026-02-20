@@ -254,19 +254,19 @@ const PlatformSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7 }}
-            className="flex flex-col gap-7"
+            className="flex flex-col"
           >
-            <span className="mono-label" style={{ color: "rgba(17, 17, 17, 0.55)" }}>
+            <span className="mono-label mb-5" style={{ color: "rgba(17, 17, 17, 0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
               [ PLATFORM ARCHITECTURE ]
             </span>
 
-            <h2 style={{
+            <h2 className="mb-5" style={{
               color: "#111111",
               fontWeight: 800,
-              fontSize: "clamp(48px, 6vw, 80px)",
-              lineHeight: 1.05,
+              fontSize: "clamp(44px, 5.2vw, 84px)",
+              lineHeight: 0.95,
               letterSpacing: "-0.02em",
-              fontFamily: "Inter, sans-serif",
+              textShadow: "0 10px 40px rgba(0,0,0,0.10)",
             }}>
               How intelligence
               <br />moves through
@@ -274,11 +274,11 @@ const PlatformSection = () => {
             </h2>
 
             <p style={{
-              color: "rgba(30, 30, 30, 0.75)",
-              fontSize: "18px",
+              color: "rgba(30, 30, 30, 0.72)",
+              fontSize: "clamp(15px, 1.25vw, 18px)",
               fontWeight: 400,
-              lineHeight: 1.6,
-              maxWidth: "520px",
+              lineHeight: 1.55,
+              maxWidth: "46ch",
             }}>
               DocG AI sits above clinical systems, routes signals through
               workflows, and enforces sovereign governance — without adding

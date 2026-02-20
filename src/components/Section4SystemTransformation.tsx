@@ -322,7 +322,7 @@ export default function Section4SystemTransformation() {
           {/* Left content */}
           <div className="flex flex-col gap-5">
             <motion.p
-              style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, letterSpacing: "0.28em", textTransform: "uppercase" }}
+              style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase" }}
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
@@ -334,8 +334,9 @@ export default function Section4SystemTransformation() {
             <motion.h2
               style={{
                 color: "rgba(255,255,255,0.95)", fontWeight: 800,
-                fontSize: "clamp(44px, 5.4vw, 84px)", lineHeight: 0.95,
+                fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95,
                 letterSpacing: "-0.02em",
+                textShadow: "0 10px 40px rgba(0,0,0,0.22)",
               }}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -347,8 +348,8 @@ export default function Section4SystemTransformation() {
 
             <motion.p
               style={{
-                color: "rgba(255,255,255,0.72)", fontSize: 16,
-                lineHeight: 1.6, maxWidth: "48ch",
+                color: "rgba(255,255,255,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)",
+                lineHeight: 1.55, maxWidth: "46ch",
               }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
