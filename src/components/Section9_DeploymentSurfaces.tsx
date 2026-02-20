@@ -364,26 +364,26 @@ const Section9_DeploymentSurfaces = () => {
         {/* ── Left column ── */}
         <div>
           <p
-            className="font-mono"
+            className="font-mono mb-5"
             style={{
               fontSize: "12px",
-              letterSpacing: "0.28em",
+              letterSpacing: "0.22em",
               textTransform: "uppercase",
-              color: "rgba(243,239,255,0.55)",
-              marginBottom: "14px",
+              color: "rgba(255,255,255,0.45)",
             }}
           >
             [ DEPLOYMENT SURFACES ]
           </p>
 
           <h2
+            className="mb-5"
             style={{
-              fontSize: "clamp(36px, 5vw, 64px)",
-              lineHeight: 1.02,
+              fontSize: "clamp(44px, 5.2vw, 84px)",
+              lineHeight: 0.95,
               letterSpacing: "-0.02em",
-              fontWeight: 700,
-              color: "#f3efff",
-              margin: "0 0 18px 0",
+              fontWeight: 800,
+              color: "rgba(255,255,255,0.95)",
+              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
             }}
           >
             Start anywhere.
@@ -393,10 +393,10 @@ const Section9_DeploymentSurfaces = () => {
 
           <p
             style={{
-              fontSize: "16px",
-              lineHeight: 1.7,
-              color: "rgba(243,239,255,0.72)",
-              maxWidth: "44ch",
+              fontSize: "clamp(15px, 1.25vw, 18px)",
+              lineHeight: 1.55,
+              color: "rgba(255,255,255,0.72)",
+              maxWidth: "46ch",
             }}
           >
             DocG enters through a single surface — then spreads routing,
@@ -405,7 +405,7 @@ const Section9_DeploymentSurfaces = () => {
           </p>
 
           {/* Surface tiles */}
-          <div className="flex flex-col gap-2.5 mt-7">
+          <div className="flex flex-col gap-3 mt-8">
             {SURFACES.map((s) => (
               <button
                 key={s.key}
