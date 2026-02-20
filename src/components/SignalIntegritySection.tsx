@@ -6,38 +6,32 @@ gsap.registerPlugin(ScrollTrigger);
 
 const PILLS = ["Integrity", "Traceability", "Jurisdiction"];
 
-/* ── Wave path generators ── */
-const SVG_W = 960;
+const SVG_W = 1080;
 const SVG_H = 520;
-const WAVE_COUNT = 4;
 
-// Input waves: slightly jittery sine paths on left third
+/* ── Wave path generators ── */
 function makeInputPath(i: number): string {
-  const yBase = 120 + i * 80;
+  const yBase = 100 + i * 90;
   const pts: string[] = [];
-  for (let x = 0; x <= 320; x += 8) {
-    const jitter = Math.sin(x * 0.08 + i * 1.2) * 12 + Math.cos(x * 0.14 + i * 0.7) * 6;
+  for (let x = 40; x <= 420; x += 6) {
+    const jitter =
+      Math.sin(x * 0.09 + i * 1.3) * 14 +
+      Math.cos(x * 0.15 + i * 0.8) * 7 +
+      Math.sin(x * 0.22 + i * 2.1) * 4;
     pts.push(`${x},${yBase + jitter}`);
   }
   return `M${pts.join(" L")}`;
 }
 
-// Output waves: clean smooth paths on right third
 function makeOutputPath(i: number): string {
-  const yBase = 120 + i * 80;
+  const yBase = 100 + i * 90;
   const pts: string[] = [];
-  for (let x = 640; x <= SVG_W; x += 8) {
-    const smooth = Math.sin(x * 0.025 + i * 0.8) * 3;
+  for (let x = 660; x <= SVG_W - 40; x += 6) {
+    const smooth = Math.sin(x * 0.02 + i * 0.9) * 2.5;
     pts.push(`${x},${yBase + smooth}`);
   }
   return `M${pts.join(" L")}`;
 }
-
-// Noise fleck positions
-const NOISE_FLECKS = Array.from({ length: 8 }, (_, i) => ({
-  cx: 40 + Math.random() * 260,
-  cy: 100 + Math.random() * 320,
-}));
 
 const SignalIntegritySection = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -48,141 +42,110 @@ const SignalIntegritySection = () => {
 
   const setupAnimations = useCallback(() => {
     const svg = svgRef.current;
-    if (!svg || hasAnimated.current) return;
+    const stage = stageRef.current;
+    if (!svg || !stage || hasAnimated.current) return;
     hasAnimated.current = true;
 
-    const inPaths = svg.querySelectorAll<SVGPathElement>(".sig-in");
-    const outPaths = svg.querySelectorAll<SVGPathElement>(".sig-out");
-    const noiseDots = svg.querySelectorAll<SVGCircleElement>(".noise-fleck");
-    const planeGroup = svg.querySelector("#plane-group") as SVGGElement;
-    const planeGlow = svg.querySelector("#plane-glow") as SVGRectElement;
-    const scanLine = svg.querySelector("#scan-line") as SVGLineElement;
-    const pulse = svg.querySelector("#verify-pulse") as SVGCircleElement;
-    const coreLine = svg.querySelector("#core-line") as SVGLineElement;
+    const inLines = ["#in1", "#in2", "#in3", "#in4"].map((s) =>
+      svg.querySelector(s)
+    ).filter(Boolean) as SVGPathElement[];
+    const outLines = ["#out1", "#out2", "#out3", "#out4"].map((s) =>
+      svg.querySelector(s)
+    ).filter(Boolean) as SVGPathElement[];
 
-    /* ── Initial state ── */
-    gsap.set(inPaths, { opacity: 0.6 });
-    gsap.set(outPaths, { opacity: 0.3 });
-    gsap.set(planeGroup, { opacity: 0.7 });
-    gsap.set(scanLine, { opacity: 0, attr: { y1: 0, y2: 0 } });
-    gsap.set(pulse, { opacity: 0, attr: { cx: 530, r: 4 } });
+    const scanMaskRect = svg.querySelector("#scanMaskRect") as SVGRectElement;
+    const scanBar = svg.querySelector("#scanBar") as SVGRectElement;
+    const planeWarm = svg.querySelector("#planeWarm") as SVGRectElement;
+    const pulse = svg.querySelector("#pulse") as SVGCircleElement;
 
-    /* ══ A. Always-on ambient ══ */
-
-    // Input jitter: subtle continuous transform wiggle
-    inPaths.forEach((p, i) => {
-      gsap.to(p, {
-        y: `random(-3, 3)`,
-        x: `random(-2, 2)`,
-        duration: `random(1.5, 2.5)`,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: i * 0.15,
-      });
+    /* ── 1. Ambient noise wobble (INPUT ONLY) ── */
+    gsap.set(inLines, { transformOrigin: "50% 50%" });
+    const wobble = gsap.timeline({ repeat: -1, yoyo: true });
+    wobble.to(inLines, {
+      x: 6,
+      y: -3,
+      rotation: 0.6,
+      duration: 1.4,
+      ease: "sine.inOut",
+      stagger: 0.05,
     });
 
-    // Output micro drift
-    outPaths.forEach((p, i) => {
-      gsap.to(p, {
-        y: `random(-1, 1)`,
-        duration: `random(4, 6)`,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: i * 0.2,
-      });
-    });
-
-    // Noise flecks drifting upward
-    noiseDots.forEach((dot, i) => {
-      gsap.to(dot, {
-        y: "-=20",
-        x: `random(-8, 8)`,
-        opacity: `random(0.1, 0.35)`,
-        duration: `random(3, 6)`,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: i * 0.3,
-      });
-    });
-
-    // Plane glow breathing
-    gsap.to(planeGlow, {
-      opacity: 0.5,
-      duration: 4,
+    // Output: calm but alive
+    gsap.to(outLines, {
+      y: 1.2,
+      duration: 7,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
     });
 
-    // Core line pulse
-    gsap.to(coreLine, {
-      opacity: 0.9,
-      duration: 3,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    });
-
-    /* ══ Pulse runner function ══ */
+    /* ── Pulse runner ── */
     function runPulse() {
-      gsap.set(pulse, { opacity: 0, attr: { cx: 530, r: 4 } });
-      gsap.to(pulse, { opacity: 0.85, duration: 0.25, ease: "power2.out" });
+      gsap.set(pulse, { opacity: 0, attr: { r: 7, cx: 540 } });
+      gsap.to(pulse, { opacity: 0.9, duration: 0.18, ease: "power2.out" });
       gsap.to(pulse, {
-        attr: { cx: 940 },
-        duration: 2,
+        attr: { cx: 1000 },
+        duration: 1.7,
         ease: "power1.inOut",
       });
-      gsap.to(pulse, { opacity: 0, duration: 0.4, delay: 1.6, ease: "power2.in" });
+      gsap.to(pulse, {
+        opacity: 0,
+        duration: 0.35,
+        delay: 1.35,
+        ease: "power2.in",
+      });
     }
 
-    /* ══ B. On-enter scroll-triggered transform ══ */
-    const transformTL = gsap.timeline({ paused: true });
+    /* ── 2. Verification timeline ── */
+    const verifyTL = gsap.timeline({ paused: true });
 
-    // Increase noise briefly
-    transformTL.to(inPaths, { x: 5, y: -4, duration: 0.8, ease: "sine.inOut" }, 0);
+    verifyTL
+      // scan setup
+      .set(scanMaskRect, { attr: { y: -520 } }, 0)
+      .set(scanBar, { attr: { y: 0 }, opacity: 0.7 }, 0)
 
-    // Scan sweep: line moves top to bottom
-    transformTL.set(scanLine, { opacity: 0.6, attr: { y1: 20, y2: 20 } }, 0.2);
-    transformTL.to(scanLine, {
-      attr: { y1: SVG_H - 20, y2: SVG_H - 20 },
-      duration: 1.4,
-      ease: "power2.inOut",
-    }, 0.2);
-    transformTL.to(scanLine, { opacity: 0, duration: 0.3 }, 1.4);
+      // warm plane ON during scan
+      .to(planeWarm, { opacity: 0.28, duration: 0.35, ease: "power2.out" }, 0.1)
 
-    // Dampen jitter after scan
-    transformTL.to(inPaths, { x: 0, y: 0, duration: 1, ease: "power2.out" }, 1.0);
+      // scan sweep down
+      .to(scanMaskRect, { attr: { y: 0 }, duration: 1.0, ease: "power2.inOut" }, 0.1)
+      .to(scanBar, { attr: { y: 500 }, duration: 1.0, ease: "power2.inOut" }, 0.1)
+      .to(scanBar, { opacity: 0, duration: 0.25, ease: "power2.out" }, 0.9)
 
-    // Brighten output lines
-    transformTL.to(outPaths, { opacity: 0.85, duration: 0.8, ease: "power2.out" }, 1.0);
+      // dampen input wobble after scan
+      .to(inLines, { x: 0, y: 0, rotation: 0, duration: 0.9, ease: "power2.out" }, 0.8)
 
-    // Verification pulse
-    transformTL.add(() => runPulse(), 1.5);
+      // brighten output = verified
+      .to(outLines, { attr: { "stroke-opacity": 0.62 }, duration: 0.6, ease: "power2.out" }, 0.85)
 
-    /* ══ ScrollTrigger ══ */
+      // verification pulse
+      .add(() => runPulse(), 1.05)
+
+      // warm plane settles back slightly (stays faintly on)
+      .to(planeWarm, { opacity: 0.16, duration: 0.7, ease: "sine.out" }, 1.35);
+
+    /* ── ScrollTrigger ── */
     ScrollTrigger.create({
-      trigger: svgRef.current,
+      trigger: stage,
       start: "top 65%",
       once: true,
       onEnter: () => {
-        gsap.delayedCall(0.5, () => transformTL.play());
-        // Start repeating pulses after transform settles
-        gsap.delayedCall(4, () => {
+        verifyTL.play();
+        // Repeat pulses after initial verify
+        gsap.delayedCall(3.6, () => {
           runPulse();
-          gsap.delayedCall(8, function loop() {
+          gsap.delayedCall(8.0, function loop() {
             runPulse();
-            gsap.delayedCall(8, loop);
+            gsap.delayedCall(8.0, loop);
           });
         });
       },
     });
 
     return () => {
-      transformTL.kill();
-      gsap.killTweensOf([...inPaths, ...outPaths, ...noiseDots, planeGlow, coreLine, scanLine, pulse]);
+      verifyTL.kill();
+      wobble.kill();
+      gsap.killTweensOf([...inLines, ...outLines, scanMaskRect, scanBar, planeWarm, pulse]);
     };
   }, []);
 
@@ -219,12 +182,11 @@ const SignalIntegritySection = () => {
       ref={sectionRef}
       className="relative overflow-hidden"
       style={{
-        padding: "clamp(64px, 8vw, 120px) 0",
+        padding: "110px 0",
         background: `
-          radial-gradient(1000px 650px at 15% 25%, rgba(110,59,255,0.10), transparent 50%),
-          radial-gradient(1100px 700px at 75% 60%, rgba(232,150,124,0.28), transparent 55%),
-          radial-gradient(600px 400px at 60% 80%, rgba(242,193,174,0.18), transparent 50%),
-          linear-gradient(180deg, #FBF7FF 0%, #FFF5EE 40%, #FDEEE5 70%, #FBF7FF 100%)
+          radial-gradient(900px 600px at 20% 40%, rgba(90,32,184,0.18), transparent 60%),
+          radial-gradient(800px 600px at 78% 55%, rgba(232,150,124,0.14), transparent 60%),
+          linear-gradient(180deg, #FBF7FF, #FFF7F2)
         `,
         color: "#140A2A",
         minHeight: "100vh",
@@ -305,14 +267,14 @@ const SignalIntegritySection = () => {
           </div>
         </div>
 
-        {/* Right — Signal Integrity Plane SVG Stage */}
+        {/* Right — Signal Integrity SVG Stage (light glass card) */}
         <div
           ref={stageRef}
           style={{
             borderRadius: 28,
-            border: "1px solid rgba(90,32,184,0.10)",
-            background: "linear-gradient(180deg, #1A0A30 0%, #0E0620 100%)",
-            boxShadow: "0 30px 90px rgba(0,0,0,0.2)",
+            border: "1px solid rgba(42,11,74,0.10)",
+            background: "rgba(255,255,255,0.55)",
+            boxShadow: "0 26px 80px rgba(0,0,0,0.15)",
             overflow: "hidden",
           }}
         >
@@ -324,156 +286,153 @@ const SignalIntegritySection = () => {
           >
             <defs>
               {/* Soft glow filter */}
-              <filter id="sigSoftGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="4" result="b" />
+              <filter id="sigGlow9" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="5" result="b" />
                 <feMerge>
                   <feMergeNode in="b" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
               {/* Pulse glow */}
-              <filter id="sigPulseGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="8" result="b" />
+              <filter id="pulseGlow9" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur stdDeviation="10" result="b" />
                 <feMerge>
                   <feMergeNode in="b" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
-              {/* Plane warm gradient */}
-              <linearGradient id="planeWarmGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#D4616B" stopOpacity={0.35} />
-                <stop offset="50%" stopColor="#E8967C" stopOpacity={0.25} />
-                <stop offset="100%" stopColor="#F2C1AE" stopOpacity={0.15} />
+              {/* Warm gradient for verification plane */}
+              <linearGradient id="warmPlaneGrad9" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#D4616B" stopOpacity={0.3} />
+                <stop offset="50%" stopColor="#E8967C" stopOpacity={0.2} />
+                <stop offset="100%" stopColor="#F2C1AE" stopOpacity={0.1} />
               </linearGradient>
-              {/* Radial bloom behind plane */}
-              <radialGradient id="planeBloom" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#E8967C" stopOpacity={0.2} />
-                <stop offset="60%" stopColor="#5A20B8" stopOpacity={0.08} />
-                <stop offset="100%" stopColor="transparent" stopOpacity={0} />
-              </radialGradient>
-              {/* Scan gradient */}
-              <linearGradient id="scanGrad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#D4616B" stopOpacity={0} />
-                <stop offset="40%" stopColor="#D4616B" stopOpacity={0.7} />
-                <stop offset="60%" stopColor="#E8967C" stopOpacity={0.7} />
-                <stop offset="100%" stopColor="#F2C1AE" stopOpacity={0} />
-              </linearGradient>
+              {/* Scan mask — clips scan reveal */}
+              <clipPath id="scanClip9">
+                <rect id="scanMaskRect" x="0" y="-520" width={SVG_W} height={SVG_H} />
+              </clipPath>
             </defs>
 
-            {/* Background radial bloom */}
-            <ellipse cx={480} cy={260} rx={200} ry={260} fill="url(#planeBloom)" />
+            {/* Subtle background radial for depth */}
+            <ellipse cx={540} cy={260} rx={280} ry={260} fill="rgba(90,32,184,0.04)" />
+            <ellipse cx={540} cy={260} rx={140} ry={200} fill="rgba(232,150,124,0.05)" />
 
-            {/* ── Input wave paths (noisy) ── */}
-            {Array.from({ length: WAVE_COUNT }, (_, i) => (
+            {/* ── INPUT wave paths (noisy, left side) ── */}
+            {[0, 1, 2, 3].map((i) => (
               <path
                 key={`in-${i}`}
-                className="sig-in"
+                id={`in${i + 1}`}
                 d={makeInputPath(i)}
-                stroke="#BFA7FF"
-                strokeWidth={1.2}
+                stroke="rgba(90,32,184,0.35)"
+                strokeWidth={1.4}
                 strokeLinecap="round"
                 fill="none"
-                opacity={0.6}
               />
             ))}
 
-            {/* ── Noise flecks ── */}
-            {NOISE_FLECKS.map((f, i) => (
+            {/* Noise flecks near input */}
+            {Array.from({ length: 6 }, (_, i) => (
               <circle
                 key={`nf-${i}`}
-                className="noise-fleck"
-                cx={f.cx}
-                cy={f.cy}
-                r={1.2}
-                fill="#BFA7FF"
-                opacity={0.2}
+                cx={60 + Math.sin(i * 2.3) * 140 + 100}
+                cy={120 + i * 65}
+                r={1.1}
+                fill="rgba(90,32,184,0.2)"
               />
             ))}
 
-            {/* ── Center processing plane ── */}
-            <g id="plane-group">
-              {/* Translucent light curtain */}
-              <rect
-                id="plane-glow"
-                x={450}
-                y={20}
-                width={100}
-                height={SVG_H - 40}
-                rx={8}
-                fill="url(#planeWarmGrad)"
-                opacity={0.35}
-                filter="url(#sigSoftGlow)"
-              />
-              {/* Bright core line (scanner) */}
-              <line
-                id="core-line"
-                x1={500}
-                y1={30}
-                x2={500}
-                y2={SVG_H - 30}
-                stroke="#E8967C"
-                strokeWidth={1.5}
-                opacity={0.65}
-                filter="url(#sigSoftGlow)"
-              />
-              {/* Watermark label */}
-              <text
-                x={500}
-                y={SVG_H / 2}
-                textAnchor="middle"
-                dominantBaseline="central"
-                fill="rgba(255,255,255,0.06)"
-                fontSize={22}
-                fontWeight={700}
-                letterSpacing="0.15em"
-                style={{ fontFamily: "inherit" }}
-              >
-                DOCG AI
-              </text>
-            </g>
-
-            {/* ── Scan line (animated top→bottom on enter) ── */}
-            <line
-              id="scan-line"
-              x1={440}
-              y1={20}
-              x2={560}
-              y2={20}
-              stroke="url(#scanGrad)"
-              strokeWidth={2}
+            {/* ── CENTER: Verification Plane ── */}
+            {/* Warm glow rect — starts invisible, lights up during scan */}
+            <rect
+              id="planeWarm"
+              x={490}
+              y={10}
+              width={100}
+              height={SVG_H - 20}
+              rx={8}
+              fill="url(#warmPlaneGrad9)"
               opacity={0}
+              filter="url(#sigGlow9)"
             />
 
-            {/* ── Output wave paths (clean) ── */}
-            {Array.from({ length: WAVE_COUNT }, (_, i) => (
+            {/* Structural plane lines */}
+            <line x1={520} y1={30} x2={520} y2={SVG_H - 30} stroke="rgba(90,32,184,0.12)" strokeWidth={1} />
+            <line x1={560} y1={30} x2={560} y2={SVG_H - 30} stroke="rgba(90,32,184,0.08)" strokeWidth={0.8} />
+
+            {/* Core center line */}
+            <line x1={540} y1={20} x2={540} y2={SVG_H - 20} stroke="rgba(90,32,184,0.18)" strokeWidth={1.5} filter="url(#sigGlow9)" />
+
+            {/* Watermark */}
+            <text
+              x={540}
+              y={SVG_H / 2}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fill="rgba(90,32,184,0.06)"
+              fontSize={20}
+              fontWeight={700}
+              letterSpacing="0.15em"
+              style={{ fontFamily: "inherit" }}
+            >
+              DOCG AI
+            </text>
+
+            {/* VERIFY label at plane */}
+            <text
+              x={540}
+              y={SVG_H - 28}
+              textAnchor="middle"
+              fill="rgba(90,32,184,0.25)"
+              fontSize={9}
+              letterSpacing="0.22em"
+              style={{ fontFamily: "monospace" }}
+            >
+              VERIFY
+            </text>
+
+            {/* ── Scan bar (animated top→bottom) ── */}
+            <rect
+              id="scanBar"
+              x={480}
+              y={0}
+              width={120}
+              height={4}
+              rx={2}
+              fill="rgba(212,97,107,0.7)"
+              opacity={0}
+              filter="url(#sigGlow9)"
+            />
+
+            {/* ── OUTPUT wave paths (clean, right side) ── */}
+            {[0, 1, 2, 3].map((i) => (
               <path
                 key={`out-${i}`}
-                className="sig-out"
+                id={`out${i + 1}`}
                 d={makeOutputPath(i)}
-                stroke="#BFA7FF"
-                strokeWidth={1.2}
+                stroke="rgba(90,32,184,0.25)"
+                strokeWidth={1.4}
                 strokeLinecap="round"
                 fill="none"
-                opacity={0.4}
+                strokeOpacity={0.35}
               />
             ))}
 
             {/* ── Verification pulse circle ── */}
             <circle
-              id="verify-pulse"
-              cx={530}
+              id="pulse"
+              cx={540}
               cy={260}
-              r={5}
+              r={7}
               fill="#D4616B"
-              filter="url(#sigPulseGlow)"
+              filter="url(#pulseGlow9)"
               opacity={0}
             />
 
             {/* ── Labels ── */}
             <text
-              x={20}
-              y={32}
-              fill="rgba(191,167,255,0.45)"
+              x={50}
+              y={30}
+              fill="rgba(90,32,184,0.4)"
               fontSize={10}
               letterSpacing="0.18em"
               style={{ fontFamily: "monospace" }}
@@ -481,10 +440,10 @@ const SignalIntegritySection = () => {
               SIGNAL IN
             </text>
             <text
-              x={SVG_W - 20}
-              y={32}
+              x={SVG_W - 50}
+              y={30}
               textAnchor="end"
-              fill="rgba(212,97,107,0.55)"
+              fill="rgba(212,97,107,0.45)"
               fontSize={10}
               letterSpacing="0.18em"
               style={{ fontFamily: "monospace" }}
