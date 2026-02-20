@@ -352,13 +352,10 @@ const Section9_DeploymentSurfaces = () => {
       />
 
       <div
-        className="mx-auto"
+        className="mx-auto flex flex-col"
         style={{
           width: "min(1600px, calc(100% - 48px))",
-          display: "grid",
-          gridTemplateColumns: "3fr 9fr",
-          gap: "clamp(120px, 14vw, 220px)",
-          alignItems: "center",
+          gap: "clamp(48px, 6vw, 80px)",
         }}
       >
         {/* ── Left column ── */}

@@ -303,11 +303,10 @@ const SovereigntySection = () => {
       />
 
       <div
-        className="relative z-10 mx-auto w-full grid items-center"
+        className="relative z-10 mx-auto w-full flex flex-col"
         style={{
           maxWidth: "min(1600px, 96vw)",
-          gridTemplateColumns: "0.28fr 1.22fr",
-          gap: "clamp(120px, 14vw, 220px)",
+          gap: "clamp(48px, 6vw, 80px)",
         }}
       >
         {/* Left — Text */}

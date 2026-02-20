@@ -264,10 +264,10 @@ const DeploymentSection = () => {
 
       <div className="relative z-10 max-w-[1600px] mx-auto px-6 md:px-12 w-full">
         {/* 2-column: text left, canvas right */}
-        <div className="flex flex-col lg:flex-row items-start" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+        <div className="flex flex-col" style={{ gap: "clamp(48px, 6vw, 80px)" }}>
           {/* Left: Text */}
           <motion.div
-            className="lg:w-[38%] flex-shrink-0 lg:sticky lg:top-32"
+            className="w-full flex-shrink-0"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
@@ -316,7 +316,7 @@ const DeploymentSection = () => {
 
           {/* Right: Particle field */}
           <motion.div
-            className="lg:w-[62%] w-full relative"
+            className="w-full relative"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
