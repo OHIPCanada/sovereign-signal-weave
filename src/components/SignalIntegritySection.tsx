@@ -428,7 +428,7 @@ const SignalIntegritySection = () => {
           style={{
             position: "relative",
             width: "100%",
-            aspectRatio: "3 / 1",
+            aspectRatio: "2.2 / 1",
             perspective: "500px",
           }}
         >
