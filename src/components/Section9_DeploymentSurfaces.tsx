@@ -403,7 +403,7 @@ const Section9_DeploymentSurfaces = () => {
           </p>
 
           {/* Surface tiles — horizontal row */}
-          <div className="flex flex-wrap justify-center gap-3 mt-8">
+          <div className="flex flex-nowrap justify-center gap-3 mt-8 overflow-x-auto">
             {SURFACES.map((s) => (
               <button
                 key={s.key}
