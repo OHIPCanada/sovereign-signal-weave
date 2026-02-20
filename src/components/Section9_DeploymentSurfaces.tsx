@@ -3,11 +3,11 @@ import gsap from "gsap";
 
 /* ── seed presets ── */
 const SEEDS: Record<string, { x: number; y: number; accent: "lav" | "warm" }> = {
-  emr:      { x: 210, y: 100, accent: "lav"  },
-  pathways: { x: 320, y: 220, accent: "warm" },
-  ops:      { x: 460, y: 150, accent: "lav"  },
-  audit:    { x: 660, y: 120, accent: "warm" },
-  access:   { x: 730, y: 220, accent: "lav"  },
+  emr:      { x: 180, y: 130, accent: "lav"  },
+  pathways: { x: 300, y: 280, accent: "warm" },
+  ops:      { x: 450, y: 197, accent: "lav"  },
+  audit:    { x: 630, y: 130, accent: "warm" },
+  access:   { x: 750, y: 280, accent: "lav"  },
 };
 
 const SURFACES = [
@@ -19,11 +19,11 @@ const SURFACES = [
 ];
 
 const COLS = 18;
-const ROWS = 6;
+const ROWS = 8;
 const PAD_X = 48;
-const PAD_Y = 30;
+const PAD_Y = 36;
 const W = 900;
-const H = 320;
+const H = 394;
 const CELL_W = (W - PAD_X * 2) / COLS;
 const CELL_H = (H - PAD_Y * 2) / ROWS;
 const TARGET_COVERAGE = 87;
@@ -441,78 +441,76 @@ const Section9_DeploymentSurfaces = () => {
           </div>
         </div>
 
-        {/* ── Right column: Stage ── */}
+        {/* ── Animation card — proportional, centered ── */}
         <div
-          ref={stageRef}
-          className="relative overflow-hidden"
           style={{
-            borderRadius: "20px",
-            border: "1px solid rgba(189,166,255,0.18)",
-            background: `
-              radial-gradient(800px 340px at 40% 40%, rgba(91,29,179,0.25) 0%, transparent 60%),
-              radial-gradient(520px 340px at 75% 65%, rgba(232,150,124,0.16) 0%, transparent 55%),
-              rgba(255,255,255,0.02)
-            `,
-            boxShadow: "0 24px 80px rgba(0,0,0,0.40)",
-            minHeight: "320px",
-            maxHeight: "340px",
+            maxWidth: "860px",
+            width: "100%",
+            margin: "0 auto",
           }}
         >
-          {/* Faint grid overlay */}
           <div
-            className="absolute inset-0 pointer-events-none"
+            ref={stageRef}
+            className="relative overflow-hidden w-full"
             style={{
-              backgroundImage: `
-                linear-gradient(to right, rgba(189,166,255,0.12) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(189,166,255,0.12) 1px, transparent 1px)
+              borderRadius: "18px",
+              border: "1px solid rgba(189,166,255,0.18)",
+              background: `
+                radial-gradient(ellipse 80% 70% at 40% 40%, rgba(91,29,179,0.28) 0%, transparent 65%),
+                radial-gradient(ellipse 60% 70% at 78% 68%, rgba(232,150,124,0.18) 0%, transparent 58%),
+                rgba(14,6,26,0.96)
               `,
-              backgroundSize: "48px 48px",
-              opacity: 0.25,
+              boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
+              aspectRatio: "16 / 7",
             }}
-          />
-
-          <svg
-            ref={svgRef}
-            viewBox="0 0 900 320"
-            width="100%"
-            height="100%"
-            preserveAspectRatio="none"
-            className="relative z-10"
-            style={{ minHeight: "320px", maxHeight: "340px" }}
           >
-            <defs>
-              <radialGradient id="s9SeedGlow" cx="50%" cy="50%" r="60%">
-                <stop offset="0%" stopColor="#F2C1AE" stopOpacity="0.55" />
-                <stop offset="35%" stopColor="#E8967C" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="#BDA6FF" stopOpacity="0" />
-              </radialGradient>
-              <filter id="s9SoftGlow" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation="8" result="b" />
-                <feMerge>
-                  <feMergeNode in="b" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
+            {/* Faint grid overlay */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: `
+                  linear-gradient(to right, rgba(189,166,255,0.10) 1px, transparent 1px),
+                  linear-gradient(to bottom, rgba(189,166,255,0.10) 1px, transparent 1px)
+                `,
+                backgroundSize: "48px 48px",
+                opacity: 0.22,
+              }}
+            />
 
-            {/* Connection lines layer (behind cells) */}
-            <g ref={linesRef} />
+            <svg
+              ref={svgRef}
+              viewBox="0 0 900 394"
+              width="100%"
+              height="100%"
+              preserveAspectRatio="xMidYMid meet"
+              className="absolute inset-0 z-10"
+            >
+              <defs>
+                <radialGradient id="s9SeedGlow" cx="50%" cy="50%" r="60%">
+                  <stop offset="0%" stopColor="#F2C1AE" stopOpacity="0.55" />
+                  <stop offset="35%" stopColor="#E8967C" stopOpacity="0.35" />
+                  <stop offset="100%" stopColor="#BDA6FF" stopOpacity="0" />
+                </radialGradient>
+                <filter id="s9SoftGlow" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="8" result="b" />
+                  <feMerge>
+                    <feMergeNode in="b" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
 
-            {/* Cells layer */}
-            <g ref={cellsRef} />
+              <g ref={linesRef} />
+              <g ref={cellsRef} />
+              <g ref={ripplesRef} />
 
-            {/* Ripple rings layer */}
-            <g ref={ripplesRef} />
+              <g>
+                <circle ref={seedHaloRef} cx="450" cy="197" r="80" fill="url(#s9SeedGlow)" />
+                <circle ref={seedCoreRef} cx="450" cy="197" r="8" fill="#BDA6FF" filter="url(#s9SoftGlow)" />
+              </g>
 
-            {/* Seed */}
-            <g>
-              <circle ref={seedHaloRef} cx="450" cy="160" r="70" fill="url(#s9SeedGlow)" />
-              <circle ref={seedCoreRef} cx="450" cy="160" r="8" fill="#BDA6FF" filter="url(#s9SoftGlow)" />
-            </g>
-
-            {/* Stamps layer (on top) */}
-            <g ref={stampsRef} />
-          </svg>
+              <g ref={stampsRef} />
+            </svg>
 
           {/* Coverage meter */}
           <div
@@ -553,7 +551,8 @@ const Section9_DeploymentSurfaces = () => {
               0%
             </div>
           </div>
-        </div>
+          </div>{/* end stageRef */}
+        </div>{/* end card wrapper */}
       </div>
     </section>
   );
