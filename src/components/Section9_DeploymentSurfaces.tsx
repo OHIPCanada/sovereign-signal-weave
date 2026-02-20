@@ -28,11 +28,14 @@ const CELL_W = (W - PAD_X * 2) / COLS;
 const CELL_H = (H - PAD_Y * 2) / ROWS;
 const TARGET_COVERAGE = 87;
 const STAMP_LABELS = ["ROUTED", "VERIFIED", "LOGGED"];
+const NS = "http://www.w3.org/2000/svg";
 
 const Section9_DeploymentSurfaces = () => {
   const stageRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const cellsRef = useRef<SVGGElement>(null);
+  const linesRef = useRef<SVGGElement>(null);
+  const ripplesRef = useRef<SVGGElement>(null);
   const stampsRef = useRef<SVGGElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
   const valRef = useRef<HTMLDivElement>(null);
@@ -47,26 +50,25 @@ const Section9_DeploymentSurfaces = () => {
     const stampsG = stampsRef.current;
     if (!stampsG) return;
 
-    const ns = "http://www.w3.org/2000/svg";
-    const g = document.createElementNS(ns, "g");
+    const g = document.createElementNS(NS, "g");
 
-    const bg = document.createElementNS(ns, "rect");
+    const bg = document.createElementNS(NS, "rect");
     bg.setAttribute("x", String(x - 44));
     bg.setAttribute("y", String(y - 14));
     bg.setAttribute("width", "88");
     bg.setAttribute("height", "28");
     bg.setAttribute("rx", "14");
-    bg.setAttribute("fill", accent === "warm" ? "rgba(232,150,124,0.16)" : "rgba(189,166,255,0.14)");
-    bg.setAttribute("stroke", accent === "warm" ? "rgba(232,150,124,0.35)" : "rgba(189,166,255,0.30)");
+    bg.setAttribute("fill", accent === "warm" ? "rgba(232,150,124,0.18)" : "rgba(189,166,255,0.16)");
+    bg.setAttribute("stroke", accent === "warm" ? "rgba(232,150,124,0.45)" : "rgba(189,166,255,0.40)");
     bg.setAttribute("stroke-width", "1");
 
-    const t = document.createElementNS(ns, "text");
+    const t = document.createElementNS(NS, "text");
     t.setAttribute("x", String(x));
     t.setAttribute("y", String(y + 5));
     t.setAttribute("text-anchor", "middle");
     t.setAttribute("font-size", "11");
     t.setAttribute("letter-spacing", "2");
-    t.setAttribute("fill", accent === "warm" ? "rgba(242,193,174,0.92)" : "rgba(243,239,255,0.90)");
+    t.setAttribute("fill", accent === "warm" ? "rgba(242,193,174,0.95)" : "rgba(243,239,255,0.92)");
     t.setAttribute("font-family", "ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif");
     t.textContent = text;
 
@@ -74,25 +76,77 @@ const Section9_DeploymentSurfaces = () => {
     g.appendChild(t);
     stampsG.appendChild(g);
 
-    gsap.fromTo(g, { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out" });
-    gsap.to(g, { opacity: 0, duration: 0.45, delay: 1.4, ease: "power2.out", onComplete: () => g.remove() });
+    gsap.fromTo(g, { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.5)" });
+    gsap.to(g, { opacity: 0, y: -8, duration: 0.5, delay: 1.6, ease: "power2.in", onComplete: () => g.remove() });
+  }, []);
+
+  /* ── ripple ring helper ── */
+  const spawnRipple = useCallback((x: number, y: number, accent: "lav" | "warm") => {
+    const ripplesG = ripplesRef.current;
+    if (!ripplesG) return;
+
+    const circle = document.createElementNS(NS, "circle");
+    circle.setAttribute("cx", String(x));
+    circle.setAttribute("cy", String(y));
+    circle.setAttribute("r", "12");
+    circle.setAttribute("fill", "none");
+    circle.setAttribute("stroke", accent === "warm" ? "rgba(232,150,124,0.5)" : "rgba(189,166,255,0.45)");
+    circle.setAttribute("stroke-width", "1.5");
+    ripplesG.appendChild(circle);
+
+    gsap.to(circle, {
+      attr: { r: 65 },
+      duration: 1.4,
+      ease: "power2.out",
+    });
+    gsap.to(circle, {
+      opacity: 0,
+      duration: 1.4,
+      ease: "power2.out",
+      onComplete: () => circle.remove(),
+    });
+  }, []);
+
+  /* ── connection line helper ── */
+  const drawConnection = useCallback((x1: number, y1: number, x2: number, y2: number, accent: "lav" | "warm") => {
+    const linesG = linesRef.current;
+    if (!linesG) return;
+
+    const line = document.createElementNS(NS, "line");
+    line.setAttribute("x1", String(x1));
+    line.setAttribute("y1", String(y1));
+    line.setAttribute("x2", String(x1));
+    line.setAttribute("y2", String(y1));
+    line.setAttribute("stroke", accent === "warm" ? "rgba(232,150,124,0.15)" : "rgba(189,166,255,0.12)");
+    line.setAttribute("stroke-width", "1");
+    linesG.appendChild(line);
+
+    gsap.to(line, {
+      attr: { x2, y2 },
+      duration: 0.4,
+      ease: "power2.out",
+    });
   }, []);
 
   /* ── run diffusion ── */
   const runDiffusion = useCallback((seedKey: string) => {
     const cellsG = cellsRef.current;
     const stampsG = stampsRef.current;
+    const linesG = linesRef.current;
+    const ripplesG = ripplesRef.current;
     const fillEl = fillRef.current;
     const valEl = valRef.current;
     const seedHalo = seedHaloRef.current;
     const seedCore = seedCoreRef.current;
-    if (!cellsG || !stampsG || !fillEl || !valEl || !seedHalo || !seedCore) return;
+    if (!cellsG || !stampsG || !linesG || !ripplesG || !fillEl || !valEl || !seedHalo || !seedCore) return;
 
     // Clear
     if (tlRef.current) tlRef.current.kill();
     gsap.killTweensOf([seedHalo, seedCore]);
     cellsG.innerHTML = "";
     stampsG.innerHTML = "";
+    linesG.innerHTML = "";
+    ripplesG.innerHTML = "";
     fillEl.style.width = "0%";
     valEl.textContent = "0%";
 
@@ -100,15 +154,16 @@ const Section9_DeploymentSurfaces = () => {
     setActiveSeed(seedKey);
 
     // Build grid cells
-    const ns = "http://www.w3.org/2000/svg";
-    const cells: { x: number; y: number; rect: SVGRectElement; dot: SVGCircleElement }[] = [];
+    const cells: { ix: number; iy: number; x: number; y: number; rect: SVGRectElement; dot: SVGCircleElement; halo: SVGCircleElement }[] = [];
 
     for (let iy = 0; iy < ROWS; iy++) {
       for (let ix = 0; ix < COLS; ix++) {
         const x = PAD_X + ix * CELL_W;
         const y = PAD_Y + iy * CELL_H;
+        const cx = x + CELL_W / 2;
+        const cy = y + CELL_H / 2;
 
-        const r = document.createElementNS(ns, "rect");
+        const r = document.createElementNS(NS, "rect");
         r.setAttribute("x", String(x + 5));
         r.setAttribute("y", String(y + 5));
         r.setAttribute("rx", "8");
@@ -116,18 +171,26 @@ const Section9_DeploymentSurfaces = () => {
         r.setAttribute("width", String(Math.max(0, CELL_W - 10)));
         r.setAttribute("height", String(Math.max(0, CELL_H - 10)));
         r.setAttribute("fill", "rgba(255,255,255,0.00)");
-        r.setAttribute("stroke", "rgba(189,166,255,0.10)");
+        r.setAttribute("stroke", "rgba(189,166,255,0.08)");
         r.setAttribute("stroke-width", "1");
 
-        const c = document.createElementNS(ns, "circle");
-        c.setAttribute("cx", String(x + CELL_W / 2));
-        c.setAttribute("cy", String(y + CELL_H / 2));
-        c.setAttribute("r", "2.2");
-        c.setAttribute("fill", "rgba(189,166,255,0.18)");
+        // Glow halo behind dot
+        const h = document.createElementNS(NS, "circle");
+        h.setAttribute("cx", String(cx));
+        h.setAttribute("cy", String(cy));
+        h.setAttribute("r", "0");
+        h.setAttribute("fill", seed.accent === "warm" ? "rgba(232,150,124,0.0)" : "rgba(189,166,255,0.0)");
+
+        const c = document.createElementNS(NS, "circle");
+        c.setAttribute("cx", String(cx));
+        c.setAttribute("cy", String(cy));
+        c.setAttribute("r", "2");
+        c.setAttribute("fill", "rgba(189,166,255,0.15)");
 
         cellsG.appendChild(r);
+        cellsG.appendChild(h);
         cellsG.appendChild(c);
-        cells.push({ x: x + CELL_W / 2, y: y + CELL_H / 2, rect: r, dot: c });
+        cells.push({ ix, iy, x: cx, y: cy, rect: r, dot: c, halo: h });
       }
     }
 
@@ -137,10 +200,10 @@ const Section9_DeploymentSurfaces = () => {
     seedCore.setAttribute("cx", String(seed.x));
     seedCore.setAttribute("cy", String(seed.y));
 
-    // Ambient pulse
-    gsap.to(seedCore, { attr: { r: 10 }, yoyo: true, repeat: -1, duration: 1.8, ease: "sine.inOut" });
+    // Ambient pulse on seed core
+    gsap.to(seedCore, { attr: { r: 12 }, yoyo: true, repeat: -1, duration: 2, ease: "sine.inOut" });
 
-    // Sort by distance
+    // Sort by distance from seed
     const sorted = [...cells].sort((a, b) => {
       const da = (a.x - seed.x) ** 2 + (a.y - seed.y) ** 2;
       const db = (b.x - seed.x) ** 2 + (b.y - seed.y) ** 2;
@@ -148,34 +211,62 @@ const Section9_DeploymentSurfaces = () => {
     });
 
     const total = sorted.length;
-    const tl = gsap.timeline({ defaults: { ease: "power2.out" }, repeat: -1, repeatDelay: 1.5 });
+    const WAVE_DUR = 5;
+    const tl = gsap.timeline({ defaults: { ease: "power2.out" }, repeat: -1, repeatDelay: 2 });
     tlRef.current = tl;
+
+    // Track activated cells for connection lines
+    const activated: { x: number; y: number }[] = [];
 
     sorted.forEach((cell, i) => {
       const p = i / total;
-      const delay = p * 4.5; // slowed from 2.2s to 4.5s total wave
-      const warmFill = seed.accent === "warm";
+      const delay = p * WAVE_DUR;
+      const isWarm = seed.accent === "warm";
 
+      // Activate cell
       tl.add(() => {
-        cell.rect.setAttribute("stroke", "rgba(189,166,255,0.22)");
-        cell.rect.setAttribute("fill", warmFill ? "rgba(232,150,124,0.06)" : "rgba(189,166,255,0.05)");
-        cell.dot.setAttribute("fill", warmFill ? "rgba(242,193,174,0.65)" : "rgba(189,166,255,0.55)");
+        // Cell fill + stroke
+        cell.rect.setAttribute("stroke", isWarm ? "rgba(232,150,124,0.28)" : "rgba(189,166,255,0.25)");
+        cell.rect.setAttribute("fill", isWarm ? "rgba(232,150,124,0.05)" : "rgba(189,166,255,0.04)");
+        // Dot color
+        cell.dot.setAttribute("fill", isWarm ? "rgba(242,193,174,0.85)" : "rgba(189,166,255,0.75)");
+        // Halo glow
+        cell.halo.setAttribute("fill", isWarm ? "rgba(232,150,124,0.12)" : "rgba(189,166,255,0.10)");
+
+        // Draw connection lines to nearest 2 already-activated cells
+        const nearest = activated
+          .map((a) => ({ ...a, d: (a.x - cell.x) ** 2 + (a.y - cell.y) ** 2 }))
+          .sort((a, b) => a.d - b.d)
+          .slice(0, 2);
+        nearest.forEach((n) => {
+          if (n.d < (CELL_W * 3) ** 2) {
+            drawConnection(cell.x, cell.y, n.x, n.y, seed.accent);
+          }
+        });
+
+        activated.push({ x: cell.x, y: cell.y });
       }, delay);
 
-      tl.to(cell.dot, {
-        attr: { r: 3.4 },
-        duration: 0.3,
-      }, delay);
+      // Dot grows
+      tl.to(cell.dot, { attr: { r: 3.8 }, duration: 0.35 }, delay);
+      // Halo grows
+      tl.to(cell.halo, { attr: { r: 12 }, duration: 0.5 }, delay);
 
-      if (i % 34 === 0) {
-        const labelIdx = (i / 34) % 3;
-        tl.add(() => stamp(STAMP_LABELS[labelIdx], cell.x, cell.y, seed.accent), delay + 0.2);
+      // Ripple rings at wave front intervals
+      if (i % 25 === 0 && i > 0) {
+        tl.add(() => spawnRipple(cell.x, cell.y, seed.accent), delay);
+      }
+
+      // Stamps
+      if (i % 30 === 0 && i > 0) {
+        const labelIdx = Math.floor(i / 30) % 3;
+        tl.add(() => stamp(STAMP_LABELS[labelIdx], cell.x, cell.y, seed.accent), delay + 0.25);
       }
     });
 
-    // Coverage meter
+    // Coverage meter (synced to wave)
     tl.to({}, {
-      duration: 4.5,
+      duration: WAVE_DUR,
       onUpdate: function (this: gsap.core.Tween) {
         const prog = this.progress();
         const val = Math.round(TARGET_COVERAGE * prog);
@@ -184,22 +275,32 @@ const Section9_DeploymentSurfaces = () => {
       },
     }, 0);
 
-    // Seed halo pulse
-    tl.to(seedHalo, { attr: { r: 110 }, duration: 1.2, ease: "sine.out" }, 0.3);
-    tl.to(seedHalo, { attr: { r: 90 }, duration: 1.8, ease: "sine.inOut" }, 1.5);
+    // Seed halo breathing
+    tl.to(seedHalo, { attr: { r: 130 }, duration: 1.5, ease: "sine.out" }, 0.3);
+    tl.to(seedHalo, { attr: { r: 90 }, duration: 2, ease: "sine.inOut" }, 2);
 
-    // Reset cells at loop restart
+    // Expanding wave rings from seed
+    [0.2, 0.8, 1.6, 2.6].forEach((t0) => {
+      tl.add(() => spawnRipple(seed.x, seed.y, seed.accent), t0);
+    });
+
+    // Reset at end for clean loop
     tl.add(() => {
       cells.forEach((cell) => {
-        cell.rect.setAttribute("stroke", "rgba(189,166,255,0.10)");
+        cell.rect.setAttribute("stroke", "rgba(189,166,255,0.08)");
         cell.rect.setAttribute("fill", "rgba(255,255,255,0.00)");
-        cell.dot.setAttribute("fill", "rgba(189,166,255,0.18)");
-        cell.dot.setAttribute("r", "2.2");
+        cell.dot.setAttribute("fill", "rgba(189,166,255,0.15)");
+        cell.dot.setAttribute("r", "2");
+        cell.halo.setAttribute("fill", seed.accent === "warm" ? "rgba(232,150,124,0.0)" : "rgba(189,166,255,0.0)");
+        cell.halo.setAttribute("r", "0");
       });
+      linesG.innerHTML = "";
+      ripplesG.innerHTML = "";
+      activated.length = 0;
       fillEl.style.width = "0%";
       valEl.textContent = "0%";
-    }, 4.5 + 1.5);
-  }, [stamp]);
+    }, WAVE_DUR + 2);
+  }, [stamp, spawnRipple, drawConnection]);
 
   /* ── Intersection Observer — auto run once ── */
   useEffect(() => {
@@ -241,7 +342,7 @@ const Section9_DeploymentSurfaces = () => {
         `,
       }}
     >
-      {/* Noise texture overlay */}
+      {/* Noise texture */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.04]"
         style={{
@@ -390,7 +491,7 @@ const Section9_DeploymentSurfaces = () => {
                 <stop offset="100%" stopColor="#BDA6FF" stopOpacity="0" />
               </radialGradient>
               <filter id="s9SoftGlow" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation="6" result="b" />
+                <feGaussianBlur stdDeviation="8" result="b" />
                 <feMerge>
                   <feMergeNode in="b" />
                   <feMergeNode in="SourceGraphic" />
@@ -398,13 +499,22 @@ const Section9_DeploymentSurfaces = () => {
               </filter>
             </defs>
 
+            {/* Connection lines layer (behind cells) */}
+            <g ref={linesRef} />
+
+            {/* Cells layer */}
             <g ref={cellsRef} />
 
+            {/* Ripple rings layer */}
+            <g ref={ripplesRef} />
+
+            {/* Seed */}
             <g>
               <circle ref={seedHaloRef} cx="450" cy="260" r="90" fill="url(#s9SeedGlow)" />
               <circle ref={seedCoreRef} cx="450" cy="260" r="8" fill="#BDA6FF" filter="url(#s9SoftGlow)" />
             </g>
 
+            {/* Stamps layer (on top) */}
             <g ref={stampsRef} />
           </svg>
 
@@ -436,6 +546,7 @@ const Section9_DeploymentSurfaces = () => {
                   borderRadius: "999px",
                   background: "linear-gradient(90deg, #BDA6FF, #E8967C, #F2C1AE)",
                   filter: "drop-shadow(0 0 12px rgba(232,150,124,0.25))",
+                  transition: "width 0.1s linear",
                 }}
               />
             </div>
