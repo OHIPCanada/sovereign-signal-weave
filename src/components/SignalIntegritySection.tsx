@@ -219,13 +219,13 @@ const SignalIntegritySection = () => {
       ref={sectionRef}
       className="relative overflow-hidden"
       style={{
-        padding: "clamp(64px, 7vw, 110px) 0",
+        padding: "clamp(64px, 8vw, 120px) 0",
         background: `
-          radial-gradient(900px 500px at 70% 40%, rgba(90,32,184,0.06), transparent 60%),
-          radial-gradient(700px 500px at 55% 50%, rgba(232,150,124,0.05), transparent 60%),
-          linear-gradient(180deg, #F7F3FF, #FFFFFF)
+          radial-gradient(1100px 700px at 20% 20%, rgba(110,59,255,0.18), transparent 55%),
+          radial-gradient(900px 600px at 80% 70%, rgba(232,150,124,0.20), transparent 60%),
+          linear-gradient(180deg, #FBF7FF 0%, #FFF7F1 55%, #FBF7FF 100%)
         `,
-        color: "#1A1A2E",
+        color: "#140A2A",
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
