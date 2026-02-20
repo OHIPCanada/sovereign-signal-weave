@@ -53,7 +53,6 @@ const SignalIntegritySection = () => {
       svg.querySelector(s)
     ).filter(Boolean) as SVGPathElement[];
 
-    const scanMaskRect = svg.querySelector("#scanMaskRect") as SVGRectElement;
     const scanBar = svg.querySelector("#scanBar") as SVGRectElement;
     const planeWarm = svg.querySelector("#planeWarm") as SVGRectElement;
     const pulse = svg.querySelector("#pulse") as SVGCircleElement;
@@ -101,28 +100,26 @@ const SignalIntegritySection = () => {
 
     verifyTL
       // scan setup
-      .set(scanMaskRect, { attr: { y: -520 } }, 0)
-      .set(scanBar, { attr: { y: 0 }, opacity: 0.7 }, 0)
+      .set(scanBar, { attr: { y: 0 }, opacity: 0.9 }, 0)
 
-      // warm plane ON during scan
-      .to(planeWarm, { opacity: 0.28, duration: 0.35, ease: "power2.out" }, 0.1)
+      // warm plane ON during scan — high intensity
+      .to(planeWarm, { opacity: 0.55, duration: 0.4, ease: "power2.out" }, 0.1)
 
       // scan sweep down
-      .to(scanMaskRect, { attr: { y: 0 }, duration: 1.0, ease: "power2.inOut" }, 0.1)
       .to(scanBar, { attr: { y: 500 }, duration: 1.0, ease: "power2.inOut" }, 0.1)
-      .to(scanBar, { opacity: 0, duration: 0.25, ease: "power2.out" }, 0.9)
+      .to(scanBar, { opacity: 0, duration: 0.3, ease: "power2.out" }, 0.9)
 
       // dampen input wobble after scan
       .to(inLines, { x: 0, y: 0, rotation: 0, duration: 0.9, ease: "power2.out" }, 0.8)
 
       // brighten output = verified
-      .to(outLines, { attr: { "stroke-opacity": 0.62 }, duration: 0.6, ease: "power2.out" }, 0.85)
+      .to(outLines, { attr: { "stroke-opacity": 0.75 }, duration: 0.6, ease: "power2.out" }, 0.85)
 
       // verification pulse
       .add(() => runPulse(), 1.05)
 
-      // warm plane settles back slightly (stays faintly on)
-      .to(planeWarm, { opacity: 0.16, duration: 0.7, ease: "sine.out" }, 1.35);
+      // warm plane settles back (stays visible)
+      .to(planeWarm, { opacity: 0.3, duration: 0.7, ease: "sine.out" }, 1.35);
 
     /* ── ScrollTrigger ── */
     ScrollTrigger.create({
@@ -145,7 +142,7 @@ const SignalIntegritySection = () => {
     return () => {
       verifyTL.kill();
       wobble.kill();
-      gsap.killTweensOf([...inLines, ...outLines, scanMaskRect, scanBar, planeWarm, pulse]);
+      gsap.killTweensOf([...inLines, ...outLines, scanBar, planeWarm, pulse]);
     };
   }, []);
 
@@ -307,10 +304,6 @@ const SignalIntegritySection = () => {
                 <stop offset="50%" stopColor="#E8967C" stopOpacity={0.2} />
                 <stop offset="100%" stopColor="#F2C1AE" stopOpacity={0.1} />
               </linearGradient>
-              {/* Scan mask — clips scan reveal */}
-              <clipPath id="scanClip9">
-                <rect id="scanMaskRect" x="0" y="-520" width={SVG_W} height={SVG_H} />
-              </clipPath>
             </defs>
 
             {/* Subtle background radial for depth */}
@@ -393,14 +386,14 @@ const SignalIntegritySection = () => {
             {/* ── Scan bar (animated top→bottom) ── */}
             <rect
               id="scanBar"
-              x={480}
+              x={470}
               y={0}
-              width={120}
-              height={4}
-              rx={2}
-              fill="rgba(212,97,107,0.7)"
+              width={140}
+              height={6}
+              rx={3}
+              fill="#D4616B"
               opacity={0}
-              filter="url(#sigGlow9)"
+              filter="url(#pulseGlow9)"
             />
 
             {/* ── OUTPUT wave paths (clean, right side) ── */}
