@@ -239,13 +239,8 @@ const SignalIntegritySection = () => {
     }
 
     // ── Animation loop ──
+    // Animation loop started below after mouse setup
     let raf: number;
-    function tick() {
-      state.time += 0.016;
-      draw();
-      raf = requestAnimationFrame(tick);
-    }
-    raf = requestAnimationFrame(tick);
 
     // ── Entrance ──
     gsap.set(textEl, { opacity: 0, y: 40 });
@@ -302,9 +297,46 @@ const SignalIntegritySection = () => {
       },
     });
 
+    // ── Mouse parallax ──
+    const mouse = { x: 0, y: 0 };
+    const smoothMouse = { x: 0, y: 0 };
+
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = canvas.parentElement!.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;  // -1 to 1
+      mouse.y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    };
+
+    const onMouseLeave = () => {
+      mouse.x = 0;
+      mouse.y = 0;
+    };
+
+    const parentEl = canvas.parentElement!;
+    parentEl.addEventListener("mousemove", onMouseMove);
+    parentEl.addEventListener("mouseleave", onMouseLeave);
+
+    // Smooth lerp for mouse in animation loop
+    function tickWithMouse() {
+      state.time += 0.016;
+      smoothMouse.x += (mouse.x - smoothMouse.x) * 0.08;
+      smoothMouse.y += (mouse.y - smoothMouse.y) * 0.08;
+
+      // Apply 3D transform via CSS
+      const rotY = -8 + smoothMouse.x * 12;
+      const rotX = 3 - smoothMouse.y * 8;
+      canvas.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+
+      draw();
+      raf = requestAnimationFrame(tickWithMouse);
+    }
+    raf = requestAnimationFrame(tickWithMouse);
+
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      parentEl.removeEventListener("mousemove", onMouseMove);
+      parentEl.removeEventListener("mouseleave", onMouseLeave);
       gsap.killTweensOf(state);
       verifyTL.kill();
       ScrollTrigger.getAll().forEach((st) => st.kill());
@@ -397,7 +429,7 @@ const SignalIntegritySection = () => {
             position: "relative",
             width: "100%",
             aspectRatio: "2.2 / 1",
-            perspective: "800px",
+            perspective: "600px",
           }}
         >
           <canvas
@@ -407,8 +439,9 @@ const SignalIntegritySection = () => {
               inset: 0,
               width: "100%",
               height: "100%",
-              transform: "rotateY(-4deg) rotateX(2deg)",
+              transform: "rotateY(-8deg) rotateX(3deg)",
               transformStyle: "preserve-3d",
+              transition: "none",
             }}
           />
         </div>
