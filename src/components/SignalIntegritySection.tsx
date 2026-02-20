@@ -467,20 +467,21 @@ const SignalIntegritySection = () => {
       {/* Top — Copy (centered) */}
       <div ref={textRef} style={{ maxWidth: "min(720px, 90vw)", textAlign: "center", marginBottom: "clamp(40px, 5vw, 64px)" }}>
         <div
-          className="font-mono uppercase"
-          style={{ fontSize: 12, letterSpacing: "3px", color: "rgba(90,32,184,0.55)", marginBottom: 18 }}
+          className="font-mono uppercase mb-5"
+          style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(90,32,184,0.45)" }}
         >
           [ TRUST AT SYSTEM SCALE ]
         </div>
 
         <h2
+          className="mb-5"
           style={{
-            fontSize: "clamp(44px, 5vw, 64px)",
+            fontSize: "clamp(44px, 5.2vw, 84px)",
             fontWeight: 800,
-            lineHeight: 1.0,
+            lineHeight: 0.95,
             letterSpacing: "-0.02em",
-            margin: "0 0 18px 0",
             color: "#1A1A2E",
+            textShadow: "0 10px 40px rgba(0,0,0,0.08)",
           }}
         >
           Trusted by systems that cannot fail.
@@ -488,10 +489,10 @@ const SignalIntegritySection = () => {
 
         <p
           style={{
-            fontSize: 18,
-            lineHeight: 1.6,
-            color: "rgba(26,26,46,0.65)",
-            maxWidth: "520px",
+            fontSize: "clamp(15px, 1.25vw, 18px)",
+            lineHeight: 1.55,
+            color: "rgba(26,26,46,0.72)",
+            maxWidth: "46ch",
             margin: "0 auto 22px",
           }}
         >
