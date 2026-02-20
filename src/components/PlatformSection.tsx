@@ -247,7 +247,7 @@ const PlatformSection = () => {
       }} />
 
       <div className="relative z-10 max-w-[1280px] mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-16 lg:gap-20 items-center w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] items-center w-full" style={{ gap: "clamp(48px, 6vw, 96px)" }}>
           {/* ── Left: Narrative ── */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
