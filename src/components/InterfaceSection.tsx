@@ -228,7 +228,7 @@ const InterfaceSection = () => {
         style={{ width: "min(1200px, 92vw)" }}
       >
         {/* Header */}
-        <div className="mb-7">
+        <div className="mb-7 text-center">
           <div
             className="font-mono uppercase mb-5"
             style={{
@@ -257,6 +257,7 @@ const InterfaceSection = () => {
               lineHeight: 1.55,
               color: "rgba(20, 10, 42, 0.72)",
               maxWidth: "46ch",
+              margin: "0 auto",
             }}
           >
             DocG AI integrates directly into clinical operations — without
