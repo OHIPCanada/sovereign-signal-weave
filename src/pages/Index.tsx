@@ -8,6 +8,7 @@ import DeploymentSection from "@/components/DeploymentSection";
 import InterfaceSection from "@/components/InterfaceSection";
 import SovereigntySection from "@/components/SovereigntySection";
 import SignalIntegritySection from "@/components/SignalIntegritySection";
+import Section9_DeploymentSurfaces from "@/components/Section9_DeploymentSurfaces";
 import TrustSection from "@/components/TrustSection";
 
 const Index = () => {
@@ -23,6 +24,7 @@ const Index = () => {
       <InterfaceSection />
       <SovereigntySection />
       <SignalIntegritySection />
+      <Section9_DeploymentSurfaces />
       <TrustSection />
       
       {/* Footer */}
