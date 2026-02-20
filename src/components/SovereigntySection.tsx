@@ -307,7 +307,7 @@ const SovereigntySection = () => {
         style={{
           maxWidth: "min(1280px, 94vw)",
           gridTemplateColumns: "0.45fr 1fr",
-          gap: "clamp(80px, 10vw, 160px)",
+          gap: "clamp(120px, 14vw, 220px)",
         }}
       >
         {/* Left — Text */}
