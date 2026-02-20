@@ -24,17 +24,23 @@ const badges = [
 
 const TrustSection = () => {
   return (
-    <section className="relative" style={{ padding: "clamp(64px, 7vw, 110px) 0", background: 'linear-gradient(180deg, #F6F7FB 0%, #F4F0EE 50%, #F0E8E4 100%)' }} id="pricing">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+    <section className="relative" style={{ padding: "clamp(64px, 8vw, 120px) 0", background: 'linear-gradient(180deg, #F6F7FB 0%, #F4F0EE 50%, #F0E8E4 100%)' }} id="pricing">
+      <div
+        className="relative z-10 mx-auto flex flex-col items-center"
+        style={{
+          width: "min(1200px, 92vw)",
+          gap: "clamp(48px, 6vw, 80px)",
+        }}
+      >
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center"
         >
-          <p className="mono-label mb-5" style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(17,17,17,0.45)" }}>
+          <p className="font-mono uppercase mb-5" style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(20, 10, 42, 0.45)" }}>
             [ SOVEREIGNTY AS A MOAT ]
           </p>
           <h2 className="mb-5" style={{
@@ -42,7 +48,7 @@ const TrustSection = () => {
             fontWeight: 800,
             lineHeight: 0.95,
             letterSpacing: "-0.02em",
-            color: "rgba(17,17,17,0.95)",
+            color: "rgba(20, 10, 42, 0.95)",
             textShadow: "0 10px 40px rgba(0,0,0,0.08)",
           }}>
             Trust Center
@@ -50,7 +56,7 @@ const TrustSection = () => {
           <p style={{
             fontSize: "clamp(15px, 1.25vw, 18px)",
             lineHeight: 1.55,
-            color: "rgba(17,17,17,0.72)",
+            color: "rgba(20, 10, 42, 0.72)",
             maxWidth: "46ch",
             margin: "0 auto",
           }}>
