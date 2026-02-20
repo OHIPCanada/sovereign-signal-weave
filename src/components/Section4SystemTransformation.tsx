@@ -318,7 +318,7 @@ export default function Section4SystemTransformation() {
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[0.35fr_1.65fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
           {/* Left content */}
           <div className="flex flex-col gap-5">
             <motion.p
