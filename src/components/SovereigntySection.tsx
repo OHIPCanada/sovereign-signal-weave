@@ -306,7 +306,7 @@ const SovereigntySection = () => {
         className="relative z-10 mx-auto w-full grid items-center"
         style={{
           maxWidth: "min(1280px, 94vw)",
-          gridTemplateColumns: "0.45fr 1fr",
+          gridTemplateColumns: "0.35fr 1.15fr",
           gap: "clamp(120px, 14vw, 220px)",
         }}
       >
