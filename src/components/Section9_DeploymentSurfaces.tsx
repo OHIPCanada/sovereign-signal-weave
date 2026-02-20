@@ -39,7 +39,7 @@ const Section9_DeploymentSurfaces = () => {
   const stampsRef = useRef<SVGGElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
   const valRef = useRef<HTMLDivElement>(null);
-  const seedHaloRef = useRef<SVGEllipseElement>(null);
+  const seedHaloRef = useRef<SVGCircleElement>(null);
   const seedCoreRef = useRef<SVGCircleElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const hasAutoRun = useRef(false);
@@ -164,14 +164,14 @@ const Section9_DeploymentSurfaces = () => {
         const cy = y + CELL_H / 2;
 
         const r = document.createElementNS(NS, "rect");
-        r.setAttribute("x", String(x + 4));
-        r.setAttribute("y", String(y + 4));
-        r.setAttribute("rx", "7");
-        r.setAttribute("ry", "7");
-        r.setAttribute("width", String(Math.max(0, CELL_W - 8)));
-        r.setAttribute("height", String(Math.max(0, CELL_H - 8)));
-        r.setAttribute("fill", "rgba(60,30,120,0.35)");
-        r.setAttribute("stroke", "rgba(140,110,220,0.22)");
+        r.setAttribute("x", String(x + 5));
+        r.setAttribute("y", String(y + 5));
+        r.setAttribute("rx", "8");
+        r.setAttribute("ry", "8");
+        r.setAttribute("width", String(Math.max(0, CELL_W - 10)));
+        r.setAttribute("height", String(Math.max(0, CELL_H - 10)));
+        r.setAttribute("fill", "rgba(255,255,255,0.00)");
+        r.setAttribute("stroke", "rgba(189,166,255,0.08)");
         r.setAttribute("stroke-width", "1");
 
         // Glow halo behind dot
@@ -184,8 +184,8 @@ const Section9_DeploymentSurfaces = () => {
         const c = document.createElementNS(NS, "circle");
         c.setAttribute("cx", String(cx));
         c.setAttribute("cy", String(cy));
-        c.setAttribute("r", "1.8");
-        c.setAttribute("fill", "rgba(160,130,255,0.30)");
+        c.setAttribute("r", "2");
+        c.setAttribute("fill", "rgba(189,166,255,0.15)");
 
         cellsG.appendChild(r);
         cellsG.appendChild(h);
@@ -275,9 +275,9 @@ const Section9_DeploymentSurfaces = () => {
       },
     }, 0);
 
-    // Seed halo breathing (ellipse uses rx/ry)
-    tl.to(seedHalo, { attr: { rx: 130, ry: 195 }, duration: 1.5, ease: "sine.out" }, 0.3);
-    tl.to(seedHalo, { attr: { rx: 90, ry: 140 }, duration: 2, ease: "sine.inOut" }, 2);
+    // Seed halo breathing
+    tl.to(seedHalo, { attr: { r: 130 }, duration: 1.5, ease: "sine.out" }, 0.3);
+    tl.to(seedHalo, { attr: { r: 90 }, duration: 2, ease: "sine.inOut" }, 2);
 
     // Expanding wave rings from seed
     [0.2, 0.8, 1.6, 2.6].forEach((t0) => {
@@ -287,10 +287,10 @@ const Section9_DeploymentSurfaces = () => {
     // Reset at end for clean loop
     tl.add(() => {
       cells.forEach((cell) => {
-        cell.rect.setAttribute("stroke", "rgba(140,110,220,0.22)");
-        cell.rect.setAttribute("fill", "rgba(60,30,120,0.35)");
-        cell.dot.setAttribute("fill", "rgba(160,130,255,0.30)");
-        cell.dot.setAttribute("r", "1.8");
+        cell.rect.setAttribute("stroke", "rgba(189,166,255,0.08)");
+        cell.rect.setAttribute("fill", "rgba(255,255,255,0.00)");
+        cell.dot.setAttribute("fill", "rgba(189,166,255,0.15)");
+        cell.dot.setAttribute("r", "2");
         cell.halo.setAttribute("fill", seed.accent === "warm" ? "rgba(232,150,124,0.0)" : "rgba(189,166,255,0.0)");
         cell.halo.setAttribute("r", "0");
       });
@@ -451,23 +451,32 @@ const Section9_DeploymentSurfaces = () => {
           ref={stageRef}
           className="relative overflow-hidden"
           style={{
-            borderRadius: "20px",
-            border: "1px solid rgba(120,90,200,0.22)",
-            background: "#1A0A3E",
-            boxShadow: "0 40px 120px rgba(0,0,0,0.6), inset 0 1px 0 rgba(189,166,255,0.08)",
+            borderRadius: "26px",
+            border: "1px solid rgba(189,166,255,0.18)",
+            background: `
+              radial-gradient(800px 520px at 40% 40%, rgba(91,29,179,0.25) 0%, transparent 60%),
+              radial-gradient(520px 520px at 75% 65%, rgba(232,150,124,0.16) 0%, transparent 55%),
+              rgba(255,255,255,0.02)
+            `,
+            boxShadow: "0 40px 120px rgba(0,0,0,0.45)",
             minHeight: "520px",
           }}
         >
-          {/* Subtle inner vignette */}
+          {/* Faint grid overlay */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(60,20,120,0.0) 0%, rgba(10,4,30,0.45) 100%)",
+              backgroundImage: `
+                linear-gradient(to right, rgba(189,166,255,0.12) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(189,166,255,0.12) 1px, transparent 1px)
+              `,
+              backgroundSize: "48px 48px",
+              opacity: 0.25,
             }}
           />
 
           <svg
-             ref={svgRef}
+            ref={svgRef}
             viewBox="0 0 900 520"
             width="100%"
             height="100%"
@@ -476,23 +485,13 @@ const Section9_DeploymentSurfaces = () => {
             style={{ minHeight: "520px" }}
           >
             <defs>
-              {/* Tall elliptical warm gradient — matches screenshot */}
-              <radialGradient id="s9SeedGlow" cx="50%" cy="50%" r="50%" gradientTransform="scale(1, 1.65) translate(0, -0.19)">
-                <stop offset="0%" stopColor="#F2C1AE" stopOpacity="0.72" />
-                <stop offset="18%" stopColor="#E8967C" stopOpacity="0.55" />
-                <stop offset="45%" stopColor="#C07060" stopOpacity="0.28" />
-                <stop offset="75%" stopColor="#7B3A8A" stopOpacity="0.12" />
-                <stop offset="100%" stopColor="#3A1060" stopOpacity="0" />
+              <radialGradient id="s9SeedGlow" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stopColor="#F2C1AE" stopOpacity="0.55" />
+                <stop offset="35%" stopColor="#E8967C" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#BDA6FF" stopOpacity="0" />
               </radialGradient>
-              <filter id="s9SoftGlow" x="-100%" y="-100%" width="300%" height="300%">
-                <feGaussianBlur stdDeviation="5" result="b" />
-                <feMerge>
-                  <feMergeNode in="b" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <filter id="s9CoreGlow" x="-200%" y="-200%" width="500%" height="500%">
-                <feGaussianBlur stdDeviation="10" result="b" />
+              <filter id="s9SoftGlow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="8" result="b" />
                 <feMerge>
                   <feMergeNode in="b" />
                   <feMergeNode in="SourceGraphic" />
@@ -509,12 +508,10 @@ const Section9_DeploymentSurfaces = () => {
             {/* Ripple rings layer */}
             <g ref={ripplesRef} />
 
-            {/* Seed — tall elliptical glow + bright white core */}
+            {/* Seed */}
             <g>
-              {/* Outer warm ellipse glow */}
-              <ellipse ref={seedHaloRef} cx="450" cy="260" rx="90" ry="140" fill="url(#s9SeedGlow)" />
-              {/* Bright white core dot */}
-              <circle ref={seedCoreRef} cx="450" cy="260" r="8" fill="rgba(255,255,255,0.95)" filter="url(#s9CoreGlow)" />
+              <circle ref={seedHaloRef} cx="450" cy="260" r="90" fill="url(#s9SeedGlow)" />
+              <circle ref={seedCoreRef} cx="450" cy="260" r="8" fill="#BDA6FF" filter="url(#s9SoftGlow)" />
             </g>
 
             {/* Stamps layer (on top) */}
@@ -523,22 +520,22 @@ const Section9_DeploymentSurfaces = () => {
 
           {/* Coverage meter */}
           <div
-            className="absolute left-[20px] right-[20px] bottom-[18px] flex items-center gap-3 z-20"
+            className="absolute left-[22px] right-[22px] bottom-[18px] flex items-center gap-3 z-20"
             style={{
-              color: "rgba(243,239,255,0.55)",
-              fontSize: "11px",
-              letterSpacing: "0.18em",
+              color: "rgba(243,239,255,0.70)",
+              fontSize: "12px",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
-              fontFamily: "JetBrains Mono, Geist Mono, monospace",
             }}
           >
-            <div style={{ whiteSpace: "nowrap" }}>System coverage</div>
+            <div>System coverage</div>
             <div
               className="flex-1 overflow-hidden"
               style={{
-                height: "4px",
+                height: "10px",
                 borderRadius: "999px",
-                background: "rgba(255,255,255,0.07)",
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(189,166,255,0.18)",
               }}
             >
               <div
@@ -547,14 +544,15 @@ const Section9_DeploymentSurfaces = () => {
                   height: "100%",
                   width: "0%",
                   borderRadius: "999px",
-                  background: "linear-gradient(90deg, #BDA6FF 0%, #E8967C 60%, #F2C1AE 100%)",
+                  background: "linear-gradient(90deg, #BDA6FF, #E8967C, #F2C1AE)",
+                  filter: "drop-shadow(0 0 12px rgba(232,150,124,0.25))",
                   transition: "width 0.1s linear",
                 }}
               />
             </div>
             <div
               ref={valRef}
-              style={{ minWidth: "36px", textAlign: "right", color: "rgba(243,239,255,0.75)" }}
+              style={{ minWidth: "70px", textAlign: "right", color: "rgba(243,239,255,0.85)" }}
             >
               0%
             </div>
