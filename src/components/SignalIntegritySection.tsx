@@ -11,6 +11,7 @@ const SignalIntegritySection = () => {
   const textRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const reflectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -251,6 +252,13 @@ const SignalIntegritySection = () => {
       if (cardEl) {
         cardEl.style.transform = `rotateX(${smoothCard.rx}deg) rotateY(${smoothCard.ry}deg) scale3d(1.02,1.02,1)`;
       }
+      // Shift reflection layer with tilt
+      const refEl = reflectionRef.current;
+      if (refEl) {
+        const rx = 50 + smoothCard.ry * 2.5;
+        const ry = 30 + smoothCard.rx * -2;
+        refEl.style.background = `radial-gradient(ellipse at ${rx}% ${ry}%, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.04) 35%, transparent 70%)`;
+      }
 
       raf = requestAnimationFrame(draw);
     }
@@ -416,6 +424,20 @@ const SignalIntegritySection = () => {
               borderRadius: "0 0 24px 24px",
               pointerEvents: "none",
               zIndex: 2,
+            }}
+          />
+          {/* Reflection layer — shifts with tilt */}
+          <div
+            ref={reflectionRef}
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 24,
+              pointerEvents: "none",
+              zIndex: 3,
+              background: "radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.04) 35%, transparent 70%)",
+              mixBlendMode: "screen",
+              transition: "none",
             }}
           />
           {/* Subtle inset border for glass edge */}
