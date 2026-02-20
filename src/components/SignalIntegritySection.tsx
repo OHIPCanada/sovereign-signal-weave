@@ -39,11 +39,11 @@ const SignalIntegritySection = () => {
 
     // Color palette per line (violet → coral gradient)
     const lineColors = [
-      { r: 88, g: 40, b: 255 },    // deep electric violet
-      { r: 130, g: 30, b: 220 },   // saturated violet
-      { r: 200, g: 30, b: 160 },   // vivid magenta
-      { r: 220, g: 60, b: 80 },    // bold coral-red
-      { r: 240, g: 110, b: 70 },   // rich warm orange
+      { r: 123, g: 97, b: 255 },   // electric violet
+      { r: 140, g: 80, b: 230 },   // mid violet
+      { r: 180, g: 70, b: 180 },   // magenta blend
+      { r: 212, g: 97, b: 107 },   // warm coral
+      { r: 232, g: 150, b: 124 },  // peach
     ];
 
     const state = {
@@ -207,10 +207,10 @@ const SignalIntegritySection = () => {
           c.lineWidth = 3.5;
         } else {
           // Gradient-like opacity: brighter near center
-          c.strokeStyle = `rgba(${col.r},${col.g},${col.b},${0.85 + i * 0.03})`;
-          c.lineWidth = 2.8 * depthScale;
-          c.shadowColor = `rgba(${col.r},${col.g},${col.b},0.45)`;
-          c.shadowBlur = 10 * state.depth;
+          c.strokeStyle = `rgba(${col.r},${col.g},${col.b},${0.55 + i * 0.04})`;
+          c.lineWidth = 2.2 * depthScale;
+          c.shadowColor = `rgba(${col.r},${col.g},${col.b},0.3)`;
+          c.shadowBlur = 6 * state.depth;
         }
         c.lineCap = "round";
         c.lineJoin = "round";
