@@ -350,11 +350,11 @@ const SignalIntegritySection = () => {
       style={{
         padding: "110px 0",
         background: `
-          radial-gradient(800px 600px at 25% 45%, rgba(90,32,184,0.25), transparent 55%),
-          radial-gradient(700px 500px at 75% 50%, rgba(212,97,107,0.12), transparent 55%),
-          linear-gradient(180deg, #0E0620 0%, #140A2A 40%, #1A0833 70%, #0E0620 100%)
+          radial-gradient(1100px 700px at 20% 20%, rgba(110,59,255,0.14), transparent 55%),
+          radial-gradient(900px 600px at 80% 70%, rgba(232,150,124,0.16), transparent 60%),
+          linear-gradient(180deg, #F7F3FF 0%, #FFFFFF 50%, #FFF7F2 100%)
         `,
-        color: "#E8E0F0",
+        color: "#140A2A",
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
@@ -372,7 +372,7 @@ const SignalIntegritySection = () => {
         <div ref={textRef}>
           <div
             className="font-mono uppercase"
-            style={{ fontSize: 12, letterSpacing: "0.28em", color: "rgba(191,167,255,0.6)", marginBottom: 16 }}
+            style={{ fontSize: 12, letterSpacing: "0.28em", color: "rgba(90,32,184,0.55)", marginBottom: 16 }}
           >
             [ TRUST AT SYSTEM SCALE ]
           </div>
@@ -384,7 +384,7 @@ const SignalIntegritySection = () => {
               lineHeight: 0.98,
               letterSpacing: "-0.02em",
               margin: "0 0 18px 0",
-              color: "#F0E8FA",
+              color: "#1A1A2E",
             }}
           >
             Trusted by systems that cannot fail.
@@ -394,7 +394,7 @@ const SignalIntegritySection = () => {
             style={{
               fontSize: 16,
               lineHeight: 1.65,
-              color: "rgba(240,232,250,0.6)",
+              color: "rgba(26,26,46,0.65)",
               maxWidth: "44ch",
               margin: "0 0 22px 0",
             }}
@@ -408,8 +408,8 @@ const SignalIntegritySection = () => {
               <div
                 key={p}
                 style={{
-                  border: "1px solid rgba(191,167,255,0.2)",
-                  color: "rgba(240,232,250,0.7)",
+                  border: "1px solid rgba(90,32,184,0.15)",
+                  color: "rgba(26,26,46,0.7)",
                   padding: "8px 12px",
                   borderRadius: 999,
                   fontSize: 12,
