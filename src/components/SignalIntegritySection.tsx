@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const PILLS = ["Integrity", "Traceability", "Jurisdiction"];
+const CHIPS = ["Integrity", "Traceability", "Jurisdiction"];
 
 const SignalIntegritySection = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -17,232 +17,186 @@ const SignalIntegritySection = () => {
     const canvas = canvasRef.current;
     if (!section || !textEl || !canvas) return;
 
-    const c = canvas.getContext("2d")!;
-    if (!c) return;
+    const ctx = canvas.getContext("2d")!;
+    if (!ctx) return;
 
-    const resize = () => {
-      const rect = canvas.parentElement!.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio, 2);
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = rect.width + "px";
-      canvas.style.height = rect.height + "px";
-      c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
+
+    function resize() {
+      const r = canvas!.getBoundingClientRect();
+      canvas!.width = Math.floor(r.width * DPR);
+      canvas!.height = Math.floor(r.height * DPR);
+    }
     resize();
     window.addEventListener("resize", resize);
 
-    const W = () => canvas.width / Math.min(window.devicePixelRatio, 2);
-    const H = () => canvas.height / Math.min(window.devicePixelRatio, 2);
+    // Rails (coordinated care lanes)
+    const rails = [0.28, 0.42, 0.56, 0.70];
 
-    const LINE_COUNT = 5;
+    // Particles
+    const N = 46;
+    interface Particle {
+      x: number;
+      y: number;
+      vx: number;
+      amp: number;
+      freq: number;
+      phase: number;
+      verified: boolean;
+      warm: boolean;
+      trail: { x: number; y: number; v: boolean }[];
+    }
 
-    // Color palette per line (violet → coral gradient)
-    const lineColors = [
-      { r: 123, g: 97, b: 255 },   // electric violet
-      { r: 140, g: 80, b: 230 },   // mid violet
-      { r: 180, g: 70, b: 180 },   // magenta blend
-      { r: 212, g: 97, b: 107 },   // warm coral
-      { r: 232, g: 150, b: 124 },  // peach
-    ];
-
-    const state = {
-      time: 0,
-      wobbleAmp: 1.0,
-      outOpacity: 0.12,
-      scanY: -10,
-      scanOpacity: 0,
-      warmGlow: 0,
-      pulseX: -100,
-      pulseOpacity: 0,
+    const particles: Particle[] = Array.from({ length: N }, () => ({
+      x: -Math.random() * 400,
+      y: Math.random(),
+      vx: 0.0007 + Math.random() * 0.0006,
+      amp: 0.08 + Math.random() * 0.09,
+      freq: 0.6 + Math.random() * 1.2,
+      phase: Math.random() * Math.PI * 2,
       verified: false,
-      depth: 0, // 0→1 for 3D reveal
-    };
+      warm: Math.random() < 0.25,
+      trail: [],
+    }));
 
-    function draw() {
-      const w = W();
-      const h = H();
-      c.clearRect(0, 0, w, h);
+    // Intelligence field bounds
+    const fieldX0 = 0.38;
+    const fieldX1 = 0.70;
 
-      const cx = w * 0.5;
-      const lineSpacing = (h * 0.62) / (LINE_COUNT - 1);
-      const yStart = h * 0.19;
+    const t0 = performance.now();
 
-      // ═══ DEPTH LAYERS (3D shadow planes) ═══
-      // Back shadow layer — subtle depth plane
-      const depthOffset = state.depth * 12;
-      if (depthOffset > 0.5) {
-        c.save();
-        c.globalAlpha = 0.06 * state.depth;
-        c.translate(depthOffset, depthOffset * 1.5);
-        drawWaves(w, h, cx, lineSpacing, yStart, true);
-        c.restore();
-
-        // Mid shadow layer
-        c.save();
-        c.globalAlpha = 0.1 * state.depth;
-        c.translate(depthOffset * 0.5, depthOffset * 0.7);
-        drawWaves(w, h, cx, lineSpacing, yStart, true);
-        c.restore();
+    function snapToRail(yNorm: number) {
+      let bestR = rails[0];
+      let bestD = 999;
+      for (const r of rails) {
+        const d = Math.abs(r - yNorm);
+        if (d < bestD) { bestR = r; bestD = d; }
       }
-
-      // ═══ WARM GLOW ═══
-      if (state.warmGlow > 0.01) {
-        const g1 = c.createRadialGradient(cx, h * 0.5, 0, cx, h * 0.5, h * 0.55);
-        g1.addColorStop(0, `rgba(212,97,107,${state.warmGlow * 0.4})`);
-        g1.addColorStop(0.35, `rgba(180,70,180,${state.warmGlow * 0.2})`);
-        g1.addColorStop(0.7, `rgba(123,97,255,${state.warmGlow * 0.1})`);
-        g1.addColorStop(1, "transparent");
-        c.fillStyle = g1;
-        c.fillRect(0, 0, w, h);
-      }
-
-      // ═══ CENTER VERIFICATION PLANE ═══
-      // Gradient column
-      const planeGrad = c.createLinearGradient(cx, h * 0.02, cx, h * 0.98);
-      planeGrad.addColorStop(0, `rgba(123,97,255,${0.06 + state.warmGlow * 0.12})`);
-      planeGrad.addColorStop(0.5, `rgba(212,97,107,${0.08 + state.warmGlow * 0.15})`);
-      planeGrad.addColorStop(1, `rgba(123,97,255,${0.04 + state.warmGlow * 0.08})`);
-      c.fillStyle = planeGrad;
-      c.fillRect(cx - 1.5, h * 0.03, 3, h * 0.94);
-
-      // Flanking lines with gradient
-      [-22, 22].forEach((off) => {
-        c.beginPath();
-        c.moveTo(cx + off, h * 0.06);
-        c.lineTo(cx + off, h * 0.94);
-        c.strokeStyle = `rgba(123,97,255,${0.04 + state.warmGlow * 0.04})`;
-        c.lineWidth = 0.7;
-        c.stroke();
-      });
-
-      // ═══ MAIN WAVES ═══
-      drawWaves(w, h, cx, lineSpacing, yStart, false);
-
-      // ═══ SCAN BAR ═══
-      if (state.scanOpacity > 0.01) {
-        // Wide glow
-        const sg = c.createLinearGradient(cx - 120, 0, cx + 120, 0);
-        sg.addColorStop(0, "transparent");
-        sg.addColorStop(0.2, `rgba(123,97,255,${state.scanOpacity * 0.5})`);
-        sg.addColorStop(0.5, `rgba(212,97,107,${state.scanOpacity * 0.9})`);
-        sg.addColorStop(0.8, `rgba(232,150,124,${state.scanOpacity * 0.5})`);
-        sg.addColorStop(1, "transparent");
-        c.fillStyle = sg;
-        c.fillRect(cx - 120, state.scanY - 3, 240, 6);
-
-        // Trail
-        const tg = c.createLinearGradient(0, state.scanY - 60, 0, state.scanY);
-        tg.addColorStop(0, "transparent");
-        tg.addColorStop(1, `rgba(212,97,107,${state.scanOpacity * 0.08})`);
-        c.fillStyle = tg;
-        c.fillRect(cx - 80, state.scanY - 60, 160, 60);
-      }
-
-      // ═══ PULSE ═══
-      if (state.pulseOpacity > 0.01) {
-        const py = h * 0.5;
-        // Large outer glow
-        const pg = c.createRadialGradient(state.pulseX, py, 0, state.pulseX, py, 35);
-        pg.addColorStop(0, `rgba(212,97,107,${state.pulseOpacity * 0.7})`);
-        pg.addColorStop(0.4, `rgba(180,70,180,${state.pulseOpacity * 0.3})`);
-        pg.addColorStop(1, "transparent");
-        c.fillStyle = pg;
-        c.fillRect(state.pulseX - 35, py - 35, 70, 70);
-        // Bright core
-        c.beginPath();
-        c.arc(state.pulseX, py, 4, 0, Math.PI * 2);
-        c.fillStyle = `rgba(255,255,255,${state.pulseOpacity * 0.9})`;
-        c.fill();
-        c.beginPath();
-        c.arc(state.pulseX, py, 6, 0, Math.PI * 2);
-        c.fillStyle = `rgba(212,97,107,${state.pulseOpacity * 0.8})`;
-        c.fill();
-      }
-
-      // ═══ LABELS ═══
-      c.font = "11px monospace";
-      c.letterSpacing = "3px";
-      c.fillStyle = "rgba(123,97,255,0.5)";
-      c.textAlign = "left";
-      c.fillText("SIGNAL IN", w * 0.04, yStart - 30);
-
-      c.fillStyle = "rgba(212,97,107,0.55)";
-      c.textAlign = "right";
-      c.fillText("INTEGRITY VERIFIED", w * 0.96, yStart - 30);
-
-      c.fillStyle = `rgba(123,97,255,${state.verified ? 0.4 : 0.0})`;
-      c.textAlign = "center";
-      c.fillText("VERIFY", cx, h * 0.95);
+      return bestR;
     }
 
-    function drawWaves(w: number, h: number, cx: number, lineSpacing: number, yStart: number, isShadow: boolean) {
-      const leftStart = w * 0.04;
-      const leftEnd = cx - 45;
-      const rightStart = cx + 45;
-      const rightEnd = w * 0.96;
-
-      for (let i = 0; i < LINE_COUNT; i++) {
-        const baseY = yStart + i * lineSpacing;
-        const col = lineColors[i];
-        const depthScale = 1 + (i * 0.08) * state.depth; // lines get slightly thicker with depth
-
-        // ── INPUT wave ──
-        c.beginPath();
-        for (let x = leftStart; x <= leftEnd; x += 3) {
-          const t = state.time + i * 0.8;
-          const noise =
-            state.wobbleAmp * (
-              Math.sin(x * 0.04 + t * 1.8 + i * 1.3) * 17 +
-              Math.cos(x * 0.09 + t * 2.2 + i * 0.7) * 10 +
-              Math.sin(x * 0.18 + t * 1.1 + i * 2.1) * 5
-            );
-          const y = baseY + noise;
-          if (x === leftStart) c.moveTo(x, y);
-          else c.lineTo(x, y);
-        }
-
-        if (isShadow) {
-          c.strokeStyle = `rgba(${col.r},${col.g},${col.b},0.12)`;
-          c.lineWidth = 3.5;
-        } else {
-          // Gradient-like opacity: brighter near center
-          c.strokeStyle = `rgba(${col.r},${col.g},${col.b},${0.55 + i * 0.04})`;
-          c.lineWidth = 2.2 * depthScale;
-          c.shadowColor = `rgba(${col.r},${col.g},${col.b},0.3)`;
-          c.shadowBlur = 6 * state.depth;
-        }
-        c.lineCap = "round";
-        c.lineJoin = "round";
-        c.stroke();
-        c.shadowBlur = 0;
-
-        // ── OUTPUT line ──
-        const microDrift = Math.sin(state.time * 0.3 + i * 1.5) * 1.5;
-        c.beginPath();
-        c.moveTo(rightStart, baseY + microDrift);
-        c.lineTo(rightEnd, baseY + microDrift);
-
-        if (isShadow) {
-          c.strokeStyle = `rgba(${col.r},${col.g},${col.b},0.06)`;
-          c.lineWidth = 2.5;
-        } else {
-          c.strokeStyle = `rgba(${col.r},${col.g},${col.b},${state.outOpacity})`;
-          c.lineWidth = 1.8 * depthScale;
-          c.shadowColor = `rgba(${col.r},${col.g},${col.b},0.2)`;
-          c.shadowBlur = 4 * state.depth;
-        }
-        c.lineCap = "round";
-        c.stroke();
-        c.shadowBlur = 0;
-      }
-    }
-
-    // ── Animation loop ──
-    // Animation loop started below after mouse setup
     let raf: number;
 
-    // ── Entrance ──
+    function draw(now: number) {
+      const t = (now - t0) / 1000;
+      const w = canvas!.width;
+      const h = canvas!.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Subtle grid fog
+      ctx.globalAlpha = 0.08;
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 12; i++) {
+        const y = (i / 11) * h;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      // Field glow (center intelligence layer)
+      const gx = ((fieldX0 + fieldX1) / 2) * w;
+      const grad = ctx.createRadialGradient(gx, h * 0.5, h * 0.05, gx, h * 0.5, h * 0.65);
+      grad.addColorStop(0, "rgba(152,80,255,0.25)");
+      grad.addColorStop(0.45, "rgba(152,80,255,0.08)");
+      grad.addColorStop(1, "rgba(152,80,255,0)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Rails on right
+      ctx.strokeStyle = "rgba(255,255,255,0.18)";
+      ctx.lineWidth = 1;
+      rails.forEach((r) => {
+        const y = r * h;
+        ctx.beginPath();
+        ctx.moveTo(fieldX1 * w, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      });
+
+      // Draw particles + trails
+      particles.forEach((p) => {
+        p.x += p.vx * w;
+        const xn = p.x / w;
+
+        let y = p.y + Math.sin(t * p.freq + p.phase) * p.amp;
+
+        // Inside field: converge to lane
+        if (xn > fieldX0 && xn < fieldX1) {
+          const k = (xn - fieldX0) / (fieldX1 - fieldX0);
+          const target = snapToRail(y);
+          y = y * (1 - k) + target * k;
+          if (k > 0.7) p.verified = true;
+        }
+
+        // After field: stick to rail
+        if (xn >= fieldX1) {
+          const target = snapToRail(y);
+          y = y * 0.15 + target * 0.85;
+        }
+
+        y = Math.max(0.06, Math.min(0.94, y));
+        const px = p.x;
+        const py = y * h;
+
+        // Trail (audit ghost)
+        p.trail.push({ x: px, y: py, v: p.verified });
+        if (p.trail.length > 46) p.trail.shift();
+
+        ctx.beginPath();
+        for (let i = 0; i < p.trail.length; i++) {
+          const tr = p.trail[i];
+          if (i === 0) ctx.moveTo(tr.x, tr.y);
+          else ctx.lineTo(tr.x, tr.y);
+        }
+        ctx.strokeStyle = p.verified
+          ? "rgba(242,193,174,0.14)"
+          : "rgba(255,255,255,0.07)";
+        ctx.lineWidth = p.verified ? 1.6 : 1.2;
+        ctx.stroke();
+
+        // Particle glow
+        const isWarmPulse = p.verified && p.warm && Math.sin(t * 0.9 + p.phase) > 0.6;
+        const r = isWarmPulse ? 6 : 4;
+
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI * 2);
+        ctx.fillStyle = isWarmPulse
+          ? "rgba(242,193,174,0.95)"
+          : "rgba(180,140,255,0.88)";
+        ctx.fill();
+
+        // Halo
+        ctx.beginPath();
+        ctx.arc(px, py, r * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = isWarmPulse
+          ? "rgba(232,150,124,0.12)"
+          : "rgba(152,80,255,0.10)";
+        ctx.fill();
+
+        // Respawn
+        if (p.x > w + 80) {
+          p.x = -Math.random() * 300;
+          p.y = Math.random();
+          p.verified = false;
+          p.trail.length = 0;
+        }
+      });
+
+      // Label the intelligence field
+      ctx.globalAlpha = 0.6;
+      ctx.fillStyle = "rgba(255,255,255,0.55)";
+      ctx.font = `${12 * DPR}px system-ui, -apple-system, Segoe UI, Inter`;
+      ctx.fillText("INTELLIGENCE FIELD", fieldX0 * w + 12 * DPR, 34 * DPR);
+      ctx.globalAlpha = 1;
+
+      raf = requestAnimationFrame(draw);
+    }
+
+    // Entrance animation
     gsap.set(textEl, { opacity: 0, y: 40 });
     gsap.set(canvas, { opacity: 0, y: 50 });
 
@@ -253,92 +207,14 @@ const SignalIntegritySection = () => {
       onEnter: () => {
         gsap.to(textEl, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" });
         gsap.to(canvas, { opacity: 1, y: 0, duration: 1.1, delay: 0.12, ease: "power3.out" });
-        // 3D depth reveal
-        gsap.to(state, { depth: 1, duration: 2.0, delay: 0.5, ease: "power2.out" });
       },
     });
 
-    // ── Pulse runner ──
-    function runPulse() {
-      const w = W();
-      gsap.set(state, { pulseX: w * 0.5, pulseOpacity: 0 });
-      gsap.to(state, { pulseOpacity: 1, duration: 0.2, ease: "power2.out" });
-      gsap.to(state, { pulseX: w * 0.92, duration: 1.6, ease: "power1.inOut" });
-      gsap.to(state, { pulseOpacity: 0, duration: 0.4, delay: 1.2, ease: "power2.in" });
-    }
-
-    // ── Verification ──
-    const verifyTL = gsap.timeline({ paused: true });
-    verifyTL
-      .to(state, { scanY: 0, scanOpacity: 1, duration: 0.01 }, 0)
-      .to(state, { scanY: H(), duration: 1.3, ease: "power2.inOut" }, 0)
-      .to(state, { scanOpacity: 0, duration: 0.3 }, 1.0)
-      .to(state, { warmGlow: 0.9, duration: 0.5, ease: "power2.out" }, 0.1)
-      .to(state, { wobbleAmp: 0.12, duration: 1.2, ease: "power2.out" }, 0.6)
-      .to(state, { outOpacity: 0.55, duration: 0.8, ease: "power2.out" }, 0.8)
-      .set(state, { verified: true }, 0.9)
-      .add(() => runPulse(), 1.1)
-      .to(state, { warmGlow: 0.3, duration: 1.0, ease: "sine.out" }, 1.5)
-      .to(state, { wobbleAmp: 0.35, duration: 2.0, ease: "sine.inOut" }, 2.0);
-
-    ScrollTrigger.create({
-      trigger: canvas,
-      start: "top 68%",
-      once: true,
-      onEnter: () => {
-        verifyTL.play();
-        gsap.delayedCall(4, () => {
-          runPulse();
-          gsap.delayedCall(8, function loop() {
-            runPulse();
-            gsap.delayedCall(8, loop);
-          });
-        });
-      },
-    });
-
-    // ── Mouse parallax ──
-    const mouse = { x: 0, y: 0 };
-    const smoothMouse = { x: 0, y: 0 };
-
-    const onMouseMove = (e: MouseEvent) => {
-      const rect = canvas.parentElement!.getBoundingClientRect();
-      mouse.x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;  // -1 to 1
-      mouse.y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-    };
-
-    const onMouseLeave = () => {
-      mouse.x = 0;
-      mouse.y = 0;
-    };
-
-    const parentEl = canvas.parentElement!;
-    parentEl.addEventListener("mousemove", onMouseMove);
-    parentEl.addEventListener("mouseleave", onMouseLeave);
-
-    // Smooth lerp for mouse in animation loop
-    function tickWithMouse() {
-      state.time += 0.016;
-      smoothMouse.x += (mouse.x - smoothMouse.x) * 0.08;
-      smoothMouse.y += (mouse.y - smoothMouse.y) * 0.08;
-
-      // Apply 3D transform via CSS — dramatic tilt
-      const rotY = -14 + smoothMouse.x * 18;
-      const rotX = 6 - smoothMouse.y * 12;
-      canvas.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg) scale3d(1.02,1.02,1)`;
-
-      draw();
-      raf = requestAnimationFrame(tickWithMouse);
-    }
-    raf = requestAnimationFrame(tickWithMouse);
+    raf = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
-      parentEl.removeEventListener("mousemove", onMouseMove);
-      parentEl.removeEventListener("mouseleave", onMouseLeave);
-      gsap.killTweensOf(state);
-      verifyTL.kill();
       ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, []);
@@ -348,177 +224,79 @@ const SignalIntegritySection = () => {
       ref={sectionRef}
       className="relative overflow-hidden"
       style={{
-        padding: "110px 0",
-        background: `
-          radial-gradient(1100px 700px at 20% 20%, rgba(110,59,255,0.14), transparent 55%),
-          radial-gradient(900px 600px at 80% 70%, rgba(232,150,124,0.16), transparent 60%),
-          linear-gradient(180deg, #F7F3FF 0%, #FFFFFF 50%, #FFF7F2 100%)
-        `,
-        color: "#140A2A",
-        minHeight: "100vh",
-        display: "flex",
+        display: "grid",
+        gridTemplateColumns: "1fr 1.4fr",
+        gap: "64px",
         alignItems: "center",
+        padding: "clamp(64px, 7vw, 120px) clamp(24px, 5vw, 80px)",
+        background: `
+          radial-gradient(900px 600px at 20% 30%, rgba(90,32,184,0.35), transparent 60%),
+          radial-gradient(900px 700px at 80% 70%, rgba(232,150,124,0.18), transparent 65%),
+          linear-gradient(180deg, #16002A, #2B0060)
+        `,
+        color: "#fff",
+        minHeight: "100vh",
       }}
     >
-      <div
-        className="relative z-10 mx-auto w-full grid items-center"
-        style={{
-          maxWidth: "min(1180px, 92vw)",
-          gridTemplateColumns: "1fr 1.35fr",
-          gap: "54px",
-        }}
-      >
-        {/* Left — Copy */}
-        <div ref={textRef}>
-          <div
-            className="font-mono uppercase"
-            style={{ fontSize: 12, letterSpacing: "0.28em", color: "rgba(90,32,184,0.55)", marginBottom: 16 }}
-          >
-            [ TRUST AT SYSTEM SCALE ]
-          </div>
-
-          <h2
-            style={{
-              fontSize: "clamp(44px, 5vw, 72px)",
-              fontWeight: 800,
-              lineHeight: 0.98,
-              letterSpacing: "-0.02em",
-              margin: "0 0 18px 0",
-              color: "#1A1A2E",
-            }}
-          >
-            Trusted by systems that cannot fail.
-          </h2>
-
-          <p
-            style={{
-              fontSize: 16,
-              lineHeight: 1.65,
-              color: "rgba(26,26,46,0.65)",
-              maxWidth: "44ch",
-              margin: "0 0 22px 0",
-            }}
-          >
-            Signals stabilize. Workflows converge. Governance verifies itself —
-            continuously, across the entire system.
-          </p>
-
-          <div className="flex flex-wrap gap-2.5">
-            {PILLS.map((p) => (
-              <div
-                key={p}
-                style={{
-                  border: "1px solid rgba(90,32,184,0.15)",
-                  color: "rgba(26,26,46,0.7)",
-                  padding: "8px 12px",
-                  borderRadius: 999,
-                  fontSize: 12,
-                  letterSpacing: "0.08em",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                {p}
-              </div>
-            ))}
-          </div>
+      {/* Left — Copy */}
+      <div ref={textRef}>
+        <div
+          className="font-mono uppercase"
+          style={{ fontSize: 12, letterSpacing: "3px", opacity: 0.6, marginBottom: 18 }}
+        >
+          [ TRUST AT SYSTEM SCALE ]
         </div>
 
-        {/* Right — Canvas signal verification with 3D depth */}
-        <div
+        <h2
           style={{
-            position: "relative",
-            width: "100%",
-            aspectRatio: "1.6 / 1",
-            perspective: "500px",
+            fontSize: "clamp(44px, 5vw, 64px)",
+            fontWeight: 800,
+            lineHeight: 1.0,
+            letterSpacing: "-0.02em",
+            margin: "0 0 18px 0",
           }}
         >
-          <canvas
-            ref={canvasRef}
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              transform: "rotateY(-14deg) rotateX(6deg)",
-              transformStyle: "preserve-3d",
-              transition: "none",
-            }}
-          />
-          {/* Glass reflection overlay — follows same 3D transform */}
-          <div
-            className="glass-reflection-s9"
-            style={{
-              position: "absolute",
-              inset: 0,
-              transform: "rotateY(-14deg) rotateX(6deg)",
-              transformStyle: "preserve-3d",
-              pointerEvents: "none",
-              borderRadius: 18,
-              overflow: "hidden",
-            }}
-          >
-            {/* Top highlight — simulates light catching top edge */}
-            <div
+          Trusted by systems that cannot fail.
+        </h2>
+
+        <p
+          style={{
+            fontSize: 18,
+            lineHeight: 1.6,
+            opacity: 0.78,
+            maxWidth: "460px",
+            margin: "0 0 18px 0",
+          }}
+        >
+          Signals enter fragmented. DocG routes, verifies, and records decisions — continuously.
+        </p>
+
+        <div className="flex flex-wrap gap-2.5">
+          {CHIPS.map((chip) => (
+            <span
+              key={chip}
               style={{
-                position: "absolute",
-                top: 0,
-                left: "5%",
-                right: "15%",
-                height: "45%",
-                background: "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 40%, transparent 100%)",
-                borderRadius: "18px 18px 0 0",
+                fontSize: 13,
+                opacity: 0.8,
+                border: "1px solid rgba(255,255,255,0.18)",
+                background: "rgba(255,255,255,0.05)",
+                padding: "10px 14px",
+                borderRadius: 999,
+                backdropFilter: "blur(10px)",
               }}
-            />
-            {/* Diagonal specular streak */}
-            <div
-              style={{
-                position: "absolute",
-                top: "8%",
-                left: "-10%",
-                width: "60%",
-                height: "120%",
-                background: "linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.07) 45%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.07) 55%, transparent 70%)",
-                transform: "rotate(-15deg)",
-              }}
-            />
-            {/* Bottom edge shadow — glass thickness illusion */}
-            <div
-              style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: "20%",
-                background: "linear-gradient(0deg, rgba(90,32,184,0.06) 0%, transparent 100%)",
-                borderRadius: "0 0 18px 18px",
-              }}
-            />
-            {/* Subtle border for glass edge */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: 18,
-                border: "1px solid rgba(255,255,255,0.1)",
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(90,32,184,0.05)",
-              }}
-            />
-          </div>
-          {/* Ground shadow for 3D floating effect */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-18px",
-              left: "8%",
-              right: "8%",
-              height: "36px",
-              background: "radial-gradient(ellipse at center, rgba(123,97,255,0.2) 0%, transparent 70%)",
-              filter: "blur(8px)",
-              transform: "rotateX(60deg)",
-              pointerEvents: "none",
-            }}
-          />
+            >
+              {chip}
+            </span>
+          ))}
         </div>
+      </div>
+
+      {/* Right — Full-bleed canvas animation (no card/frame) */}
+      <div style={{ position: "relative", height: "520px" }}>
+        <canvas
+          ref={canvasRef}
+          style={{ width: "100%", height: "100%", display: "block" }}
+        />
       </div>
     </section>
   );
