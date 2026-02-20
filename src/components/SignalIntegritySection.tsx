@@ -322,10 +322,10 @@ const SignalIntegritySection = () => {
       smoothMouse.x += (mouse.x - smoothMouse.x) * 0.08;
       smoothMouse.y += (mouse.y - smoothMouse.y) * 0.08;
 
-      // Apply 3D transform via CSS
-      const rotY = -8 + smoothMouse.x * 12;
-      const rotX = 3 - smoothMouse.y * 8;
-      canvas.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+      // Apply 3D transform via CSS — dramatic tilt
+      const rotY = -14 + smoothMouse.x * 18;
+      const rotX = 6 - smoothMouse.y * 12;
+      canvas.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg) scale3d(1.02,1.02,1)`;
 
       draw();
       raf = requestAnimationFrame(tickWithMouse);
@@ -429,7 +429,7 @@ const SignalIntegritySection = () => {
             position: "relative",
             width: "100%",
             aspectRatio: "2.2 / 1",
-            perspective: "600px",
+            perspective: "500px",
           }}
         >
           <canvas
@@ -439,9 +439,23 @@ const SignalIntegritySection = () => {
               inset: 0,
               width: "100%",
               height: "100%",
-              transform: "rotateY(-8deg) rotateX(3deg)",
+              transform: "rotateY(-14deg) rotateX(6deg)",
               transformStyle: "preserve-3d",
               transition: "none",
+            }}
+          />
+          {/* Ground shadow for 3D floating effect */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "-18px",
+              left: "8%",
+              right: "8%",
+              height: "36px",
+              background: "radial-gradient(ellipse at center, rgba(90,32,184,0.12) 0%, transparent 70%)",
+              filter: "blur(8px)",
+              transform: "rotateX(60deg)",
+              pointerEvents: "none",
             }}
           />
         </div>
