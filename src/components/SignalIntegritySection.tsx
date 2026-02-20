@@ -17,10 +17,9 @@ const SignalIntegritySection = () => {
     const canvas = canvasRef.current;
     if (!section || !textEl || !canvas) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const c = canvas.getContext("2d")!;
+    if (!c) return;
 
-    /* ── Sizing ── */
     const resize = () => {
       const rect = canvas.parentElement!.getBoundingClientRect();
       const dpr = Math.min(window.devicePixelRatio, 2);
@@ -28,160 +27,218 @@ const SignalIntegritySection = () => {
       canvas.height = rect.height * dpr;
       canvas.style.width = rect.width + "px";
       canvas.style.height = rect.height + "px";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      c.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
     window.addEventListener("resize", resize);
 
-    /* ── State ── */
     const W = () => canvas.width / Math.min(window.devicePixelRatio, 2);
     const H = () => canvas.height / Math.min(window.devicePixelRatio, 2);
 
     const LINE_COUNT = 5;
+
+    // Color palette per line (violet → coral gradient)
+    const lineColors = [
+      { r: 123, g: 97, b: 255 },   // electric violet
+      { r: 140, g: 80, b: 230 },   // mid violet
+      { r: 180, g: 70, b: 180 },   // magenta blend
+      { r: 212, g: 97, b: 107 },   // warm coral
+      { r: 232, g: 150, b: 124 },  // peach
+    ];
+
     const state = {
       time: 0,
-      wobbleAmp: 1.0,       // 1 = full noise, 0 = dampened
-      outOpacity: 0.15,     // output line opacity
-      scanY: -10,           // scan bar Y position (-10 = hidden)
+      wobbleAmp: 1.0,
+      outOpacity: 0.12,
+      scanY: -10,
       scanOpacity: 0,
-      warmGlow: 0,          // warm plane glow intensity
-      pulseX: -100,         // pulse dot X
+      warmGlow: 0,
+      pulseX: -100,
       pulseOpacity: 0,
       verified: false,
+      depth: 0, // 0→1 for 3D reveal
     };
 
-    /* ── Draw frame ── */
     function draw() {
       const w = W();
       const h = H();
-      ctx!.clearRect(0, 0, w, h);
+      c.clearRect(0, 0, w, h);
 
-      const centerX = w * 0.5;
-      const planeX = centerX;
+      const cx = w * 0.5;
+      const lineSpacing = (h * 0.62) / (LINE_COUNT - 1);
+      const yStart = h * 0.19;
 
-      // ── Warm glow behind center ──
-      if (state.warmGlow > 0.01) {
-        const grad = ctx!.createRadialGradient(planeX, h * 0.5, 0, planeX, h * 0.5, h * 0.45);
-        grad.addColorStop(0, `rgba(212,97,107,${state.warmGlow * 0.35})`);
-        grad.addColorStop(0.5, `rgba(232,150,124,${state.warmGlow * 0.2})`);
-        grad.addColorStop(1, "transparent");
-        ctx!.fillStyle = grad;
-        ctx!.fillRect(0, 0, w, h);
+      // ═══ DEPTH LAYERS (3D shadow planes) ═══
+      // Back shadow layer — subtle depth plane
+      const depthOffset = state.depth * 12;
+      if (depthOffset > 0.5) {
+        c.save();
+        c.globalAlpha = 0.06 * state.depth;
+        c.translate(depthOffset, depthOffset * 1.5);
+        drawWaves(w, h, cx, lineSpacing, yStart, true);
+        c.restore();
+
+        // Mid shadow layer
+        c.save();
+        c.globalAlpha = 0.1 * state.depth;
+        c.translate(depthOffset * 0.5, depthOffset * 0.7);
+        drawWaves(w, h, cx, lineSpacing, yStart, true);
+        c.restore();
       }
 
-      // ── Center structural line ──
-      ctx!.beginPath();
-      ctx!.moveTo(planeX, h * 0.05);
-      ctx!.lineTo(planeX, h * 0.95);
-      ctx!.strokeStyle = `rgba(90,32,184,${0.12 + state.warmGlow * 0.15})`;
-      ctx!.lineWidth = 1.5;
-      ctx!.stroke();
+      // ═══ WARM GLOW ═══
+      if (state.warmGlow > 0.01) {
+        const g1 = c.createRadialGradient(cx, h * 0.5, 0, cx, h * 0.5, h * 0.55);
+        g1.addColorStop(0, `rgba(212,97,107,${state.warmGlow * 0.4})`);
+        g1.addColorStop(0.35, `rgba(180,70,180,${state.warmGlow * 0.2})`);
+        g1.addColorStop(0.7, `rgba(123,97,255,${state.warmGlow * 0.1})`);
+        g1.addColorStop(1, "transparent");
+        c.fillStyle = g1;
+        c.fillRect(0, 0, w, h);
+      }
 
-      // ── Flanking lines ──
-      [planeX - 20, planeX + 20].forEach((x) => {
-        ctx!.beginPath();
-        ctx!.moveTo(x, h * 0.08);
-        ctx!.lineTo(x, h * 0.92);
-        ctx!.strokeStyle = "rgba(90,32,184,0.06)";
-        ctx!.lineWidth = 0.8;
-        ctx!.stroke();
+      // ═══ CENTER VERIFICATION PLANE ═══
+      // Gradient column
+      const planeGrad = c.createLinearGradient(cx, h * 0.02, cx, h * 0.98);
+      planeGrad.addColorStop(0, `rgba(123,97,255,${0.06 + state.warmGlow * 0.12})`);
+      planeGrad.addColorStop(0.5, `rgba(212,97,107,${0.08 + state.warmGlow * 0.15})`);
+      planeGrad.addColorStop(1, `rgba(123,97,255,${0.04 + state.warmGlow * 0.08})`);
+      c.fillStyle = planeGrad;
+      c.fillRect(cx - 1.5, h * 0.03, 3, h * 0.94);
+
+      // Flanking lines with gradient
+      [-22, 22].forEach((off) => {
+        c.beginPath();
+        c.moveTo(cx + off, h * 0.06);
+        c.lineTo(cx + off, h * 0.94);
+        c.strokeStyle = `rgba(123,97,255,${0.04 + state.warmGlow * 0.04})`;
+        c.lineWidth = 0.7;
+        c.stroke();
       });
 
-      // ── INPUT waves (left) ──
-      const lineSpacing = (h * 0.7) / (LINE_COUNT - 1);
-      const yStart = h * 0.15;
-      const leftEnd = planeX - 40;
-      const leftStart = w * 0.04;
+      // ═══ MAIN WAVES ═══
+      drawWaves(w, h, cx, lineSpacing, yStart, false);
 
-      for (let i = 0; i < LINE_COUNT; i++) {
-        const baseY = yStart + i * lineSpacing;
-        ctx!.beginPath();
-        for (let x = leftStart; x <= leftEnd; x += 3) {
-          const t = state.time + i * 0.8;
-          const noise =
-            state.wobbleAmp * (
-              Math.sin(x * 0.04 + t * 1.8 + i * 1.3) * 16 +
-              Math.cos(x * 0.09 + t * 2.2 + i * 0.7) * 9 +
-              Math.sin(x * 0.15 + t * 1.1 + i * 2.1) * 5
-            );
-          const y = baseY + noise;
-          if (x === leftStart) ctx!.moveTo(x, y);
-          else ctx!.lineTo(x, y);
-        }
-        ctx!.strokeStyle = `rgba(90,32,184,${0.45 + i * 0.04})`;
-        ctx!.lineWidth = 2;
-        ctx!.lineCap = "round";
-        ctx!.lineJoin = "round";
-        ctx!.stroke();
+      // ═══ SCAN BAR ═══
+      if (state.scanOpacity > 0.01) {
+        // Wide glow
+        const sg = c.createLinearGradient(cx - 120, 0, cx + 120, 0);
+        sg.addColorStop(0, "transparent");
+        sg.addColorStop(0.2, `rgba(123,97,255,${state.scanOpacity * 0.5})`);
+        sg.addColorStop(0.5, `rgba(212,97,107,${state.scanOpacity * 0.9})`);
+        sg.addColorStop(0.8, `rgba(232,150,124,${state.scanOpacity * 0.5})`);
+        sg.addColorStop(1, "transparent");
+        c.fillStyle = sg;
+        c.fillRect(cx - 120, state.scanY - 3, 240, 6);
+
+        // Trail
+        const tg = c.createLinearGradient(0, state.scanY - 60, 0, state.scanY);
+        tg.addColorStop(0, "transparent");
+        tg.addColorStop(1, `rgba(212,97,107,${state.scanOpacity * 0.08})`);
+        c.fillStyle = tg;
+        c.fillRect(cx - 80, state.scanY - 60, 160, 60);
       }
 
-      // ── OUTPUT lines (right) ──
-      const rightStart = planeX + 40;
+      // ═══ PULSE ═══
+      if (state.pulseOpacity > 0.01) {
+        const py = h * 0.5;
+        // Large outer glow
+        const pg = c.createRadialGradient(state.pulseX, py, 0, state.pulseX, py, 35);
+        pg.addColorStop(0, `rgba(212,97,107,${state.pulseOpacity * 0.7})`);
+        pg.addColorStop(0.4, `rgba(180,70,180,${state.pulseOpacity * 0.3})`);
+        pg.addColorStop(1, "transparent");
+        c.fillStyle = pg;
+        c.fillRect(state.pulseX - 35, py - 35, 70, 70);
+        // Bright core
+        c.beginPath();
+        c.arc(state.pulseX, py, 4, 0, Math.PI * 2);
+        c.fillStyle = `rgba(255,255,255,${state.pulseOpacity * 0.9})`;
+        c.fill();
+        c.beginPath();
+        c.arc(state.pulseX, py, 6, 0, Math.PI * 2);
+        c.fillStyle = `rgba(212,97,107,${state.pulseOpacity * 0.8})`;
+        c.fill();
+      }
+
+      // ═══ LABELS ═══
+      c.font = "11px monospace";
+      c.letterSpacing = "3px";
+      c.fillStyle = "rgba(123,97,255,0.5)";
+      c.textAlign = "left";
+      c.fillText("SIGNAL IN", w * 0.04, yStart - 30);
+
+      c.fillStyle = "rgba(212,97,107,0.55)";
+      c.textAlign = "right";
+      c.fillText("INTEGRITY VERIFIED", w * 0.96, yStart - 30);
+
+      c.fillStyle = `rgba(123,97,255,${state.verified ? 0.4 : 0.0})`;
+      c.textAlign = "center";
+      c.fillText("VERIFY", cx, h * 0.95);
+    }
+
+    function drawWaves(w: number, h: number, cx: number, lineSpacing: number, yStart: number, isShadow: boolean) {
+      const leftStart = w * 0.04;
+      const leftEnd = cx - 45;
+      const rightStart = cx + 45;
       const rightEnd = w * 0.96;
 
       for (let i = 0; i < LINE_COUNT; i++) {
         const baseY = yStart + i * lineSpacing;
+        const col = lineColors[i];
+        const depthScale = 1 + (i * 0.08) * state.depth; // lines get slightly thicker with depth
+
+        // ── INPUT wave ──
+        c.beginPath();
+        for (let x = leftStart; x <= leftEnd; x += 3) {
+          const t = state.time + i * 0.8;
+          const noise =
+            state.wobbleAmp * (
+              Math.sin(x * 0.04 + t * 1.8 + i * 1.3) * 17 +
+              Math.cos(x * 0.09 + t * 2.2 + i * 0.7) * 10 +
+              Math.sin(x * 0.18 + t * 1.1 + i * 2.1) * 5
+            );
+          const y = baseY + noise;
+          if (x === leftStart) c.moveTo(x, y);
+          else c.lineTo(x, y);
+        }
+
+        if (isShadow) {
+          c.strokeStyle = `rgba(${col.r},${col.g},${col.b},0.12)`;
+          c.lineWidth = 3.5;
+        } else {
+          // Gradient-like opacity: brighter near center
+          c.strokeStyle = `rgba(${col.r},${col.g},${col.b},${0.55 + i * 0.04})`;
+          c.lineWidth = 2.2 * depthScale;
+          c.shadowColor = `rgba(${col.r},${col.g},${col.b},0.3)`;
+          c.shadowBlur = 6 * state.depth;
+        }
+        c.lineCap = "round";
+        c.lineJoin = "round";
+        c.stroke();
+        c.shadowBlur = 0;
+
+        // ── OUTPUT line ──
         const microDrift = Math.sin(state.time * 0.3 + i * 1.5) * 1.5;
-        ctx!.beginPath();
-        ctx!.moveTo(rightStart, baseY + microDrift);
-        ctx!.lineTo(rightEnd, baseY + microDrift);
-        ctx!.strokeStyle = `rgba(90,32,184,${state.outOpacity})`;
-        ctx!.lineWidth = 1.8;
-        ctx!.lineCap = "round";
-        ctx!.stroke();
+        c.beginPath();
+        c.moveTo(rightStart, baseY + microDrift);
+        c.lineTo(rightEnd, baseY + microDrift);
+
+        if (isShadow) {
+          c.strokeStyle = `rgba(${col.r},${col.g},${col.b},0.06)`;
+          c.lineWidth = 2.5;
+        } else {
+          c.strokeStyle = `rgba(${col.r},${col.g},${col.b},${state.outOpacity})`;
+          c.lineWidth = 1.8 * depthScale;
+          c.shadowColor = `rgba(${col.r},${col.g},${col.b},0.2)`;
+          c.shadowBlur = 4 * state.depth;
+        }
+        c.lineCap = "round";
+        c.stroke();
+        c.shadowBlur = 0;
       }
-
-      // ── Scan bar ──
-      if (state.scanOpacity > 0.01) {
-        const barGrad = ctx!.createLinearGradient(planeX - 80, 0, planeX + 80, 0);
-        barGrad.addColorStop(0, "transparent");
-        barGrad.addColorStop(0.3, `rgba(212,97,107,${state.scanOpacity * 0.9})`);
-        barGrad.addColorStop(0.7, `rgba(232,150,124,${state.scanOpacity * 0.9})`);
-        barGrad.addColorStop(1, "transparent");
-        ctx!.fillStyle = barGrad;
-        ctx!.fillRect(planeX - 80, state.scanY - 2, 160, 4);
-
-        // Scan glow trail
-        const trailGrad = ctx!.createLinearGradient(0, state.scanY - 40, 0, state.scanY);
-        trailGrad.addColorStop(0, "transparent");
-        trailGrad.addColorStop(1, `rgba(212,97,107,${state.scanOpacity * 0.12})`);
-        ctx!.fillStyle = trailGrad;
-        ctx!.fillRect(planeX - 60, state.scanY - 40, 120, 40);
-      }
-
-      // ── Pulse dot ──
-      if (state.pulseOpacity > 0.01) {
-        const midY = h * 0.5;
-        // Outer glow
-        const pg = ctx!.createRadialGradient(state.pulseX, midY, 0, state.pulseX, midY, 24);
-        pg.addColorStop(0, `rgba(212,97,107,${state.pulseOpacity * 0.6})`);
-        pg.addColorStop(1, "transparent");
-        ctx!.fillStyle = pg;
-        ctx!.fillRect(state.pulseX - 24, midY - 24, 48, 48);
-        // Core
-        ctx!.beginPath();
-        ctx!.arc(state.pulseX, midY, 5, 0, Math.PI * 2);
-        ctx!.fillStyle = `rgba(212,97,107,${state.pulseOpacity})`;
-        ctx!.fill();
-      }
-
-      // ── Labels ──
-      ctx!.font = "11px monospace";
-      ctx!.letterSpacing = "3px";
-      ctx!.fillStyle = "rgba(90,32,184,0.45)";
-      ctx!.textAlign = "left";
-      ctx!.fillText("SIGNAL IN", leftStart, yStart - 28);
-
-      ctx!.fillStyle = "rgba(212,97,107,0.5)";
-      ctx!.textAlign = "right";
-      ctx!.fillText("INTEGRITY VERIFIED", rightEnd, yStart - 28);
-
-      ctx!.fillStyle = `rgba(90,32,184,${state.verified ? 0.35 : 0.0})`;
-      ctx!.textAlign = "center";
-      ctx!.fillText("VERIFY", planeX, h * 0.94);
     }
 
-    /* ── Animation loop ── */
+    // ── Animation loop ──
     let raf: number;
     function tick() {
       state.time += 0.016;
@@ -190,7 +247,7 @@ const SignalIntegritySection = () => {
     }
     raf = requestAnimationFrame(tick);
 
-    /* ── Entrance ── */
+    // ── Entrance ──
     gsap.set(textEl, { opacity: 0, y: 40 });
     gsap.set(canvas, { opacity: 0, y: 50 });
 
@@ -201,33 +258,33 @@ const SignalIntegritySection = () => {
       onEnter: () => {
         gsap.to(textEl, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" });
         gsap.to(canvas, { opacity: 1, y: 0, duration: 1.1, delay: 0.12, ease: "power3.out" });
+        // 3D depth reveal
+        gsap.to(state, { depth: 1, duration: 2.0, delay: 0.5, ease: "power2.out" });
       },
     });
 
-    /* ── Pulse runner ── */
+    // ── Pulse runner ──
     function runPulse() {
       const w = W();
-      const centerX = w * 0.5;
-      gsap.set(state, { pulseX: centerX, pulseOpacity: 0 });
+      gsap.set(state, { pulseX: w * 0.5, pulseOpacity: 0 });
       gsap.to(state, { pulseOpacity: 1, duration: 0.2, ease: "power2.out" });
       gsap.to(state, { pulseX: w * 0.92, duration: 1.6, ease: "power1.inOut" });
       gsap.to(state, { pulseOpacity: 0, duration: 0.4, delay: 1.2, ease: "power2.in" });
     }
 
-    /* ── Verification sequence ── */
+    // ── Verification ──
     const verifyTL = gsap.timeline({ paused: true });
     verifyTL
       .to(state, { scanY: 0, scanOpacity: 1, duration: 0.01 }, 0)
       .to(state, { scanY: H(), duration: 1.3, ease: "power2.inOut" }, 0)
       .to(state, { scanOpacity: 0, duration: 0.3 }, 1.0)
-      .to(state, { warmGlow: 0.8, duration: 0.5, ease: "power2.out" }, 0.1)
-      .to(state, { wobbleAmp: 0.15, duration: 1.2, ease: "power2.out" }, 0.6)
+      .to(state, { warmGlow: 0.9, duration: 0.5, ease: "power2.out" }, 0.1)
+      .to(state, { wobbleAmp: 0.12, duration: 1.2, ease: "power2.out" }, 0.6)
       .to(state, { outOpacity: 0.55, duration: 0.8, ease: "power2.out" }, 0.8)
       .set(state, { verified: true }, 0.9)
       .add(() => runPulse(), 1.1)
-      .to(state, { warmGlow: 0.35, duration: 1.0, ease: "sine.out" }, 1.5)
-      // Restore wobble slightly for organic feel
-      .to(state, { wobbleAmp: 0.4, duration: 2.0, ease: "sine.inOut" }, 2.0);
+      .to(state, { warmGlow: 0.3, duration: 1.0, ease: "sine.out" }, 1.5)
+      .to(state, { wobbleAmp: 0.35, duration: 2.0, ease: "sine.inOut" }, 2.0);
 
     ScrollTrigger.create({
       trigger: canvas,
@@ -334,8 +391,15 @@ const SignalIntegritySection = () => {
           </div>
         </div>
 
-        {/* Right — Canvas-driven signal verification */}
-        <div style={{ position: "relative", width: "100%", aspectRatio: "2.2 / 1" }}>
+        {/* Right — Canvas signal verification with 3D depth */}
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            aspectRatio: "2.2 / 1",
+            perspective: "800px",
+          }}
+        >
           <canvas
             ref={canvasRef}
             style={{
@@ -343,6 +407,8 @@ const SignalIntegritySection = () => {
               inset: 0,
               width: "100%",
               height: "100%",
+              transform: "rotateY(-4deg) rotateX(2deg)",
+              transformStyle: "preserve-3d",
             }}
           />
         </div>
