@@ -221,9 +221,10 @@ const SignalIntegritySection = () => {
       style={{
         padding: "clamp(64px, 8vw, 120px) 0",
         background: `
-          radial-gradient(1100px 700px at 20% 20%, rgba(110,59,255,0.18), transparent 55%),
-          radial-gradient(900px 600px at 80% 70%, rgba(232,150,124,0.20), transparent 60%),
-          linear-gradient(180deg, #FBF7FF 0%, #FFF7F1 55%, #FBF7FF 100%)
+          radial-gradient(1000px 650px at 15% 25%, rgba(110,59,255,0.10), transparent 50%),
+          radial-gradient(1100px 700px at 75% 60%, rgba(232,150,124,0.28), transparent 55%),
+          radial-gradient(600px 400px at 60% 80%, rgba(242,193,174,0.18), transparent 50%),
+          linear-gradient(180deg, #FBF7FF 0%, #FFF5EE 40%, #FDEEE5 70%, #FBF7FF 100%)
         `,
         color: "#140A2A",
         minHeight: "100vh",
