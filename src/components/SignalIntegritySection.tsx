@@ -63,9 +63,19 @@ const SignalIntegritySection = () => {
 
     const t0 = performance.now();
 
+    // Verification flash effects
+    interface Flash {
+      x: number;
+      y: number;
+      birth: number;
+      duration: number;
+      color: string;
+    }
+    const flashes: Flash[] = [];
+
     // Mouse tracking (for particles + 3D tilt)
     const mouse = { x: -9999, y: -9999, active: false };
-    const cardMouse = { nx: 0, ny: 0 }; // normalized -1 to 1
+    const cardMouse = { nx: 0, ny: 0 };
     const smoothCard = { rx: 0, ry: 0 };
     const MOUSE_RADIUS = 120;
     const MOUSE_FORCE = 0.06;
@@ -78,7 +88,6 @@ const SignalIntegritySection = () => {
       mouse.y = (e.clientY - rect.top) * DPR;
       mouse.active = true;
 
-      // 3D tilt calc based on card bounds
       if (cardEl) {
         const cr = cardEl.getBoundingClientRect();
         cardMouse.nx = ((e.clientX - cr.left) / cr.width - 0.5) * 2;
@@ -106,6 +115,27 @@ const SignalIntegritySection = () => {
       return bestR;
     }
 
+    // Animated grid dots
+    interface GridDot {
+      x: number;
+      y: number;
+      baseAlpha: number;
+      phaseOffset: number;
+    }
+    const gridDots: GridDot[] = [];
+    const GRID_COLS = 32;
+    const GRID_ROWS = 16;
+    for (let r = 0; r < GRID_ROWS; r++) {
+      for (let c = 0; c < GRID_COLS; c++) {
+        gridDots.push({
+          x: (c + 0.5) / GRID_COLS,
+          y: (r + 0.5) / GRID_ROWS,
+          baseAlpha: 0.04 + Math.random() * 0.04,
+          phaseOffset: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+
     let raf: number;
 
     function draw(now: number) {
@@ -115,12 +145,31 @@ const SignalIntegritySection = () => {
 
       ctx.clearRect(0, 0, w, h);
 
-      // Subtle grid lines
-      ctx.globalAlpha = 0.06;
+      // === RICHER BACKGROUND DEPTH ===
+
+      // Animated grid dots with breathing effect
+      gridDots.forEach((dot) => {
+        const breathe = Math.sin(t * 0.5 + dot.phaseOffset) * 0.5 + 0.5;
+        const alpha = dot.baseAlpha * (0.6 + breathe * 0.4);
+        // Dots near field zone glow brighter
+        const inField = dot.x > fieldX0 - 0.05 && dot.x < fieldX1 + 0.05;
+        const fieldBoost = inField ? 1.8 : 1;
+        const radius = inField ? 1.8 * DPR : 1.2 * DPR;
+
+        ctx.beginPath();
+        ctx.arc(dot.x * w, dot.y * h, radius, 0, Math.PI * 2);
+        ctx.fillStyle = inField
+          ? `rgba(123,97,255,${alpha * fieldBoost})`
+          : `rgba(90,32,184,${alpha * fieldBoost})`;
+        ctx.fill();
+      });
+
+      // Subtle horizontal scan lines
+      ctx.globalAlpha = 0.03;
       ctx.strokeStyle = "#5A20B8";
-      ctx.lineWidth = 1;
-      for (let i = 0; i < 12; i++) {
-        const y = (i / 11) * h;
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < 20; i++) {
+        const y = (i / 19) * h;
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(w, y);
@@ -128,27 +177,82 @@ const SignalIntegritySection = () => {
       }
       ctx.globalAlpha = 1;
 
+      // Gradient mesh overlay — warm bottom-right, cool top-left
+      const meshGrad = ctx.createRadialGradient(w * 0.15, h * 0.2, 0, w * 0.15, h * 0.2, h * 0.8);
+      meshGrad.addColorStop(0, "rgba(123,97,255,0.06)");
+      meshGrad.addColorStop(1, "rgba(123,97,255,0)");
+      ctx.fillStyle = meshGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      const meshGrad2 = ctx.createRadialGradient(w * 0.85, h * 0.8, 0, w * 0.85, h * 0.8, h * 0.7);
+      meshGrad2.addColorStop(0, "rgba(212,97,107,0.05)");
+      meshGrad2.addColorStop(1, "rgba(212,97,107,0)");
+      ctx.fillStyle = meshGrad2;
+      ctx.fillRect(0, 0, w, h);
+
+      // === DRAMATIC FIELD ZONE ===
+
+      // Vertical boundary lines (pulsing)
+      const boundaryPulse = Math.sin(t * 1.5) * 0.3 + 0.7;
+      ctx.strokeStyle = `rgba(123,97,255,${0.2 * boundaryPulse})`;
+      ctx.lineWidth = 1.5 * DPR;
+      ctx.setLineDash([8 * DPR, 6 * DPR]);
+      // Left boundary
+      ctx.beginPath();
+      ctx.moveTo(fieldX0 * w, 0);
+      ctx.lineTo(fieldX0 * w, h);
+      ctx.stroke();
+      // Right boundary
+      ctx.beginPath();
+      ctx.moveTo(fieldX1 * w, 0);
+      ctx.lineTo(fieldX1 * w, h);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Strong field glow — radial center
+      const fieldCX = ((fieldX0 + fieldX1) / 2) * w;
+      const fieldGlow = ctx.createRadialGradient(fieldCX, h * 0.5, 0, fieldCX, h * 0.5, h * 0.7);
+      fieldGlow.addColorStop(0, `rgba(123,97,255,${0.16 + Math.sin(t * 0.8) * 0.06})`);
+      fieldGlow.addColorStop(0.3, "rgba(123,97,255,0.08)");
+      fieldGlow.addColorStop(0.6, "rgba(123,97,255,0.02)");
+      fieldGlow.addColorStop(1, "rgba(123,97,255,0)");
+      ctx.fillStyle = fieldGlow;
+      ctx.fillRect(0, 0, w, h);
+
+      // Horizontal scanline sweeping through the field
+      const scanY = ((t * 0.15) % 1) * h;
+      const scanGrad = ctx.createLinearGradient(fieldX0 * w, 0, fieldX1 * w, 0);
+      scanGrad.addColorStop(0, "rgba(123,97,255,0)");
+      scanGrad.addColorStop(0.2, "rgba(123,97,255,0.12)");
+      scanGrad.addColorStop(0.5, "rgba(123,97,255,0.18)");
+      scanGrad.addColorStop(0.8, "rgba(123,97,255,0.12)");
+      scanGrad.addColorStop(1, "rgba(123,97,255,0)");
+      ctx.fillStyle = scanGrad;
+      ctx.globalAlpha = 0.5;
+      ctx.fillRect(fieldX0 * w, scanY - 2 * DPR, (fieldX1 - fieldX0) * w, 4 * DPR);
+      ctx.globalAlpha = 1;
+
+      // Field zone label with glow
+      ctx.save();
+      ctx.globalAlpha = 0.55;
+      ctx.fillStyle = "rgba(123,97,255,0.7)";
+      ctx.font = `bold ${11 * DPR}px system-ui, -apple-system, Segoe UI, Inter`;
+      ctx.letterSpacing = `${2 * DPR}px`;
+      ctx.fillText("INTELLIGENCE FIELD", fieldX0 * w + 14 * DPR, 28 * DPR);
+      ctx.restore();
+
       // Mouse cursor glow
       if (mouse.active) {
         const mg = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, MOUSE_RADIUS * DPR);
-        mg.addColorStop(0, "rgba(123,97,255,0.12)");
-        mg.addColorStop(0.5, "rgba(123,97,255,0.04)");
+        mg.addColorStop(0, "rgba(123,97,255,0.15)");
+        mg.addColorStop(0.5, "rgba(123,97,255,0.05)");
         mg.addColorStop(1, "rgba(123,97,255,0)");
         ctx.fillStyle = mg;
         ctx.fillRect(0, 0, w, h);
       }
 
-      // Field glow
-      const gx = ((fieldX0 + fieldX1) / 2) * w;
-      const grad = ctx.createRadialGradient(gx, h * 0.5, h * 0.05, gx, h * 0.5, h * 0.65);
-      grad.addColorStop(0, "rgba(123,97,255,0.18)");
-      grad.addColorStop(0.45, "rgba(123,97,255,0.06)");
-      grad.addColorStop(1, "rgba(123,97,255,0)");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      // Rails on right
-      ctx.strokeStyle = "rgba(90,32,184,0.12)";
+      // Rails on right — slightly stronger
+      ctx.strokeStyle = "rgba(90,32,184,0.16)";
       ctx.lineWidth = 1;
       rails.forEach((r) => {
         const y = r * h;
@@ -156,6 +260,11 @@ const SignalIntegritySection = () => {
         ctx.moveTo(fieldX1 * w, y);
         ctx.lineTo(w, y);
         ctx.stroke();
+        // Rail label dots
+        ctx.beginPath();
+        ctx.arc(fieldX1 * w + 6 * DPR, y, 2 * DPR, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(90,32,184,0.25)";
+        ctx.fill();
       });
 
       // Draw particles + trails
@@ -164,6 +273,8 @@ const SignalIntegritySection = () => {
         const xn = p.x / w;
 
         let y = p.y + Math.sin(t * p.freq + p.phase) * p.amp;
+
+        const wasVerified = p.verified;
 
         if (xn > fieldX0 && xn < fieldX1) {
           const k = (xn - fieldX0) / (fieldX1 - fieldX0);
@@ -175,6 +286,17 @@ const SignalIntegritySection = () => {
         if (xn >= fieldX1) {
           const target = snapToRail(y);
           y = y * 0.15 + target * 0.85;
+        }
+
+        // === VERIFICATION FLASH ===
+        if (p.verified && !wasVerified) {
+          flashes.push({
+            x: p.x,
+            y: y * h,
+            birth: t,
+            duration: 0.8,
+            color: p.warm ? "rgba(212,97,107," : "rgba(123,97,255,",
+          });
         }
 
         y = Math.max(0.06, Math.min(0.94, y));
@@ -197,7 +319,7 @@ const SignalIntegritySection = () => {
         p.trail.push({ x: px, y: py, v: p.verified });
         if (p.trail.length > 46) p.trail.shift();
 
-        // Trail
+        // Trail — thicker and more visible
         ctx.beginPath();
         for (let i = 0; i < p.trail.length; i++) {
           const tr = p.trail[i];
@@ -205,28 +327,32 @@ const SignalIntegritySection = () => {
           else ctx.lineTo(tr.x, tr.y);
         }
         ctx.strokeStyle = p.verified
-          ? "rgba(212,97,107,0.18)"
-          : "rgba(123,97,255,0.10)";
-        ctx.lineWidth = p.verified ? 1.6 : 1.2;
+          ? "rgba(212,97,107,0.25)"
+          : "rgba(123,97,255,0.15)";
+        ctx.lineWidth = p.verified ? 2 : 1.5;
         ctx.stroke();
 
-        // Particle dot
+        // Particle dot — bigger
         const isWarmPulse = p.verified && p.warm && Math.sin(t * 0.9 + p.phase) > 0.6;
-        const r = isWarmPulse ? 6 : 4;
+        const r = isWarmPulse ? 7 : 5;
 
         ctx.beginPath();
         ctx.arc(px, py, r, 0, Math.PI * 2);
         ctx.fillStyle = isWarmPulse
-          ? "rgba(212,97,107,0.9)"
-          : "rgba(123,97,255,0.75)";
+          ? "rgba(212,97,107,0.95)"
+          : p.verified
+            ? "rgba(212,97,107,0.8)"
+            : "rgba(123,97,255,0.8)";
         ctx.fill();
 
-        // Halo
+        // Outer halo
         ctx.beginPath();
-        ctx.arc(px, py, r * 2.5, 0, Math.PI * 2);
+        ctx.arc(px, py, r * 3, 0, Math.PI * 2);
         ctx.fillStyle = isWarmPulse
-          ? "rgba(212,97,107,0.1)"
-          : "rgba(123,97,255,0.08)";
+          ? "rgba(212,97,107,0.12)"
+          : p.verified
+            ? "rgba(212,97,107,0.06)"
+            : "rgba(123,97,255,0.08)";
         ctx.fill();
 
         // Respawn
@@ -238,11 +364,49 @@ const SignalIntegritySection = () => {
         }
       });
 
-      // Label
-      ctx.globalAlpha = 0.5;
-      ctx.fillStyle = "rgba(90,32,184,0.5)";
-      ctx.font = `${12 * DPR}px system-ui, -apple-system, Segoe UI, Inter`;
-      ctx.fillText("INTELLIGENCE FIELD", fieldX0 * w + 12 * DPR, 34 * DPR);
+      // === DRAW VERIFICATION FLASHES ===
+      for (let i = flashes.length - 1; i >= 0; i--) {
+        const f = flashes[i];
+        const age = t - f.birth;
+        if (age > f.duration) {
+          flashes.splice(i, 1);
+          continue;
+        }
+        const progress = age / f.duration;
+        const radius = 20 * DPR + progress * 60 * DPR;
+        const alpha = (1 - progress) * 0.35;
+
+        // Ripple rings
+        for (let ring = 0; ring < 3; ring++) {
+          const ringProgress = Math.min(1, progress + ring * 0.15);
+          const ringRadius = 10 * DPR + ringProgress * 50 * DPR;
+          const ringAlpha = (1 - ringProgress) * 0.2;
+          if (ringAlpha <= 0) continue;
+
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, ringRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = f.color + ringAlpha + ")";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+
+        // Central flash
+        const flashGrad = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, radius);
+        flashGrad.addColorStop(0, f.color + (alpha * 0.8) + ")");
+        flashGrad.addColorStop(0.4, f.color + (alpha * 0.3) + ")");
+        flashGrad.addColorStop(1, f.color + "0)");
+        ctx.fillStyle = flashGrad;
+        ctx.fillRect(f.x - radius, f.y - radius, radius * 2, radius * 2);
+      }
+
+      // Noise texture overlay (very subtle)
+      ctx.globalAlpha = 0.015;
+      for (let i = 0; i < 300; i++) {
+        const nx = Math.random() * w;
+        const ny = Math.random() * h;
+        ctx.fillStyle = Math.random() > 0.5 ? "#fff" : "#000";
+        ctx.fillRect(nx, ny, 1.5, 1.5);
+      }
       ctx.globalAlpha = 1;
 
       // 3D tilt — smooth lerp
