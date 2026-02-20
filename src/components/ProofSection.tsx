@@ -234,17 +234,17 @@ export default function ProofSection() {
         color: "#1B0F2E",
       }}
     >
-      <div className="relative z-10 mx-auto" style={{ width: "min(1400px, 94vw)" }}>
+      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
         {/* Top: Left text + Right system field */}
         <div
           className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center"
           style={{ gap: "clamp(120px, 14vw, 220px)" }}
         >
           {/* Left content */}
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-5">
             <Reveal>
               <p
-                className="font-mono uppercase mb-5"
+                className="font-mono uppercase"
                 style={{
                   fontSize: 12,
                   letterSpacing: "0.22em",
@@ -257,7 +257,6 @@ export default function ProofSection() {
 
             <Reveal delay={0.1}>
               <h2
-                className="mb-5"
                 style={{
                   fontSize: "clamp(44px, 5.2vw, 84px)",
                   lineHeight: 0.95,

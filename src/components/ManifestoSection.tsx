@@ -220,15 +220,16 @@ const ManifestoSection = () => {
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
         <div className="grid grid-cols-1 lg:grid-cols-[0.55fr_1.45fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
           {/* Left — Copy */}
-          <motion.div style={{ opacity: headlineOpacity, y: headlineY }}>
-            <p className="mb-5 mono-label" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
+          <motion.div className="flex flex-col gap-5" style={{ opacity: headlineOpacity, y: headlineY }}>
+            <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
               [ THE INTELLIGENCE LAYER ]
             </p>
-            <h2 className="mb-5" style={{
+            <h2 style={{
               color: "rgba(255,255,255,0.95)",
               fontWeight: 800,
               lineHeight: 0.95,
               fontSize: "clamp(44px, 5.2vw, 84px)",
+              letterSpacing: "-0.02em",
               textShadow: "0 10px 40px rgba(0,0,0,0.22)",
             }}>
               Healthcare<br />runs on<br />intelligence<br />now.

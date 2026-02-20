@@ -254,13 +254,13 @@ const PlatformSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.7 }}
-            className="flex flex-col"
+            className="flex flex-col gap-5"
           >
-            <span className="mono-label mb-5" style={{ color: "rgba(17, 17, 17, 0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
+            <p className="font-mono uppercase" style={{ color: "rgba(17, 17, 17, 0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
               [ PLATFORM ARCHITECTURE ]
-            </span>
+            </p>
 
-            <h2 className="mb-5" style={{
+            <h2 style={{
               color: "#111111",
               fontWeight: 800,
               fontSize: "clamp(44px, 5.2vw, 84px)",
