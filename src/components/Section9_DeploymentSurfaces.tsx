@@ -352,17 +352,14 @@ const Section9_DeploymentSurfaces = () => {
       />
 
       <div
-        className="mx-auto"
+        className="mx-auto flex flex-col items-center"
         style={{
           width: "min(1180px, calc(100% - 48px))",
-          display: "grid",
-          gridTemplateColumns: "3fr 9fr",
-          gap: "clamp(120px, 14vw, 220px)",
-          alignItems: "center",
+          gap: "clamp(48px, 6vw, 80px)",
         }}
       >
-        {/* ── Left column ── */}
-        <div>
+        {/* ── Text block (top, centered) ── */}
+        <div className="text-center" style={{ maxWidth: "720px" }}>
           <p
             className="font-mono mb-5"
             style={{
@@ -397,6 +394,7 @@ const Section9_DeploymentSurfaces = () => {
               lineHeight: 1.55,
               color: "rgba(255,255,255,0.72)",
               maxWidth: "46ch",
+              margin: "0 auto",
             }}
           >
             DocG enters through a single surface — then spreads routing,
@@ -404,8 +402,8 @@ const Section9_DeploymentSurfaces = () => {
             replacing.
           </p>
 
-          {/* Surface tiles */}
-          <div className="flex flex-col gap-3 mt-8">
+          {/* Surface tiles — horizontal row */}
+          <div className="flex flex-wrap justify-center gap-3 mt-8">
             {SURFACES.map((s) => (
               <button
                 key={s.key}
@@ -413,12 +411,13 @@ const Section9_DeploymentSurfaces = () => {
                 className="text-left transition-all duration-250 ease-out"
                 style={{
                   position: "relative",
-                  padding: "14px",
+                  padding: "12px 18px",
                   borderRadius: "14px",
                   border: `1px solid ${activeSeed === s.key ? "rgba(189,166,255,0.45)" : "rgba(189,166,255,0.16)"}`,
                   background: activeSeed === s.key ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
                   backdropFilter: "blur(10px)",
                   cursor: "pointer",
+                  minWidth: "160px",
                 }}
                 onMouseEnter={(e) => {
                   if (activeSeed !== s.key) {
@@ -446,7 +445,7 @@ const Section9_DeploymentSurfaces = () => {
           </div>
         </div>
 
-        {/* ── Right column: Stage ── */}
+        {/* ── Animation card (bottom, full width) ── */}
         <div
           ref={stageRef}
           className="relative overflow-hidden"
@@ -564,3 +563,4 @@ const Section9_DeploymentSurfaces = () => {
 };
 
 export default Section9_DeploymentSurfaces;
+
