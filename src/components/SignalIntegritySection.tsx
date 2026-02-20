@@ -364,9 +364,47 @@ const SignalIntegritySection = () => {
 
       {/* Bottom — 3D perspective wrapper */}
       <div style={{ perspective: "900px", width: "100%", maxWidth: "min(1280px, 94vw)", position: "relative" }}>
-        {/* Glass card with 3D tilt */}
+        {/* Prismatic border keyframes */}
+        <style>{`
+          @keyframes prismatic-spin {
+            0% { --prismatic-angle: 0deg; }
+            100% { --prismatic-angle: 360deg; }
+          }
+          @property --prismatic-angle {
+            syntax: "<angle>";
+            initial-value: 0deg;
+            inherits: false;
+          }
+          .prismatic-card {
+            --prismatic-angle: 0deg;
+            animation: prismatic-spin 6s linear infinite;
+          }
+          .prismatic-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            padding: 1.5px;
+            background: conic-gradient(
+              from var(--prismatic-angle),
+              rgba(123,97,255,0.5),
+              rgba(0,255,255,0.4),
+              rgba(123,97,255,0.15),
+              rgba(212,97,107,0.35),
+              rgba(0,255,255,0.3),
+              rgba(123,97,255,0.5)
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 4;
+            opacity: 0.7;
+          }
+        `}</style>
         <div
           ref={cardRef}
+          className="prismatic-card"
           style={{
             position: "relative",
             width: "100%",
@@ -374,7 +412,7 @@ const SignalIntegritySection = () => {
             background: "rgba(255,255,255,0.08)",
             backdropFilter: "blur(3px)",
             WebkitBackdropFilter: "blur(3px)",
-            border: "1px solid rgba(123,97,255,0.12)",
+            border: "1px solid transparent",
             borderRadius: 24,
             boxShadow: "0 4px 20px rgba(123,97,255,0.04)",
             overflow: "hidden",
