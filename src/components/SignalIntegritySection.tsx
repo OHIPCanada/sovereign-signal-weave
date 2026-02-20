@@ -444,6 +444,66 @@ const SignalIntegritySection = () => {
               transition: "none",
             }}
           />
+          {/* Glass reflection overlay — follows same 3D transform */}
+          <div
+            className="glass-reflection-s9"
+            style={{
+              position: "absolute",
+              inset: 0,
+              transform: "rotateY(-14deg) rotateX(6deg)",
+              transformStyle: "preserve-3d",
+              pointerEvents: "none",
+              borderRadius: 18,
+              overflow: "hidden",
+            }}
+          >
+            {/* Top highlight — simulates light catching top edge */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: "5%",
+                right: "15%",
+                height: "45%",
+                background: "linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 40%, transparent 100%)",
+                borderRadius: "18px 18px 0 0",
+              }}
+            />
+            {/* Diagonal specular streak */}
+            <div
+              style={{
+                position: "absolute",
+                top: "8%",
+                left: "-10%",
+                width: "60%",
+                height: "120%",
+                background: "linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.07) 45%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.07) 55%, transparent 70%)",
+                transform: "rotate(-15deg)",
+              }}
+            />
+            {/* Bottom edge shadow — glass thickness illusion */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: "20%",
+                background: "linear-gradient(0deg, rgba(90,32,184,0.06) 0%, transparent 100%)",
+                borderRadius: "0 0 18px 18px",
+              }}
+            />
+            {/* Subtle border for glass edge */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: 18,
+                border: "1px solid rgba(255,255,255,0.1)",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(90,32,184,0.05)",
+              }}
+            />
+          </div>
           {/* Ground shadow for 3D floating effect */}
           <div
             style={{
