@@ -303,70 +303,42 @@ const SovereigntySection = () => {
       />
 
       <div
-        className="relative z-10 mx-auto w-full grid items-center"
-        style={{
-          maxWidth: "min(1280px, 94vw)",
-          gridTemplateColumns: "0.28fr 1.22fr",
-          gap: "clamp(120px, 14vw, 220px)",
-        }}
+        className="relative z-10 mx-auto w-full"
+        style={{ maxWidth: "min(1280px, 94vw)" }}
       >
-        {/* Left — Text */}
-        <div ref={textRef}>
-          <div
-            className="font-mono uppercase mb-5"
-            style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(255,255,255,0.45)" }}
-          >
+        {/* ── Centered text block ── */}
+        <div ref={textRef} className="text-center mb-16">
+          <div className="font-mono uppercase mb-5" style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(255,255,255,0.45)" }}>
             [ TRUST & SOVEREIGNTY ]
           </div>
-
-          <h2
-            className="mb-5"
-            style={{
-              fontSize: "clamp(44px, 5.2vw, 84px)",
-              fontWeight: 800, lineHeight: 0.95,
-              letterSpacing: "-0.02em",
-              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-            }}
-          >
+          <h2 className="mb-6" style={{
+            fontSize: "clamp(52px, 7.5vw, 112px)",
+            fontWeight: 800, lineHeight: 0.95,
+            letterSpacing: "-0.03em",
+            textShadow: "0 10px 40px rgba(0,0,0,0.22)",
+          }}>
             Sovereign by design.
           </h2>
-
-          <p
-            style={{
-              fontSize: "clamp(15px, 1.25vw, 18px)",
-              lineHeight: 1.55, color: "rgba(255,255,255,0.72)",
-              maxWidth: "46ch", margin: "0 0 40px 0",
-            }}
-          >
+          <p className="mx-auto mb-8" style={{
+            fontSize: "clamp(15px, 1.25vw, 18px)",
+            lineHeight: 1.55, color: "rgba(255,255,255,0.72)",
+            maxWidth: "56ch",
+          }}>
             Every decision, signal, and action remains jurisdictionally anchored.
             Policy enforcement, auditability, and storage governance operate
             natively — not as overlays.
           </p>
-
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap justify-center gap-3">
             {PILLARS.map((p) => (
-              <div
-                key={p}
-                style={{
-                  padding: "10px 20px",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: 999, fontSize: 13,
-                  letterSpacing: "0.04em", opacity: 0.8,
-                  backdropFilter: "blur(4px)",
-                  background: "rgba(255,255,255,0.03)",
-                }}
-              >
+              <div key={p} style={{ padding: "10px 20px", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 999, fontSize: 13, letterSpacing: "0.04em", opacity: 0.8, backdropFilter: "blur(4px)", background: "rgba(255,255,255,0.03)" }}>
                 {p}
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right — Locking Grid */}
-        <div
-          ref={vaultRef}
-          style={{ aspectRatio: "1", maxWidth: 700, width: "100%", justifySelf: "end" }}
-        >
+        {/* ── Locking Grid — wide, centered ── */}
+        <div ref={vaultRef} className="mx-auto" style={{ maxWidth: 700, width: "100%" }}>
           <svg
             ref={svgRef}
             className="w-full h-full block"

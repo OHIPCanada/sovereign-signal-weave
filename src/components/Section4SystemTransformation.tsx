@@ -310,130 +310,126 @@ export default function Section4SystemTransformation() {
 
   return (
     <motion.section
-      className="relative overflow-hidden flex items-center"
-      style={{ padding: "clamp(56px, 7vw, 96px) 0", minHeight: "100vh" }}
+      className="relative overflow-hidden flex flex-col items-center"
+      style={{ padding: "clamp(56px, 7vw, 96px) 0", minHeight: "100vh", justifyContent: "center" }}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
-          {/* Left content */}
-          <div className="flex flex-col gap-5">
-            <motion.p
-              style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase" }}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              [ SYSTEM TRANSFORMATION ]
-            </motion.p>
+      <div className="relative z-10 mx-auto px-6 md:px-12 w-full" style={{ width: "min(1400px, 94vw)" }}>
+        {/* ── Centered text block ── */}
+        <div className="text-center mb-16">
+          <motion.p
+            style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em", textTransform: "uppercase" }}
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            [ SYSTEM TRANSFORMATION ]
+          </motion.p>
 
-            <motion.h2
-              style={{
-                color: "rgba(255,255,255,0.95)", fontWeight: 800,
-                fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95,
-                letterSpacing: "-0.02em",
-                textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-              }}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              When intelligence becomes infrastructure.
-            </motion.h2>
+          <motion.h2
+            className="mt-5 mb-6"
+            style={{
+              color: "rgba(255,255,255,0.95)", fontWeight: 800,
+              fontSize: "clamp(52px, 7.5vw, 112px)", lineHeight: 0.95,
+              letterSpacing: "-0.03em",
+              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
+            }}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            When intelligence becomes infrastructure.
+          </motion.h2>
 
-            <motion.p
-              style={{
-                color: "rgba(255,255,255,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)",
-                lineHeight: 1.55, maxWidth: "46ch",
-              }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              Signals stop fragmenting. Workflows coordinate. Governance becomes automatic.
-              Care becomes continuous — across the entire system.
-            </motion.p>
+          <motion.p
+            className="mx-auto mb-6"
+            style={{
+              color: "rgba(255,255,255,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)",
+              lineHeight: 1.55, maxWidth: "56ch",
+            }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            Signals stop fragmenting. Workflows coordinate. Governance becomes automatic.
+            Care becomes continuous — across the entire system.
+          </motion.p>
 
-            <motion.div
-              className="flex flex-col gap-1.5"
-              style={{ marginTop: 4 }}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              {["National routing fabric", "Unified policy enforcement", "Continuous audit visibility"].map((label) => (
-                <span
-                  key={label}
-                  style={{
-                    fontSize: 13, color: "rgba(255,255,255,0.50)",
-                    letterSpacing: "0.04em",
-                  }}
-                >
-                  • {label}
-                </span>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Right visual – no card, floating field */}
-          <div className="relative" style={{ perspective: "1000px" }}>
-            {/* Ambient glow */}
-            <div
-              className="absolute inset-0 -z-[1]"
-              style={{
-                background: "radial-gradient(ellipse 120% 100% at 50% 50%, rgba(123,97,255,0.22), rgba(212,97,107,0.08) 50%, transparent 75%)",
-                filter: "blur(50px)",
-                transform: "scale(1.3)",
-                animation: "s4Breathe 7s ease-in-out infinite",
-              }}
-            />
-            {/* Ground shadow for depth */}
-            <div style={{
-              position: "absolute",
-              bottom: "-12%",
-              left: "15%",
-              width: "70%",
-              height: "30%",
-              background: "radial-gradient(ellipse at center, rgba(123,97,255,0.15) 0%, rgba(212,97,107,0.06) 40%, transparent 70%)",
-              borderRadius: "50%",
-              filter: "blur(24px)",
-              pointerEvents: "none",
-            }} />
-            <div
-              ref={wrapRef}
-              className="relative"
-              style={{
-                transform: "rotateX(28deg) rotateZ(-8deg)",
-                transformStyle: "preserve-3d",
-                minHeight: "clamp(320px, 40vw, 460px)",
-              }}
-            >
-              <canvas ref={canvasRef} className="absolute inset-0 z-[2]" style={{ width: "100%", height: "100%", display: "block" }} />
-
-              <div
-                className="absolute left-[18px] top-[18px] z-[3] uppercase"
-                style={{ color: "rgba(255,255,255,0.55)", fontSize: 11, letterSpacing: "0.22em" }}
+          <motion.div
+            className="flex flex-wrap justify-center gap-4"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            {["National routing fabric", "Unified policy enforcement", "Continuous audit visibility"].map((label) => (
+              <span
+                key={label}
+                style={{
+                  fontSize: 13, color: "rgba(255,255,255,0.50)",
+                  letterSpacing: "0.04em",
+                }}
               >
-                National-scale coordination layer
-              </div>
+                • {label}
+              </span>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* ── Wide canvas card ── */}
+        <div className="relative" style={{ perspective: "1000px" }}>
+          <div
+            className="absolute inset-0 -z-[1]"
+            style={{
+              background: "radial-gradient(ellipse 120% 100% at 50% 50%, rgba(123,97,255,0.22), rgba(212,97,107,0.08) 50%, transparent 75%)",
+              filter: "blur(50px)",
+              transform: "scale(1.3)",
+              animation: "s4Breathe 7s ease-in-out infinite",
+            }}
+          />
+          <div style={{
+            position: "absolute",
+            bottom: "-12%",
+            left: "15%",
+            width: "70%",
+            height: "30%",
+            background: "radial-gradient(ellipse at center, rgba(123,97,255,0.15) 0%, rgba(212,97,107,0.06) 40%, transparent 70%)",
+            borderRadius: "50%",
+            filter: "blur(24px)",
+            pointerEvents: "none",
+          }} />
+          <div
+            ref={wrapRef}
+            className="relative"
+            style={{
+              transform: "rotateX(28deg) rotateZ(-8deg)",
+              transformStyle: "preserve-3d",
+              minHeight: "clamp(320px, 40vw, 460px)",
+            }}
+          >
+            <canvas ref={canvasRef} className="absolute inset-0 z-[2]" style={{ width: "100%", height: "100%", display: "block" }} />
+            <div
+              className="absolute left-[18px] top-[18px] z-[3] uppercase"
+              style={{ color: "rgba(255,255,255,0.55)", fontSize: 11, letterSpacing: "0.22em" }}
+            >
+              National-scale coordination layer
             </div>
           </div>
-
-          <style>{`
-            @keyframes s4Breathe {
-              0%, 100% { opacity: 0.7; transform: scale(1.3); }
-              50% { opacity: 1; transform: scale(1.38); }
-            }
-          `}</style>
         </div>
       </div>
+
+      <style>{`
+        @keyframes s4Breathe {
+          0%, 100% { opacity: 0.7; transform: scale(1.3); }
+          50% { opacity: 1; transform: scale(1.38); }
+        }
+      `}</style>
 
       {/* Section background */}
       <div
