@@ -148,15 +148,14 @@ const Section9_DeploymentSurfaces = () => {
     });
 
     const total = sorted.length;
-    const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+    const tl = gsap.timeline({ defaults: { ease: "power2.out" }, repeat: -1, repeatDelay: 1.5 });
     tlRef.current = tl;
 
     sorted.forEach((cell, i) => {
       const p = i / total;
-      const delay = p * 2.2;
+      const delay = p * 4.5; // slowed from 2.2s to 4.5s total wave
       const warmFill = seed.accent === "warm";
 
-      // Use gsap.set for color strings (can't tween strings), tween numeric attrs separately
       tl.add(() => {
         cell.rect.setAttribute("stroke", "rgba(189,166,255,0.22)");
         cell.rect.setAttribute("fill", warmFill ? "rgba(232,150,124,0.06)" : "rgba(189,166,255,0.05)");
@@ -165,18 +164,18 @@ const Section9_DeploymentSurfaces = () => {
 
       tl.to(cell.dot, {
         attr: { r: 3.4 },
-        duration: 0.18,
+        duration: 0.3,
       }, delay);
 
       if (i % 34 === 0) {
         const labelIdx = (i / 34) % 3;
-        tl.add(() => stamp(STAMP_LABELS[labelIdx], cell.x, cell.y, seed.accent), delay + 0.15);
+        tl.add(() => stamp(STAMP_LABELS[labelIdx], cell.x, cell.y, seed.accent), delay + 0.2);
       }
     });
 
     // Coverage meter
     tl.to({}, {
-      duration: 2.2,
+      duration: 4.5,
       onUpdate: function (this: gsap.core.Tween) {
         const prog = this.progress();
         const val = Math.round(TARGET_COVERAGE * prog);
@@ -186,8 +185,20 @@ const Section9_DeploymentSurfaces = () => {
     }, 0);
 
     // Seed halo pulse
-    tl.to(seedHalo, { attr: { r: 110 }, duration: 0.8, ease: "sine.out" }, 0.2);
-    tl.to(seedHalo, { attr: { r: 90 }, duration: 1.2, ease: "sine.inOut" }, 1.0);
+    tl.to(seedHalo, { attr: { r: 110 }, duration: 1.2, ease: "sine.out" }, 0.3);
+    tl.to(seedHalo, { attr: { r: 90 }, duration: 1.8, ease: "sine.inOut" }, 1.5);
+
+    // Reset cells at loop restart
+    tl.add(() => {
+      cells.forEach((cell) => {
+        cell.rect.setAttribute("stroke", "rgba(189,166,255,0.10)");
+        cell.rect.setAttribute("fill", "rgba(255,255,255,0.00)");
+        cell.dot.setAttribute("fill", "rgba(189,166,255,0.18)");
+        cell.dot.setAttribute("r", "2.2");
+      });
+      fillEl.style.width = "0%";
+      valEl.textContent = "0%";
+    }, 4.5 + 1.5);
   }, [stamp]);
 
   /* ── Intersection Observer — auto run once ── */
