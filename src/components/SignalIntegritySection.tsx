@@ -520,7 +520,7 @@ const SignalIntegritySection = () => {
       </div>
 
       {/* Bottom — 3D perspective wrapper */}
-      <div style={{ perspective: "900px", width: "100%", maxWidth: "min(1600px, 96vw)", position: "relative" }}>
+      <div style={{ perspective: "900px", width: "100%", maxWidth: "min(1280px, 94vw)", position: "relative" }}>
         {/* Glass card with 3D tilt */}
         <div
           ref={cardRef}

@@ -234,11 +234,11 @@ export default function ProofSection() {
         color: "#1B0F2E",
       }}
     >
-      <div className="relative z-10 mx-auto" style={{ width: "min(1600px, 96vw)" }}>
-        {/* Top: text, Bottom: system field */}
+      <div className="relative z-10 mx-auto" style={{ width: "min(1400px, 94vw)" }}>
+        {/* Top: Left text + Right system field */}
         <div
-          className="flex flex-col"
-          style={{ gap: "clamp(48px, 6vw, 80px)" }}
+          className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center"
+          style={{ gap: "clamp(120px, 14vw, 220px)" }}
         >
           {/* Left content */}
           <div className="flex flex-col">

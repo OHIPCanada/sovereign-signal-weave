@@ -3,11 +3,11 @@ import gsap from "gsap";
 
 /* ── seed presets ── */
 const SEEDS: Record<string, { x: number; y: number; accent: "lav" | "warm" }> = {
-  emr:      { x: 180, y: 130, accent: "lav"  },
-  pathways: { x: 300, y: 280, accent: "warm" },
-  ops:      { x: 450, y: 197, accent: "lav"  },
-  audit:    { x: 630, y: 130, accent: "warm" },
-  access:   { x: 750, y: 280, accent: "lav"  },
+  emr:      { x: 210, y: 170, accent: "lav"  },
+  pathways: { x: 320, y: 360, accent: "warm" },
+  ops:      { x: 460, y: 240, accent: "lav"  },
+  audit:    { x: 660, y: 200, accent: "warm" },
+  access:   { x: 730, y: 360, accent: "lav"  },
 };
 
 const SURFACES = [
@@ -19,11 +19,11 @@ const SURFACES = [
 ];
 
 const COLS = 18;
-const ROWS = 8;
+const ROWS = 10;
 const PAD_X = 48;
-const PAD_Y = 36;
+const PAD_Y = 48;
 const W = 900;
-const H = 394;
+const H = 520;
 const CELL_W = (W - PAD_X * 2) / COLS;
 const CELL_H = (H - PAD_Y * 2) / ROWS;
 const TARGET_COVERAGE = 87;
@@ -352,14 +352,17 @@ const Section9_DeploymentSurfaces = () => {
       />
 
       <div
-        className="mx-auto flex flex-col"
+        className="mx-auto"
         style={{
-          width: "min(1600px, calc(100% - 48px))",
-          gap: "clamp(40px, 5vw, 64px)",
+          width: "min(1180px, calc(100% - 48px))",
+          display: "grid",
+          gridTemplateColumns: "3fr 9fr",
+          gap: "clamp(120px, 14vw, 220px)",
+          alignItems: "center",
         }}
       >
-        {/* ── Text block — centered ── */}
-        <div style={{ textAlign: "center" }}>
+        {/* ── Left column ── */}
+        <div>
           <p
             className="font-mono mb-5"
             style={{
@@ -393,8 +396,7 @@ const Section9_DeploymentSurfaces = () => {
               fontSize: "clamp(15px, 1.25vw, 18px)",
               lineHeight: 1.55,
               color: "rgba(255,255,255,0.72)",
-              maxWidth: "56ch",
-              margin: "0 auto 32px",
+              maxWidth: "46ch",
             }}
           >
             DocG enters through a single surface — then spreads routing,
@@ -402,115 +404,119 @@ const Section9_DeploymentSurfaces = () => {
             replacing.
           </p>
 
-          {/* Surface pills — compact horizontal row */}
-          <div className="flex flex-wrap justify-center" style={{ gap: "10px" }}>
+          {/* Surface tiles */}
+          <div className="flex flex-col gap-3 mt-8">
             {SURFACES.map((s) => (
               <button
                 key={s.key}
                 onClick={() => runDiffusion(s.key)}
+                className="text-left transition-all duration-250 ease-out"
                 style={{
-                  padding: "8px 18px",
-                  borderRadius: 999,
-                  border: `1px solid ${activeSeed === s.key ? "rgba(189,166,255,0.55)" : "rgba(189,166,255,0.20)"}`,
-                  background: activeSeed === s.key ? "rgba(189,166,255,0.12)" : "rgba(255,255,255,0.04)",
-                  backdropFilter: "blur(8px)",
+                  position: "relative",
+                  padding: "14px",
+                  borderRadius: "14px",
+                  border: `1px solid ${activeSeed === s.key ? "rgba(189,166,255,0.45)" : "rgba(189,166,255,0.16)"}`,
+                  background: activeSeed === s.key ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
+                  backdropFilter: "blur(10px)",
                   cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  fontSize: "13px",
-                  fontWeight: 500,
-                  color: activeSeed === s.key ? "rgba(243,239,255,0.95)" : "rgba(243,239,255,0.60)",
-                  letterSpacing: "0.02em",
-                  whiteSpace: "nowrap",
                 }}
                 onMouseEnter={(e) => {
                   if (activeSeed !== s.key) {
-                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.40)";
-                    e.currentTarget.style.color = "rgba(243,239,255,0.85)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.35)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeSeed !== s.key) {
-                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.20)";
-                    e.currentTarget.style.color = "rgba(243,239,255,0.60)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.16)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.03)";
                   }
                 }}
               >
-                {s.title}
+                <div style={{ fontSize: "14px", fontWeight: 600, color: "rgba(243,239,255,0.92)", marginBottom: "4px" }}>
+                  {s.title}
+                </div>
+                <div style={{ fontSize: "12px", color: "rgba(243,239,255,0.62)" }}>
+                  {s.desc}
+                </div>
               </button>
             ))}
           </div>
         </div>
 
-        {/* ── Animation card — proportional, centered ── */}
+        {/* ── Right column: Stage ── */}
         <div
+          ref={stageRef}
+          className="relative overflow-hidden"
           style={{
-            maxWidth: "860px",
-            width: "100%",
-            margin: "0 auto",
+            borderRadius: "26px",
+            border: "1px solid rgba(189,166,255,0.18)",
+            background: `
+              radial-gradient(800px 520px at 40% 40%, rgba(91,29,179,0.25) 0%, transparent 60%),
+              radial-gradient(520px 520px at 75% 65%, rgba(232,150,124,0.16) 0%, transparent 55%),
+              rgba(255,255,255,0.02)
+            `,
+            boxShadow: "0 40px 120px rgba(0,0,0,0.45)",
+            minHeight: "520px",
           }}
         >
+          {/* Faint grid overlay */}
           <div
-            ref={stageRef}
-            className="relative overflow-hidden w-full"
+            className="absolute inset-0 pointer-events-none"
             style={{
-              borderRadius: "18px",
-              border: "1px solid rgba(189,166,255,0.18)",
-              background: `
-                radial-gradient(ellipse 80% 70% at 40% 40%, rgba(91,29,179,0.28) 0%, transparent 65%),
-                radial-gradient(ellipse 60% 70% at 78% 68%, rgba(232,150,124,0.18) 0%, transparent 58%),
-                rgba(14,6,26,0.96)
+              backgroundImage: `
+                linear-gradient(to right, rgba(189,166,255,0.12) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(189,166,255,0.12) 1px, transparent 1px)
               `,
-              boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
-              aspectRatio: "16 / 7",
+              backgroundSize: "48px 48px",
+              opacity: 0.25,
             }}
+          />
+
+          <svg
+            ref={svgRef}
+            viewBox="0 0 900 520"
+            width="100%"
+            height="100%"
+            preserveAspectRatio="none"
+            className="relative z-10"
+            style={{ minHeight: "520px" }}
           >
-            {/* Faint grid overlay */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                backgroundImage: `
-                  linear-gradient(to right, rgba(189,166,255,0.10) 1px, transparent 1px),
-                  linear-gradient(to bottom, rgba(189,166,255,0.10) 1px, transparent 1px)
-                `,
-                backgroundSize: "48px 48px",
-                opacity: 0.22,
-              }}
-            />
+            <defs>
+              <radialGradient id="s9SeedGlow" cx="50%" cy="50%" r="60%">
+                <stop offset="0%" stopColor="#F2C1AE" stopOpacity="0.55" />
+                <stop offset="35%" stopColor="#E8967C" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#BDA6FF" stopOpacity="0" />
+              </radialGradient>
+              <filter id="s9SoftGlow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="8" result="b" />
+                <feMerge>
+                  <feMergeNode in="b" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
 
-            <svg
-              ref={svgRef}
-              viewBox="0 0 900 394"
-              width="100%"
-              height="100%"
-              preserveAspectRatio="xMidYMid meet"
-              className="absolute inset-0 z-10"
-            >
-              <defs>
-                <radialGradient id="s9SeedGlow" cx="50%" cy="50%" r="60%">
-                  <stop offset="0%" stopColor="#F2C1AE" stopOpacity="0.55" />
-                  <stop offset="35%" stopColor="#E8967C" stopOpacity="0.35" />
-                  <stop offset="100%" stopColor="#BDA6FF" stopOpacity="0" />
-                </radialGradient>
-                <filter id="s9SoftGlow" x="-40%" y="-40%" width="180%" height="180%">
-                  <feGaussianBlur stdDeviation="8" result="b" />
-                  <feMerge>
-                    <feMergeNode in="b" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-              </defs>
+            {/* Connection lines layer (behind cells) */}
+            <g ref={linesRef} />
 
-              <g ref={linesRef} />
-              <g ref={cellsRef} />
-              <g ref={ripplesRef} />
+            {/* Cells layer */}
+            <g ref={cellsRef} />
 
-              <g>
-                <circle ref={seedHaloRef} cx="450" cy="197" r="80" fill="url(#s9SeedGlow)" />
-                <circle ref={seedCoreRef} cx="450" cy="197" r="8" fill="#BDA6FF" filter="url(#s9SoftGlow)" />
-              </g>
+            {/* Ripple rings layer */}
+            <g ref={ripplesRef} />
 
-              <g ref={stampsRef} />
-            </svg>
+            {/* Seed */}
+            <g>
+              <circle ref={seedHaloRef} cx="450" cy="260" r="90" fill="url(#s9SeedGlow)" />
+              <circle ref={seedCoreRef} cx="450" cy="260" r="8" fill="#BDA6FF" filter="url(#s9SoftGlow)" />
+            </g>
+
+            {/* Stamps layer (on top) */}
+            <g ref={stampsRef} />
+          </svg>
 
           {/* Coverage meter */}
           <div
@@ -551,8 +557,7 @@ const Section9_DeploymentSurfaces = () => {
               0%
             </div>
           </div>
-          </div>{/* end stageRef */}
-        </div>{/* end card wrapper */}
+        </div>
       </div>
     </section>
   );
