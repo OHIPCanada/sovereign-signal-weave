@@ -239,31 +239,31 @@ const CapabilitiesSection = () => {
       >
         {/* Header */}
         <div className="mb-16">
-          <span
-            className="mono-label"
-            style={{ color: "rgba(255,255,255,.4)" }}
+          <p
+            className="mono-label mb-5"
+            style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}
           >
             [ CAPABILITIES ]
-          </span>
+          </p>
           <h2
-            className="mt-6"
+            className="mb-5"
             style={{
-              fontSize: "clamp(32px, 4vw, 52px)",
-              fontWeight: 600,
-              color: "rgba(255,255,255,.92)",
-              lineHeight: 1.15,
+              fontSize: "clamp(44px, 5.2vw, 84px)",
+              fontWeight: 800,
+              color: "rgba(255,255,255,0.95)",
+              lineHeight: 0.95,
               letterSpacing: "-0.02em",
+              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
             }}
           >
             Built as infrastructure.
           </h2>
           <p
-            className="mt-4"
             style={{
-              fontSize: "clamp(15px, 1.4vw, 18px)",
-              color: "rgba(255,255,255,.55)",
-              lineHeight: 1.6,
-              maxWidth: 560,
+              fontSize: "clamp(15px, 1.25vw, 18px)",
+              color: "rgba(255,255,255,0.72)",
+              lineHeight: 1.55,
+              maxWidth: "46ch",
             }}
           >
             Three planes that let healthcare systems reason, route, and govern — quietly.
