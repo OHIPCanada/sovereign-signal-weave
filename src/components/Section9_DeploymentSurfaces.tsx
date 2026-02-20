@@ -402,42 +402,67 @@ const Section9_DeploymentSurfaces = () => {
             replacing.
           </p>
 
-          {/* Surface tiles — horizontal row */}
-          <div className="flex flex-nowrap justify-center gap-3 mt-8 overflow-x-auto">
-            {SURFACES.map((s) => (
+          {/* Surface tiles — segmented tab bar */}
+          <div
+            className="flex flex-nowrap mt-8 overflow-x-auto"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(189,166,255,0.18)",
+              borderRadius: "16px",
+              padding: "5px",
+              gap: "2px",
+              backdropFilter: "blur(12px)",
+              justifyContent: "center",
+            }}
+          >
+            {SURFACES.map((s, i) => (
               <button
                 key={s.key}
                 onClick={() => runDiffusion(s.key)}
-                className="text-left transition-all duration-250 ease-out"
                 style={{
                   position: "relative",
-                  padding: "8px 14px",
-                  borderRadius: "10px",
-                  border: `1px solid ${activeSeed === s.key ? "rgba(189,166,255,0.45)" : "rgba(189,166,255,0.16)"}`,
-                  background: activeSeed === s.key ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
-                  backdropFilter: "blur(10px)",
+                  padding: "10px 18px",
+                  borderRadius: "11px",
+                  border: "none",
+                  background: activeSeed === s.key
+                    ? "linear-gradient(135deg, rgba(189,166,255,0.22), rgba(232,150,124,0.14))"
+                    : "transparent",
+                  boxShadow: activeSeed === s.key
+                    ? "0 0 0 1px rgba(189,166,255,0.35), inset 0 1px 0 rgba(255,255,255,0.08)"
+                    : "none",
                   cursor: "pointer",
-                  minWidth: "130px",
-                }}
-                onMouseEnter={(e) => {
-                  if (activeSeed !== s.key) {
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.35)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeSeed !== s.key) {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.borderColor = "rgba(189,166,255,0.16)";
-                    e.currentTarget.style.background = "rgba(255,255,255,0.03)";
-                  }
+                  transition: "all 0.22s ease",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
                 }}
               >
-                <div style={{ fontSize: "12px", fontWeight: 600, color: "rgba(243,239,255,0.92)", marginBottom: "2px" }}>
+                <div style={{
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: activeSeed === s.key ? "rgba(243,239,255,0.95)" : "rgba(243,239,255,0.45)",
+                  marginBottom: "2px",
+                  transition: "color 0.22s ease",
+                }}>
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+                <div style={{
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  color: activeSeed === s.key ? "rgba(243,239,255,0.95)" : "rgba(243,239,255,0.55)",
+                  transition: "color 0.22s ease",
+                  lineHeight: 1.2,
+                }}>
                   {s.title}
                 </div>
-                <div style={{ fontSize: "11px", color: "rgba(243,239,255,0.62)" }}>
+                <div style={{
+                  fontSize: "10px",
+                  color: activeSeed === s.key ? "rgba(189,166,255,0.75)" : "rgba(243,239,255,0.30)",
+                  marginTop: "2px",
+                  transition: "color 0.22s ease",
+                  lineHeight: 1.2,
+                }}>
                   {s.desc}
                 </div>
               </button>
