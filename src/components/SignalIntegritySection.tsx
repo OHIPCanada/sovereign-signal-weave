@@ -6,160 +6,252 @@ gsap.registerPlugin(ScrollTrigger);
 
 const PILLS = ["Integrity", "Traceability", "Jurisdiction"];
 
-/* ── Geometry ── */
-const W = 1080;
-const H = 480;
-const LINE_COUNT = 4;
-const LINE_Y = (i: number) => 90 + i * 100;
-
-/* Noisy input path (left side) */
-function inputD(i: number): string {
-  const y0 = LINE_Y(i);
-  const pts: string[] = [];
-  for (let x = 30; x <= 400; x += 4) {
-    const n =
-      Math.sin(x * 0.06 + i * 1.5) * 18 +
-      Math.cos(x * 0.13 + i * 0.9) * 10 +
-      Math.sin(x * 0.21 + i * 2.4) * 5;
-    pts.push(`${x},${y0 + n}`);
-  }
-  return `M${pts.join(" L")}`;
-}
-
-/* Clean output path (right side) */
-function outputD(i: number): string {
-  const y0 = LINE_Y(i);
-  return `M${680},${y0} L${W - 30},${y0}`;
-}
-
 const SignalIntegritySection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const svg = svgRef.current;
-    const stage = stageRef.current;
-    const textEl = textRef.current;
     const section = sectionRef.current;
-    if (!svg || !stage || !textEl || !section) return;
+    const textEl = textRef.current;
+    const canvas = canvasRef.current;
+    if (!section || !textEl || !canvas) return;
 
-    const ctx = gsap.context(() => {
-      /* ── Query elements ── */
-      const ins = svg.querySelectorAll<SVGPathElement>(".wIn");
-      const outs = svg.querySelectorAll<SVGLineElement>(".wOut");
-      const bloom = svg.querySelector("#bloom") as SVGEllipseElement;
-      const warmRect = svg.querySelector("#warmRect") as SVGRectElement;
-      const scanBar = svg.querySelector("#scanBar") as SVGRectElement;
-      const pulse = svg.querySelector("#pulse") as SVGCircleElement;
-      const verifyLabel = svg.querySelector("#verifyLabel") as SVGTextElement;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-      /* ── Entrance fade ── */
-      gsap.set(textEl, { opacity: 0, y: 40 });
-      gsap.set(stage, { opacity: 0, y: 50 });
+    /* ── Sizing ── */
+    const resize = () => {
+      const rect = canvas.parentElement!.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = rect.width + "px";
+      canvas.style.height = rect.height + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    window.addEventListener("resize", resize);
 
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top 78%",
-        once: true,
-        onEnter: () => {
-          gsap.to(textEl, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" });
-          gsap.to(stage, { opacity: 1, y: 0, duration: 1.1, delay: 0.12, ease: "power3.out" });
-        },
-      });
+    /* ── State ── */
+    const W = () => canvas.width / Math.min(window.devicePixelRatio, 2);
+    const H = () => canvas.height / Math.min(window.devicePixelRatio, 2);
 
-      /* ═══ A. AMBIENT — always running ═══ */
+    const LINE_COUNT = 5;
+    const state = {
+      time: 0,
+      wobbleAmp: 1.0,       // 1 = full noise, 0 = dampened
+      outOpacity: 0.15,     // output line opacity
+      scanY: -10,           // scan bar Y position (-10 = hidden)
+      scanOpacity: 0,
+      warmGlow: 0,          // warm plane glow intensity
+      pulseX: -100,         // pulse dot X
+      pulseOpacity: 0,
+      verified: false,
+    };
 
-      // Input wobble: each path jiggles individually
-      ins.forEach((p, i) => {
-        gsap.to(p, {
-          x: "random(-5, 5)",
-          y: "random(-4, 4)",
-          duration: 1.2 + i * 0.2,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          delay: i * 0.12,
-        });
-      });
+    /* ── Draw frame ── */
+    function draw() {
+      const w = W();
+      const h = H();
+      ctx!.clearRect(0, 0, w, h);
 
-      // Output: very subtle drift (alive but stable)
-      outs.forEach((l, i) => {
-        gsap.to(l, {
-          y: 1.5,
-          duration: 5 + i,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-        });
-      });
+      const centerX = w * 0.5;
+      const planeX = centerX;
 
-      // Bloom breathing
-      gsap.to(bloom, {
-        attr: { rx: 260, ry: 250 },
-        opacity: 0.55,
-        duration: 5,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-
-      /* ═══ B. PULSE RUNNER ═══ */
-      function runPulse() {
-        const y = LINE_Y(1) + 20; // roughly center
-        gsap.set(pulse, { attr: { cx: 520, cy: y, r: 6 }, opacity: 0 });
-        gsap.to(pulse, { opacity: 1, duration: 0.15, ease: "power2.out" });
-        gsap.to(pulse, { attr: { cx: W - 60 }, duration: 1.6, ease: "power1.inOut" });
-        gsap.to(pulse, { opacity: 0, attr: { r: 12 }, duration: 0.4, delay: 1.2, ease: "power2.in" });
+      // ── Warm glow behind center ──
+      if (state.warmGlow > 0.01) {
+        const grad = ctx!.createRadialGradient(planeX, h * 0.5, 0, planeX, h * 0.5, h * 0.45);
+        grad.addColorStop(0, `rgba(212,97,107,${state.warmGlow * 0.35})`);
+        grad.addColorStop(0.5, `rgba(232,150,124,${state.warmGlow * 0.2})`);
+        grad.addColorStop(1, "transparent");
+        ctx!.fillStyle = grad;
+        ctx!.fillRect(0, 0, w, h);
       }
 
-      /* ═══ C. SCROLL-TRIGGERED VERIFICATION ═══ */
-      const verifyTL = gsap.timeline({ paused: true });
+      // ── Center structural line ──
+      ctx!.beginPath();
+      ctx!.moveTo(planeX, h * 0.05);
+      ctx!.lineTo(planeX, h * 0.95);
+      ctx!.strokeStyle = `rgba(90,32,184,${0.12 + state.warmGlow * 0.15})`;
+      ctx!.lineWidth = 1.5;
+      ctx!.stroke();
 
-      verifyTL
-        // 1. Scan bar sweeps top → bottom
-        .set(scanBar, { attr: { y: 0 }, opacity: 1 }, 0)
-        .to(scanBar, { attr: { y: H }, duration: 1.2, ease: "power2.inOut" }, 0)
-        .to(scanBar, { opacity: 0, duration: 0.2 }, 1.0)
-
-        // 2. Warm rect glows during scan
-        .to(warmRect, { opacity: 0.5, duration: 0.5, ease: "power2.out" }, 0.1)
-
-        // 3. Dampen input wobble
-        .to(ins, { x: 0, y: 0, duration: 1.0, ease: "power2.out", overwrite: "auto" }, 0.6)
-
-        // 4. Brighten outputs
-        .to(outs, { opacity: 0.8, strokeWidth: 2, duration: 0.7, ease: "power2.out" }, 0.8)
-
-        // 5. Flash verify label
-        .to(verifyLabel, { opacity: 0.6, duration: 0.4, ease: "power2.out" }, 0.9)
-
-        // 6. First pulse
-        .add(() => runPulse(), 1.1)
-
-        // 7. Warm rect settles
-        .to(warmRect, { opacity: 0.25, duration: 0.8, ease: "sine.out" }, 1.5);
-
-      ScrollTrigger.create({
-        trigger: stage,
-        start: "top 68%",
-        once: true,
-        onEnter: () => {
-          verifyTL.play();
-          // Repeating pulses
-          gsap.delayedCall(4, () => {
-            runPulse();
-            gsap.delayedCall(8, function loop() {
-              runPulse();
-              gsap.delayedCall(8, loop);
-            });
-          });
-        },
+      // ── Flanking lines ──
+      [planeX - 20, planeX + 20].forEach((x) => {
+        ctx!.beginPath();
+        ctx!.moveTo(x, h * 0.08);
+        ctx!.lineTo(x, h * 0.92);
+        ctx!.strokeStyle = "rgba(90,32,184,0.06)";
+        ctx!.lineWidth = 0.8;
+        ctx!.stroke();
       });
-    }, section);
 
-    return () => ctx.revert();
+      // ── INPUT waves (left) ──
+      const lineSpacing = (h * 0.7) / (LINE_COUNT - 1);
+      const yStart = h * 0.15;
+      const leftEnd = planeX - 40;
+      const leftStart = w * 0.04;
+
+      for (let i = 0; i < LINE_COUNT; i++) {
+        const baseY = yStart + i * lineSpacing;
+        ctx!.beginPath();
+        for (let x = leftStart; x <= leftEnd; x += 3) {
+          const t = state.time + i * 0.8;
+          const noise =
+            state.wobbleAmp * (
+              Math.sin(x * 0.04 + t * 1.8 + i * 1.3) * 16 +
+              Math.cos(x * 0.09 + t * 2.2 + i * 0.7) * 9 +
+              Math.sin(x * 0.15 + t * 1.1 + i * 2.1) * 5
+            );
+          const y = baseY + noise;
+          if (x === leftStart) ctx!.moveTo(x, y);
+          else ctx!.lineTo(x, y);
+        }
+        ctx!.strokeStyle = `rgba(90,32,184,${0.45 + i * 0.04})`;
+        ctx!.lineWidth = 2;
+        ctx!.lineCap = "round";
+        ctx!.lineJoin = "round";
+        ctx!.stroke();
+      }
+
+      // ── OUTPUT lines (right) ──
+      const rightStart = planeX + 40;
+      const rightEnd = w * 0.96;
+
+      for (let i = 0; i < LINE_COUNT; i++) {
+        const baseY = yStart + i * lineSpacing;
+        const microDrift = Math.sin(state.time * 0.3 + i * 1.5) * 1.5;
+        ctx!.beginPath();
+        ctx!.moveTo(rightStart, baseY + microDrift);
+        ctx!.lineTo(rightEnd, baseY + microDrift);
+        ctx!.strokeStyle = `rgba(90,32,184,${state.outOpacity})`;
+        ctx!.lineWidth = 1.8;
+        ctx!.lineCap = "round";
+        ctx!.stroke();
+      }
+
+      // ── Scan bar ──
+      if (state.scanOpacity > 0.01) {
+        const barGrad = ctx!.createLinearGradient(planeX - 80, 0, planeX + 80, 0);
+        barGrad.addColorStop(0, "transparent");
+        barGrad.addColorStop(0.3, `rgba(212,97,107,${state.scanOpacity * 0.9})`);
+        barGrad.addColorStop(0.7, `rgba(232,150,124,${state.scanOpacity * 0.9})`);
+        barGrad.addColorStop(1, "transparent");
+        ctx!.fillStyle = barGrad;
+        ctx!.fillRect(planeX - 80, state.scanY - 2, 160, 4);
+
+        // Scan glow trail
+        const trailGrad = ctx!.createLinearGradient(0, state.scanY - 40, 0, state.scanY);
+        trailGrad.addColorStop(0, "transparent");
+        trailGrad.addColorStop(1, `rgba(212,97,107,${state.scanOpacity * 0.12})`);
+        ctx!.fillStyle = trailGrad;
+        ctx!.fillRect(planeX - 60, state.scanY - 40, 120, 40);
+      }
+
+      // ── Pulse dot ──
+      if (state.pulseOpacity > 0.01) {
+        const midY = h * 0.5;
+        // Outer glow
+        const pg = ctx!.createRadialGradient(state.pulseX, midY, 0, state.pulseX, midY, 24);
+        pg.addColorStop(0, `rgba(212,97,107,${state.pulseOpacity * 0.6})`);
+        pg.addColorStop(1, "transparent");
+        ctx!.fillStyle = pg;
+        ctx!.fillRect(state.pulseX - 24, midY - 24, 48, 48);
+        // Core
+        ctx!.beginPath();
+        ctx!.arc(state.pulseX, midY, 5, 0, Math.PI * 2);
+        ctx!.fillStyle = `rgba(212,97,107,${state.pulseOpacity})`;
+        ctx!.fill();
+      }
+
+      // ── Labels ──
+      ctx!.font = "11px monospace";
+      ctx!.letterSpacing = "3px";
+      ctx!.fillStyle = "rgba(90,32,184,0.45)";
+      ctx!.textAlign = "left";
+      ctx!.fillText("SIGNAL IN", leftStart, yStart - 28);
+
+      ctx!.fillStyle = "rgba(212,97,107,0.5)";
+      ctx!.textAlign = "right";
+      ctx!.fillText("INTEGRITY VERIFIED", rightEnd, yStart - 28);
+
+      ctx!.fillStyle = `rgba(90,32,184,${state.verified ? 0.35 : 0.0})`;
+      ctx!.textAlign = "center";
+      ctx!.fillText("VERIFY", planeX, h * 0.94);
+    }
+
+    /* ── Animation loop ── */
+    let raf: number;
+    function tick() {
+      state.time += 0.016;
+      draw();
+      raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+
+    /* ── Entrance ── */
+    gsap.set(textEl, { opacity: 0, y: 40 });
+    gsap.set(canvas, { opacity: 0, y: 50 });
+
+    ScrollTrigger.create({
+      trigger: section,
+      start: "top 78%",
+      once: true,
+      onEnter: () => {
+        gsap.to(textEl, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" });
+        gsap.to(canvas, { opacity: 1, y: 0, duration: 1.1, delay: 0.12, ease: "power3.out" });
+      },
+    });
+
+    /* ── Pulse runner ── */
+    function runPulse() {
+      const w = W();
+      const centerX = w * 0.5;
+      gsap.set(state, { pulseX: centerX, pulseOpacity: 0 });
+      gsap.to(state, { pulseOpacity: 1, duration: 0.2, ease: "power2.out" });
+      gsap.to(state, { pulseX: w * 0.92, duration: 1.6, ease: "power1.inOut" });
+      gsap.to(state, { pulseOpacity: 0, duration: 0.4, delay: 1.2, ease: "power2.in" });
+    }
+
+    /* ── Verification sequence ── */
+    const verifyTL = gsap.timeline({ paused: true });
+    verifyTL
+      .to(state, { scanY: 0, scanOpacity: 1, duration: 0.01 }, 0)
+      .to(state, { scanY: H(), duration: 1.3, ease: "power2.inOut" }, 0)
+      .to(state, { scanOpacity: 0, duration: 0.3 }, 1.0)
+      .to(state, { warmGlow: 0.8, duration: 0.5, ease: "power2.out" }, 0.1)
+      .to(state, { wobbleAmp: 0.15, duration: 1.2, ease: "power2.out" }, 0.6)
+      .to(state, { outOpacity: 0.55, duration: 0.8, ease: "power2.out" }, 0.8)
+      .set(state, { verified: true }, 0.9)
+      .add(() => runPulse(), 1.1)
+      .to(state, { warmGlow: 0.35, duration: 1.0, ease: "sine.out" }, 1.5)
+      // Restore wobble slightly for organic feel
+      .to(state, { wobbleAmp: 0.4, duration: 2.0, ease: "sine.inOut" }, 2.0);
+
+    ScrollTrigger.create({
+      trigger: canvas,
+      start: "top 68%",
+      once: true,
+      onEnter: () => {
+        verifyTL.play();
+        gsap.delayedCall(4, () => {
+          runPulse();
+          gsap.delayedCall(8, function loop() {
+            runPulse();
+            gsap.delayedCall(8, loop);
+          });
+        });
+      },
+    });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+      gsap.killTweensOf(state);
+      verifyTL.kill();
+      ScrollTrigger.getAll().forEach((st) => st.kill());
+    };
   }, []);
 
   return (
@@ -179,16 +271,6 @@ const SignalIntegritySection = () => {
         alignItems: "center",
       }}
     >
-      {/* Noise texture */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
-          backgroundSize: "256px 256px",
-        }}
-      />
-
       <div
         className="relative z-10 mx-auto w-full grid items-center"
         style={{
@@ -252,140 +334,17 @@ const SignalIntegritySection = () => {
           </div>
         </div>
 
-        {/* Right — Signal Integrity Stage */}
-        <div
-          ref={stageRef}
-          style={{
-            borderRadius: 28,
-            border: "1px solid rgba(42,11,74,0.10)",
-            background: "rgba(255,255,255,0.6)",
-            boxShadow: "0 26px 80px rgba(0,0,0,0.12), 0 4px 20px rgba(90,32,184,0.06)",
-            overflow: "hidden",
-          }}
-        >
-          <svg
-            ref={svgRef}
-            viewBox={`0 0 ${W} ${H}`}
-            className="w-full h-auto block"
-            fill="none"
-            style={{ background: "linear-gradient(135deg, rgba(251,247,255,0.5) 0%, rgba(253,238,229,0.3) 100%)" }}
-          >
-            <defs>
-              <filter id="s9glow" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation="6" result="b" />
-                <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-              </filter>
-              <filter id="s9pulseGlow" x="-80%" y="-80%" width="260%" height="260%">
-                <feGaussianBlur stdDeviation="12" result="b" />
-                <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-              </filter>
-              <radialGradient id="bloomGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#E8967C" stopOpacity={0.25} />
-                <stop offset="40%" stopColor="#BFA7FF" stopOpacity={0.15} />
-                <stop offset="100%" stopColor="transparent" stopOpacity={0} />
-              </radialGradient>
-              <linearGradient id="warmGrad9" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#D4616B" stopOpacity={0.35} />
-                <stop offset="50%" stopColor="#E8967C" stopOpacity={0.25} />
-                <stop offset="100%" stopColor="#F2C1AE" stopOpacity={0.15} />
-              </linearGradient>
-            </defs>
-
-            {/* ── Central bloom ── */}
-            <ellipse
-              id="bloom"
-              cx={540}
-              cy={H / 2}
-              rx={220}
-              ry={210}
-              fill="url(#bloomGrad)"
-              opacity={0.45}
-            />
-
-            {/* ── Warm verification rect (starts invisible) ── */}
-            <rect
-              id="warmRect"
-              x={500}
-              y={10}
-              width={80}
-              height={H - 20}
-              rx={6}
-              fill="url(#warmGrad9)"
-              opacity={0}
-              filter="url(#s9glow)"
-            />
-
-            {/* ── Center structural lines ── */}
-            <line x1={540} y1={20} x2={540} y2={H - 20} stroke="rgba(90,32,184,0.15)" strokeWidth={1.5} />
-            <line x1={520} y1={30} x2={520} y2={H - 30} stroke="rgba(90,32,184,0.06)" strokeWidth={0.8} />
-            <line x1={560} y1={30} x2={560} y2={H - 30} stroke="rgba(90,32,184,0.06)" strokeWidth={0.8} />
-
-            {/* ── Watermark ── */}
-            <text
-              x={540} y={H / 2}
-              textAnchor="middle" dominantBaseline="central"
-              fill="rgba(90,32,184,0.07)"
-              fontSize={20} fontWeight={700} letterSpacing="0.18em"
-              style={{ fontFamily: "inherit" }}
-            >
-              DOCG AI
-            </text>
-
-            {/* ── INPUT waves (noisy, bold) ── */}
-            {Array.from({ length: LINE_COUNT }, (_, i) => (
-              <path
-                key={`in${i}`}
-                className="wIn"
-                d={inputD(i)}
-                stroke="rgba(90,32,184,0.55)"
-                strokeWidth={2}
-                strokeLinecap="round"
-              />
-            ))}
-
-            {/* ── OUTPUT lines (clean, initially faint) ── */}
-            {Array.from({ length: LINE_COUNT }, (_, i) => (
-              <line
-                key={`out${i}`}
-                className="wOut"
-                x1={680} y1={LINE_Y(i)}
-                x2={W - 30} y2={LINE_Y(i)}
-                stroke="rgba(90,32,184,0.2)"
-                strokeWidth={1.5}
-                strokeLinecap="round"
-                opacity={0.35}
-              />
-            ))}
-
-            {/* ── Scan bar ── */}
-            <rect
-              id="scanBar"
-              x={460} y={0}
-              width={160} height={5}
-              rx={2.5}
-              fill="#D4616B"
-              opacity={0}
-              filter="url(#s9glow)"
-            />
-
-            {/* ── Verification pulse ── */}
-            <circle
-              id="pulse"
-              cx={540} cy={240}
-              r={6}
-              fill="#D4616B"
-              filter="url(#s9pulseGlow)"
-              opacity={0}
-            />
-
-            {/* ── Labels ── */}
-            <text x={35} y={38} fill="rgba(90,32,184,0.5)" fontSize={11} letterSpacing="0.2em"
-              style={{ fontFamily: "monospace" }}>SIGNAL IN</text>
-            <text x={W - 35} y={38} textAnchor="end" fill="rgba(212,97,107,0.55)" fontSize={11}
-              letterSpacing="0.2em" style={{ fontFamily: "monospace" }}>INTEGRITY VERIFIED</text>
-            <text id="verifyLabel" x={540} y={H - 22} textAnchor="middle" fill="rgba(90,32,184,0.0)"
-              fontSize={10} letterSpacing="0.25em" style={{ fontFamily: "monospace" }}>VERIFY</text>
-          </svg>
+        {/* Right — Canvas-driven signal verification */}
+        <div style={{ position: "relative", width: "100%", aspectRatio: "2.2 / 1" }}>
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          />
         </div>
       </div>
     </section>
