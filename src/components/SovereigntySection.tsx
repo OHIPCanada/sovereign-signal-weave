@@ -303,15 +303,14 @@ const SovereigntySection = () => {
       />
 
       <div
-        className="relative z-10 mx-auto w-full grid items-center"
+        className="relative z-10 mx-auto w-full flex flex-col items-center"
         style={{
           maxWidth: "min(1280px, 94vw)",
-          gridTemplateColumns: "0.28fr 1.22fr",
-          gap: "clamp(120px, 14vw, 220px)",
+          gap: "clamp(48px, 6vw, 80px)",
         }}
       >
-        {/* Left — Text */}
-        <div ref={textRef}>
+        {/* Top — Text */}
+        <div ref={textRef} className="text-center" style={{ maxWidth: "640px" }}>
           <div
             className="font-mono uppercase mb-5"
             style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(255,255,255,0.45)" }}

@@ -263,11 +263,11 @@ const DeploymentSection = () => {
       }} />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 w-full">
-        {/* 2-column: text left, canvas right */}
-        <div className="flex flex-col lg:flex-row items-start" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
-          {/* Left: Text */}
+        {/* Stacked: text top, canvas bottom */}
+        <div className="flex flex-col items-center" style={{ gap: "clamp(48px, 6vw, 80px)" }}>
+          {/* Top: Text */}
           <motion.div
-            className="lg:w-[38%] flex-shrink-0 lg:sticky lg:top-32"
+            className="text-center w-full"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
