@@ -31,6 +31,24 @@ const SignalIntegritySection = () => {
     resize();
     window.addEventListener("resize", resize);
 
+    // --- Parallax (mouse / touch) ---
+    const par = { x: 0, y: 0, tx: 0, ty: 0, strength: 22 };
+
+    const onParallaxMove = (e: MouseEvent) => {
+      par.tx = (e.clientX / window.innerWidth) * 2 - 1;
+      par.ty = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+    const onParallaxTouch = (e: TouchEvent) => {
+      if (!e.touches?.length) return;
+      const touch = e.touches[0];
+      par.tx = (touch.clientX / window.innerWidth) * 2 - 1;
+      par.ty = (touch.clientY / window.innerHeight) * 2 - 1;
+    };
+    window.addEventListener("mousemove", onParallaxMove, { passive: true });
+    window.addEventListener("touchmove", onParallaxTouch, { passive: true });
+
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
     const rails = [0.28, 0.42, 0.56, 0.70];
 
     const N = 46;
@@ -143,9 +161,29 @@ const SignalIntegritySection = () => {
       const w = canvas!.width;
       const h = canvas!.height;
 
+      // Smooth parallax (inertial)
+      par.x = lerp(par.x, par.tx, 0.06);
+      par.y = lerp(par.y, par.ty, 0.06);
+
+      // Cinematic camera zoom — pulses every ~8s
+      const fusionCycle = Math.sin(t * 0.4) * 0.5 + 0.5; // 0..1
+      const fusion = fusionCycle * fusionCycle; // ease-in
+      const zoom = 1.0 + fusion * 0.08;
+      const cx = w * 0.5;
+      const cy = h * 0.56;
+      const px = par.x * par.strength * DPR;
+      const py = par.y * par.strength * DPR;
+
       ctx.clearRect(0, 0, w, h);
 
-      // === RICHER BACKGROUND DEPTH ===
+      // Apply camera transform (zoom around center + parallax drift)
+      ctx.save();
+      ctx.setTransform(
+        zoom, 0,
+        0, zoom,
+        (1 - zoom) * cx + px,
+        (1 - zoom) * cy + py
+      );
 
       // Animated grid dots with breathing effect
       gridDots.forEach((dot) => {
@@ -409,6 +447,10 @@ const SignalIntegritySection = () => {
       }
       ctx.globalAlpha = 1;
 
+      // Restore camera transform before tilt
+      ctx.restore();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+
       // 3D tilt — smooth lerp
       smoothCard.rx += (cardMouse.ny * -18 - smoothCard.rx) * 0.06;
       smoothCard.ry += (cardMouse.nx * 26 - smoothCard.ry) * 0.06;
@@ -438,6 +480,8 @@ const SignalIntegritySection = () => {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onParallaxMove);
+      window.removeEventListener("touchmove", onParallaxTouch);
       if (cardEl) {
         cardEl.removeEventListener("mousemove", onMouseMove);
         cardEl.removeEventListener("mouseleave", onMouseLeave);
