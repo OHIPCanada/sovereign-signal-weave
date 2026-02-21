@@ -226,7 +226,7 @@ const LivingArchitecture = () => (
 const PlatformSection = () => {
   return (
     <section
-      className="relative overflow-hidden flex items-center lg:min-h-screen"
+      className="relative overflow-hidden flex items-center md:min-h-[70vh] lg:min-h-screen"
       id="product"
       style={{
         padding: "clamp(64px, 7vw, 110px) 0",
@@ -246,7 +246,7 @@ const PlatformSection = () => {
       }} />
 
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[0.55fr_1.45fr] items-center w-full split-layout-gap">
+        <div className="grid grid-cols-1 md:grid-cols-[0.45fr_1.55fr] lg:grid-cols-[0.55fr_1.45fr] items-center w-full split-layout-gap">
           {/* ── Left: Narrative ── */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}

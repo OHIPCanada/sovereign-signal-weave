@@ -310,7 +310,7 @@ export default function Section4SystemTransformation() {
 
   return (
     <motion.section
-      className="relative overflow-hidden flex items-center lg:min-h-screen"
+      className="relative overflow-hidden flex items-center md:min-h-[70vh] lg:min-h-screen"
       style={{ padding: "clamp(56px, 7vw, 96px) 0" }}
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -318,7 +318,7 @@ export default function Section4SystemTransformation() {
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center split-layout-gap">
+        <div className="grid grid-cols-1 md:grid-cols-[0.35fr_1.65fr] lg:grid-cols-[0.28fr_1.72fr] items-center split-layout-gap">
           {/* Left content */}
           <div className="flex flex-col gap-5">
             <motion.p

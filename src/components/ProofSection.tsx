@@ -238,7 +238,7 @@ export default function ProofSection() {
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
         {/* Top: Left text + Right system field */}
         <div
-          className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center split-layout-gap"
+          className="grid grid-cols-1 md:grid-cols-[0.35fr_1.65fr] lg:grid-cols-[0.28fr_1.72fr] items-center split-layout-gap"
         >
           {/* Left content */}
           <div className="flex flex-col gap-5">
