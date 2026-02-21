@@ -415,7 +415,7 @@ const Section9_DeploymentSurfaces = () => {
 
           {/* Surface tiles — segmented tab bar */}
           <div
-            className="flex flex-nowrap mt-8 overflow-x-auto"
+            className="flex flex-nowrap mt-8 overflow-x-auto scrollbar-hide"
             style={{
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(189,166,255,0.18)",
@@ -423,7 +423,7 @@ const Section9_DeploymentSurfaces = () => {
               padding: "5px",
               gap: "2px",
               backdropFilter: "blur(12px)",
-              justifyContent: "center",
+              justifyContent: "start",
             }}
           >
             {SURFACES.map((s, i) => (
@@ -494,7 +494,7 @@ const Section9_DeploymentSurfaces = () => {
               rgba(255,255,255,0.02)
             `,
             boxShadow: "0 40px 120px rgba(0,0,0,0.45)",
-            minHeight: "520px",
+            minHeight: "clamp(300px, 60vw, 520px)",
           }}
         >
           {/* Faint grid overlay */}
@@ -517,7 +517,7 @@ const Section9_DeploymentSurfaces = () => {
             height="100%"
             preserveAspectRatio="none"
             className="relative z-10"
-            style={{ minHeight: "520px" }}
+            style={{ minHeight: "clamp(300px, 60vw, 520px)" }}
           >
             <defs>
               <radialGradient id="s9SeedGlow" cx="50%" cy="50%" r="60%">

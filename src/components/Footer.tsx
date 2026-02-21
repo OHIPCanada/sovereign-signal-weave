@@ -25,7 +25,7 @@ const Footer = () => {
       {/* Content wrap */}
       <div
         className="relative z-[2] mx-auto"
-        style={{ width: "min(1180px, 92vw)", padding: "90px 0 40px" }}
+        style={{ width: "min(1180px, 92vw)", padding: "clamp(48px, 8vw, 90px) 0 clamp(24px, 4vw, 40px)" }}
       >
         {/* CTA Section */}
         <div>

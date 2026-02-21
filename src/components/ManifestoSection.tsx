@@ -203,8 +203,8 @@ const ManifestoSection = () => {
     <section
       ref={containerRef}
       id="intelligence-layer"
-      className="relative overflow-hidden flex items-center"
-      style={{ padding: "clamp(64px, 7vw, 110px) 0", minHeight: "100vh" }}
+      className="relative overflow-hidden flex items-center lg:min-h-screen"
+      style={{ padding: "clamp(64px, 7vw, 110px) 0" }}
     >
       {/* Background */}
       <div className="absolute inset-0" style={{
@@ -218,7 +218,7 @@ const ManifestoSection = () => {
       }} />
 
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[0.55fr_1.45fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
           {/* Left — Copy */}
           <motion.div className="flex flex-col gap-5" style={{ opacity: headlineOpacity, y: headlineY }}>
             <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
