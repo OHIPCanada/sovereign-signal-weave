@@ -409,6 +409,12 @@
   gap: clamp(40px, 5vw, 60px);
 }
 
+@media (min-width: 768px) {
+  .split-layout-gap {
+    gap: clamp(60px, 8vw, 120px);
+  }
+}
+
 @media (min-width: 1024px) {
   .split-layout-gap {
     gap: clamp(120px, 14vw, 220px);
