@@ -282,12 +282,11 @@ const SovereigntySection = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden flex items-center"
+      className="relative overflow-hidden flex items-center lg:min-h-screen"
       style={{
         padding: "clamp(56px, 7vw, 96px) 0",
         background: "radial-gradient(circle at 50% 40%, #241034 0%, #0B0613 70%)",
         color: "#EDE7F6",
-        minHeight: "100vh",
       }}
     >
       {/* Noise overlay */}
@@ -301,7 +300,7 @@ const SovereigntySection = () => {
       />
 
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center split-layout-gap">
           {/* Left — Text */}
           <div ref={textRef} className="flex flex-col gap-5">
             <div

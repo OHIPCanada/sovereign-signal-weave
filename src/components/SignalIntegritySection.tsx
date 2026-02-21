@@ -529,7 +529,7 @@ const SignalIntegritySection = () => {
           style={{
             position: "relative",
             width: "100%",
-            height: "520px",
+            height: "clamp(300px, 60vw, 520px)",
             background: "rgba(255,255,255,0.08)",
             backdropFilter: "blur(3px)",
             WebkitBackdropFilter: "blur(3px)",

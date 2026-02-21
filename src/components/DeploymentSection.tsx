@@ -241,11 +241,10 @@ const ParticleField = () => {
 const DeploymentSection = () => {
   return (
     <section
-      className="relative overflow-hidden flex items-center"
+      className="relative overflow-hidden flex items-center lg:min-h-screen"
       id="deployment"
       style={{
         padding: "clamp(56px, 7vw, 96px) 0",
-        minHeight: "100vh",
         background: `linear-gradient(180deg, #140022 0%, #1a0833 30%, #2A0B4E 70%, #120622 100%)`,
       }}
     >
@@ -264,7 +263,7 @@ const DeploymentSection = () => {
       }} />
 
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center" style={{ gap: "clamp(120px, 14vw, 220px)" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center split-layout-gap">
           {/* Left: Text */}
           <motion.div
             className="flex flex-col gap-5"

@@ -404,6 +404,21 @@
   .delay-700 { animation-delay: 700ms; }
 }
 
+/* ===== Mobile-responsive split layout ===== */
+.split-layout-gap {
+  gap: clamp(40px, 5vw, 60px);
+}
+
+@media (min-width: 1024px) {
+  .split-layout-gap {
+    gap: clamp(120px, 14vw, 220px);
+  }
+}
+
+/* Hide scrollbar for tab bars */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
 @keyframes backgroundShift {
   0% { background-position: 30% 20%; }
   100% { background-position: 35% 25%; }

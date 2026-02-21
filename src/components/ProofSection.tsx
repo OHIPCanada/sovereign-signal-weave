@@ -97,9 +97,10 @@ function SystemField() {
       <style>{`
         .measure-visual {
           position: relative;
-          width: clamp(340px, 42vw, 480px);
-          height: clamp(340px, 42vw, 480px);
+          width: clamp(260px, 70vw, 480px);
+          height: clamp(260px, 70vw, 480px);
           margin: 0 auto;
+          overflow: hidden;
         }
 
         .core {
@@ -237,8 +238,7 @@ export default function ProofSection() {
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
         {/* Top: Left text + Right system field */}
         <div
-          className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center"
-          style={{ gap: "clamp(120px, 14vw, 220px)" }}
+          className="grid grid-cols-1 lg:grid-cols-[0.28fr_1.72fr] items-center split-layout-gap"
         >
           {/* Left content */}
           <div className="flex flex-col gap-5">
