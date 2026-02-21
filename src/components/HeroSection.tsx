@@ -1,149 +1,253 @@
+import { useRef, useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { useMouseFollow } from "@/hooks/useMouseFollow";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState, useEffect } from "react";
-import neuralProfile from "@/assets/neural-profile.png";
-import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
-import clinicOsOrb from "@/assets/clinic-os-orb-new.png";
-import virtualCareOrb from "@/assets/virtual-care-orb.png";
-import sovereignDataOrb from "@/assets/sovereign-data-orb.png";
-import auditIntegrityOrb from "@/assets/audit-integrity-orb.png";
-import NeuralPlexus from "@/components/hero/NeuralPlexus";
 
-const orbs = [
-  { src: aiCortexOrb, alt: "AI Cortex", label: "AI CORTEX", delay: 1.8 },
-  { src: sovereignDataOrb, alt: "Sovereign Data", label: "SOVEREIGN DATA", delay: 2.0 },
-  { src: virtualCareOrb, alt: "Virtual Care", label: "VIRTUAL CARE", delay: 2.2 },
-  { src: auditIntegrityOrb, alt: "Audit Integrity", label: "AUDIT INTEGRITY", delay: 2.4 },
-  { src: clinicOsOrb, alt: "Clinic OS", label: "CLINIC OS", delay: 2.6 },
-];
-
-const orbAngles = [180, 225, 270, 315, 0];
+interface Particle {
+  x: number;
+  y: number;
+  originX: number;
+  originY: number;
+  vx: number;
+  vy: number;
+  size: number;
+  type: "human" | "ai";
+  phase: number;
+  speed: number;
+}
 
 const HeroSection = () => {
-  const { x: mouseX, y: mouseY } = useMouseFollow();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
+  const particlesRef = useRef<Particle[]>([]);
+  const startTimeRef = useRef<number>(0);
   const isMobile = useIsMobile();
-  const [isTablet, setIsTablet] = useState(false);
+  const [textVisible, setTextVisible] = useState(false);
+
+  const initParticles = useCallback((w: number, h: number) => {
+    const particles: Particle[] = [];
+    const humanCount = isMobile ? 120 : 280;
+    const aiCount = isMobile ? 100 : 240;
+    const spread = isMobile ? 100 : 180;
+
+    // Human cluster — left side, organic
+    for (let i = 0; i < humanCount; i++) {
+      const cx = w * 0.28;
+      const cy = h * 0.48;
+      const angle = Math.random() * Math.PI * 2;
+      const dist = Math.random() * spread;
+      const x = cx + Math.cos(angle) * dist;
+      const y = cy + Math.sin(angle) * dist;
+      particles.push({
+        x, y, originX: x, originY: y,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: (Math.random() - 0.5) * 0.15,
+        size: Math.random() * 2.2 + 0.8,
+        type: "human",
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.3 + Math.random() * 0.5,
+      });
+    }
+
+    // AI cluster — right side, geometric
+    for (let i = 0; i < aiCount; i++) {
+      const cx = w * 0.72;
+      const cy = h * 0.48;
+      // Grid-like distribution with slight randomness
+      const gridSize = Math.ceil(Math.sqrt(aiCount));
+      const gx = (i % gridSize) / gridSize - 0.5;
+      const gy = Math.floor(i / gridSize) / gridSize - 0.5;
+      const x = cx + gx * spread * 2 + (Math.random() - 0.5) * 8;
+      const y = cy + gy * spread * 2 + (Math.random() - 0.5) * 8;
+      particles.push({
+        x, y, originX: x, originY: y,
+        vx: (Math.random() - 0.5) * 0.08,
+        vy: (Math.random() - 0.5) * 0.08,
+        size: Math.random() * 1.8 + 0.6,
+        type: "ai",
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.4 + Math.random() * 0.4,
+      });
+    }
+
+    particlesRef.current = particles;
+  }, [isMobile]);
 
   useEffect(() => {
-    const check = () => setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-  const rotateY = (mouseX - 0.5) * 5;
-  const rotateX = (mouseY - 0.5) * -3;
+    let w = 0, h = 0;
 
-  // Responsive dimensions
-  const containerSize = isMobile ? 380 : isTablet ? 850 : 1200;
-  const center = containerSize / 2;
-  const orbRadiiSet = isMobile ? [155, 155, 155, 135, 135] : isTablet ? [340, 340, 340, 280, 280] : [450, 450, 450, 370, 370];
-  const bottomMargin = isMobile ? -100 : isTablet ? -240 : -320;
-  const orbImgSize = isMobile ? "w-[32px]" : isTablet ? "w-[60px]" : "w-[70px] lg:w-[90px]";
-  const orbContainerWidth = isMobile ? 55 : isTablet ? 90 : 100;
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = canvas.clientWidth;
+      h = canvas.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      initParticles(w, h);
+      startTimeRef.current = performance.now();
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Show text after fusion
+    const textTimer = setTimeout(() => setTextVisible(true), 4200);
+
+    const animate = (now: number) => {
+      const elapsed = (now - startTimeRef.current) / 1000;
+      ctx.clearRect(0, 0, w, h);
+
+      const particles = particlesRef.current;
+      const centerX = w / 2;
+      const centerY = h * 0.48;
+
+      // Phase progress
+      const attractionStart = 2;
+      const fusionStart = 4;
+      const attractionProgress = Math.max(0, Math.min(1, (elapsed - attractionStart) / 2));
+      const fusionProgress = Math.max(0, Math.min(1, (elapsed - fusionStart) / 2.5));
+      const entryProgress = Math.min(1, elapsed / 1.8);
+
+      // Update & draw particles
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        // Entry: slide in from sides
+        const sideOffset = p.type === "human" ? -200 : 200;
+        const entryX = p.originX + sideOffset * (1 - easeOutCubic(entryProgress));
+        
+        // Organic vs geometric motion
+        if (p.type === "human") {
+          // Organic noise-like drift
+          p.x = entryX + Math.sin(now * 0.001 * p.speed + p.phase) * 3;
+          p.y = p.originY + Math.cos(now * 0.0008 * p.speed + p.phase * 1.3) * 3;
+        } else {
+          // Precise rhythmic oscillation
+          p.x = entryX + Math.sin(now * 0.002 * p.speed + p.phase) * 1.5;
+          p.y = p.originY + Math.sin(now * 0.0015 * p.speed + p.phase) * 1.5;
+        }
+
+        // Attraction phase — drift toward center
+        if (attractionProgress > 0) {
+          const pullStrength = attractionProgress * 0.35;
+          p.x += (centerX - p.x) * pullStrength * 0.02;
+          p.y += (centerY - p.y) * pullStrength * 0.02;
+          // Update origins so they stay shifted
+          p.originX += (centerX - p.originX) * pullStrength * 0.008;
+          p.originY += (centerY - p.originY) * pullStrength * 0.008;
+        }
+
+        // Fusion — orbit around center
+        if (fusionProgress > 0) {
+          const dx = p.x - centerX;
+          const dy = p.y - centerY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const angle = Math.atan2(dy, dx);
+          const orbitSpeed = 0.0003 * p.speed * fusionProgress;
+          const newAngle = angle + orbitSpeed * (p.type === "human" ? 1 : -1);
+          const targetDist = Math.max(20, dist * (1 - fusionProgress * 0.01));
+          p.x = centerX + Math.cos(newAngle) * targetDist;
+          p.y = centerY + Math.sin(newAngle) * targetDist;
+        }
+
+        // Draw particle
+        const alpha = 0.5 + entryProgress * 0.5;
+        if (p.type === "human") {
+          ctx.fillStyle = `rgba(189, 166, 255, ${alpha})`;
+        } else {
+          ctx.fillStyle = `rgba(66, 190, 255, ${alpha})`;
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Connection lines during attraction + fusion
+      if (attractionProgress > 0) {
+        const connectionAlpha = Math.min(0.2, attractionProgress * 0.2);
+        const threshold = isMobile ? 50 : 70;
+        ctx.lineWidth = 0.5;
+        for (let i = 0; i < particles.length; i += 3) {
+          for (let j = i + 1; j < particles.length; j += 3) {
+            // Only connect across types for dramatic effect
+            if (particles[i].type === particles[j].type) continue;
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < threshold) {
+              const lineAlpha = connectionAlpha * (1 - dist / threshold);
+              ctx.strokeStyle = `rgba(200, 190, 255, ${lineAlpha})`;
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // Fusion glow
+      if (fusionProgress > 0) {
+        const glowRadius = isMobile ? 120 : 220;
+        const grad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, glowRadius * fusionProgress);
+        grad.addColorStop(0, `rgba(232, 150, 124, ${0.45 * fusionProgress})`);
+        grad.addColorStop(0.4, `rgba(212, 97, 107, ${0.2 * fusionProgress})`);
+        grad.addColorStop(1, "transparent");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      animFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animFrameRef.current);
+      clearTimeout(textTimer);
+      window.removeEventListener("resize", resize);
+    };
+  }, [isMobile, initParticles]);
 
   return (
-    <section className={`hero-bg relative overflow-hidden ${isMobile ? 'min-h-[50vh]' : isTablet ? 'min-h-[80vh]' : 'min-h-screen'}`}>
-      {/* INTELLIGENCE - Large Background Text */}
-      <div className="absolute inset-0 flex items-start justify-center pt-[88px] md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-3 md:px-0">
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="hero-title text-center text-[clamp(38px,12vw,260px)] md:text-[clamp(140px,20vw,260px)] w-full"
+    <section className="hero-bg-dark relative overflow-hidden min-h-[60vh] md:min-h-[80vh] lg:min-h-screen">
+      {/* Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ display: "block" }}
+      />
+
+      {/* Hero text — fades in after fusion */}
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-[60vh] md:min-h-[80vh] lg:min-h-screen px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={textVisible ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl"
         >
-          INTELLIGENCE
-        </motion.h1>
+          <h1 className="text-[clamp(28px,6vw,72px)] font-black leading-[1.05] tracking-tight text-white mb-4 md:mb-6">
+            Intelligence, engineered
+            <br />
+            <span className="bg-gradient-to-r from-[#BDA6FF] via-[#42BEFF] to-[#E8967C] bg-clip-text text-transparent">
+              for healthcare.
+            </span>
+          </h1>
+          <p className="text-[clamp(14px,2vw,20px)] text-white/60 leading-relaxed max-w-xl mx-auto">
+            Human cognition × system-scale AI — unified into infrastructure.
+          </p>
+        </motion.div>
       </div>
-
-      {/* Centered Brain Composition + Orbs */}
-      <div className="absolute inset-0 flex items-end justify-center">
-        <div
-          className="relative"
-          style={{ width: containerSize, height: containerSize, marginBottom: bottomMargin }}
-        >
-          {/* Human image + neural plexus — centered */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1, y: [0, -12, 0] }}
-            transition={{ 
-              opacity: { duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] },
-              scale: { duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] },
-              y: { duration: 7, repeat: Infinity, ease: "easeInOut" },
-            }}
-            className="absolute inset-0 flex items-center justify-center"
-            style={{
-              transform: `perspective(1200px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`,
-              transition: "transform 0.4s ease-out",
-            }}
-          >
-            {/* Neural Plexus SVG — overlaid on brain area, no separate animation (inherits parent) */}
-            {!isMobile && (
-              <div
-                className="absolute z-20 pointer-events-none"
-                style={{ top: "15%", left: "20%", width: "70%", height: "70%" }}
-              >
-                <NeuralPlexus mouseX={mouseX} mouseY={mouseY} />
-              </div>
-            )}
-
-            {/* Human profile image */}
-            <motion.img
-              src={neuralProfile}
-              alt="Neural Intelligence Profile"
-              className={isMobile ? "w-[320px] h-auto relative z-10" : isTablet ? "w-[750px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
-              style={{
-                filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
-              }}
-            />
-          </motion.div>
-
-          {/* Orbs — equidistant around the glow edge */}
-          {orbs.map((orb, i) => {
-            const angle = orbAngles[i] * (Math.PI / 180);
-            const r = orbRadiiSet[i];
-            const cx = center + Math.cos(angle) * r;
-            const cy = center + Math.sin(angle) * r;
-            const floatDelay = i * 0.5;
-
-            return (
-              <motion.div
-                key={orb.label}
-                className="absolute z-30 flex flex-col items-center"
-                style={{
-                  left: cx - orbContainerWidth / 2,
-                  top: cy - orbContainerWidth / 2,
-                  width: orbContainerWidth,
-                }}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.2, delay: orb.delay, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <motion.img
-                  src={orb.src}
-                  alt={orb.alt}
-                  className={`${orbImgSize} h-auto`}
-                  style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3))" }}
-                  animate={{ y: [0, -6, 0], scale: [1, 1.02, 1] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: floatDelay }}
-                />
-                <motion.p
-                  className={`${isMobile ? "text-[8px]" : "text-[10px]"} font-bold tracking-[0.15em] uppercase text-foreground text-center mt-1 whitespace-nowrap`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: orb.delay + 0.7 }}
-                >
-                  {orb.label}
-                </motion.p>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
-
     </section>
   );
 };
+
+function easeOutCubic(t: number): number {
+  return 1 - Math.pow(1 - t, 3);
+}
 
 export default HeroSection;
