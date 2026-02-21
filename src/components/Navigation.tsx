@@ -41,9 +41,7 @@ const Navigation = () => {
       >
         {/* Logo */}
         <a href="/" className="flex items-center px-3">
-          <span className={`text-[13px] md:text-[14px] font-bold tracking-[0.12em] uppercase transition-colors duration-500 ${
-            isScrolled ? "text-foreground" : "text-white"
-          }`}>
+          <span className="text-[13px] md:text-[14px] font-bold tracking-[0.12em] uppercase text-foreground">
             DOCG AI
           </span>
         </a>
@@ -62,7 +60,7 @@ const Navigation = () => {
               className={`nav-item transition-colors ${
                 isScrolled
                   ? "px-4 py-2 rounded-full hover:bg-foreground/5"
-                  : "hover:text-white/70 !text-white/90"
+                  : "hover:text-accent"
               }`}
             >
               {link.label}
@@ -77,9 +75,9 @@ const Navigation = () => {
           aria-label="Toggle menu"
         >
           {isMenuOpen ? (
-            <X className={`w-5 h-5 ${isScrolled ? "text-foreground" : "text-white"}`} />
+            <X className="w-5 h-5 text-foreground" />
           ) : (
-            <Menu className={`w-5 h-5 ${isScrolled ? "text-foreground" : "text-white"}`} />
+            <Menu className="w-5 h-5 text-foreground" />
           )}
         </button>
       </motion.nav>

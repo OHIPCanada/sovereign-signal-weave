@@ -142,16 +142,6 @@
     );
   }
 
-  /* ===== Hero Background - Dark Cinematic ===== */
-  .hero-bg-dark {
-    position: relative;
-    overflow: hidden;
-    background:
-      radial-gradient(1000px 800px at 30% 40%, rgba(91, 29, 179, 0.45), transparent 60%),
-      radial-gradient(1000px 800px at 70% 60%, rgba(66, 190, 255, 0.25), transparent 60%),
-      linear-gradient(180deg, #0B0613 0%, #140024 100%);
-  }
-
   /* Left-side warm brain aura — lavender + coral bloom */
   .hero-bg::before {
     content: "";
