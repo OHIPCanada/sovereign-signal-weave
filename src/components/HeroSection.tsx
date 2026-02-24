@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef } from "react";
+import ScrollIndicator from "./ScrollIndicator";
 
 type Vec = { x: number; y: number; z: number };
 type ParticleType = "human" | "ai";
@@ -555,25 +556,10 @@ export default function HeroSection() {
           >
             INTELLIGENCE
           </div>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              bottom: "6vh",
-              transform: "translateX(-50%)",
-              width: "min(980px, 92vw)",
-              textAlign: "center",
-              fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace",
-              fontSize: 12,
-              letterSpacing: "0.22em",
-              textTransform: "uppercase" as const,
-              color: "rgba(243,239,255,0.55)",
-              userSelect: "none" as const,
-            }}
-          >
-            INTELLIGENCE BECOMES INFRASTRUCTURE
-          </div>
         </div>
+
+        {/* Scroll indicator */}
+        <ScrollIndicator />
       </div>
     </section>
   );
