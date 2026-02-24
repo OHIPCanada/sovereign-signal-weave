@@ -1,7 +1,5 @@
 import React, { useRef } from "react";
 import { useInView } from "framer-motion";
-import LogoMarquee from "./LogoMarquee";
-import LetterReveal from "./LetterReveal";
 
 /* ── Reveal wrapper ── */
 function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -258,9 +256,7 @@ export default function ProofSection() {
             </Reveal>
 
             <Reveal delay={0.1}>
-              <LetterReveal
-                text="Intelligence you can measure."
-                as="h2"
+              <h2
                 style={{
                   fontSize: "clamp(44px, 5.2vw, 84px)",
                   lineHeight: 0.95,
@@ -269,7 +265,18 @@ export default function ProofSection() {
                   color: "#1B0F2E",
                   textShadow: "0 10px 40px rgba(0,0,0,0.08)",
                 }}
-              />
+              >
+                Intelligence you can{" "}
+                <span
+                  style={{
+                    background: "linear-gradient(90deg, #D4616B, #E8967C)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  measure.
+                </span>
+              </h2>
             </Reveal>
 
             <Reveal delay={0.2}>
@@ -318,11 +325,6 @@ export default function ProofSection() {
               </div>
             </Reveal>
           ))}
-        </div>
-
-        {/* Logo marquee */}
-        <div style={{ marginTop: 56 }}>
-          <LogoMarquee />
         </div>
       </div>
     </section>
