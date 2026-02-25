@@ -28,6 +28,7 @@ const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [scene, setScene] = useState<SceneState>(SceneState.FRAGMENTATION);
   const requestRef = useRef<number>(0);
+  const sceneRef = useRef<SceneState>(SceneState.FRAGMENTATION);
   const particles = useRef<Particle[]>([]);
   const stateRef = useRef({
     scene: SceneState.FRAGMENTATION,
@@ -162,18 +163,27 @@ const HeroSection = () => {
     };
   }, []);
 
-  const nextScene = () => {
-    const next = ((scene + 1) % 5) as SceneState;
+  const advanceScene = useRef(() => {
+    const current = sceneRef.current;
+    const next = ((current + 1) % 5) as SceneState;
     gsap.to(stateRef.current, {
       blur: 8, duration: 0.4, yoyo: true, repeat: 1, ease: "power2.inOut",
       onComplete: () => { stateRef.current.blur = 0; },
     });
     if (next === SceneState.FIELD) {
+      stateRef.current.waveRadius = 0;
       gsap.to(stateRef.current, { waveRadius: window.innerWidth * 1.3, duration: 2.8, ease: "power3.inOut" });
     }
-    setScene(next);
+    sceneRef.current = next;
     stateRef.current.scene = next;
-  };
+    setScene(next);
+  });
+
+  // Auto-advance on a 4-second timer
+  useEffect(() => {
+    const interval = setInterval(() => advanceScene.current(), 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const labels = ["CHAOS", "FIELD", "GRAPH", "PERSONA", "STABILIZED"];
   const descriptions = [
@@ -219,7 +229,7 @@ const HeroSection = () => {
               </p>
             </div>
             <button
-              onClick={nextScene}
+              onClick={() => advanceScene.current()}
               className="group"
               style={{ display: "flex", alignItems: "center", gap: 16, padding: "10px 24px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", cursor: "pointer", transition: "border-color 0.2s" }}
               onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)")}
