@@ -35,7 +35,7 @@ const HeroSection = () => {
   const stateRef = useRef({
     scene: SceneState.FRAGMENTATION,
     waveRadius: 0,
-    blur: 0,
+    transitionAlpha: 0,
     lookProgress: 0,
   });
 
@@ -100,7 +100,8 @@ const HeroSection = () => {
     window.addEventListener("mousemove", handleMouse);
 
     const render = () => {
-      ctx.filter = `blur(${stateRef.current.blur}px)`;
+      const alpha = stateRef.current.transitionAlpha;
+      ctx.globalAlpha = 1;
       ctx.fillStyle = C.void;
       ctx.fillRect(0, 0, w, h);
 
@@ -112,6 +113,7 @@ const HeroSection = () => {
         if (cur === SceneState.FRAGMENTATION) {
           p.vx += (Math.random() - 0.5) * 0.25;
           p.vy += (Math.random() - 0.5) * 0.25;
+          p.vx *= 0.98; p.vy *= 0.98;
           p.x += p.vx; p.y += p.vy;
           if (p.x < 0 || p.x > w) p.vx *= -1;
           if (p.y < 0 || p.y > h) p.vy *= -1;
@@ -162,6 +164,14 @@ const HeroSection = () => {
         }
       });
 
+      // Transition overlay flash
+      if (alpha > 0.01) {
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = C.void;
+        ctx.fillRect(0, 0, w, h);
+        ctx.globalAlpha = 1;
+      }
+
       requestRef.current = requestAnimationFrame(render);
     };
 
@@ -180,7 +190,7 @@ const HeroSection = () => {
     const next = ((sceneRef.current + 1) % 5) as SceneState;
 
     gsap.to(stateRef.current, {
-      blur: 10, duration: 0.5, yoyo: true, repeat: 1, ease: "power2.inOut"
+      transitionAlpha: 0.8, duration: 0.4, yoyo: true, repeat: 1, ease: "power2.inOut"
     });
 
     if (next === SceneState.FIELD) {
