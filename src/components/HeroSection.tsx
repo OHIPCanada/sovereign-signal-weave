@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
 enum SceneState {
-  FRAGMENTATION = 0,
-  FIELD = 1,
-  EMERGENCE = 2,
-  PERSONA = 3,
-  STABILIZED = 4,
+  SILOS = 0,
+  BLUEPRINT = 1,
+  SYNTHESIS = 2,
+  WITNESS = 3,
+  INSTITUTION = 4,
 }
 
 type Particle = {
@@ -14,51 +14,43 @@ type Particle = {
   vx: number; vy: number;
   homeX: number; homeY: number;
   faceX: number; faceY: number;
+  siloX: number; siloY: number;
   size: number;
   color: string;
-  angle: number;
 };
 
-const PARTICLE_COUNT = 2400;
-const R_RATIO = 0.34;
+const PARTICLE_COUNT = 2000;
 
 const HeroSection = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [scene, setScene] = useState<SceneState>(SceneState.FRAGMENTATION);
-
+  const [scene, setScene] = useState<SceneState>(SceneState.SILOS);
   const particles = useRef<Particle[]>([]);
   const mouse = useRef({ x: 0, y: 0 });
   const requestRef = useRef<number>(0);
-  const sceneRef = useRef<SceneState>(SceneState.FRAGMENTATION);
-  const isTransitioning = useRef(false);
   const stateRef = useRef({
-    scene: SceneState.FRAGMENTATION,
-    waveRadius: 0,
-    transitionAlpha: 0,
-    lookProgress: 0,
+    scene: SceneState.SILOS,
+    progress: 0,
+    blueprintAlpha: 0,
   });
 
-  const C = {
+  const COLORS = {
     void: "#020408",
-    cold: "rgba(189, 166, 255, 0.45)",
-    warm: "rgba(232, 150, 124, 0.85)",
-    healing: "rgba(106, 255, 210, 0.7)",
-    gold: "rgba(255, 215, 0, 0.5)",
+    data: "rgba(189, 166, 255, 0.4)",
+    system: "rgba(106, 255, 210, 0.6)",
+    human: "rgba(232, 150, 124, 0.9)",
+    link: "rgba(255, 215, 0, 0.3)",
   };
 
   const getFaceCoords = (i: number, w: number, h: number) => {
     const cx = w / 2;
     const cy = h / 2.2;
-    const r = Math.min(w, h) * 0.22;
-    if (i < 800) {
-      const angle = (i / 800) * Math.PI * 2;
-      const eyeR = r * 0.45 * (i % 2 === 0 ? 1 : 0.85);
-      return { x: cx + Math.cos(angle) * eyeR, y: cy + Math.sin(angle) * eyeR * 0.6 };
-    } else {
-      const angle = ((i - 800) / (PARTICLE_COUNT - 800)) * Math.PI;
-      return { x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r * 1.5 - r * 0.2 };
+    const r = Math.min(w, h) * 0.25;
+    if (i < 600) {
+      const a = (i / 600) * Math.PI * 2;
+      return { x: cx + Math.cos(a) * (r * 0.4), y: cy + Math.sin(a) * (r * 0.25) };
     }
+    const a = ((i - 600) / (PARTICLE_COUNT - 600)) * Math.PI;
+    return { x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * (r * 1.3) - r * 0.1 };
   };
 
   useEffect(() => {
@@ -72,20 +64,21 @@ const HeroSection = () => {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
       const pArray: Particle[] = [];
-      const gridSize = Math.sqrt(PARTICLE_COUNT);
-      const stepX = w / gridSize;
-      const stepY = h / gridSize;
+
       for (let i = 0; i < PARTICLE_COUNT; i++) {
         const face = getFaceCoords(i, w, h);
+        const siloId = i % 3;
+        const siloX = [w * 0.25, w * 0.5, w * 0.75][siloId];
+        const siloY = [h * 0.4, h * 0.6, h * 0.4][siloId];
         pArray.push({
           x: Math.random() * w, y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4,
-          homeX: (i % gridSize) * stepX + stepX / 2,
-          homeY: Math.floor(i / gridSize) * stepY + stepY / 2,
+          vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2,
+          homeX: (i % 40) * (w / 40), homeY: Math.floor(i / 40) * (h / 50),
           faceX: face.x, faceY: face.y,
-          size: Math.random() * 1.2 + 0.6,
-          color: C.cold,
-          angle: Math.random() * Math.PI * 2,
+          siloX: siloX + (Math.random() - 0.5) * 150,
+          siloY: siloY + (Math.random() - 0.5) * 150,
+          size: Math.random() * 1.5 + 0.5,
+          color: COLORS.data,
         });
       }
       particles.current = pArray;
@@ -93,84 +86,59 @@ const HeroSection = () => {
 
     setup();
     window.addEventListener("resize", setup);
-
     const handleMouse = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY };
     };
     window.addEventListener("mousemove", handleMouse);
 
     const render = () => {
-      const alpha = stateRef.current.transitionAlpha;
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = C.void;
+      ctx.fillStyle = COLORS.void;
       ctx.fillRect(0, 0, w, h);
+      const cur = stateRef.current.scene;
 
-      const { scene: cur, waveRadius, lookProgress } = stateRef.current;
-      const centerX = w / 2;
-      const centerY = h / 2;
+      // Draw Blueprint grid
+      if (stateRef.current.blueprintAlpha > 0) {
+        ctx.strokeStyle = `rgba(106, 255, 210, ${stateRef.current.blueprintAlpha * 0.1})`;
+        ctx.lineWidth = 0.5;
+        for (let x = 0; x < w; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+        for (let y = 0; y < h; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+      }
 
       particles.current.forEach((p, i) => {
-        if (cur === SceneState.FRAGMENTATION) {
-          p.vx += (Math.random() - 0.5) * 0.25;
-          p.vy += (Math.random() - 0.5) * 0.25;
+        if (cur === SceneState.SILOS) {
+          p.vx += (p.siloX - p.x) * 0.005;
+          p.vy += (p.siloY - p.y) * 0.005;
           p.vx *= 0.98; p.vy *= 0.98;
-          p.x += p.vx; p.y += p.vy;
-          if (p.x < 0 || p.x > w) p.vx *= -1;
-          if (p.y < 0 || p.y > h) p.vy *= -1;
-        } else if (cur === SceneState.FIELD || cur === SceneState.EMERGENCE) {
-          const dist = Math.sqrt((p.x - centerX) ** 2 + (p.y - centerY) ** 2);
-          if (dist < waveRadius) {
-            p.x += (p.homeX - p.x) * 0.09;
-            p.y += (p.homeY - p.y) * 0.09;
-            p.color = i % 6 === 0 ? C.healing : C.cold;
-          } else {
-            p.x += p.vx; p.y += p.vy;
+          p.x += p.vx * 0.5; p.y += p.vy * 0.5;
+          p.color = COLORS.data;
+        } else if (cur === SceneState.BLUEPRINT) {
+          p.x += (p.homeX - p.x) * 0.05;
+          p.y += (p.homeY - p.y) * 0.05;
+          p.color = COLORS.system;
+        } else if (cur === SceneState.SYNTHESIS || cur === SceneState.WITNESS) {
+          const targetX = cur === SceneState.WITNESS ? p.faceX : p.homeX;
+          const targetY = cur === SceneState.WITNESS ? p.faceY : p.homeY;
+          const gazeX = i < 600 ? (mouse.current.x - w / 2) * 0.05 : 0;
+          const gazeY = i < 600 ? (mouse.current.y - h / 2) * 0.05 : 0;
+          p.x += (targetX + gazeX - p.x) * 0.07;
+          p.y += (targetY + gazeY - p.y) * 0.07;
+          p.color = i < 600 ? COLORS.human : COLORS.data;
+
+          if (i % 50 === 0) {
+            const next = particles.current[(i + 50) % PARTICLE_COUNT];
+            const d = Math.sqrt((p.x - next.x) ** 2 + (p.y - next.y) ** 2);
+            if (d < 150) {
+              ctx.strokeStyle = COLORS.link;
+              ctx.globalAlpha = 1 - (d / 150);
+              ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(next.x, next.y); ctx.stroke();
+              ctx.globalAlpha = 1;
+            }
           }
-        } else if (cur === SceneState.PERSONA) {
-          const gazeX = (mouse.current.x - w / 2) * 0.1 * lookProgress;
-          const gazeY = (mouse.current.y - h / 2) * 0.1 * lookProgress;
-          const tx = i < 800 ? p.faceX + gazeX : p.faceX;
-          const ty = i < 800 ? p.faceY + gazeY : p.faceY;
-          p.x += (tx - p.x) * 0.06;
-          p.y += (ty - p.y) * 0.06;
-          p.color = i < 800 ? C.warm : C.cold;
-        } else if (cur === SceneState.STABILIZED) {
-          p.angle += 0.015;
-          const spiralR = 50 * Math.sin(p.angle * R_RATIO);
-          const tx = p.homeX + Math.cos(p.angle) * spiralR;
-          const ty = p.homeY + Math.sin(p.angle) * spiralR;
-          p.x += (tx - p.x) * 0.08;
-          p.y += (ty - p.y) * 0.08;
-          p.color = C.healing;
         }
 
         ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-
-        if (cur >= SceneState.EMERGENCE && i % 45 === 0) {
-          const nextP = particles.current[(i + 45) % PARTICLE_COUNT];
-          const d = Math.sqrt((p.x - nextP.x) ** 2 + (p.y - nextP.y) ** 2);
-          if (d < 110) {
-            ctx.strokeStyle = cur === SceneState.PERSONA ? C.warm : C.gold;
-            ctx.globalAlpha = 0.15;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(nextP.x, nextP.y);
-            ctx.stroke();
-            ctx.globalAlpha = 1;
-          }
-        }
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
       });
-
-      // Transition overlay flash
-      if (alpha > 0.01) {
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = C.void;
-        ctx.fillRect(0, 0, w, h);
-        ctx.globalAlpha = 1;
-      }
 
       requestRef.current = requestAnimationFrame(render);
     };
@@ -183,85 +151,52 @@ const HeroSection = () => {
     };
   }, []);
 
-  const advance = () => {
-    if (isTransitioning.current) return;
-    isTransitioning.current = true;
-
-    const next = ((sceneRef.current + 1) % 5) as SceneState;
-
-    gsap.to(stateRef.current, {
-      transitionAlpha: 0.8, duration: 0.4, yoyo: true, repeat: 1, ease: "power2.inOut"
-    });
-
-    if (next === SceneState.FIELD) {
-      stateRef.current.waveRadius = 0;
-      gsap.to(stateRef.current, { waveRadius: window.innerWidth * 1.5, duration: 3, ease: "power3.inOut" });
+  const next = () => {
+    const nextScene = (stateRef.current.scene + 1) % 5;
+    stateRef.current.scene = nextScene;
+    setScene(nextScene);
+    if (nextScene === SceneState.BLUEPRINT) {
+      gsap.to(stateRef.current, { blueprintAlpha: 1, duration: 2 });
+    } else {
+      gsap.to(stateRef.current, { blueprintAlpha: 0, duration: 1 });
     }
-
-    if (next === SceneState.PERSONA) {
-      stateRef.current.lookProgress = 0;
-      gsap.to(stateRef.current, { lookProgress: 1, duration: 2.5, ease: "power2.out" });
-    }
-
-    sceneRef.current = next;
-    stateRef.current.scene = next;
-    setScene(next);
-
-    setTimeout(() => { isTransitioning.current = false; }, 1000);
   };
 
-
-  const labels = ["FRAGMENTATION", "FIELD", "EMERGENCE", "PERSONA", "STABILIZED"];
-  const subtext = [
-    "Data decaying into uncoordinated clinical noise.",
-    "Euclidean waves reveal the foundational AI backbone.",
-    "Semantic synthesis: EHRS, genomic patterns, and logic arcs.",
-    "Operational awareness: The Vigilant Eye senses the whole.",
-    "Optimal Coherence (C≈0.70): The Institutional OS."
+  const labels = ["Silos", "Infrastructure", "Knowledge Graph", "Personification", "Ecosystem"];
+  const storyLine = [
+    "Fragmented data trapped in disconnected institutional silos.",
+    "Revealing the hardware layer: snapped into a unified backbone.",
+    "Intelligence emerges as semantic connections bridge the gaps.",
+    "A partnership is born. The AI becomes a visible, accountable witness.",
+    "The Institutional OS: A stabilized, breathing intelligence ecosystem.",
   ];
 
   return (
-    <div ref={containerRef} className="relative w-full h-screen bg-[#020408] overflow-hidden flex flex-col font-sans text-white uppercase tracking-wider">
-      <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-80" />
+    <div className="relative w-full h-screen bg-[#020408] font-sans text-white overflow-hidden">
+      <canvas ref={canvasRef} className="absolute inset-0" />
 
-      <div className="relative z-10 flex flex-col justify-between h-full p-8 sm:p-16 pointer-events-none">
-        <header className="flex justify-between items-start">
-          <div className="space-y-2">
-            <h2 className="font-mono text-[10px] text-white/40 tracking-[0.5em]">Convergence_v4.2026</h2>
-            <h1 className="text-2xl font-light tracking-tighter">Institutional_Intelligence</h1>
+      <div className="relative z-10 flex flex-col justify-between h-full p-12 pointer-events-none">
+        <div className="flex justify-between items-start">
+          <div className="space-y-1">
+            <h2 className="text-[10px] tracking-[0.4em] opacity-40 font-mono uppercase">Phase {scene + 1}</h2>
+            <h1 className="text-2xl font-light tracking-tight">{labels[scene]}</h1>
           </div>
-          <div className="font-mono text-[9px] text-white/20 text-right leading-relaxed">
-            <p>ORDER_PARAMETER: {scene === 4 ? "0.70" : "0.12"}</p>
-            <p>CHIRAL_SCALE: 0.34</p>
-          </div>
-        </header>
-
-        <div className="flex flex-col items-center">
-          <h1 className="font-black text-[14vw] text-white/[0.03] leading-none select-none">
-            {labels[scene]}
-          </h1>
+          <div className="text-right font-mono text-[9px] opacity-20">CONVERGENCE_ENGINE_v5.0</div>
         </div>
 
-        <footer className="flex justify-between items-end">
-          <div className="max-w-xs space-y-6 pointer-events-auto">
-            <div className="space-y-3">
-              <div className="h-[1px] w-8 bg-white/30" />
-              <p className="text-[11px] font-light normal-case italic text-white/50 leading-relaxed">
-                {subtext[scene]}
-              </p>
-            </div>
-            <button
-              onClick={advance}
-              className="group flex items-center gap-6 px-6 py-3 bg-white/[0.02] border border-white/10 hover:border-white/40 transition-all cursor-pointer"
-            >
-              <span className="font-mono text-[9px] text-white/70">NEXT_PHASE</span>
-              <div className="w-4 h-[1px] bg-white/40 group-hover:w-12 transition-all" />
+        <div className="flex flex-col items-center">
+          <h1 className="text-[12vw] font-black opacity-[0.03] select-none leading-none uppercase">{labels[scene]}</h1>
+        </div>
+
+        <div className="flex justify-between items-end">
+          <div className="max-w-sm space-y-6 pointer-events-auto">
+            <p className="text-xs font-light leading-relaxed text-white/50 italic">{storyLine[scene]}</p>
+            <button onClick={next} className="px-6 py-3 bg-white/5 border border-white/10 text-[10px] tracking-widest hover:bg-white/10 transition-all uppercase cursor-pointer">
+              Evolution Sequence →
             </button>
           </div>
-          <div className="hidden sm:block font-mono text-[9px] text-white/10 italic">
-            // SUBSTRATE_COUPLING_ACTIVE
-          </div>
-        </footer>
+          <div className="font-mono text-[9px] opacity-10">© 2026 // HARMONIZING_DATA_STRUCTURES</div>
+        </div>
       </div>
     </div>
   );
