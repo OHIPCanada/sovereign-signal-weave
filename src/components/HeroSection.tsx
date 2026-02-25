@@ -1,775 +1,382 @@
 import React, { useEffect, useMemo, useRef } from "react";
 
-type Vec2 = { x: number; y: number };
-
-const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
-const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-const smoothstep = (a: number, b: number, x: number) => {
-  const t = clamp((x - a) / (b - a), 0, 1);
-  return t * t * (3 - 2 * t);
-};
-const dist2 = (a: Vec2, b: Vec2) => {
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
-  return dx * dx + dy * dy;
-};
-const len = (v: Vec2) => Math.hypot(v.x, v.y);
-const norm = (v: Vec2) => {
-  const l = Math.hypot(v.x, v.y) || 1;
-  return { x: v.x / l, y: v.y / l };
-};
-const add = (a: Vec2, b: Vec2) => ({ x: a.x + b.x, y: a.y + b.y });
-const sub = (a: Vec2, b: Vec2) => ({ x: a.x - b.x, y: a.y - b.y });
-
-function hash(n: number) {
-  const x = Math.sin(n) * 10000;
-  return x - Math.floor(x);
-}
-
-type ShardKind = 0 | 1 | 2;
-
+type Pt = { x: number; y: number };
 type Particle = {
-  id: number;
-  kind: ShardKind;
-  p: Vec2;
-  v: Vec2;
-  rot: number;
-  spin: number;
-  size: number;
-  C: number;
-  E: number;
-  T: number;
-  X: number;
-  R: number;
-  grid: Vec2;
-  graph: Vec2;
-  eye: Vec2;
-  os: Vec2;
-  group: number;
+  x: number; y: number; vx: number; vy: number;
+  z: number; s: number; seed: number;
+  tx: number; ty: number; warm: number; alpha: number;
 };
 
-type BucketKey = string;
+function clamp(v: number, a: number, b: number) { return Math.max(a, Math.min(b, v)); }
+function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
+function smoothstep(e0: number, e1: number, x: number) {
+  const t = clamp((x - e0) / (e1 - e0), 0, 1);
+  return t * t * (3 - 2 * t);
+}
+function rand(seed: number) { const x = Math.sin(seed) * 10000; return x - Math.floor(x); }
 
-const bucketKey = (ix: number, iy: number): BucketKey => `${ix},${iy}`;
-
-function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
-  const rr = Math.min(r, w / 2, h / 2);
-  ctx.beginPath();
-  ctx.moveTo(x + rr, y);
-  ctx.arcTo(x + w, y, x + w, y + h, rr);
-  ctx.arcTo(x + w, y + h, x, y + h, rr);
-  ctx.arcTo(x, y + h, x, y, rr);
-  ctx.arcTo(x, y, x + w, y, rr);
-  ctx.closePath();
+function buildHeadSilhouettePoints(count: number): Pt[] {
+  const pts: Pt[] = [];
+  let tries = 0;
+  const inside = (x: number, y: number) => {
+    const skull = ((x+.18)**2)/(.55**2)+((y+.05)**2)/(.70**2)<1;
+    const jaw = ((x+.10)**2)/(.52**2)+((y-.38)**2)/(.50**2)<1;
+    const facePlane = x<.58;
+    const foreheadCarve = y<.78-.35*(x+.15);
+    const neckCarve = !(x<-.62&&y<-.05);
+    const underChin = !(((x-.28)**2)/(.22**2)+((y+.28)**2)/(.16**2)<1);
+    const nose = ((x-.52)**2)/(.10**2)+((y+.02)**2)/(.10**2)<1;
+    const lips = ((x-.50)**2)/(.11**2)+((y-.12)**2)/(.08**2)<1;
+    const chin = ((x-.42)**2)/(.15**2)+((y-.28)**2)/(.12**2)<1;
+    const base = (skull||jaw)&&facePlane&&foreheadCarve&&neckCarve&&underChin;
+    return base&&(x<.35||nose||lips||chin);
+  };
+  while(pts.length<count&&tries<count*60){
+    tries++;
+    const x=lerp(-.85,.78,Math.random()), y=lerp(-.85,.85,Math.random());
+    if(!inside(x,y)) continue;
+    const brainBias=smoothstep(-.05,.65,y)*smoothstep(-.2,.55,x);
+    const faceBias=smoothstep(.05,.75,x)*smoothstep(-.3,.35,-Math.abs(y-.05));
+    if(Math.random()<clamp(.35+.45*brainBias+.25*faceBias,.12,.92)) pts.push({x,y});
+  }
+  while(pts.length<count) pts.push({x:lerp(-.6,.6,Math.random()),y:lerp(-.6,.6,Math.random())});
+  return pts;
 }
 
-const HeroSection = () => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const wrapRef = useRef<HTMLDivElement | null>(null);
+function buildEyeClusterPoints(count: number): Pt[] {
+  const pts: Pt[]=[];
+  for(let i=0;i<count;i++){
+    const a=Math.random()*Math.PI*2, r=Math.pow(Math.random(),.55);
+    pts.push({x:.40+Math.cos(a)*.11*r, y:-.02+Math.sin(a)*.06*r});
+  }
+  return pts;
+}
 
-  const prefersReducedMotion = useMemo(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-  }, []);
+function buildOrbitTargets(count: number){
+  const coreCount=Math.floor(count*.22), ringCount=count-coreCount;
+  const core: Pt[]=[];
+  for(let i=0;i<coreCount;i++){
+    const a=Math.random()*Math.PI*2, r=Math.pow(Math.random(),.6)*.12;
+    core.push({x:Math.cos(a)*r,y:Math.sin(a)*r});
+  }
+  const rings: Pt[]=[];
+  const ringMeta=[{r:.28,w:.06},{r:.42,w:.07},{r:.58,w:.08}];
+  for(let i=0;i<ringCount;i++){
+    const{r,w}=ringMeta[i%3];
+    const a=Math.random()*Math.PI*2, rr=r+(Math.random()-.5)*w;
+    rings.push({x:Math.cos(a)*rr,y:Math.sin(a)*rr});
+  }
+  return {core,rings};
+}
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const wrap = wrapRef.current;
-    if (!canvas || !wrap) return;
+export default function HeroSection(){
+  const canvasRef=useRef<HTMLCanvasElement|null>(null);
+  const wrapRef=useRef<HTMLDivElement|null>(null);
 
-    const ctx = canvas.getContext("2d", { alpha: true });
-    if (!ctx) return;
+  const formations=useMemo(()=>({
+    head:buildHeadSilhouettePoints(5200),
+    eye:buildEyeClusterPoints(1100),
+    orbits:buildOrbitTargets(5200),
+  }),[]);
 
-    let w = 0, h = 0, dpr = 1;
+  useEffect(()=>{
+    const canvas=canvasRef.current, wrap=wrapRef.current;
+    if(!canvas||!wrap) return;
+    const ctx=canvas.getContext("2d",{alpha:true});
+    if(!ctx) return;
 
-    const resize = () => {
-      const r = wrap.getBoundingClientRect();
-      w = Math.max(1, Math.floor(r.width));
-      h = Math.max(1, Math.floor(r.height));
-      dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const prefersReduced=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+    let w=0,h=0;
+    const resize=()=>{
+      const rect=wrap.getBoundingClientRect();
+      w=Math.max(1,Math.floor(rect.width));
+      h=Math.max(1,Math.floor(rect.height));
+      const dpr=Math.min(2,window.devicePixelRatio||1);
+      canvas.width=Math.floor(w*dpr);
+      canvas.height=Math.floor(h*dpr);
+      canvas.style.width=`${w}px`;
+      canvas.style.height=`${h}px`;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
     };
-
     resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(wrap);
+    window.addEventListener("resize",resize);
 
-    const PAL = {
-      bgTop: "rgba(7, 10, 18, 1)",
-      bgMid: "rgba(10, 14, 28, 1)",
-      bgBot: "rgba(6, 9, 18, 1)",
-      lav: { r: 189, g: 166, b: 255 },
-      violet: { r: 123, g: 97, b: 255 },
-      coral: { r: 232, g: 150, b: 124 },
-      peach: { r: 242, g: 193, b: 174 },
-      mint: { r: 106, g: 255, b: 210 },
-      white: { r: 243, g: 239, b: 255 },
+    const area=w*h;
+    const baseCount=prefersReduced?1400:2400;
+    const maxCount=prefersReduced?2400:5200;
+    const targetCount=clamp(Math.floor((area/(1100*700))*baseCount),baseCount,maxCount);
+
+    const particles: Particle[]=Array.from({length:targetCount},(_,i)=>({
+      x:(rand(i*1.7)-.5)*w, y:(rand(i*2.7)-.5)*h,
+      vx:0, vy:0, z:rand(i*7.77)*2-1,
+      s:.6+rand(i*11.3)*1.2, seed:i+1,
+      tx:0, ty:0, warm:rand(i*19.1)>.56?1:0, alpha:.85,
+    }));
+
+    const ACT={
+      entropy:{a:0,b:3}, field:{a:3,b:6}, converge:{a:6,b:11},
+      aware:{a:11,b:15}, institutional:{a:15,b:20}, dissolve:{a:20,b:21.5},
+    };
+    const LOOP=ACT.dissolve.b;
+
+    let camT=0,camX=0,camY=0;
+
+    const headPts=formations.head.slice(0,targetCount);
+    const eyePts=formations.eye.slice(0,Math.floor(targetCount*.22));
+    const orbitCore=formations.orbits.core.slice(0,Math.floor(targetCount*.22));
+    const orbitRings=formations.orbits.rings.slice(0,targetCount-orbitCore.length);
+
+    const toScreen=(p:Pt,scale=.86,ox=0,oy=0)=>{
+      const s=Math.min(w,h)*.52*scale;
+      return {x:p.x*s+ox, y:p.y*s+oy};
     };
 
-    let mx = 0, my = 0, pmx = 0, pmy = 0;
-    const onMove = (e: MouseEvent) => {
-      const r = wrap.getBoundingClientRect();
-      const nx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
-      const ny = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
-      mx = clamp(nx, -1, 1);
-      my = clamp(ny, -1, 1);
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
+    const warmTarget=(t:number)=>clamp(
+      smoothstep(ACT.converge.a,ACT.converge.b,t)*.55+
+      smoothstep(ACT.aware.a,ACT.aware.b,t)*.25+
+      smoothstep(ACT.institutional.a,ACT.institutional.b,t)*.25,0,1);
 
-    let userHasScrolled = false;
-    let scrollProgress = 0;
-    const onScroll = () => {
-      userHasScrolled = true;
-      const rect = wrap.getBoundingClientRect();
-      const total = rect.height + window.innerHeight;
-      const passed = window.innerHeight - rect.top;
-      scrollProgress = clamp(passed / total, 0, 1);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-
-    const S1 = 0.0, S2 = 0.22, S3 = 0.46, S4 = 0.70, S5 = 0.86;
-
-    const area = w * h;
-    const N = prefersReducedMotion
-      ? Math.floor(clamp(area / 28000, 900, 1700))
-      : Math.floor(clamp(area / 11500, 2600, 7200));
-
-    const particles: Particle[] = new Array(N);
-
-    const GRID_COLS = 24;
-    const GRID_ROWS = 14;
-    const GRID_PAD = 64;
-
-    const gridPoint = (ix: number, iy: number): Vec2 => {
-      const gw = w - GRID_PAD * 2;
-      const gh = h - GRID_PAD * 2;
-      return { x: GRID_PAD + (ix / (GRID_COLS - 1)) * gw, y: GRID_PAD + (iy / (GRID_ROWS - 1)) * gh };
+    const drawVignette=()=>{
+      const g=ctx.createRadialGradient(w*.52,h*.52,Math.min(w,h)*.05,w*.52,h*.52,Math.min(w,h)*.78);
+      g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,"rgba(0,0,0,0.55)");
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
     };
 
-    const eyeCenter = () => ({ x: w * 0.5, y: h * 0.56 });
-    const eyeRx = () => Math.min(w, h) * 0.26;
-    const eyeRy = () => Math.min(w, h) * 0.14;
+    const drawGrid=(a:number)=>{
+      if(a<=.001) return;
+      ctx.save(); ctx.globalAlpha=a;
+      ctx.strokeStyle="rgba(189,166,255,0.08)"; ctx.lineWidth=1;
+      const step=Math.max(38,Math.min(64,Math.floor(Math.min(w,h)/16)));
+      const dx=camX*.12, dy=camY*.08;
+      for(let x=-step;x<w+step;x+=step){ctx.beginPath();ctx.moveTo(x+dx,0);ctx.lineTo(x+dx,h);ctx.stroke();}
+      for(let y=-step;y<h+step;y+=step){ctx.beginPath();ctx.moveTo(0,y+dy);ctx.lineTo(w,y+dy);ctx.stroke();}
+      ctx.restore();
+    };
 
-    function eyeTarget(i: number): Vec2 {
-      const c = eyeCenter();
-      const rx = eyeRx();
-      const ry = eyeRy();
-      const n = N;
-      const band = i / n;
+    const drawSoftHaze=(strength:number)=>{
+      if(strength<=.001) return;
+      ctx.save(); ctx.globalAlpha=strength;
+      let g=ctx.createRadialGradient(w*.35+camX*.2,h*.55+camY*.2,0,w*.35,h*.55,Math.min(w,h)*.75);
+      g.addColorStop(0,"rgba(123,97,255,0.18)"); g.addColorStop(1,"rgba(123,97,255,0)");
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      g=ctx.createRadialGradient(w*.72+camX*.15,h*.62+camY*.15,0,w*.72,h*.62,Math.min(w,h)*.80);
+      g.addColorStop(0,"rgba(232,150,124,0.14)"); g.addColorStop(1,"rgba(232,150,124,0)");
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+    };
 
-      if (band < 0.30) {
-        const t = (i / (n * 0.30)) * Math.PI * 2;
-        const wob = 1 + 0.06 * Math.sin(t * 3);
-        return { x: c.x + Math.cos(t) * rx * wob, y: c.y + Math.sin(t) * ry * wob };
-      }
-      if (band < 0.55) {
-        const k = i - Math.floor(n * 0.30);
-        const t = (k / (n * 0.25)) * Math.PI * 2;
-        const r = 0.55;
-        return { x: c.x + Math.cos(t) * rx * r, y: c.y + Math.sin(t) * ry * r };
-      }
-      if (band < 0.78) {
-        const k = i - Math.floor(n * 0.55);
-        const r = Math.sqrt(hash(k * 9.3)) * 0.48;
-        const a = hash(k * 3.1) * Math.PI * 2;
-        return { x: c.x + Math.cos(a) * rx * r * 0.72, y: c.y + Math.sin(a) * ry * r * 0.72 };
-      }
-      if (band < 0.90) {
-        const k = i - Math.floor(n * 0.78);
-        const t = (k / (n * 0.12)) * Math.PI;
-        const top = k % 2 === 0;
-        const yOff = top ? -ry * 0.95 : ry * 0.95;
-        return { x: c.x + (t / Math.PI - 0.5) * rx * 2.0, y: c.y + yOff + (top ? 1 : -1) * Math.sin(t) * ry * 0.20 };
-      }
-      const k = i - Math.floor(n * 0.90);
-      const r = Math.sqrt(hash(k * 8.7)) * 0.09;
-      const a = hash(k * 2.9) * Math.PI * 2;
-      return { x: c.x + Math.cos(a) * rx * r, y: c.y + Math.sin(a) * ry * r };
-    }
+    const drawEyeGlow=(t:number,a:number)=>{
+      if(a<=.001) return;
+      const anchor=toScreen({x:.40,y:-.02},.88,w*.02,0);
+      const pulse=.5+.5*Math.sin(t*2.1);
+      const r=Math.min(w,h)*.10*(.75+.12*pulse);
+      ctx.save(); ctx.globalAlpha=a;
+      const g=ctx.createRadialGradient(anchor.x,anchor.y,0,anchor.x,anchor.y,r);
+      g.addColorStop(0,"rgba(242,193,174,0.28)"); g.addColorStop(.35,"rgba(232,150,124,0.14)"); g.addColorStop(1,"rgba(189,166,255,0)");
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      ctx.restore();
+    };
 
-    function osTarget(i: number, t: number): Vec2 {
-      const c = { x: w * 0.5, y: h * 0.58 };
-      const ring = (i % 6) / 5;
-      const rad = lerp(Math.min(w, h) * 0.10, Math.min(w, h) * 0.26, ring);
-      const spd = lerp(0.55, 1.1, ring);
-      const a = t * spd + i * 0.013;
-      return { x: c.x + Math.cos(a) * rad * 1.1, y: c.y + Math.sin(a * 1.12) * rad * 0.75 };
-    }
+    let raf=0;
+    const start=performance.now();
+    let last=start;
 
-    for (let i = 0; i < N; i++) {
-      const r = Math.random();
-      const kind: ShardKind = r < 0.45 ? 0 : r < 0.78 ? 1 : 2;
-      const size = kind === 0 ? 2.2 : kind === 1 ? 2.0 : 2.4;
-      const p0 = { x: Math.random() * w, y: Math.random() * h };
-      const v0 = { x: (Math.random() - 0.5) * 60, y: (Math.random() - 0.5) * 60 };
-      const ix = i % GRID_COLS;
-      const iy = Math.floor(i / GRID_COLS) % GRID_ROWS;
-      const g = gridPoint(ix, iy);
+    const frame=(now:number)=>{
+      const dt=Math.min(.033,(now-last)/1000);
+      last=now;
+      const elapsed=(now-start)/1000;
+      const t=elapsed%LOOP;
 
-      particles[i] = {
-        id: i, kind, p: p0, v: v0,
-        rot: Math.random() * Math.PI * 2,
-        spin: (Math.random() - 0.5) * 2.8,
-        size,
-        C: 0.04 + hash(i * 7.7) * 0.04,
-        E: 0.95, T: 0.95, X: 0.10, R: 0.08,
-        grid: { x: g.x + (hash(i * 3.2) - 0.5) * 14, y: g.y + (hash(i * 5.9) - 0.5) * 14 },
-        graph: { x: g.x, y: g.y },
-        eye: { x: 0, y: 0 },
-        os: { x: 0, y: 0 },
-        group: i % 12,
-      };
-    }
+      camT+=dt;
+      const camEase=.65+.35*Math.sin(camT*.25);
+      camX=Math.sin(camT*.18)*18*camEase;
+      camY=Math.cos(camT*.14)*12*camEase;
 
-    function recomputeTargets() {
-      for (let i = 0; i < N; i++) {
-        const ix = i % GRID_COLS;
-        const iy = Math.floor(i / GRID_COLS) % GRID_ROWS;
-        const g = gridPoint(ix, iy);
-        particles[i].grid = { x: g.x + (hash(i * 3.2) - 0.5) * 14, y: g.y + (hash(i * 5.9) - 0.5) * 14 };
-        particles[i].graph = { x: g.x, y: g.y };
-        particles[i].eye = eyeTarget(i);
-      }
-    }
+      const aEntropy=smoothstep(ACT.entropy.a,ACT.entropy.b,t)*(1-smoothstep(ACT.field.a,ACT.field.b,t));
+      const aField=smoothstep(ACT.field.a,ACT.field.b,t)*(1-smoothstep(ACT.converge.a,ACT.converge.b,t));
+      const aConverge=smoothstep(ACT.converge.a,ACT.converge.b,t)*(1-smoothstep(ACT.aware.a,ACT.aware.b,t));
+      const aAware=smoothstep(ACT.aware.a,ACT.aware.b,t)*(1-smoothstep(ACT.institutional.a,ACT.institutional.b,t));
+      const aInstitutional=smoothstep(ACT.institutional.a,ACT.institutional.b,t)*(1-smoothstep(ACT.dissolve.a,ACT.dissolve.b,t));
+      const aDissolve=smoothstep(ACT.dissolve.a,ACT.dissolve.b,t);
 
-    recomputeTargets();
+      ctx.clearRect(0,0,w,h);
+      drawSoftHaze(.35+.25*aConverge+.25*aAware);
+      drawGrid(.14*aField+.22*aConverge+.26*aAware+.18*aInstitutional);
+      drawEyeGlow(t,.7*aAware);
 
-    const ro2 = new ResizeObserver(() => {
-      resize();
-      recomputeTargets();
-    });
-    ro2.observe(wrap);
+      const temperature=1*(1-smoothstep(ACT.field.a,ACT.converge.b,t))+.35*smoothstep(ACT.field.a,ACT.converge.b,t)-.10*aInstitutional;
+      const coherence=.05+.70*smoothstep(ACT.field.a,ACT.converge.b,t)+.18*aAware+.28*aInstitutional-.30*aDissolve;
+      const driftOut=aDissolve;
 
-    const BUCKET = 72;
-    const buckets = new Map<BucketKey, number[]>();
+      const centerX=w*.02, centerY=h*.06;
+      const cols=30, rows=18;
+      const padX=w*.10, padY=h*.18;
+      const gx=(w-padX*2)/(cols-1), gy=(h-padY*2)/(rows-1);
 
-    function rebuildBuckets() {
-      buckets.clear();
-      for (let i = 0; i < N; i++) {
-        const p = particles[i].p;
-        const ix = Math.floor(p.x / BUCKET);
-        const iy = Math.floor(p.y / BUCKET);
-        const key = bucketKey(ix, iy);
-        const arr = buckets.get(key);
-        if (arr) arr.push(i);
-        else buckets.set(key, [i]);
-      }
-    }
+      const wantMesh=!prefersReduced&&(aConverge+aAware+aInstitutional)>.15;
+      const bucketSize=90;
+      const buckets=wantMesh?new Map<string,number[]>():null;
+      const keyFor=(x:number,y:number)=>`${Math.floor(x/bucketSize)}:${Math.floor(y/bucketSize)}`;
+      const warmAmp=warmTarget(t);
 
-    function neighborsFor(i: number, k: number): number[] {
-      const p = particles[i].p;
-      const ix = Math.floor(p.x / BUCKET);
-      const iy = Math.floor(p.y / BUCKET);
-      const candidates: number[] = [];
-      for (let dy = -1; dy <= 1; dy++) {
-        for (let dx = -1; dx <= 1; dx++) {
-          const arr = buckets.get(bucketKey(ix + dx, iy + dy));
-          if (arr) candidates.push(...arr);
+      ctx.save();
+      ctx.globalCompositeOperation="lighter";
+
+      for(let i=0;i<particles.length;i++){
+        const p=particles[i];
+        const jj=(rand(p.seed*3.1+elapsed)-.5)*2;
+        const kk=(rand(p.seed*8.7+elapsed*1.33)-.5)*2;
+
+        const gi=i%(cols*rows);
+        const fieldX=padX+(gi%cols)*gx-w/2+centerX;
+        const fieldY=padY+(Math.floor(gi/cols)%rows)*gy-h/2+centerY;
+
+        const hp=headPts[i]||headPts[i%headPts.length];
+        const hs=toScreen(hp,.88,centerX,centerY);
+
+        const eyePick=i<eyePts.length;
+        const es=eyePick?toScreen(eyePts[i],.94,centerX,centerY):null;
+
+        const corePick=i<orbitCore.length;
+        const op=corePick?orbitCore[i]:orbitRings[i-orbitCore.length];
+        const os=toScreen(op,.92,centerX,centerY);
+
+        let tx=p.x, ty=p.y;
+        const fieldPull=.38*aField+.18*aConverge;
+        tx=lerp(tx,fieldX,fieldPull); ty=lerp(ty,fieldY,fieldPull);
+        tx=lerp(tx,hs.x,.78*aConverge+.42*aAware); ty=lerp(ty,hs.y,.78*aConverge+.42*aAware);
+        if(eyePick&&es){tx=lerp(tx,es.x,.65*aAware); ty=lerp(ty,es.y,.65*aAware);}
+        tx=lerp(tx,os.x,.78*aInstitutional); ty=lerp(ty,os.y,.78*aInstitutional);
+
+        if(driftOut>.001){
+          tx=lerp(tx,p.x*1.5+(rand(p.seed*2.2)-.5)*w*.35,.75*driftOut);
+          ty=lerp(ty,p.y*1.5+(rand(p.seed*5.6)-.5)*h*.35,.75*driftOut);
+        }
+
+        p.tx=tx; p.ty=ty;
+        const pull=.55*coherence, noise=22*temperature;
+        p.vx=(p.vx+(p.tx-p.x)*pull+jj*noise*.02)*(1-.12*coherence);
+        p.vy=(p.vy+(p.ty-p.y)*pull+kk*noise*.02)*(1-.12*coherence);
+        p.x+=p.vx*dt*60;
+        p.y+=p.vy*dt*60;
+
+        const px=p.x+camX*(.25+.55*(p.z+1)*.5);
+        const py=p.y+camY*(.20+.45*(p.z+1)*.5);
+
+        const warmness=p.warm?warmAmp:0;
+        const r=Math.floor(lerp(175,242,warmness));
+        const g=Math.floor(lerp(160,193,warmness));
+        const b=Math.floor(lerp(255,174,warmness));
+        const baseA=.35+.22*aField+.30*aConverge+.32*aAware+.26*aInstitutional-.18*aEntropy;
+        const size=(1.2+1.2*aConverge+1.6*aAware+1.2*aInstitutional)*p.s;
+
+        ctx.globalAlpha=clamp(baseA*p.alpha,.05,.9);
+        ctx.fillStyle=`rgba(${r},${g},${b},1)`;
+        ctx.beginPath(); ctx.arc(px+w/2,py+h/2,.9*size,0,Math.PI*2); ctx.fill();
+
+        if(aAware>.15&&i%48===0){
+          ctx.globalAlpha=(.25+.35*(.5+.5*Math.sin(elapsed*6.5+i)))*aAware;
+          ctx.fillStyle="rgba(255,255,255,1)";
+          ctx.beginPath(); ctx.arc(px+w/2,py+h/2,.55*size,0,Math.PI*2); ctx.fill();
+        }
+
+        if(wantMesh&&buckets){
+          const bk=keyFor(px+w/2,py+h/2);
+          const arr=buckets.get(bk)||[];
+          arr.push(i);
+          buckets.set(bk,arr);
         }
       }
-      const scored: { j: number; d: number }[] = [];
-      for (const j of candidates) {
-        if (j === i) continue;
-        const d = dist2(p, particles[j].p);
-        scored.push({ j, d });
-      }
-      scored.sort((a, b) => a.d - b.d);
-      return scored.slice(0, k).map((s) => s.j);
-    }
 
-    const CERTX = {
-      Cstar: 0.68,
-      C: 0.06, E: 0.95, R: 0.08, T: 0.95, X: 0.12,
-      P: 0,
-    };
-
-    function sawtooth(t: number) {
-      const period = 1.0;
-      const pause = 1 / (14.56 + 1);
-      const flow = 1 - pause;
-      const x = (t % period) / period;
-      if (x < flow) return x / flow;
-      return 1 - (x - flow) / pause;
-    }
-
-    function drawBG(par: Vec2) {
-      const g = ctx.createLinearGradient(0, 0, 0, h);
-      g.addColorStop(0, PAL.bgTop);
-      g.addColorStop(0.55, PAL.bgMid);
-      g.addColorStop(1, PAL.bgBot);
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-
-      const a1 = ctx.createRadialGradient(w * 0.20, h * 0.60, 1, w * 0.20, h * 0.60, Math.min(w, h) * 0.95);
-      a1.addColorStop(0, "rgba(189,166,255,0.11)");
-      a1.addColorStop(0.65, "rgba(189,166,255,0.03)");
-      a1.addColorStop(1, "rgba(189,166,255,0)");
-      ctx.fillStyle = a1;
-      ctx.fillRect(0, 0, w, h);
-
-      const a2 = ctx.createRadialGradient(w * 0.80, h * 0.55, 1, w * 0.80, h * 0.55, Math.min(w, h) * 0.98);
-      a2.addColorStop(0, "rgba(232,150,124,0.095)");
-      a2.addColorStop(0.65, "rgba(232,150,124,0.028)");
-      a2.addColorStop(1, "rgba(232,150,124,0)");
-      ctx.fillStyle = a2;
-      ctx.fillRect(0, 0, w, h);
-
-      const vg = ctx.createRadialGradient(w * 0.5, h * 0.58, Math.min(w, h) * 0.12, w * 0.5, h * 0.58, Math.max(w, h) * 0.95);
-      vg.addColorStop(0, "rgba(0,0,0,0)");
-      vg.addColorStop(1, "rgba(0,0,0,0.70)");
-      ctx.fillStyle = vg;
-      ctx.fillRect(0, 0, w, h);
-
-      if (!prefersReducedMotion) {
+      if(wantMesh&&buckets){
         ctx.save();
-        ctx.globalAlpha = 0.05;
-        ctx.fillStyle = "rgba(255,255,255,0.06)";
-        for (let i = 0; i < 140; i++) {
-          const x = hash(i * 7.1 + performance.now() * 0.0007) * w;
-          const y = hash(i * 3.9 + performance.now() * 0.0009) * h;
-          ctx.fillRect(x, y, 1, 1);
+        ctx.globalAlpha=clamp(.12*aConverge+.20*aAware+.18*aInstitutional,0,.22);
+        ctx.lineWidth=1;
+        const maxDist2=130*130;
+        for(const[k,arr] of buckets.entries()){
+          const[bx,by]=k.split(":").map(Number);
+          for(let ox=-1;ox<=1;ox++){
+            for(let oy=-1;oy<=1;oy++){
+              const other=buckets.get(`${bx+ox}:${by+oy}`);
+              if(!other) continue;
+              for(let a=0;a<arr.length;a++){
+                const ii=arr[a];
+                const p1=particles[ii];
+                const x1=p1.x+camX*(.25+.55*(p1.z+1)*.5)+w/2;
+                const y1=p1.y+camY*(.20+.45*(p1.z+1)*.5)+h/2;
+                let links=0;
+                for(let b=0;b<other.length&&links<2;b++){
+                  const jj2=other[b];
+                  if(jj2===ii) continue;
+                  const p2=particles[jj2];
+                  const x2=p2.x+camX*(.25+.55*(p2.z+1)*.5)+w/2;
+                  const y2=p2.y+camY*(.20+.45*(p2.z+1)*.5)+h/2;
+                  if((x2-x1)**2+(y2-y1)**2<maxDist2){
+                    const ww=warmTarget(t);
+                    ctx.strokeStyle=`rgba(${Math.floor(lerp(189,232,ww))},${Math.floor(lerp(166,150,ww))},${Math.floor(lerp(255,124,ww))},${lerp(.08,.15,ww)})`;
+                    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+                    links++;
+                  }
+                }
+              }
+            }
+          }
         }
         ctx.restore();
       }
-    }
-
-    function drawFieldGrid(alpha: number, par: Vec2) {
-      if (alpha <= 0.001) return;
-      const cell = Math.max(34, Math.min(62, Math.floor(Math.min(w, h) / 18)));
-      const ox = (par.x * 10) % cell;
-      const oy = (par.y * 10) % cell;
-      ctx.save();
-      ctx.globalCompositeOperation = "source-over";
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = `rgba(189,166,255,${0.05 + alpha * 0.10})`;
-      for (let x = -cell; x < w + cell; x += cell) {
-        ctx.beginPath(); ctx.moveTo(x + ox, 0); ctx.lineTo(x + ox, h); ctx.stroke();
-      }
-      for (let y = -cell; y < h + cell; y += cell) {
-        ctx.beginPath(); ctx.moveTo(0, y + oy); ctx.lineTo(w, y + oy); ctx.stroke();
-      }
-      ctx.globalCompositeOperation = "lighter";
-      const t = performance.now() / 1000;
-      const pulses = prefersReducedMotion ? 10 : 22;
-      for (let i = 0; i < pulses; i++) {
-        const gx = Math.floor(hash(i * 11.1 + t * 0.22) * GRID_COLS);
-        const gy = Math.floor(hash(i * 9.7 + t * 0.18) * GRID_ROWS);
-        const p = gridPoint(gx, gy);
-        const rr = 10 + 18 * hash(i * 3.3 + t);
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, rr);
-        grad.addColorStop(0, `rgba(242,193,174,${0.12 + alpha * 0.12})`);
-        grad.addColorStop(0.45, `rgba(232,150,124,${0.06 + alpha * 0.10})`);
-        grad.addColorStop(1, "rgba(0,0,0,0)");
-        ctx.fillStyle = grad;
-        ctx.beginPath(); ctx.arc(p.x, p.y, rr, 0, Math.PI * 2); ctx.fill();
-      }
-      ctx.restore();
-    }
-
-    function drawGraph(alpha: number, color: "lav" | "warm" | "mint", maxDist: number, k: number) {
-      if (alpha <= 0.001) return;
-      const col =
-        color === "lav" ? `rgba(189,166,255,${0.16})`
-        : color === "mint" ? `rgba(106,255,210,${0.14})`
-        : `rgba(232,150,124,${0.16})`;
-      ctx.save();
-      ctx.globalCompositeOperation = "lighter";
-      ctx.strokeStyle = col;
-      ctx.lineWidth = 1;
-      rebuildBuckets();
-      const step = prefersReducedMotion ? 3 : 2;
-      const maxD2 = maxDist * maxDist;
-      for (let i = 0; i < N; i += step) {
-        const a = particles[i].p;
-        const neigh = neighborsFor(i, k);
-        for (const j of neigh) {
-          const b = particles[j].p;
-          const d2 = dist2(a, b);
-          if (d2 > maxD2) continue;
-          const dd = 1 - clamp(Math.sqrt(d2) / maxDist, 0, 1);
-          ctx.globalAlpha = alpha * dd;
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-        }
-      }
-      ctx.restore();
-      ctx.globalAlpha = 1;
-    }
-
-    function drawEyeOverlay(alpha: number, par: Vec2, gaze: Vec2) {
-      if (alpha <= 0.001) return;
-      const c = add(eyeCenter(), { x: par.x * 8, y: par.y * 6 });
-      const rx = eyeRx();
-      const ry = eyeRy();
-      ctx.save();
-      ctx.globalCompositeOperation = "lighter";
-      const g1 = ctx.createRadialGradient(c.x, c.y, 1, c.x, c.y, rx * 1.2);
-      g1.addColorStop(0, `rgba(243,239,255,${0.06 + alpha * 0.10})`);
-      g1.addColorStop(0.45, `rgba(189,166,255,${0.05 + alpha * 0.10})`);
-      g1.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g1;
-      ctx.beginPath(); ctx.ellipse(c.x, c.y, rx * 1.08, ry * 1.08, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = `rgba(232,150,124,${0.10 + alpha * 0.18})`;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.ellipse(c.x, c.y, rx * 0.55, ry * 0.55, 0, 0, Math.PI * 2); ctx.stroke();
-      const gp = add(c, gaze);
-      const g2 = ctx.createRadialGradient(gp.x, gp.y, 0, gp.x, gp.y, rx * 0.20);
-      g2.addColorStop(0, `rgba(0,0,0,${0.22 + alpha * 0.28})`);
-      g2.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g2;
-      ctx.beginPath(); ctx.arc(gp.x, gp.y, rx * 0.10, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = `rgba(189,166,255,${0.08 + alpha * 0.12})`;
-      ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.ellipse(c.x, c.y, rx * 1.05, ry * 1.05, 0, Math.PI * 0.05, Math.PI * 0.95); ctx.stroke();
-      ctx.beginPath(); ctx.ellipse(c.x, c.y, rx * 1.05, ry * 1.05, 0, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawMemoryCore(alpha: number, par: Vec2) {
-      if (alpha <= 0.001) return;
-      const c = { x: w * 0.5 + par.x * 10, y: h * 0.58 + par.y * 8 };
-      const t = performance.now() / 1000;
-      ctx.save();
-      ctx.globalCompositeOperation = "lighter";
-      const r0 = Math.min(w, h) * 0.06 * (0.92 + 0.08 * Math.sin(t * 1.8));
-      const r1 = Math.min(w, h) * 0.20;
-      const g = ctx.createRadialGradient(c.x, c.y, r0 * 0.2, c.x, c.y, r1);
-      g.addColorStop(0, `rgba(243,239,255,${0.10 + alpha * 0.20})`);
-      g.addColorStop(0.35, `rgba(189,166,255,${0.09 + alpha * 0.18})`);
-      g.addColorStop(0.65, `rgba(106,255,210,${0.06 + alpha * 0.12})`);
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.beginPath(); ctx.arc(c.x, c.y, r1, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = `rgba(232,150,124,${0.10 + alpha * 0.16})`;
-      ctx.lineWidth = 1.6;
-      ctx.beginPath(); ctx.arc(c.x, c.y, r0 * 1.25, 0, Math.PI * 2); ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawSafetyRing(alpha: number, par: Vec2) {
-      if (alpha <= 0.001) return;
-      ctx.save();
-      ctx.globalCompositeOperation = "source-over";
-      ctx.strokeStyle = `rgba(189,166,255,${0.05 + alpha * 0.10})`;
-      ctx.lineWidth = 1;
-      const pad = 34;
-      roundRectPath(ctx, pad + par.x * 6, pad + par.y * 6, w - pad * 2, h - pad * 2, 22);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    function drawShard(p: Particle, alpha: number, warmth: number, competence: number, par: Vec2) {
-      const px = p.p.x + par.x * (0.8 + p.C * 1.4);
-      const py = p.p.y + par.y * (0.6 + p.C * 1.2);
-      const cool = p.kind === 1 ? PAL.lav : PAL.violet;
-      const warm = p.kind === 2 ? PAL.peach : PAL.coral;
-      const mix = clamp(warmth, 0, 1) * 0.75;
-      const r = lerp(cool.r, warm.r, mix);
-      const g = lerp(cool.g, warm.g, mix);
-      const b = lerp(cool.b, warm.b, mix);
-      const a = alpha * (0.10 + p.C * 0.55) * (0.85 + competence * 0.15);
-
-      ctx.save();
-      ctx.globalCompositeOperation = "lighter";
-      ctx.translate(px, py);
-      ctx.rotate(p.rot);
-
-      if (p.kind === 0) {
-        ctx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${a})`;
-        const ww = p.size * 6.2;
-        const hh = p.size * 2.0;
-        roundRectPath(ctx, -ww / 2, -hh / 2, ww, hh, 2.5);
-        ctx.fill();
-      } else if (p.kind === 1) {
-        ctx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${a})`;
-        const s = p.size * 2.2;
-        ctx.fillRect(-s / 2, -s / 2, s, s);
-      } else {
-        ctx.strokeStyle = `rgba(${r | 0},${g | 0},${b | 0},${a})`;
-        ctx.lineWidth = 1.4;
-        ctx.beginPath(); ctx.moveTo(-p.size * 2.2, 0); ctx.lineTo(p.size * 2.2, 0); ctx.stroke();
-      }
-
-      if (p.C > 0.5) {
-        ctx.globalAlpha = a * 0.35;
-        const rr = p.size * 7;
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, rr);
-        grad.addColorStop(0, `rgba(${r | 0},${g | 0},${b | 0},${0.10})`);
-        grad.addColorStop(1, "rgba(0,0,0,0)");
-        ctx.fillStyle = grad;
-        ctx.beginPath(); ctx.arc(0, 0, rr, 0, Math.PI * 2); ctx.fill();
-      }
 
       ctx.restore();
-    }
-
-    let raf = 0;
-    let last = performance.now();
-    const autoStart = performance.now();
-    const AUTO_LOOP_SEC = prefersReducedMotion ? 12 : 18;
-
-    let dMin = Infinity, dMax = -Infinity;
-    const seed = () => ({ x: w * 0.5, y: h * 0.58 });
-    const dCache = new Float32Array(N);
-
-    function rebuildDistances() {
-      const s = seed();
-      for (let i = 0; i < N; i++) {
-        const d = Math.sqrt(dist2(particles[i].p, s));
-        dCache[i] = d;
-        dMin = Math.min(dMin, d);
-        dMax = Math.max(dMax, d);
-      }
-    }
-
-    rebuildDistances();
-
-    const ro3 = new ResizeObserver(() => {
-      dMin = Infinity;
-      dMax = -Infinity;
-      rebuildDistances();
-    });
-    ro3.observe(wrap);
-
-    function tick() {
-      const now = performance.now();
-      const dt = Math.min(0.033, (now - last) / 1000);
-      last = now;
-
-      pmx += (mx - pmx) * 0.08;
-      pmy += (my - pmy) * 0.08;
-      const par = { x: pmx, y: pmy };
-
-      let P = scrollProgress;
-      if (!userHasScrolled) {
-        const t = (now - autoStart) / 1000;
-        P = (t % AUTO_LOOP_SEC) / AUTO_LOOP_SEC;
-      }
-      CERTX.P = P;
-
-      const breathe = sawtooth((now / 1000) * (prefersReducedMotion ? 0.45 : 0.7));
-      const Cstar = CERTX.Cstar;
-
-      const w1 = 1 - smoothstep(S2 - 0.05, S2 + 0.05, P);
-      const w2 = smoothstep(S2 - 0.06, S2 + 0.06, P) * (1 - smoothstep(S3 - 0.06, S3 + 0.06, P));
-      const w3 = smoothstep(S3 - 0.06, S3 + 0.06, P) * (1 - smoothstep(S4 - 0.06, S4 + 0.06, P));
-      const w4 = smoothstep(S4 - 0.06, S4 + 0.06, P) * (1 - smoothstep(S5 - 0.06, S5 + 0.06, P));
-      const w5 = smoothstep(S5 - 0.06, S5 + 0.06, P);
-
-      CERTX.E = lerp(0.95, 0.22, smoothstep(S2, S5, P));
-      CERTX.T = lerp(0.95, 0.20, smoothstep(S2, S5, P));
-      CERTX.X = lerp(0.12, 0.78, smoothstep(S3, S5, P));
-      CERTX.R = lerp(0.10, 0.62, smoothstep(S2, S4, P));
-      CERTX.C = lerp(0.06, Cstar, smoothstep(S2, S5, P));
-
-      if (w5 > 0.01) {
-        CERTX.C = lerp(Cstar - 0.04, Cstar + 0.02, breathe);
-      }
-
-      const wave = clamp((P - S2) / Math.max(0.001, S3 - S2), 0, 1);
-      const waveFront = lerp(dMin, dMax, wave);
-
-      const gaze = { x: pmx * Math.min(w, h) * 0.018, y: pmy * Math.min(w, h) * 0.012 };
-
-      const s = seed();
-      const time = now / 1000;
-
-      for (let i = 0; i < N; i++) {
-        const p = particles[i];
-        p.rot += p.spin * dt;
-
-        if (w1 > 0.001) {
-          const a = 220 * CERTX.T * CERTX.E * (prefersReducedMotion ? 0.45 : 1.0);
-          p.v.x += (hash(i * 9.7 + time * 2.7) - 0.5) * a * dt;
-          p.v.y += (hash(i * 6.3 + time * 3.1) - 0.5) * a * dt;
-          p.p.x += (hash(i * 2.3 + time * 9.1) - 0.5) * 7.0 * CERTX.T;
-          p.p.y += (hash(i * 4.7 + time * 7.3) - 0.5) * 7.0 * CERTX.T;
-          p.C = lerp(p.C, 0.05, 0.03);
-        }
-
-        if (w2 > 0.001) {
-          const d = dCache[i];
-          const captured = d <= waveFront ? 1 : 0;
-          const captureEase = captured ? smoothstep(waveFront - 120, waveFront + 30, d) : 0;
-          const k = (0.14 + captureEase * 0.86) * w2;
-          const to = sub(p.grid, p.p);
-          p.v.x += to.x * (2.6 * k) * dt;
-          p.v.y += to.y * (2.6 * k) * dt;
-          p.C = lerp(p.C, CERTX.C, 0.05);
-          p.X = lerp(p.X, 0.35, 0.03);
-        }
-
-        if (w3 > 0.001) {
-          const rv = sub(p.p, s);
-          const rn = norm(rv);
-          const perp = { x: -rn.y, y: rn.x };
-          const rMag = len(rv);
-          const inner = 1 - clamp(rMag / (Math.min(w, h) * 0.58), 0, 1);
-          const spiralStrength = (0.35 + inner * 0.9) * w3 * (prefersReducedMotion ? 0.55 : 1.0);
-          p.v.x += perp.x * (34 * spiralStrength) * dt;
-          p.v.y += perp.y * (34 * spiralStrength) * dt;
-          p.v.x += -rn.x * (14 * spiralStrength) * dt;
-          p.v.y += -rn.y * (14 * spiralStrength) * dt;
-          p.C = lerp(p.C, clamp(CERTX.C + 0.06, 0, 1), 0.05);
-          p.R = lerp(p.R, 0.55, 0.03);
-          p.X = lerp(p.X, 0.55, 0.03);
-        }
-
-        if (w4 > 0.001) {
-          let target = p.eye;
-          if (i > Math.floor(N * 0.90)) {
-            target = add(target, gaze);
-          }
-          const to = sub(target, p.p);
-          const snap = (0.55 + CERTX.C * 1.0) * w4;
-          p.v.x += to.x * (3.1 * snap) * dt;
-          p.v.y += to.y * (3.1 * snap) * dt;
-          if (!prefersReducedMotion) {
-            p.v.x += (hash(i * 8.2 + time * 5.4) - 0.5) * 18 * dt;
-            p.v.y += (hash(i * 3.8 + time * 6.1) - 0.5) * 18 * dt;
-          }
-          p.C = lerp(p.C, clamp(CERTX.C + 0.02, 0, 1), 0.06);
-          p.X = lerp(p.X, 0.65, 0.04);
-        }
-
-        if (w5 > 0.001) {
-          const target = osTarget(i, time * (prefersReducedMotion ? 0.6 : 1.0));
-          const to = sub(target, p.p);
-          const k = (0.75 + breathe * 0.35) * w5;
-          p.v.x += to.x * (2.1 * k) * dt;
-          p.v.y += to.y * (2.1 * k) * dt;
-          const pad = 34;
-          if (p.p.x < pad) p.v.x += (pad - p.p.x) * 0.9 * w5;
-          if (p.p.x > w - pad) p.v.x -= (p.p.x - (w - pad)) * 0.9 * w5;
-          if (p.p.y < pad) p.v.y += (pad - p.p.y) * 0.9 * w5;
-          if (p.p.y > h - pad) p.v.y -= (p.p.y - (h - pad)) * 0.9 * w5;
-          p.C = lerp(p.C, CERTX.C, 0.05);
-          p.X = lerp(p.X, 0.78, 0.04);
-          p.R = lerp(p.R, 0.62, 0.03);
-        }
-
-        const damp = lerp(0.88, 0.965, p.C) * lerp(0.92, 0.985, 1 - CERTX.T);
-        p.v.x *= damp;
-        p.v.y *= damp;
-        p.p.x += p.v.x * dt;
-        p.p.y += p.v.y * dt;
-
-        if (P < S3) {
-          const edge = 24;
-          if (p.p.x < -edge) p.p.x = w + edge;
-          if (p.p.x > w + edge) p.p.x = -edge;
-          if (p.p.y < -edge) p.p.y = h + edge;
-          if (p.p.y > h + edge) p.p.y = -edge;
-        }
-      }
-
-      drawBG(par);
-      drawFieldGrid(w2 * 1.0, par);
-
-      if (w3 > 0.01) {
-        drawGraph(w3 * 0.70, "lav", Math.min(w, h) * 0.12, prefersReducedMotion ? 1 : 2);
-        drawGraph(w3 * 0.45, "warm", Math.min(w, h) * 0.10, 1);
-      }
-
-      if (w4 > 0.01) {
-        drawEyeOverlay(w4 * 1.0, par, gaze);
-      }
-
-      if (w5 > 0.01) {
-        drawMemoryCore(w5 * 1.0, par);
-        drawSafetyRing(w5 * 1.0, par);
-        drawGraph(w5 * 0.55, "mint", Math.min(w, h) * 0.11, 1);
-      }
-
-      const warmth = clamp(w3 * 0.75 + w5 * 0.85 + w4 * 0.35, 0, 1);
-      const competence = clamp(w2 * 0.85 + w3 * 1.0 + w5 * 1.0, 0, 1);
-      const alphaBase = 0.9;
-
-      for (let i = 0; i < N; i++) {
-        drawShard(particles[i], alphaBase, warmth, competence, par);
-      }
-
-      if (!userHasScrolled) {
-        const fade = smoothstep(0.965, 1.0, P);
-        if (fade > 0.001) {
-          ctx.save();
-          ctx.globalCompositeOperation = "source-over";
-          ctx.fillStyle = `rgba(0,0,0,${fade * 0.55})`;
-          ctx.fillRect(0, 0, w, h);
-          ctx.restore();
-        }
-      }
-
-      raf = requestAnimationFrame(tick);
-    }
-
-    raf = requestAnimationFrame(tick);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("scroll", onScroll);
-      ro.disconnect();
-      ro2.disconnect();
-      ro3.disconnect();
+      drawVignette();
+      raf=requestAnimationFrame(frame);
     };
-  }, [prefersReducedMotion]);
+
+    raf=requestAnimationFrame(frame);
+    return ()=>{cancelAnimationFrame(raf); window.removeEventListener("resize",resize);};
+  },[formations]);
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ minHeight: "100vh" }}>
-      <div ref={wrapRef} className="relative w-full" style={{ height: "100vh" }}>
-        <canvas ref={canvasRef} className="absolute inset-0" style={{ width: "100%", height: "100%" }} />
-        <div className="pointer-events-none absolute inset-0">
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "7vh",
-              transform: "translateX(-50%)",
-              width: "min(1600px, 94vw)",
-              textAlign: "center",
-              lineHeight: 0.9,
-              letterSpacing: "-0.02em",
-              fontFamily: "Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
-              fontWeight: 900,
-              fontSize: "clamp(64px, 12vw, 260px)",
-              background: "linear-gradient(90deg, #BDA6FF 0%, #E8967C 55%, #7B61FF 100%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-              filter: "drop-shadow(0 18px 55px rgba(0,0,0,0.75))",
-              opacity: 0.98,
-              userSelect: "none",
-            }}
-          >
-            INTELLIGENCE
-          </div>
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              bottom: "6vh",
-              transform: "translateX(-50%)",
-              width: "min(980px, 92vw)",
-              textAlign: "center",
-              fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace",
-              fontSize: 12,
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              color: "rgba(243,239,255,0.62)",
-              userSelect: "none",
-            }}
-          >
-            INTELLIGENCE IS NOT A MODEL — IT'S A CONVERGENCE
-          </div>
+    <section ref={wrapRef} style={{
+      position:"relative", width:"100%", height:"min(92vh, 860px)", minHeight:"560px", overflow:"hidden",
+      background:
+        "radial-gradient(circle at 35% 55%, rgba(123,97,255,0.25), rgba(10,8,20,0) 60%),"+
+        "radial-gradient(circle at 78% 62%, rgba(232,150,124,0.18), rgba(10,8,20,0) 62%),"+
+        "linear-gradient(180deg, #070813 0%, #070814 30%, #0B0613 100%)",
+    }}>
+      <canvas ref={canvasRef} aria-hidden="true" style={{position:"absolute",inset:0,width:"100%",height:"100%"}} />
+      <div aria-hidden="true" style={{
+        position:"absolute",inset:0,pointerEvents:"none",
+        backgroundImage:"radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05), transparent 45%),radial-gradient(circle at 80% 60%, rgba(255,255,255,0.035), transparent 50%)",
+        mixBlendMode:"overlay",opacity:.7,
+      }} />
+      <div style={{position:"absolute",left:"clamp(18px, 3vw, 48px)",right:"clamp(18px, 3vw, 48px)",top:"clamp(22px, 4vh, 54px)",pointerEvents:"none"}}>
+        <div style={{
+          fontFamily:"Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+          fontWeight:900, letterSpacing:"-.02em", lineHeight:.86,
+          fontSize:"clamp(56px, 12vw, 190px)", textTransform:"uppercase",
+          background:"linear-gradient(90deg, rgba(189,166,255,0.95), rgba(242,193,174,0.92), rgba(123,97,255,0.95))",
+          WebkitBackgroundClip:"text", backgroundClip:"text", color:"transparent",
+          textShadow:"0 18px 60px rgba(0,0,0,0.42)", userSelect:"none",
+        }}>
+          INTELLIGENCE
         </div>
+        <div style={{
+          marginTop:"clamp(10px, 1.6vh, 16px)",
+          fontFamily:"ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+          fontSize:"11px", letterSpacing:".28em", textTransform:"uppercase",
+          color:"rgba(243,239,255,0.55)", userSelect:"none",
+        }}>
+          Intelligence is not a model — it&apos;s a convergence
+        </div>
+      </div>
+      <div style={{
+        position:"absolute",left:0,right:0,bottom:"20px",textAlign:"center",pointerEvents:"none",
+        fontFamily:"ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+        fontSize:"10px",letterSpacing:".28em",textTransform:"uppercase",
+        color:"rgba(243,239,255,0.35)",userSelect:"none",
+      }}>
+        DOCG AI • Cognitive Infrastructure
       </div>
     </section>
   );
-};
-
-export default HeroSection;
+}
