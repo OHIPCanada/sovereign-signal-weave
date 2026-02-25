@@ -200,10 +200,6 @@ const HeroSection = () => {
     setTimeout(() => { isTransitioning.current = false; }, 1000);
   };
 
-  useEffect(() => {
-    const timer = setInterval(advance, 5000);
-    return () => clearInterval(timer);
-  }, []);
 
   const labels = ["FRAGMENTATION", "FIELD", "EMERGENCE", "PERSONA", "STABILIZED"];
   const subtext = [
