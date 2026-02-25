@@ -1,320 +1,224 @@
-import React, { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ShieldCheck, Network, Cpu, Database, Stethoscope } from "lucide-react";
 
-const PARTICLE_COUNT = 1500;
-const SCENES = [
-  "Administrative Friction",
-  "Interoperable Backbone",
-  "Data Synthesis",
-  "Intelligence",
-  "The Clinic OS",
+const NODES = [
+  { id: "virtual-care", label: "VIRTUAL CARE", icon: Network, angle: -90, radius: 220 },
+  { id: "sovereign-data", label: "SOVEREIGN DATA", icon: Database, angle: -150, radius: 260 },
+  { id: "audit-integrity", label: "AUDIT INTEGRITY", icon: ShieldCheck, angle: -30, radius: 260 },
+  { id: "ai-cortex", label: "AI CORTEX", icon: Cpu, angle: -210, radius: 240 },
+  { id: "clinic-os", label: "CLINIC OS", icon: Stethoscope, angle: 30, radius: 240 },
 ];
-const COLORS = {
-  bg: "#030712",
-  primary: "#7B61FF",
-  secondary: "#00d2ff",
-  accent: "#e879f9",
-  mesh: "rgba(123, 97, 255, 0.15)",
-};
 
-function generateHeadMesh(count: number, w: number, h: number) {
-  const points = [];
-  const cx = w * 0.5;
-  const cy = h * 0.55;
-  const scale = Math.min(w, h) * 0.35;
-
-  for (let i = 0; i < count; i++) {
-    const isBrain = i < count * 0.6;
-
-    if (isBrain) {
-      const angle = Math.random() * Math.PI * 2;
-      const radius = Math.random() * 0.5;
-      const nx = Math.cos(angle) * radius * 1.2;
-      const ny = Math.sin(angle) * radius * 0.8 - 0.2;
-      points.push({ x: cx + nx * scale, y: cy + ny * scale, type: "brain" });
-    } else {
-      const t = (i / (count * 0.4)) * Math.PI * 2;
-      let nx = Math.cos(t) * 0.7;
-      let ny = Math.sin(t) * 0.9;
-
-      if (t > 0 && t < Math.PI * 0.8) {
-        nx += Math.sin(t * 3) * 0.08;
-      }
-      if (t > Math.PI * 0.6 && t < Math.PI * 1.2) {
-        nx -= 0.1;
-        ny += 0.3;
-      }
-
-      points.push({
-        x: cx + nx * scale + (Math.random() - 0.5) * 20,
-        y: cy + ny * scale + (Math.random() - 0.5) * 20,
-        type: "silhouette",
-      });
-    }
-  }
-  return points;
-}
+const STORY_STEPS = [
+  {
+    title: "The Friction",
+    description: "Healthcare data is trapped in isolated, fragmented silos. Administrative bloat prevents true clinical insight.",
+  },
+  {
+    title: "The Backbone",
+    description: "Interoperable rails align the chaos, creating a high-speed, standardized data pipeline across the institution.",
+  },
+  {
+    title: "The Core",
+    description: "Disparate data streams collapse into a single, high-density intelligence model. Raw data becomes clinical certainty.",
+  },
+  {
+    title: "The Ecosystem",
+    description: "Intelligence becomes infrastructure. A proactive, unified clinical operating system built on sovereign data and audit integrity.",
+  },
+];
 
 const HeroSection = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [sceneIndex, setSceneIndex] = useState(0);
-
-  const particles = useRef<any[]>([]);
-  const state = useRef({
-    scene: 0,
-    meshOpacity: 0,
-    scatterForce: 1,
-    attraction: 0.02,
-  });
+  const [step, setStep] = useState(0);
+  const chaosPositions = useRef(
+    NODES.map(() => ({
+      x: (Math.random() - 0.5) * 600,
+      y: (Math.random() - 0.5) * 400,
+      rotate: (Math.random() - 0.5) * 45,
+    }))
+  );
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d", { alpha: false });
-    if (!ctx) return;
-
-    let w = (canvas.width = window.innerWidth);
-    let h = (canvas.height = window.innerHeight);
-
-    let headTargets = generateHeadMesh(PARTICLE_COUNT, w, h);
-
-    particles.current = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 2,
-      vy: (Math.random() - 0.5) * 2,
-      baseSize: Math.random() * 1.5 + 0.5,
-      target: headTargets[i],
-      type: headTargets[i].type,
-      color: headTargets[i].type === "brain" ? COLORS.accent : COLORS.secondary,
-    }));
-
-    const onResize = () => {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-      headTargets = generateHeadMesh(PARTICLE_COUNT, w, h);
-      particles.current.forEach((p, i) => (p.target = headTargets[i]));
-    };
-    window.addEventListener("resize", onResize);
-
-    let raf: number;
-    const render = () => {
-      ctx.fillStyle = `rgba(3, 7, 18, 0.3)`;
-      ctx.fillRect(0, 0, w, h);
-      ctx.globalCompositeOperation = "screen";
-
-      const curScene = state.current.scene;
-      const attract = state.current.attraction;
-      const meshOp = state.current.meshOpacity;
-
-      particles.current.forEach((p, i) => {
-        if (curScene === 0) {
-          p.vx += (Math.random() - 0.5) * 0.4;
-          p.vy += (Math.random() - 0.5) * 0.4;
-        } else if (curScene === 1) {
-          const gridX = Math.round(p.target.x / 50) * 50;
-          const gridY = Math.round(p.target.y / 50) * 50;
-          p.vx += (gridX - p.x) * attract;
-          p.vy += (gridY - p.y) * attract;
-        } else if (curScene === 2) {
-          p.vx += (w / 2 - p.x) * attract * 1.5;
-          p.vy += (h / 2 - p.y) * attract * 1.5;
-        } else if (curScene >= 3) {
-          const pulse = Math.sin(Date.now() * 0.002 + i) * 2;
-          const tx = p.target.x + (p.type === "brain" ? pulse : 0);
-          const ty = p.target.y + (p.type === "brain" ? pulse : 0);
-
-          p.vx += (tx - p.x) * attract;
-          p.vy += (ty - p.y) * attract;
-
-          if (meshOp > 0 && i % 15 === 0) {
-            const nextP = particles.current[(i + 15) % PARTICLE_COUNT];
-            const dist = Math.sqrt((p.x - nextP.x) ** 2 + (p.y - nextP.y) ** 2);
-            if (dist < 60) {
-              ctx.beginPath();
-              ctx.strokeStyle = `rgba(123, 97, 255, ${meshOp * (1 - dist / 60)})`;
-              ctx.lineWidth = 0.5;
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(nextP.x, nextP.y);
-              ctx.stroke();
-            }
-          }
-        }
-
-        p.vx *= 0.88;
-        p.vy *= 0.88;
-        p.x += p.vx;
-        p.y += p.vy;
-
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(
-          p.x,
-          p.y,
-          p.baseSize * (curScene >= 3 && p.type === "brain" ? 1.5 : 1),
-          0,
-          Math.PI * 2
-        );
-        ctx.fill();
-      });
-
-      ctx.globalCompositeOperation = "source-over";
-      raf = requestAnimationFrame(render);
-    };
-
-    render();
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-    };
+    const timer = setInterval(() => {
+      setStep((prev) => (prev < 3 ? prev + 1 : 0));
+    }, 6000);
+    return () => clearInterval(timer);
   }, []);
 
-  const advanceSequence = () => {
-    const nextScene = Math.min(sceneIndex + 1, 4);
-
-    gsap.to(state.current, {
-      scene: nextScene,
-      attraction: nextScene >= 3 ? 0.08 : 0.03,
-      meshOpacity: nextScene >= 3 ? 1 : 0,
-      duration: 2,
-      ease: "power3.inOut",
-    });
-
-    setSceneIndex(nextScene);
-  };
-
-  const ecosystemNodes = [
-    { label: "VIRTUAL CARE", top: "25%", left: "50%" },
-    { label: "SOVEREIGN DATA", top: "45%", left: "28%" },
-    { label: "AUDIT INTEGRITY", top: "55%", left: "70%" },
-    { label: "AI CORTEX", top: "75%", left: "30%" },
-    { label: "CLINIC OS", top: "80%", left: "68%" },
-  ];
-
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-screen overflow-hidden flex flex-col justify-between p-6 sm:p-12 font-sans"
-      style={{ backgroundColor: COLORS.bg, color: "#ffffff" }}
-    >
-      {/* Background gradient */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: "radial-gradient(circle at center, rgba(79, 70, 229, 0.2) 0%, rgba(3, 7, 18, 0.8) 50%, #030712 100%)"
-      }} />
-
-      {/* Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none" />
-
-      {/* INTELLIGENCE text */}
-      <div className="absolute top-[8%] left-0 w-full flex justify-center z-0 pointer-events-none select-none">
-        <h1
-          className="text-[12vw] font-black tracking-tighter leading-none"
-          style={{
-            background: "linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0))",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
+    <div className="relative w-full h-screen bg-[#030508] overflow-hidden font-sans text-white flex flex-col justify-between selection:bg-indigo-500/30">
+      
+      {/* 1. MASSIVE BACKGROUND TYPOGRAPHY */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+        <motion.h1 
+          className="text-[16vw] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white/[0.07] to-transparent whitespace-nowrap"
+          animate={{
+            scale: step === 3 ? 1.05 : 1,
+            opacity: step === 0 ? 0.5 : 1
           }}
+          transition={{ duration: 2, ease: "easeInOut" }}
         >
           INTELLIGENCE
-        </h1>
+        </motion.h1>
       </div>
 
-      {/* Ecosystem HUD Nodes (Scene 4) */}
-      <div className="absolute inset-0 z-20 pointer-events-none">
-        <AnimatePresence>
-          {sceneIndex === 4 &&
-            ecosystemNodes.map((node, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ delay: 0.8 + i * 0.15, type: "spring", stiffness: 100 }}
-                className="absolute flex flex-col items-center gap-2"
-                style={{ top: node.top, left: node.left, transform: "translate(-50%, -50%)" }}
-              >
-                <div className="w-8 h-8 flex items-center justify-center border border-indigo-400/40 rounded-lg rotate-45 backdrop-blur-sm"
-                  style={{ backgroundColor: "rgba(30, 27, 75, 0.5)", boxShadow: "0 0 20px rgba(123,97,255,0.3)" }}>
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "#00d2ff", boxShadow: "0 0 10px #00d2ff" }} />
-                </div>
-                <span className="font-mono text-[10px] tracking-[0.2em] uppercase whitespace-nowrap px-3 py-1 rounded-full border border-white/5"
-                  style={{ color: "rgba(207, 250, 254, 0.8)", backgroundColor: "rgba(0,0,0,0.4)" }}>
-                  {node.label}
-                </span>
-              </motion.div>
-            ))}
-        </AnimatePresence>
-      </div>
+      {/* 2. THE VISUAL STAGE */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="relative w-full max-w-4xl aspect-square flex items-center justify-center">
+          
+          {/* Connecting Lines */}
+          <svg className="absolute inset-0 w-full h-full z-0" viewBox="-300 -300 600 600">
+            {NODES.map((node, i) => {
+              const rad = (node.angle * Math.PI) / 180;
+              const x = Math.cos(rad) * node.radius;
+              const y = Math.sin(rad) * node.radius;
+              return (
+                <motion.line
+                  key={`line-${i}`}
+                  x1="0" y1="0" x2={x} y2={y}
+                  stroke="rgba(99, 102, 241, 0.3)"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 4"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ 
+                    pathLength: step === 3 ? 1 : 0, 
+                    opacity: step === 3 ? 1 : 0 
+                  }}
+                  transition={{ duration: 1.5, delay: i * 0.1, ease: "circOut" }}
+                />
+              );
+            })}
+          </svg>
 
-      {/* Narrative Header */}
-      <header className="relative z-30 flex justify-between items-start">
-        <div className="max-w-xl">
+          {/* Central Core */}
           <motion.div
-            key={sceneIndex}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="mb-3 flex items-center gap-3"
+            className="absolute z-10 flex items-center justify-center"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{
+              scale: step >= 2 ? 1 : 0,
+              opacity: step >= 2 ? 1 : 0,
+            }}
+            transition={{ duration: 1, ease: "backOut" }}
           >
-            <div className="h-[1px] w-8" style={{ backgroundColor: "#00d2ff" }} />
-            <h2 className="font-mono text-[10px] tracking-[0.3em] uppercase" style={{ color: "#22d3ee" }}>
-              Phase 0{sceneIndex + 1}
-            </h2>
+            <div className="absolute w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl" />
+            <motion.div 
+              animate={{ rotate: 360 }} 
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="relative w-32 h-32 border border-indigo-400/30 rounded-full flex items-center justify-center border-dashed"
+            >
+              <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full blur-md opacity-80 mix-blend-screen animate-pulse" />
+              <div className="absolute w-16 h-16 bg-white rounded-full shadow-[0_0_40px_rgba(99,102,241,0.8)]" />
+            </motion.div>
           </motion.div>
-          <motion.h1
-            key={`title-${sceneIndex}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl font-light tracking-tight leading-tight"
-          >
-            {SCENES[sceneIndex]}
-          </motion.h1>
+
+          {/* Data Nodes */}
+          {NODES.map((node, i) => {
+            const Icon = node.icon;
+            const rad = (node.angle * Math.PI) / 180;
+            const finalX = Math.cos(rad) * node.radius;
+            const finalY = Math.sin(rad) * node.radius;
+            const chaos = chaosPositions.current[i];
+            const pipeX = (i - 2) * 120;
+            const pipeY = 0;
+
+            return (
+              <motion.div
+                key={node.id}
+                className="absolute z-20 flex flex-col items-center gap-3"
+                initial={false}
+                animate={{
+                  x: step === 0 ? chaos.x : step === 1 ? pipeX : step === 2 ? 0 : finalX,
+                  y: step === 0 ? chaos.y : step === 1 ? pipeY : step === 2 ? 0 : finalY,
+                  scale: step === 2 ? 0 : 1,
+                  rotate: step === 0 ? chaos.rotate : 0,
+                  opacity: step === 2 ? 0 : 1,
+                }}
+                transition={{ 
+                  duration: 1.2, 
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: step === 1 ? i * 0.05 : 0
+                }}
+              >
+                <div 
+                  className="relative w-14 h-14 flex items-center justify-center bg-[#0d1117] border border-indigo-500/40 shadow-[0_0_15px_rgba(99,102,241,0.2)] backdrop-blur-md"
+                  style={{ clipPath: "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)" }}
+                >
+                  <Icon className="w-5 h-5 text-indigo-300" strokeWidth={1.5} />
+                </div>
+                <motion.div
+                  animate={{ opacity: step === 3 ? 1 : 0 }}
+                  className="bg-black/50 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-full"
+                >
+                  <span className="font-mono text-[9px] tracking-[0.2em] text-cyan-50/80 whitespace-nowrap">
+                    {node.label}
+                  </span>
+                </motion.div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 3. NARRATIVE HEADER */}
+      <header className="relative z-30 p-8 sm:p-12 flex justify-between items-start pointer-events-none">
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-[1px] w-8 bg-indigo-500" />
+            <h2 className="text-indigo-400 font-mono text-[10px] tracking-[0.3em] uppercase">
+              Phase 0{step + 1} // Architecture
+            </h2>
+          </div>
+          <div className="overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.h1
+                key={`title-${step}`}
+                initial={{ y: "100%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: "-100%", opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="text-3xl sm:text-5xl font-light tracking-tight text-white"
+              >
+                {STORY_STEPS[step].title}
+              </motion.h1>
+            </AnimatePresence>
+          </div>
         </div>
       </header>
 
-      {/* Footer & Controls */}
-      <footer className="relative z-30 flex justify-between items-end">
-        <div className="max-w-md space-y-8">
-          <motion.p
-            key={`desc-${sceneIndex}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-sm leading-relaxed font-light"
-            style={{ color: "rgba(255,255,255,0.6)" }}
-          >
-            {sceneIndex === 0 && "Raw data exists in silos, uncoordinated and creating extreme administrative friction."}
-            {sceneIndex === 1 && "Data maps to the interoperable backbone, converting silos into flowing clinical pipelines."}
-            {sceneIndex === 2 && "The model aggregates disparate data into a centralized, high-density intelligence core."}
-            {sceneIndex === 3 && "The core evolves into a digital persona. Explainable AI becomes a visible, accountable partner."}
-            {sceneIndex === 4 && "The final stage: A unified ecosystem where sovereign data and clinical protocols operate as one."}
-          </motion.p>
-
-          <button
-            onClick={advanceSequence}
-            disabled={sceneIndex === 4}
-            className="group relative flex items-center gap-4 px-8 py-4 backdrop-blur-md border transition-all duration-300"
-            style={{
-              borderColor: sceneIndex === 4 ? "rgba(16, 185, 129, 0.3)" : "rgba(255,255,255,0.1)",
-              backgroundColor: sceneIndex === 4 ? "rgba(16, 185, 129, 0.05)" : "rgba(255,255,255,0.05)",
-              cursor: sceneIndex === 4 ? "default" : "pointer",
-            }}
-          >
-            <span className="font-mono text-[10px] tracking-[0.2em] uppercase transition-colors"
-              style={{ color: sceneIndex === 4 ? "rgba(52, 211, 153, 0.8)" : "rgba(255,255,255,0.8)" }}>
-              {sceneIndex === 4 ? "Ecosystem Initialized" : "Advance Sequence"}
-            </span>
-            {sceneIndex !== 4 && (
-              <div className="w-8 h-[1px] group-hover:w-16 transition-all duration-500"
-                style={{ backgroundColor: "rgba(255,255,255,0.3)" }} />
-            )}
-          </button>
+      {/* 4. NARRATIVE FOOTER & CONTROLS */}
+      <footer className="relative z-30 p-8 sm:p-12 flex flex-col sm:flex-row justify-between items-end gap-8">
+        <div className="max-w-md">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={`desc-${step}`}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.5 }}
+              className="text-white/60 text-sm leading-relaxed font-light mb-8"
+            >
+              {STORY_STEPS[step].description}
+            </motion.p>
+          </AnimatePresence>
+          
+          <div className="flex items-center gap-4">
+            {STORY_STEPS.map((_, i) => (
+              <button 
+                key={i}
+                onClick={() => setStep(i)}
+                className="relative group py-2 flex items-center"
+              >
+                <div className={`h-[2px] transition-all duration-500 ${
+                  step === i ? "w-12 bg-indigo-500" : "w-6 bg-white/20 group-hover:bg-white/40 group-hover:w-8"
+                }`} />
+              </button>
+            ))}
+          </div>
         </div>
-
-        <div className="hidden sm:block font-mono text-[10px] tracking-[0.2em]" style={{ color: "rgba(255,255,255,0.2)" }}>
-          INTELLIGENCE_AS_INFRASTRUCTURE // 2026
+        
+        <div className="font-mono text-[9px] text-white/20 tracking-[0.2em] hidden sm:block uppercase">
+          Integration_Protocol // Active
         </div>
       </footer>
     </div>
