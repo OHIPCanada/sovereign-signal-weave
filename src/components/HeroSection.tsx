@@ -17,7 +17,6 @@ type Particle = {
   size: number;
   color: string;
   angle: number;
-  coherence: number;
 };
 
 const PARTICLE_COUNT = 2400;
@@ -27,34 +26,38 @@ const HeroSection = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [scene, setScene] = useState<SceneState>(SceneState.FRAGMENTATION);
+
+  const particles = useRef<Particle[]>([]);
+  const mouse = useRef({ x: 0, y: 0 });
   const requestRef = useRef<number>(0);
   const sceneRef = useRef<SceneState>(SceneState.FRAGMENTATION);
-  const particles = useRef<Particle[]>([]);
+  const isTransitioning = useRef(false);
   const stateRef = useRef({
     scene: SceneState.FRAGMENTATION,
     waveRadius: 0,
     blur: 0,
+    lookProgress: 0,
   });
 
   const C = {
     void: "#020408",
-    cold: "rgba(189, 166, 255, 0.5)",
-    warm: "rgba(232, 150, 124, 0.8)",
+    cold: "rgba(189, 166, 255, 0.45)",
+    warm: "rgba(232, 150, 124, 0.85)",
     healing: "rgba(106, 255, 210, 0.7)",
-    gold: "rgba(255, 215, 0, 0.6)",
+    gold: "rgba(255, 215, 0, 0.5)",
   };
 
   const getFaceCoords = (i: number, w: number, h: number) => {
     const cx = w / 2;
     const cy = h / 2.2;
-    const r = Math.min(w, h) * 0.25;
+    const r = Math.min(w, h) * 0.22;
     if (i < 800) {
       const angle = (i / 800) * Math.PI * 2;
-      const eyeR = r * 0.4 * (i % 2 === 0 ? 1 : 0.8);
+      const eyeR = r * 0.45 * (i % 2 === 0 ? 1 : 0.85);
       return { x: cx + Math.cos(angle) * eyeR, y: cy + Math.sin(angle) * eyeR * 0.6 };
     } else {
       const angle = ((i - 800) / (PARTICLE_COUNT - 800)) * Math.PI;
-      return { x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r * 1.4 - r * 0.2 };
+      return { x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r * 1.5 - r * 0.2 };
     }
   };
 
@@ -80,10 +83,9 @@ const HeroSection = () => {
           homeX: (i % gridSize) * stepX + stepX / 2,
           homeY: Math.floor(i / gridSize) * stepY + stepY / 2,
           faceX: face.x, faceY: face.y,
-          size: Math.random() * 1.5 + 0.5,
+          size: Math.random() * 1.2 + 0.6,
           color: C.cold,
           angle: Math.random() * Math.PI * 2,
-          coherence: 0,
         });
       }
       particles.current = pArray;
@@ -92,43 +94,51 @@ const HeroSection = () => {
     setup();
     window.addEventListener("resize", setup);
 
+    const handleMouse = (e: MouseEvent) => {
+      mouse.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener("mousemove", handleMouse);
+
     const render = () => {
       ctx.filter = `blur(${stateRef.current.blur}px)`;
       ctx.fillStyle = C.void;
       ctx.fillRect(0, 0, w, h);
-      const { scene: currentScene, waveRadius } = stateRef.current;
+
+      const { scene: cur, waveRadius, lookProgress } = stateRef.current;
       const centerX = w / 2;
       const centerY = h / 2;
 
       particles.current.forEach((p, i) => {
-        if (currentScene === SceneState.FRAGMENTATION) {
-          p.vx += (Math.random() - 0.5) * 0.3;
-          p.vy += (Math.random() - 0.5) * 0.3;
+        if (cur === SceneState.FRAGMENTATION) {
+          p.vx += (Math.random() - 0.5) * 0.25;
+          p.vy += (Math.random() - 0.5) * 0.25;
           p.x += p.vx; p.y += p.vy;
           if (p.x < 0 || p.x > w) p.vx *= -1;
           if (p.y < 0 || p.y > h) p.vy *= -1;
-        } else if (currentScene === SceneState.FIELD || currentScene === SceneState.EMERGENCE) {
-          const dx = p.x - centerX;
-          const dy = p.y - centerY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+        } else if (cur === SceneState.FIELD || cur === SceneState.EMERGENCE) {
+          const dist = Math.sqrt((p.x - centerX) ** 2 + (p.y - centerY) ** 2);
           if (dist < waveRadius) {
-            p.x += (p.homeX - p.x) * 0.08;
-            p.y += (p.homeY - p.y) * 0.08;
-            p.color = i % 5 === 0 ? C.healing : C.cold;
+            p.x += (p.homeX - p.x) * 0.09;
+            p.y += (p.homeY - p.y) * 0.09;
+            p.color = i % 6 === 0 ? C.healing : C.cold;
           } else {
             p.x += p.vx; p.y += p.vy;
           }
-        } else if (currentScene === SceneState.PERSONA) {
-          p.x += (p.faceX - p.x) * 0.05;
-          p.y += (p.faceY - p.y) * 0.05;
+        } else if (cur === SceneState.PERSONA) {
+          const gazeX = (mouse.current.x - w / 2) * 0.1 * lookProgress;
+          const gazeY = (mouse.current.y - h / 2) * 0.1 * lookProgress;
+          const tx = i < 800 ? p.faceX + gazeX : p.faceX;
+          const ty = i < 800 ? p.faceY + gazeY : p.faceY;
+          p.x += (tx - p.x) * 0.06;
+          p.y += (ty - p.y) * 0.06;
           p.color = i < 800 ? C.warm : C.cold;
-        } else if (currentScene === SceneState.STABILIZED) {
+        } else if (cur === SceneState.STABILIZED) {
           p.angle += 0.015;
-          const spiralR = 60 * Math.sin(p.angle * R_RATIO);
+          const spiralR = 50 * Math.sin(p.angle * R_RATIO);
           const tx = p.homeX + Math.cos(p.angle) * spiralR;
           const ty = p.homeY + Math.sin(p.angle) * spiralR;
-          p.x += (tx - p.x) * 0.07;
-          p.y += (ty - p.y) * 0.07;
+          p.x += (tx - p.x) * 0.08;
+          p.y += (ty - p.y) * 0.08;
           p.color = C.healing;
         }
 
@@ -137,18 +147,17 @@ const HeroSection = () => {
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
 
-        if (currentScene >= SceneState.EMERGENCE && i % 45 === 0) {
+        if (cur >= SceneState.EMERGENCE && i % 45 === 0) {
           const nextP = particles.current[(i + 45) % PARTICLE_COUNT];
           const d = Math.sqrt((p.x - nextP.x) ** 2 + (p.y - nextP.y) ** 2);
           if (d < 110) {
-            ctx.strokeStyle = currentScene === SceneState.PERSONA ? C.warm : C.gold;
+            ctx.strokeStyle = cur === SceneState.PERSONA ? C.warm : C.gold;
             ctx.globalAlpha = 0.15;
-            ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(nextP.x, nextP.y);
             ctx.stroke();
-            ctx.globalAlpha = 1.0;
+            ctx.globalAlpha = 1;
           }
         }
       });
@@ -158,91 +167,93 @@ const HeroSection = () => {
 
     requestRef.current = requestAnimationFrame(render);
     return () => {
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+      cancelAnimationFrame(requestRef.current);
       window.removeEventListener("resize", setup);
+      window.removeEventListener("mousemove", handleMouse);
     };
   }, []);
 
-  const advanceScene = useRef(() => {
-    const current = sceneRef.current;
-    const next = ((current + 1) % 5) as SceneState;
+  const advance = () => {
+    if (isTransitioning.current) return;
+    isTransitioning.current = true;
+
+    const next = ((sceneRef.current + 1) % 5) as SceneState;
+
     gsap.to(stateRef.current, {
-      blur: 8, duration: 0.4, yoyo: true, repeat: 1, ease: "power2.inOut",
-      onComplete: () => { stateRef.current.blur = 0; },
+      blur: 10, duration: 0.5, yoyo: true, repeat: 1, ease: "power2.inOut"
     });
+
     if (next === SceneState.FIELD) {
       stateRef.current.waveRadius = 0;
-      gsap.to(stateRef.current, { waveRadius: window.innerWidth * 1.3, duration: 2.8, ease: "power3.inOut" });
+      gsap.to(stateRef.current, { waveRadius: window.innerWidth * 1.5, duration: 3, ease: "power3.inOut" });
     }
+
+    if (next === SceneState.PERSONA) {
+      stateRef.current.lookProgress = 0;
+      gsap.to(stateRef.current, { lookProgress: 1, duration: 2.5, ease: "power2.out" });
+    }
+
     sceneRef.current = next;
     stateRef.current.scene = next;
     setScene(next);
-  });
 
-  // Auto-advance on a 4-second timer
+    setTimeout(() => { isTransitioning.current = false; }, 1000);
+  };
+
   useEffect(() => {
-    const interval = setInterval(() => advanceScene.current(), 4000);
-    return () => clearInterval(interval);
+    const timer = setInterval(advance, 5000);
+    return () => clearInterval(timer);
   }, []);
 
-  const labels = ["CHAOS", "FIELD", "GRAPH", "PERSONA", "STABILIZED"];
-  const descriptions = [
-    "Raw medical data fragments decaying into high-entropy noise.",
-    "The Field appears. Euclidean waves reveal the AI infrastructure.",
-    "Emergence: 30/40/30 Architecture forming a Unified Knowledge Graph.",
-    "The Hybrid Face. Intelligence looks back through oculomic awareness.",
-    "Institutional OS. Stabilized intelligence achieved (C≈0.70).",
+  const labels = ["FRAGMENTATION", "FIELD", "EMERGENCE", "PERSONA", "STABILIZED"];
+  const subtext = [
+    "Data decaying into uncoordinated clinical noise.",
+    "Euclidean waves reveal the foundational AI backbone.",
+    "Semantic synthesis: EHRS, genomic patterns, and logic arcs.",
+    "Operational awareness: The Vigilant Eye senses the whole.",
+    "Optimal Coherence (C≈0.70): The Institutional OS."
   ];
 
   return (
-    <div ref={containerRef} className="relative w-full overflow-hidden flex flex-col" style={{ height: "100vh", background: "#020408", fontFamily: "Inter, system-ui, sans-serif", color: "rgba(243,239,255,0.85)" }}>
-      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+    <div ref={containerRef} className="relative w-full h-screen bg-[#020408] overflow-hidden flex flex-col font-sans text-white uppercase tracking-wider">
+      <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-80" />
 
-      <div className="relative z-10 flex flex-col justify-between h-full p-6 sm:p-12 pointer-events-none">
+      <div className="relative z-10 flex flex-col justify-between h-full p-8 sm:p-16 pointer-events-none">
         <header className="flex justify-between items-start">
-          <div className="space-y-1">
-            <h2 style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace", fontSize: 10, letterSpacing: "0.4em", textTransform: "uppercase", color: "rgba(243,239,255,0.35)" }}>
-              System_Core: {scene === SceneState.STABILIZED ? "Optimal" : "Syncing"}
-            </h2>
-            <h1 style={{ fontSize: 24, fontWeight: 300, letterSpacing: "-0.02em", color: "rgba(243,239,255,0.85)" }}>
-              Convergence_Engine.v4
-            </h1>
+          <div className="space-y-2">
+            <h2 className="font-mono text-[10px] text-white/40 tracking-[0.5em]">Convergence_v4.2026</h2>
+            <h1 className="text-2xl font-light tracking-tighter">Institutional_Intelligence</h1>
           </div>
-          <div style={{ fontFamily: "ui-monospace, monospace", fontSize: 9, color: "rgba(243,239,255,0.2)", textAlign: "right" }}>
-            <p>EUCLIDEAN_L2: ACTIVE</p>
-            <p style={{ marginTop: 4 }}>CHIRAL_RATIO: 0.34</p>
+          <div className="font-mono text-[9px] text-white/20 text-right leading-relaxed">
+            <p>ORDER_PARAMETER: {scene === 4 ? "0.70" : "0.12"}</p>
+            <p>CHIRAL_SCALE: 0.34</p>
           </div>
         </header>
 
         <div className="flex flex-col items-center">
-          <h1 style={{ fontWeight: 900, fontSize: "clamp(64px, 12vw, 240px)", letterSpacing: "-0.04em", color: "rgba(243,239,255,0.04)", userSelect: "none", lineHeight: 1 }}>
+          <h1 className="font-black text-[14vw] text-white/[0.03] leading-none select-none">
             {labels[scene]}
           </h1>
         </div>
 
         <footer className="flex justify-between items-end">
-          <div className="max-w-sm space-y-6 pointer-events-auto">
-            <div className="space-y-2">
-              <div style={{ height: 1, width: 48, background: "rgba(255,255,255,0.15)" }} />
-              <p style={{ fontSize: 12, lineHeight: 1.6, fontWeight: 300, color: "rgba(243,239,255,0.45)", fontStyle: "italic" }}>
-                {descriptions[scene]}
+          <div className="max-w-xs space-y-6 pointer-events-auto">
+            <div className="space-y-3">
+              <div className="h-[1px] w-8 bg-white/30" />
+              <p className="text-[11px] font-light normal-case italic text-white/50 leading-relaxed">
+                {subtext[scene]}
               </p>
             </div>
             <button
-              onClick={() => advanceScene.current()}
-              className="group"
-              style={{ display: "flex", alignItems: "center", gap: 16, padding: "10px 24px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", cursor: "pointer", transition: "border-color 0.2s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)")}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)")}
+              onClick={advance}
+              className="group flex items-center gap-6 px-6 py-3 bg-white/[0.02] border border-white/10 hover:border-white/40 transition-all cursor-pointer"
             >
-              <span style={{ fontFamily: "ui-monospace, monospace", fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(243,239,255,0.6)" }}>
-                Advance Scene
-              </span>
-              <div style={{ width: 16, height: 1, background: "rgba(255,255,255,0.25)", transition: "width 0.2s" }} />
+              <span className="font-mono text-[9px] text-white/70">NEXT_PHASE</span>
+              <div className="w-4 h-[1px] bg-white/40 group-hover:w-12 transition-all" />
             </button>
           </div>
-          <div className="hidden sm:block" style={{ fontFamily: "ui-monospace, monospace", fontSize: 10, color: "rgba(243,239,255,0.1)" }}>
-            [SCENE_{scene}_INITIATED]
+          <div className="hidden sm:block font-mono text-[9px] text-white/10 italic">
+            // SUBSTRATE_COUPLING_ACTIVE
           </div>
         </footer>
       </div>
