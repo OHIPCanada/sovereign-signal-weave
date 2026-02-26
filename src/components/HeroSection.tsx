@@ -296,7 +296,7 @@ export default function HeroSection() {
         W * 0.32 + camX * 0.2, H * 0.50 + camY * 0.15, 0,
         W * 0.32, H * 0.50, Math.min(W, H) * 0.70
       );
-      g.addColorStop(0, "rgba(123,97,255,0.16)");
+      g.addColorStop(0, "rgba(123,97,255,0.28)");
       g.addColorStop(1, "rgba(123,97,255,0)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
@@ -305,7 +305,7 @@ export default function HeroSection() {
         W * 0.72 + camX * 0.12, H * 0.58 + camY * 0.1, 0,
         W * 0.72, H * 0.58, Math.min(W, H) * 0.75
       );
-      g.addColorStop(0, "rgba(232,150,124,0.12)");
+      g.addColorStop(0, "rgba(232,150,124,0.22)");
       g.addColorStop(1, "rgba(232,150,124,0)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, W, H);
@@ -317,7 +317,7 @@ export default function HeroSection() {
       if (alpha < 0.002) return;
       ctx.save();
       ctx.globalAlpha = alpha;
-      ctx.strokeStyle = "rgba(189,166,255,0.07)";
+      ctx.strokeStyle = "rgba(189,166,255,0.18)";
       ctx.lineWidth = 1;
       const step = Math.max(36, Math.min(60, Math.floor(Math.min(W, H) / 16)));
       const dx = camX * 0.08 * LAYER_SPEED[0];
@@ -369,9 +369,9 @@ export default function HeroSection() {
       ctx.globalCompositeOperation = "lighter";
       ctx.globalAlpha = alpha;
       const g = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, Math.min(W, H) * 0.18);
-      g.addColorStop(0, "rgba(243,239,255,0.18)");
-      g.addColorStop(0.30, "rgba(189,166,255,0.12)");
-      g.addColorStop(0.65, "rgba(123,97,255,0.06)");
+      g.addColorStop(0, "rgba(243,239,255,0.32)");
+      g.addColorStop(0.30, "rgba(189,166,255,0.22)");
+      g.addColorStop(0.65, "rgba(123,97,255,0.10)");
       g.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = g;
       ctx.beginPath();
@@ -479,14 +479,14 @@ export default function HeroSection() {
 
       // ── draw ──
       drawBG();
-      drawHaze(0.30 + 0.20 * wConv + 0.25 * wAware + 0.15 * wOS);
+      drawHaze(0.50 + 0.30 * wConv + 0.35 * wAware + 0.25 * wOS);
 
       // Grid (bg layer, slow parallax) — fades in during late chaos, full in field
-      const gridAlpha = 0.04 * smoothstep(1.8, 2.5, t) + 0.12 * wField + 0.18 * wConv + 0.20 * wAware + 0.14 * wOS;
+      const gridAlpha = 0.08 * smoothstep(1.5, 2.5, t) + 0.28 * wField + 0.35 * wConv + 0.38 * wAware + 0.25 * wOS;
       drawGrid(gridAlpha * (1 - wDissolve));
 
       // Eye glow (gold tint)
-      drawEyeGlow(t, 0.75 * wAware);
+      drawEyeGlow(t, 0.90 * wAware);
 
       // Core glow (scene 5)
       drawCore(wOS, elapsed);
@@ -526,24 +526,31 @@ export default function HeroSection() {
 
         let tx = p.x, ty = p.y;
 
+        // Early chaos: pull back toward center (recover from dissolve scatter)
+        if (wChaos > 0.3) {
+          const recoverPull = 0.35 * wChaos;
+          tx = lerp(tx, 0, recoverPull);
+          ty = lerp(ty, 0, recoverPull);
+        }
+
         // Chaos: just drift (tx stays current pos)
         // Field pull
-        tx = lerp(tx, fieldX, 0.40 * wField);
-        ty = lerp(ty, fieldY, 0.40 * wField);
+        tx = lerp(tx, fieldX, 0.55 * wField);
+        ty = lerp(ty, fieldY, 0.55 * wField);
 
         // Convergence → head
-        tx = lerp(tx, hs.x, 0.85 * wConv + 0.50 * wAware);
-        ty = lerp(ty, hs.y, 0.85 * wConv + 0.50 * wAware);
+        tx = lerp(tx, hs.x, 0.92 * wConv + 0.55 * wAware);
+        ty = lerp(ty, hs.y, 0.92 * wConv + 0.55 * wAware);
 
         // Awareness → eye cluster (subset)
         if (isEye && es) {
-          tx = lerp(tx, es.x, 0.70 * wAware);
-          ty = lerp(ty, es.y, 0.70 * wAware);
+          tx = lerp(tx, es.x, 0.80 * wAware);
+          ty = lerp(ty, es.y, 0.80 * wAware);
         }
 
         // OS → orbits
-        tx = lerp(tx, os.x, 0.80 * wOS);
-        ty = lerp(ty, os.y, 0.80 * wOS);
+        tx = lerp(tx, os.x, 0.88 * wOS);
+        ty = lerp(ty, os.y, 0.88 * wOS);
 
         // Dissolve outward
         if (wDissolve > 0.001) {
@@ -557,10 +564,11 @@ export default function HeroSection() {
         p.ty = ty;
 
         // Physics
-        const pull = 0.50 * coherence + 0.15;
+        const pull = 0.65 * coherence + 0.20;
         const noise = 28 * temperature;
-        p.vx = (p.vx + (p.tx - p.x) * pull + jj * noise * 0.015) * (1 - 0.14 * coherence);
-        p.vy = (p.vy + (p.ty - p.y) * pull + kk * noise * 0.015) * (1 - 0.14 * coherence);
+        const damping = 1 - lerp(0.10, 0.28, coherence);
+        p.vx = (p.vx + (p.tx - p.x) * pull + jj * noise * 0.012) * damping;
+        p.vy = (p.vy + (p.ty - p.y) * pull + kk * noise * 0.012) * damping;
         p.x += p.vx * dt * 60;
         p.y += p.vy * dt * 60;
 
@@ -591,22 +599,23 @@ export default function HeroSection() {
         const g = Math.floor(lerp(158, 193, totalWarm));
         const b = Math.floor(lerp(255, 174, totalWarm));
 
-        // Alpha: subtle during chaos, stronger during formations
+        // Alpha: visible during chaos, strong during formations
         const baseAlpha = clamp(
-          0.18 * wChaos +
-          0.32 * wField +
-          0.50 * wConv +
-          0.55 * wAware +
-          0.45 * wOS +
-          0.12 * wDissolve,
-          0.05, 0.85
+          0.40 * wChaos +
+          0.50 * wField +
+          0.55 * wConv +
+          0.60 * wAware +
+          0.52 * wOS +
+          0.20 * wDissolve,
+          0.10, 0.72
         );
 
-        const size = (1.0 + 0.8 * wConv + 1.4 * wAware + 0.9 * wOS) * p.s * layerSz;
+        const size = (1.4 + 0.8 * wConv + 1.4 * wAware + 1.0 * wOS) * p.s * layerSz;
 
         // ── draw shard ──
         ctx.save();
-        ctx.globalCompositeOperation = "lighter";
+        // Use "screen" during formations to prevent blown-out whites
+        ctx.globalCompositeOperation = (wConv + wAware + wOS) > 0.3 ? "screen" : "lighter";
         ctx.globalAlpha = baseAlpha;
         ctx.translate(px, py);
         ctx.rotate(p.rot * (1 - coherence * 0.8)); // rotation diminishes with coherence
@@ -666,10 +675,10 @@ export default function HeroSection() {
       if (wantMesh && buckets) {
         ctx.save();
         ctx.globalCompositeOperation = "lighter";
-        const meshAlpha = clamp(0.10 * wConv + 0.18 * wAware + 0.15 * wOS, 0, 0.20);
+        const meshAlpha = clamp(0.22 * wConv + 0.35 * wAware + 0.28 * wOS, 0, 0.40);
         ctx.globalAlpha = meshAlpha;
-        ctx.lineWidth = 0.8;
-        const maxD2 = 110 * 110;
+        ctx.lineWidth = 1.2;
+        const maxD2 = 140 * 140;
         for (const [k, arr] of buckets.entries()) {
           const [bxI, byI] = k.split(":").map(Number);
           for (let ox = -1; ox <= 1; ox++) {
@@ -690,7 +699,7 @@ export default function HeroSection() {
                   const y2 = (p2.y * camZoom + camY * LAYER_SPEED[p2.layer] * 0.20) + H / 2;
                   const d2 = (x2 - x1) ** 2 + (y2 - y1) ** 2;
                   if (d2 < maxD2) {
-                    const fade = 1 - Math.sqrt(d2) / 110;
+                    const fade = 1 - Math.sqrt(d2) / 140;
                     const ww = warmAmp;
                     ctx.strokeStyle = `rgba(${Math.floor(lerp(189, 232, ww))},${Math.floor(lerp(166, 150, ww))},${Math.floor(lerp(255, 124, ww))},${fade * 0.3})`;
                     ctx.beginPath();
