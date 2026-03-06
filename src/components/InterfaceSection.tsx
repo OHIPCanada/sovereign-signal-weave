@@ -342,11 +342,18 @@ const InterfaceSection = () => {
                 <stop offset="80%" stopColor="#6E3BFF" stopOpacity={0.6} />
                 <stop offset="100%" stopColor="#6E3BFF" stopOpacity={0.15} />
               </linearGradient>
+
+              {/* Glass blur filter */}
+              <filter id="glassBlur" x="-10%" y="-10%" width="120%" height="120%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="18" />
+              </filter>
             </defs>
 
-            {/* Background wash */}
-            <rect x="24" y="24" width="1152" height="472" rx="28" fill="rgba(255,255,255,0.40)" />
-            <rect x="24" y="24" width="1152" height="472" rx="28" fill="none" stroke="rgba(20,10,42,0.10)" />
+            {/* Glass card background */}
+            <rect x="24" y="24" width="1152" height="472" rx="28" fill="rgba(255,255,255,0.12)" filter="url(#glassBlur)" />
+            <rect x="24" y="24" width="1152" height="472" rx="28" fill="rgba(255,255,255,0.50)" />
+            <rect x="24" y="24" width="1152" height="472" rx="28" fill="none" stroke="rgba(255,255,255,0.45)" />
+            <rect x="24" y="24" width="1152" height="472" rx="28" fill="none" stroke="rgba(20,10,42,0.06)" />
 
             {/* Warm glow anchors */}
             <circle cx="230" cy="120" r="180" fill="url(#lensWarm)" opacity={0.35} />
