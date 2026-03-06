@@ -282,6 +282,7 @@ const SovereigntySection = () => {
   return (
     <section
       ref={sectionRef}
+      id="sovereignty"
       className="relative overflow-hidden flex items-center md:min-h-[70vh] lg:min-h-screen"
       style={{
         padding: "clamp(56px, 7vw, 96px) 0",

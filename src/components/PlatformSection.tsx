@@ -227,7 +227,7 @@ const PlatformSection = () => {
   return (
     <section
       className="relative overflow-hidden flex items-center md:min-h-[70vh] lg:min-h-screen"
-      id="product"
+      id="platform"
       style={{
         padding: "clamp(64px, 7vw, 110px) 0",
         background: `
