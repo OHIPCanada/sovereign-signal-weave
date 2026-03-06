@@ -343,6 +343,7 @@ const Section9_DeploymentSurfaces = () => {
 
   return (
     <section
+      id="deployment-surfaces"
       className="relative overflow-hidden"
       style={{
         padding: "clamp(64px, 7vw, 110px) 0",

@@ -493,6 +493,7 @@ const SignalIntegritySection = () => {
   return (
     <section
       ref={sectionRef}
+      id="signal-integrity"
       className="relative overflow-hidden"
       style={{
         padding: "clamp(64px, 8vw, 120px) 0",
