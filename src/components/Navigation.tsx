@@ -26,19 +26,19 @@ const navLinks: NavItem[] = [
   {
     label: "PLATFORM",
     children: [
-      { label: "AI Cortex", href: "/platform/ai-cortex" },
-      { label: "EMR Layer", href: "/platform/emr-layer" },
-      { label: "Virtual Care", href: "/platform/virtual-care" },
-      { label: "Patient Access", href: "/platform/patient-access" },
+      { label: "AI Cortex", href: "/#platform" },
+      { label: "EMR Layer", href: "/#features" },
+      { label: "Virtual Care", href: "/#features" },
+      { label: "Patient Access", href: "/#deployment-surfaces" },
     ],
   },
   {
     label: "INFRASTRUCTURE",
     children: [
-      { label: "Deployment", href: "/infrastructure/deployment" },
-      { label: "Governance", href: "/infrastructure/governance" },
-      { label: "Audit Trails", href: "/infrastructure/audit-trails" },
-      { label: "Interoperability", href: "/infrastructure/interoperability" },
+      { label: "Deployment", href: "/#deployment" },
+      { label: "Governance", href: "/#sovereignty" },
+      { label: "Audit Trails", href: "/#signal-integrity" },
+      { label: "Interoperability", href: "/#deployment-surfaces" },
     ],
   },
   { label: "CONTACT", href: "#contact" },
