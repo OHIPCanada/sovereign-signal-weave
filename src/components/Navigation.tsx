@@ -142,16 +142,21 @@ const Navigation = () => {
                     className="absolute top-full left-1/2 -translate-x-1/2 mt-2 min-w-[180px] bg-white/85 backdrop-blur-xl border border-white/60 shadow-[0_8px_40px_rgba(0,0,0,0.08)] rounded-xl overflow-hidden"
                   >
                     <div className="py-2">
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.label}
-                          to={child.href}
-                          className="block px-5 py-2.5 text-[11px] font-semibold tracking-[0.12em] uppercase text-foreground/70 hover:text-foreground hover:bg-foreground/4 transition-colors"
-                          onClick={() => setOpenDropdown(null)}
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
+                      {link.children.map((child) => {
+                        const isHash = child.href.includes("#");
+                        const El = isHash ? "a" : Link;
+                        const props = isHash ? { href: child.href } : { to: child.href };
+                        return (
+                          <El
+                            key={child.label}
+                            {...(props as any)}
+                            className="block px-5 py-2.5 text-[11px] font-semibold tracking-[0.12em] uppercase text-foreground/70 hover:text-foreground hover:bg-foreground/4 transition-colors"
+                            onClick={() => setOpenDropdown(null)}
+                          >
+                            {child.label}
+                          </El>
+                        );
+                      })}
                     </div>
                   </motion.div>
                 )}
@@ -216,16 +221,21 @@ const Navigation = () => {
                             className="overflow-hidden"
                           >
                             <div className="pl-6 pb-2">
-                              {link.children.map((child) => (
-                                <Link
-                                  key={child.label}
-                                  to={child.href}
-                                  onClick={() => setIsMenuOpen(false)}
-                                  className="block py-2.5 px-4 text-[11px] font-semibold tracking-[0.1em] uppercase text-foreground/60 hover:text-foreground transition-colors"
-                                >
-                                  {child.label}
-                                </Link>
-                              ))}
+                              {link.children.map((child) => {
+                                const isHash = child.href.includes("#");
+                                const El = isHash ? "a" : Link;
+                                const props = isHash ? { href: child.href } : { to: child.href };
+                                return (
+                                  <El
+                                    key={child.label}
+                                    {...(props as any)}
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="block py-2.5 px-4 text-[11px] font-semibold tracking-[0.1em] uppercase text-foreground/60 hover:text-foreground transition-colors"
+                                  >
+                                    {child.label}
+                                  </El>
+                                );
+                              })}
                             </div>
                           </motion.div>
                         )}
