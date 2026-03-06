@@ -158,7 +158,7 @@ function SystemField() {
           height: 440px;
           transform: translate(-50%, -50%);
           animation: orbitRotate 75s linear infinite reverse;
-          border-color: rgba(123,97,255,0.06);
+          border-color: rgba(123,97,255,0.18);
         }
 
         @keyframes orbitRotate {
