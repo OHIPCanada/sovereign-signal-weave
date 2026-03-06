@@ -55,7 +55,7 @@ function SystemField() {
         filter: "blur(30px)",
         pointerEvents: "none",
       }} />
-      <div style={{ transform: "rotateX(35deg) rotateZ(-10deg)", transformStyle: "preserve-3d", position: "relative", width: "100%", height: "100%" }}>
+      <div style={{ position: "relative", width: "100%", height: "100%" }}>
       {/* Signal pulse ring */}
       <div className="pulse-ring" />
       <div className="pulse-ring" style={{ animationDelay: "2s" }} />
