@@ -38,7 +38,7 @@ function SystemField() {
         left: "10%",
         width: "80%",
         height: "40%",
-        background: "radial-gradient(ellipse at center, rgba(232,150,124,0.15) 0%, rgba(212,97,107,0.08) 35%, transparent 70%)",
+        background: "radial-gradient(ellipse at center, rgba(232,150,124,0.06) 0%, rgba(212,97,107,0.03) 35%, transparent 70%)",
         borderRadius: "50%",
         filter: "blur(18px)",
         pointerEvents: "none",
