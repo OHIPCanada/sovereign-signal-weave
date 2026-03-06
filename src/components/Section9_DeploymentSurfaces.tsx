@@ -423,7 +423,7 @@ const Section9_DeploymentSurfaces = () => {
               padding: "5px",
               gap: "2px",
               backdropFilter: "blur(12px)",
-              justifyContent: "start",
+              justifyContent: "center",
             }}
           >
             {SURFACES.map((s, i) => (
