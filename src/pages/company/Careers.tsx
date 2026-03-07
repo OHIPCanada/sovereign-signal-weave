@@ -172,6 +172,7 @@ const Careers = () => {
       setFormData({ name: "", email: "", position: "", message: "" });
       setFileName("");
       setSubmitting(false);
+      setModalOpen(false);
     }, 1200);
   };
 
