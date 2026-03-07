@@ -21,13 +21,35 @@ const openings = [
     type: "Full-time · Remote (Canada)",
     department: "Engineering",
     orb: aiCortexOrb,
+    salary: "$65,000 – $85,000 CAD",
+    posted: "March 1, 2026",
     description:
       "Work alongside senior engineers to build and fine-tune clinical AI models. You'll contribute to prompt engineering, model evaluation pipelines, and integration with our sovereign compute layer.",
+    responsibilities: [
+      "Develop and maintain AI/ML pipelines for clinical NLP tasks",
+      "Assist in fine-tuning large language models on healthcare datasets",
+      "Build evaluation harnesses to measure model accuracy and safety",
+      "Collaborate with clinical advisors to validate AI outputs",
+      "Write clean, tested, production-grade Python and TypeScript code",
+      "Participate in code reviews and architecture discussions",
+    ],
     requirements: [
       "BSc in Computer Science, AI/ML, or related field",
       "Familiarity with Python, PyTorch or TensorFlow",
       "Understanding of NLP fundamentals",
       "Interest in healthcare AI and responsible deployment",
+    ],
+    niceToHave: [
+      "Experience with LLM fine-tuning or RLHF",
+      "Exposure to FHIR, HL7, or clinical data standards",
+      "Contributions to open-source ML projects",
+    ],
+    benefits: [
+      "100% remote-first with flexible hours",
+      "Health & dental benefits from day one",
+      "Annual learning stipend ($2,500)",
+      "Equity participation program",
+      "Home office setup allowance",
     ],
   },
   {
@@ -35,13 +57,35 @@ const openings = [
     type: "Full-time · Hybrid (Toronto)",
     department: "Growth",
     orb: clinicOsOrb,
+    salary: "$90,000 – $130,000 CAD + Commission",
+    posted: "February 20, 2026",
     description:
       "Drive enterprise adoption of our clinical intelligence platform across Canadian healthcare networks. You'll build relationships with hospital administrators, clinic groups, and provincial health authorities.",
+    responsibilities: [
+      "Identify and qualify enterprise healthcare prospects",
+      "Lead full-cycle sales from discovery to contract close",
+      "Deliver compelling product demos tailored to clinical workflows",
+      "Build relationships with C-suite and procurement leaders",
+      "Collaborate with product and engineering on customer feedback",
+      "Manage pipeline and forecasting in CRM tools",
+    ],
     requirements: [
       "3+ years B2B SaaS sales experience",
       "Healthcare or regulated industry background preferred",
       "Strong consultative selling skills",
       "Experience with long-cycle enterprise deals",
+    ],
+    niceToHave: [
+      "Existing network in Canadian healthcare systems",
+      "Understanding of provincial health procurement processes",
+      "Experience selling AI or data infrastructure products",
+    ],
+    benefits: [
+      "Uncapped commission structure",
+      "Hybrid work model — Toronto office 2 days/week",
+      "Health & dental benefits from day one",
+      "Annual President's Club trip",
+      "Equity participation program",
     ],
   },
   {
@@ -49,13 +93,35 @@ const openings = [
     type: "Internship · Remote (Canada)",
     department: "Engineering",
     orb: sovereignOrb,
+    salary: "$25 – $32/hr CAD",
+    posted: "March 5, 2026",
     description:
       "A hands-on internship building real features inside a clinical intelligence platform. You'll work on frontend components, data pipelines, and testing infrastructure — shipping code that matters.",
+    responsibilities: [
+      "Build and ship frontend features using React and TypeScript",
+      "Write integration tests and contribute to CI/CD pipelines",
+      "Assist with data pipeline development and monitoring",
+      "Participate in daily standups and sprint planning",
+      "Document technical decisions and component APIs",
+      "Present a capstone project at the end of your term",
+    ],
     requirements: [
       "Currently enrolled in CS or Software Engineering program",
       "Comfortable with TypeScript and React",
       "Eagerness to learn healthcare domain",
       "Available for 4–8 month term",
+    ],
+    niceToHave: [
+      "Previous internship or co-op experience",
+      "Familiarity with Tailwind CSS and component libraries",
+      "Interest in AI/ML or healthcare technology",
+    ],
+    benefits: [
+      "100% remote with flexible scheduling around classes",
+      "Dedicated mentor and weekly 1-on-1s",
+      "Real production codebase — not toy projects",
+      "Full-time offer pathway for top performers",
+      "Conference attendance sponsorship",
     ],
   },
 ];
