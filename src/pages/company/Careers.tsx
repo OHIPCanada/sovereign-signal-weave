@@ -144,7 +144,7 @@ const values = [
 const Careers = () => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -156,9 +156,8 @@ const Careers = () => {
 
   const handleApply = (jobTitle: string) => {
     setFormData((prev) => ({ ...prev, position: jobTitle }));
-    setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 100);
+    setFileName("");
+    setModalOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -173,6 +172,7 @@ const Careers = () => {
       setFormData({ name: "", email: "", position: "", message: "" });
       setFileName("");
       setSubmitting(false);
+      setModalOpen(false);
     }, 1200);
   };
 
@@ -449,62 +449,59 @@ const Careers = () => {
         </div>
       </section>
 
-      {/* ─── APPLICATION FORM (dark timeline style) ─── */}
-      <section
-        className="relative overflow-hidden"
-        style={{
-          padding: "clamp(64px, 7vw, 110px) 0",
-          background: `
-            radial-gradient(900px 500px at 50% 30%, rgba(91,29,179,.25), transparent 60%),
-            radial-gradient(700px 500px at 80% 70%, rgba(232,150,124,.12), transparent 65%),
-            linear-gradient(180deg, #140022 0%, #2A0B4E 100%)
-          `,
-        }}
-      >
-        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: "linear-gradient(90deg, transparent 5%, rgba(212,97,107,0.4) 30%, rgba(123,97,255,0.5) 70%, transparent 95%)" }} />
-
-        <div ref={formRef} className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-          <div className="grid grid-cols-1 md:grid-cols-[0.45fr_1.55fr] split-layout-gap">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
+      {/* ─── APPLICATION MODAL ─── */}
+      {modalOpen && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center"
+          style={{ background: "rgba(10,2,20,0.75)", backdropFilter: "blur(8px)" }}
+          onClick={() => setModalOpen(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ duration: 0.35 }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative rounded-[24px] w-full max-h-[90vh] overflow-y-auto"
+            style={{
+              maxWidth: 560,
+              margin: "0 16px",
+              background: "linear-gradient(180deg, #1E0A3C 0%, #2A0B4E 100%)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              boxShadow: "0 40px 120px rgba(0,0,0,0.6), 0 0 80px rgba(123,97,255,0.15)",
+              padding: "36px 32px",
+            }}
+          >
+            {/* Close */}
+            <button
+              onClick={() => setModalOpen(false)}
+              className="absolute top-4 right-4 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+              style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}
             >
-              <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-                [ APPLY NOW ]
-              </p>
-              <h2
-                style={{
-                  color: "rgba(255,255,255,0.95)",
-                  fontWeight: 800,
-                  fontSize: "clamp(36px, 4vw, 64px)",
-                  lineHeight: 0.95,
-                  letterSpacing: "-0.02em",
-                  marginTop: 16,
-                }}
-              >
-                Send your signal.
-              </h2>
-              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 15, lineHeight: 1.55, marginTop: 16, maxWidth: "40ch" }}>
-                Upload your resume and tell us which role interests you. We review every application personally.
-              </p>
-            </motion.div>
+              ✕
+            </button>
 
-            <motion.form
-              onSubmit={handleSubmit}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.15 }}
-              className="rounded-[20px] flex flex-col gap-5"
+            <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
+              [ APPLY NOW ]
+            </p>
+            <h2
               style={{
-                background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025))",
-                border: "1px solid rgba(255,255,255,0.1)",
-                backdropFilter: "blur(16px)",
-                padding: "32px 28px",
+                color: "rgba(255,255,255,0.95)",
+                fontWeight: 800,
+                fontSize: "clamp(24px, 3vw, 36px)",
+                lineHeight: 1,
+                letterSpacing: "-0.02em",
+                marginTop: 12,
+                marginBottom: 6,
               }}
             >
+              Apply for {formData.position}
+            </h2>
+            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.5, marginBottom: 24 }}>
+              Upload your resume and we'll review your application personally.
+            </p>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               {/* Name */}
               <div className="flex flex-col gap-1.5">
                 <label style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.5)", letterSpacing: "0.06em", textTransform: "uppercase" as const }}>
@@ -517,12 +514,7 @@ const Careers = () => {
                   placeholder="Your full name"
                   maxLength={100}
                   className="rounded-xl px-4 py-3 outline-none"
-                  style={{
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    color: "rgba(255,255,255,0.9)",
-                    fontSize: 15,
-                  }}
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)", fontSize: 15 }}
                 />
               </div>
 
@@ -538,38 +530,21 @@ const Careers = () => {
                   placeholder="you@example.com"
                   maxLength={255}
                   className="rounded-xl px-4 py-3 outline-none"
-                  style={{
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    color: "rgba(255,255,255,0.9)",
-                    fontSize: 15,
-                  }}
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)", fontSize: 15 }}
                 />
               </div>
 
-              {/* Position */}
+              {/* Position (read-only) */}
               <div className="flex flex-col gap-1.5">
                 <label style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.5)", letterSpacing: "0.06em", textTransform: "uppercase" as const }}>
-                  Position *
+                  Position
                 </label>
-                <select
-                  value={formData.position}
-                  onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                  className="rounded-xl px-4 py-3 outline-none appearance-none cursor-pointer"
-                  style={{
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    color: formData.position ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)",
-                    fontSize: 15,
-                  }}
+                <div
+                  className="rounded-xl px-4 py-3"
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)", fontSize: 15 }}
                 >
-                  <option value="" disabled>Select a position</option>
-                  {openings.map((j) => (
-                    <option key={j.title} value={j.title} style={{ color: "#111", background: "#fff" }}>
-                      {j.title}
-                    </option>
-                  ))}
-                </select>
+                  {formData.position}
+                </div>
               </div>
 
               {/* Resume upload */}
@@ -582,12 +557,7 @@ const Careers = () => {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className="rounded-xl px-4 py-3 text-left flex items-center gap-3 transition-colors"
-                  style={{
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px dashed rgba(255,255,255,0.15)",
-                    color: fileName ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)",
-                    fontSize: 15,
-                  }}
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px dashed rgba(255,255,255,0.15)", color: fileName ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.4)", fontSize: 15 }}
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6 }}>
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -598,7 +568,7 @@ const Careers = () => {
                 </button>
               </div>
 
-              {/* Message */}
+              {/* Cover Note */}
               <div className="flex flex-col gap-1.5">
                 <label style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.5)", letterSpacing: "0.06em", textTransform: "uppercase" as const }}>
                   Cover Note (optional)
@@ -608,14 +578,9 @@ const Careers = () => {
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Tell us why you're interested..."
                   maxLength={1000}
-                  rows={4}
+                  rows={3}
                   className="rounded-xl px-4 py-3 outline-none resize-none"
-                  style={{
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    color: "rgba(255,255,255,0.9)",
-                    fontSize: 15,
-                  }}
+                  style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.9)", fontSize: 15 }}
                 />
               </div>
 
@@ -637,10 +602,10 @@ const Careers = () => {
               >
                 {submitting ? "Submitting..." : "Submit Application"}
               </motion.button>
-            </motion.form>
-          </div>
+            </form>
+          </motion.div>
         </div>
-      </section>
+      )}
 
       {/* ─── CULTURE PRINCIPLES ─── */}
       <section
