@@ -111,8 +111,8 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
                     isScrolled
                       ? "px-4 py-2 rounded-full hover:bg-foreground/5"
                       : "hover:text-accent"
-                  } ${!isScrolled && darkMode ? "!text-white/90 hover:!text-white" : ""}`
-                >
+                   } ${!isScrolled && darkMode ? "!text-white/90 hover:!text-white" : ""}`}
+                 >
                   {link.label}
                   <ChevronDown
                     className={`w-3 h-3 transition-transform duration-200 ${
@@ -127,8 +127,8 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
                     isScrolled
                       ? "px-4 py-2 rounded-full hover:bg-foreground/5"
                       : "hover:text-accent"
-                  } ${!isScrolled && darkMode ? "!text-white/90 hover:!text-white" : ""}`
-                >
+                   } ${!isScrolled && darkMode ? "!text-white/90 hover:!text-white" : ""}`}
+                 >
                   {link.label}
                 </a>
               )}
