@@ -44,7 +44,7 @@ const navLinks: NavItem[] = [
   { label: "CONTACT", href: "#contact" },
 ];
 
-const Navigation = () => {
+const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -86,7 +86,9 @@ const Navigation = () => {
       >
         {/* Logo */}
         <Link to="/" className="flex items-center px-3">
-          <span className="text-[13px] md:text-[14px] font-bold tracking-[0.12em] uppercase text-foreground">
+          <span className={`text-[13px] md:text-[14px] font-bold tracking-[0.12em] uppercase transition-colors duration-300 ${
+            !isScrolled && darkMode ? "text-white" : "text-foreground"
+          }`}>
             DOCG AI
           </span>
         </Link>
@@ -109,8 +111,8 @@ const Navigation = () => {
                     isScrolled
                       ? "px-4 py-2 rounded-full hover:bg-foreground/5"
                       : "hover:text-accent"
-                  }`}
-                >
+                   } ${!isScrolled && darkMode ? "!text-white/90 hover:!text-white" : ""}`}
+                 >
                   {link.label}
                   <ChevronDown
                     className={`w-3 h-3 transition-transform duration-200 ${
@@ -125,8 +127,8 @@ const Navigation = () => {
                     isScrolled
                       ? "px-4 py-2 rounded-full hover:bg-foreground/5"
                       : "hover:text-accent"
-                  }`}
-                >
+                   } ${!isScrolled && darkMode ? "!text-white/90 hover:!text-white" : ""}`}
+                 >
                   {link.label}
                 </a>
               )}
@@ -172,9 +174,9 @@ const Navigation = () => {
           aria-label="Toggle menu"
         >
           {isMenuOpen ? (
-            <X className="w-5 h-5 text-foreground" />
+            <X className={`w-5 h-5 ${!isScrolled && darkMode ? "text-white" : "text-foreground"}`} />
           ) : (
-            <Menu className="w-5 h-5 text-foreground" />
+            <Menu className={`w-5 h-5 ${!isScrolled && darkMode ? "text-white" : "text-foreground"}`} />
           )}
         </button>
       </motion.nav>

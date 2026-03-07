@@ -45,7 +45,7 @@ const stats = [
 
 const Overview = () => (
   <div className="relative overflow-x-hidden">
-    <Navigation />
+    <Navigation darkMode />
 
     {/* ─── HERO ─── */}
     <section
