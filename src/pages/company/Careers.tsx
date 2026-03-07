@@ -144,7 +144,7 @@ const values = [
 const Careers = () => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -156,9 +156,8 @@ const Careers = () => {
 
   const handleApply = (jobTitle: string) => {
     setFormData((prev) => ({ ...prev, position: jobTitle }));
-    setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 100);
+    setFileName("");
+    setModalOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
