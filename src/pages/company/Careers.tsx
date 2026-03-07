@@ -314,7 +314,7 @@ const Careers = () => {
             </h2>
           </motion.div>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             {openings.map((job, i) => (
               <motion.article
                 key={job.title}
@@ -331,58 +331,117 @@ const Careers = () => {
                   boxShadow: "0 20px 60px rgba(60,40,120,0.1), inset 0 1px 0 rgba(255,255,255,0.7)",
                 }}
               >
-                <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 p-6 md:p-8">
-                  {/* Orb */}
-                  <div
-                    className="flex items-center justify-center rounded-xl"
-                    style={{
-                      width: 100,
-                      height: 100,
-                      background: "radial-gradient(ellipse at center, rgba(123,97,255,0.06), transparent 70%)",
-                    }}
-                  >
-                    <img src={job.orb} alt="" className="w-16 h-16 object-contain" style={{ filter: "drop-shadow(0 4px 20px rgba(123,97,255,0.2))" }} />
-                  </div>
-
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-3 mb-1">
-                      <span style={{ fontWeight: 700, fontSize: 20, color: "#111", letterSpacing: "-0.01em" }}>{job.title}</span>
-                      <span
-                        className="rounded-full px-3 py-0.5"
-                        style={{
-                          fontSize: 11,
-                          fontWeight: 600,
-                          letterSpacing: "0.04em",
-                          textTransform: "uppercase" as const,
-                          color: "rgba(212,97,107,0.85)",
-                          background: "rgba(212,97,107,0.08)",
-                          border: "1px solid rgba(212,97,107,0.15)",
-                        }}
-                      >
-                        {job.department}
-                      </span>
+                <div className="p-6 md:p-8">
+                  {/* Header */}
+                  <div className="flex flex-col md:flex-row md:items-start gap-5 mb-6">
+                    <div
+                      className="flex items-center justify-center rounded-xl shrink-0"
+                      style={{
+                        width: 80,
+                        height: 80,
+                        background: "radial-gradient(ellipse at center, rgba(123,97,255,0.06), transparent 70%)",
+                      }}
+                    >
+                      <img src={job.orb} alt="" className="w-14 h-14 object-contain" style={{ filter: "drop-shadow(0 4px 20px rgba(123,97,255,0.2))" }} />
                     </div>
-                    <div style={{ fontSize: 13, color: "rgba(30,30,30,0.55)", fontWeight: 500, marginBottom: 10 }}>{job.type}</div>
-                    <p style={{ fontSize: 15, color: "rgba(30,30,30,0.7)", lineHeight: 1.55, maxWidth: "64ch" }}>{job.description}</p>
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {job.requirements.map((r) => (
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-3 mb-1">
+                        <span style={{ fontWeight: 700, fontSize: 22, color: "#111", letterSpacing: "-0.01em" }}>{job.title}</span>
                         <span
-                          key={r}
-                          className="rounded-full px-3 py-1"
+                          className="rounded-full px-3 py-0.5"
                           style={{
-                            fontSize: 12,
-                            fontWeight: 500,
-                            color: "rgba(30,30,30,0.6)",
-                            background: "rgba(123,97,255,0.06)",
-                            border: "1px solid rgba(123,97,255,0.1)",
+                            fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase" as const,
+                            color: "rgba(212,97,107,0.85)", background: "rgba(212,97,107,0.08)", border: "1px solid rgba(212,97,107,0.15)",
                           }}
                         >
+                          {job.department}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 13, color: "rgba(30,30,30,0.55)", fontWeight: 500 }}>{job.type}</div>
+                      <div className="flex flex-wrap gap-4 mt-2" style={{ fontSize: 13, color: "rgba(30,30,30,0.6)", fontWeight: 500 }}>
+                        <span>💰 {job.salary}</span>
+                        <span>📅 Posted {job.posted}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <p style={{ fontSize: 15, color: "rgba(30,30,30,0.7)", lineHeight: 1.6, maxWidth: "72ch", marginBottom: 24 }}>{job.description}</p>
+
+                  {/* Responsibilities */}
+                  <div className="mb-6">
+                    <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", letterSpacing: "0.04em", textTransform: "uppercase" as const, marginBottom: 12 }}>
+                      Responsibilities
+                    </h4>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {job.responsibilities.map((r) => (
+                        <li key={r} className="flex items-start gap-2" style={{ fontSize: 14, color: "rgba(30,30,30,0.65)", lineHeight: 1.5 }}>
+                          <span style={{ color: "#D4616B", fontWeight: 700, marginTop: 2 }}>›</span>
+                          {r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Requirements */}
+                  <div className="mb-6">
+                    <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", letterSpacing: "0.04em", textTransform: "uppercase" as const, marginBottom: 12 }}>
+                      Requirements
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {job.requirements.map((r) => (
+                        <span key={r} className="rounded-full px-3 py-1" style={{ fontSize: 12, fontWeight: 500, color: "rgba(30,30,30,0.6)", background: "rgba(123,97,255,0.06)", border: "1px solid rgba(123,97,255,0.1)" }}>
                           {r}
                         </span>
                       ))}
                     </div>
                   </div>
+
+                  {/* Nice to have */}
+                  <div className="mb-6">
+                    <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", letterSpacing: "0.04em", textTransform: "uppercase" as const, marginBottom: 12 }}>
+                      Nice to Have
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {job.niceToHave.map((r) => (
+                        <span key={r} className="rounded-full px-3 py-1" style={{ fontSize: 12, fontWeight: 500, color: "rgba(30,30,30,0.5)", background: "rgba(212,97,107,0.05)", border: "1px solid rgba(212,97,107,0.1)" }}>
+                          {r}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Benefits */}
+                  <div className="mb-6">
+                    <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", letterSpacing: "0.04em", textTransform: "uppercase" as const, marginBottom: 12 }}>
+                      What We Offer
+                    </h4>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {job.benefits.map((b) => (
+                        <li key={b} className="flex items-start gap-2" style={{ fontSize: 14, color: "rgba(30,30,30,0.65)", lineHeight: 1.5 }}>
+                          <span style={{ color: "#7B61FF", fontWeight: 700, marginTop: 2 }}>✦</span>
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Apply Button */}
+                  <motion.button
+                    onClick={() => handleApply(job.title)}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="rounded-xl px-8 py-3 font-semibold transition-all"
+                    style={{
+                      background: "linear-gradient(135deg, #D4616B, #E8967C)",
+                      color: "#fff",
+                      fontSize: 15,
+                      letterSpacing: "0.02em",
+                      boxShadow: "0 8px 32px rgba(212,97,107,0.3)",
+                    }}
+                  >
+                    Apply for {job.title} →
+                  </motion.button>
                 </div>
               </motion.article>
             ))}
