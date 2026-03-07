@@ -21,13 +21,35 @@ const openings = [
     type: "Full-time · Remote (Canada)",
     department: "Engineering",
     orb: aiCortexOrb,
+    salary: "$65,000 – $85,000 CAD",
+    posted: "March 1, 2026",
     description:
       "Work alongside senior engineers to build and fine-tune clinical AI models. You'll contribute to prompt engineering, model evaluation pipelines, and integration with our sovereign compute layer.",
+    responsibilities: [
+      "Develop and maintain AI/ML pipelines for clinical NLP tasks",
+      "Assist in fine-tuning large language models on healthcare datasets",
+      "Build evaluation harnesses to measure model accuracy and safety",
+      "Collaborate with clinical advisors to validate AI outputs",
+      "Write clean, tested, production-grade Python and TypeScript code",
+      "Participate in code reviews and architecture discussions",
+    ],
     requirements: [
       "BSc in Computer Science, AI/ML, or related field",
       "Familiarity with Python, PyTorch or TensorFlow",
       "Understanding of NLP fundamentals",
       "Interest in healthcare AI and responsible deployment",
+    ],
+    niceToHave: [
+      "Experience with LLM fine-tuning or RLHF",
+      "Exposure to FHIR, HL7, or clinical data standards",
+      "Contributions to open-source ML projects",
+    ],
+    benefits: [
+      "100% remote-first with flexible hours",
+      "Health & dental benefits from day one",
+      "Annual learning stipend ($2,500)",
+      "Equity participation program",
+      "Home office setup allowance",
     ],
   },
   {
@@ -35,13 +57,35 @@ const openings = [
     type: "Full-time · Hybrid (Toronto)",
     department: "Growth",
     orb: clinicOsOrb,
+    salary: "$90,000 – $130,000 CAD + Commission",
+    posted: "February 20, 2026",
     description:
       "Drive enterprise adoption of our clinical intelligence platform across Canadian healthcare networks. You'll build relationships with hospital administrators, clinic groups, and provincial health authorities.",
+    responsibilities: [
+      "Identify and qualify enterprise healthcare prospects",
+      "Lead full-cycle sales from discovery to contract close",
+      "Deliver compelling product demos tailored to clinical workflows",
+      "Build relationships with C-suite and procurement leaders",
+      "Collaborate with product and engineering on customer feedback",
+      "Manage pipeline and forecasting in CRM tools",
+    ],
     requirements: [
       "3+ years B2B SaaS sales experience",
       "Healthcare or regulated industry background preferred",
       "Strong consultative selling skills",
       "Experience with long-cycle enterprise deals",
+    ],
+    niceToHave: [
+      "Existing network in Canadian healthcare systems",
+      "Understanding of provincial health procurement processes",
+      "Experience selling AI or data infrastructure products",
+    ],
+    benefits: [
+      "Uncapped commission structure",
+      "Hybrid work model — Toronto office 2 days/week",
+      "Health & dental benefits from day one",
+      "Annual President's Club trip",
+      "Equity participation program",
     ],
   },
   {
@@ -49,13 +93,35 @@ const openings = [
     type: "Internship · Remote (Canada)",
     department: "Engineering",
     orb: sovereignOrb,
+    salary: "$25 – $32/hr CAD",
+    posted: "March 5, 2026",
     description:
       "A hands-on internship building real features inside a clinical intelligence platform. You'll work on frontend components, data pipelines, and testing infrastructure — shipping code that matters.",
+    responsibilities: [
+      "Build and ship frontend features using React and TypeScript",
+      "Write integration tests and contribute to CI/CD pipelines",
+      "Assist with data pipeline development and monitoring",
+      "Participate in daily standups and sprint planning",
+      "Document technical decisions and component APIs",
+      "Present a capstone project at the end of your term",
+    ],
     requirements: [
       "Currently enrolled in CS or Software Engineering program",
       "Comfortable with TypeScript and React",
       "Eagerness to learn healthcare domain",
       "Available for 4–8 month term",
+    ],
+    niceToHave: [
+      "Previous internship or co-op experience",
+      "Familiarity with Tailwind CSS and component libraries",
+      "Interest in AI/ML or healthcare technology",
+    ],
+    benefits: [
+      "100% remote with flexible scheduling around classes",
+      "Dedicated mentor and weekly 1-on-1s",
+      "Real production codebase — not toy projects",
+      "Full-time offer pathway for top performers",
+      "Conference attendance sponsorship",
     ],
   },
 ];
@@ -78,6 +144,7 @@ const values = [
 const Careers = () => {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -86,6 +153,13 @@ const Careers = () => {
   });
   const [fileName, setFileName] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  const handleApply = (jobTitle: string) => {
+    setFormData((prev) => ({ ...prev, position: jobTitle }));
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -240,7 +314,7 @@ const Careers = () => {
             </h2>
           </motion.div>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             {openings.map((job, i) => (
               <motion.article
                 key={job.title}
@@ -257,58 +331,117 @@ const Careers = () => {
                   boxShadow: "0 20px 60px rgba(60,40,120,0.1), inset 0 1px 0 rgba(255,255,255,0.7)",
                 }}
               >
-                <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 p-6 md:p-8">
-                  {/* Orb */}
-                  <div
-                    className="flex items-center justify-center rounded-xl"
-                    style={{
-                      width: 100,
-                      height: 100,
-                      background: "radial-gradient(ellipse at center, rgba(123,97,255,0.06), transparent 70%)",
-                    }}
-                  >
-                    <img src={job.orb} alt="" className="w-16 h-16 object-contain" style={{ filter: "drop-shadow(0 4px 20px rgba(123,97,255,0.2))" }} />
-                  </div>
-
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-3 mb-1">
-                      <span style={{ fontWeight: 700, fontSize: 20, color: "#111", letterSpacing: "-0.01em" }}>{job.title}</span>
-                      <span
-                        className="rounded-full px-3 py-0.5"
-                        style={{
-                          fontSize: 11,
-                          fontWeight: 600,
-                          letterSpacing: "0.04em",
-                          textTransform: "uppercase" as const,
-                          color: "rgba(212,97,107,0.85)",
-                          background: "rgba(212,97,107,0.08)",
-                          border: "1px solid rgba(212,97,107,0.15)",
-                        }}
-                      >
-                        {job.department}
-                      </span>
+                <div className="p-6 md:p-8">
+                  {/* Header */}
+                  <div className="flex flex-col md:flex-row md:items-start gap-5 mb-6">
+                    <div
+                      className="flex items-center justify-center rounded-xl shrink-0"
+                      style={{
+                        width: 80,
+                        height: 80,
+                        background: "radial-gradient(ellipse at center, rgba(123,97,255,0.06), transparent 70%)",
+                      }}
+                    >
+                      <img src={job.orb} alt="" className="w-14 h-14 object-contain" style={{ filter: "drop-shadow(0 4px 20px rgba(123,97,255,0.2))" }} />
                     </div>
-                    <div style={{ fontSize: 13, color: "rgba(30,30,30,0.55)", fontWeight: 500, marginBottom: 10 }}>{job.type}</div>
-                    <p style={{ fontSize: 15, color: "rgba(30,30,30,0.7)", lineHeight: 1.55, maxWidth: "64ch" }}>{job.description}</p>
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {job.requirements.map((r) => (
+                    <div className="flex-1">
+                      <div className="flex flex-wrap items-center gap-3 mb-1">
+                        <span style={{ fontWeight: 700, fontSize: 22, color: "#111", letterSpacing: "-0.01em" }}>{job.title}</span>
                         <span
-                          key={r}
-                          className="rounded-full px-3 py-1"
+                          className="rounded-full px-3 py-0.5"
                           style={{
-                            fontSize: 12,
-                            fontWeight: 500,
-                            color: "rgba(30,30,30,0.6)",
-                            background: "rgba(123,97,255,0.06)",
-                            border: "1px solid rgba(123,97,255,0.1)",
+                            fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase" as const,
+                            color: "rgba(212,97,107,0.85)", background: "rgba(212,97,107,0.08)", border: "1px solid rgba(212,97,107,0.15)",
                           }}
                         >
+                          {job.department}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 13, color: "rgba(30,30,30,0.55)", fontWeight: 500 }}>{job.type}</div>
+                      <div className="flex flex-wrap gap-4 mt-2" style={{ fontSize: 13, color: "rgba(30,30,30,0.6)", fontWeight: 500 }}>
+                        <span>💰 {job.salary}</span>
+                        <span>📅 Posted {job.posted}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <p style={{ fontSize: 15, color: "rgba(30,30,30,0.7)", lineHeight: 1.6, maxWidth: "72ch", marginBottom: 24 }}>{job.description}</p>
+
+                  {/* Responsibilities */}
+                  <div className="mb-6">
+                    <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", letterSpacing: "0.04em", textTransform: "uppercase" as const, marginBottom: 12 }}>
+                      Responsibilities
+                    </h4>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {job.responsibilities.map((r) => (
+                        <li key={r} className="flex items-start gap-2" style={{ fontSize: 14, color: "rgba(30,30,30,0.65)", lineHeight: 1.5 }}>
+                          <span style={{ color: "#D4616B", fontWeight: 700, marginTop: 2 }}>›</span>
+                          {r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Requirements */}
+                  <div className="mb-6">
+                    <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", letterSpacing: "0.04em", textTransform: "uppercase" as const, marginBottom: 12 }}>
+                      Requirements
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {job.requirements.map((r) => (
+                        <span key={r} className="rounded-full px-3 py-1" style={{ fontSize: 12, fontWeight: 500, color: "rgba(30,30,30,0.6)", background: "rgba(123,97,255,0.06)", border: "1px solid rgba(123,97,255,0.1)" }}>
                           {r}
                         </span>
                       ))}
                     </div>
                   </div>
+
+                  {/* Nice to have */}
+                  <div className="mb-6">
+                    <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", letterSpacing: "0.04em", textTransform: "uppercase" as const, marginBottom: 12 }}>
+                      Nice to Have
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {job.niceToHave.map((r) => (
+                        <span key={r} className="rounded-full px-3 py-1" style={{ fontSize: 12, fontWeight: 500, color: "rgba(30,30,30,0.5)", background: "rgba(212,97,107,0.05)", border: "1px solid rgba(212,97,107,0.1)" }}>
+                          {r}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Benefits */}
+                  <div className="mb-6">
+                    <h4 style={{ fontWeight: 700, fontSize: 14, color: "#111", letterSpacing: "0.04em", textTransform: "uppercase" as const, marginBottom: 12 }}>
+                      What We Offer
+                    </h4>
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {job.benefits.map((b) => (
+                        <li key={b} className="flex items-start gap-2" style={{ fontSize: 14, color: "rgba(30,30,30,0.65)", lineHeight: 1.5 }}>
+                          <span style={{ color: "#7B61FF", fontWeight: 700, marginTop: 2 }}>✦</span>
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Apply Button */}
+                  <motion.button
+                    onClick={() => handleApply(job.title)}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="rounded-xl px-8 py-3 font-semibold transition-all"
+                    style={{
+                      background: "linear-gradient(135deg, #D4616B, #E8967C)",
+                      color: "#fff",
+                      fontSize: 15,
+                      letterSpacing: "0.02em",
+                      boxShadow: "0 8px 32px rgba(212,97,107,0.3)",
+                    }}
+                  >
+                    Apply for {job.title} →
+                  </motion.button>
                 </div>
               </motion.article>
             ))}
@@ -330,7 +463,7 @@ const Careers = () => {
       >
         <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: "linear-gradient(90deg, transparent 5%, rgba(212,97,107,0.4) 30%, rgba(123,97,255,0.5) 70%, transparent 95%)" }} />
 
-        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
+        <div ref={formRef} className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <div className="grid grid-cols-1 md:grid-cols-[0.45fr_1.55fr] split-layout-gap">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
