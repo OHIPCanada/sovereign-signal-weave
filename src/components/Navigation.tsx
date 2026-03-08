@@ -41,7 +41,7 @@ const navLinks: NavItem[] = [
       { label: "Interoperability", href: "/#deployment-surfaces" },
     ],
   },
-  { label: "CONTACT", href: "#contact" },
+  { label: "CONTACT", href: "/company/contact" },
 ];
 
 const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
