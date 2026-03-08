@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import Overview from "./pages/company/Overview";
 import Leadership from "./pages/company/Leadership";
 import Careers from "./pages/company/Careers";
+import Contact from "./pages/company/Contact";
 
 const queryClient = new QueryClient();
 
