@@ -251,13 +251,20 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
                       </AnimatePresence>
                     </>
                   ) : (
-                    <a
-                      href={link.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="nav-item py-3 px-4 rounded-xl transition-colors hover:bg-foreground/5 block"
-                    >
-                      {link.label}
-                    </a>
+                    (() => {
+                      const isHash = link.href?.startsWith("#") || link.href?.includes("/#");
+                      const El = isHash ? "a" : Link;
+                      const elProps = isHash ? { href: link.href } : { to: link.href! };
+                      return (
+                        <El
+                          {...(elProps as any)}
+                          onClick={() => setIsMenuOpen(false)}
+                          className="nav-item py-3 px-4 rounded-xl transition-colors hover:bg-foreground/5 block"
+                        >
+                          {link.label}
+                        </El>
+                      );
+                    })()
                   )}
                 </div>
               ))}
