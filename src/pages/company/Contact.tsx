@@ -150,60 +150,317 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* ─── CONTACT CHANNELS ─── */}
+      {/* ─── SIGNAL MATRIX ─── */}
       <section
         style={{
-          background: "linear-gradient(180deg, #F9F8FC 0%, #F4EFFA 100%)",
+          background: `
+            radial-gradient(ellipse 800px 400px at 20% 50%, rgba(123,97,255,0.08), transparent 60%),
+            radial-gradient(ellipse 600px 400px at 80% 30%, rgba(212,97,107,0.06), transparent 60%),
+            linear-gradient(180deg, #F9F8FC 0%, #F4EFFA 100%)
+          `,
           padding: "clamp(80px,8vw,130px) 0",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <div className="mx-auto px-6 md:px-12" style={{ width: "min(1400px,94vw)" }}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {contactChannels.map((ch, i) => (
-              <motion.div
-                key={ch.label}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="relative group"
+        {/* Floating grid lines */}
+        <div className="absolute inset-0 pointer-events-none">
+          <svg className="w-full h-full" style={{ opacity: 0.4 }}>
+            <defs>
+              <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="transparent" />
+                <stop offset="50%" stopColor="#7B61FF" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="transparent" />
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="33%" x2="100%" y2="33%" stroke="url(#lineGrad)" strokeWidth="1" />
+            <line x1="0" y1="66%" x2="100%" y2="66%" stroke="url(#lineGrad)" strokeWidth="1" />
+          </svg>
+        </div>
+
+        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px,94vw)" }}>
+          {/* Section header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <p
+              className="font-mono uppercase mb-4"
+              style={{ color: "rgba(26,6,48,0.4)", fontSize: 11, letterSpacing: "0.22em" }}
+            >
+              [ SIGNAL CHANNELS ]
+            </p>
+            <h2
+              style={{
+                color: "#1A0630",
+                fontWeight: 800,
+                fontSize: "clamp(32px,4vw,52px)",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Multiple entry points
+            </h2>
+          </motion.div>
+
+          {/* Bento Grid */}
+          <div
+            className="grid gap-5"
+            style={{
+              gridTemplateColumns: "repeat(12, 1fr)",
+              gridTemplateRows: "auto auto",
+            }}
+          >
+            {/* Email - Large card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="col-span-12 md:col-span-7 relative group overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, #1A0630 0%, #2A0B4E 100%)",
+                borderRadius: 24,
+                padding: "clamp(36px,4vw,56px)",
+                minHeight: 260,
+              }}
+            >
+              {/* Animated pulse ring */}
+              <div
+                className="absolute top-8 right-8"
                 style={{
-                  background: "rgba(255,255,255,0.85)",
-                  backdropFilter: "blur(12px)",
-                  borderRadius: 16,
-                  border: "1px solid rgba(26,6,48,0.06)",
-                  padding: "36px 28px",
-                  transition: "box-shadow 0.3s, transform 0.3s",
+                  width: 120,
+                  height: 120,
+                  borderRadius: "50%",
+                  background: "radial-gradient(circle, rgba(123,97,255,0.3) 0%, transparent 70%)",
+                  animation: "pulse 3s ease-in-out infinite",
                 }}
-                whileHover={{ y: -4, boxShadow: "0 20px 50px rgba(26,6,48,0.08)" }}
-              >
-                <div
-                  className="flex items-center justify-center mb-5"
+              />
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-6">
+                  <div
+                    style={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: "50%",
+                      background: "#4ADE80",
+                      boxShadow: "0 0 20px rgba(74,222,128,0.6)",
+                      animation: "blink 2s ease-in-out infinite",
+                    }}
+                  />
+                  <span className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.5)", fontSize: 11, letterSpacing: "0.2em" }}>
+                    PRIMARY CHANNEL • ACTIVE
+                  </span>
+                </div>
+                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 13, marginBottom: 8 }}>
+                  Direct line
+                </p>
+                <a
+                  href="mailto:contact@docg.ai"
+                  className="group/link"
                   style={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 14,
-                    background: "linear-gradient(135deg, rgba(123,97,255,0.12), rgba(212,97,107,0.08))",
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: "clamp(28px,3.5vw,42px)",
+                    letterSpacing: "-0.02em",
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 12,
                   }}
                 >
-                  <ch.icon size={22} style={{ color: "#7B61FF" }} />
-                </div>
-                <p
-                  className="font-mono uppercase"
-                  style={{ fontSize: 11, letterSpacing: "0.18em", color: "rgba(26,6,48,0.4)", marginBottom: 8 }}
+                  contact@docg.ai
+                  <motion.span
+                    className="inline-block"
+                    whileHover={{ x: 6 }}
+                    style={{ color: "#E8967C" }}
+                  >
+                    →
+                  </motion.span>
+                </a>
+                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 14, marginTop: 16 }}>
+                  Enterprise response within 4 hours • General inquiries within 24 hours
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Phone - Vertical card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="col-span-12 md:col-span-5 relative overflow-hidden"
+              style={{
+                background: "rgba(255,255,255,0.9)",
+                backdropFilter: "blur(20px)",
+                borderRadius: 24,
+                border: "1px solid rgba(26,6,48,0.08)",
+                padding: "clamp(32px,3vw,44px)",
+                minHeight: 260,
+              }}
+            >
+              {/* Signal wave decoration */}
+              <svg
+                className="absolute bottom-0 right-0 opacity-10"
+                width="180"
+                height="120"
+                viewBox="0 0 180 120"
+              >
+                {[0, 1, 2, 3].map((i) => (
+                  <circle
+                    key={i}
+                    cx="180"
+                    cy="120"
+                    r={40 + i * 30}
+                    fill="none"
+                    stroke="#7B61FF"
+                    strokeWidth="1"
+                  />
+                ))}
+              </svg>
+              <div className="relative z-10">
+                <Phone size={28} style={{ color: "#7B61FF", marginBottom: 20 }} />
+                <p className="font-mono uppercase" style={{ color: "rgba(26,6,48,0.4)", fontSize: 11, letterSpacing: "0.18em", marginBottom: 8 }}>
+                  VOICE CHANNEL
+                </p>
+                <p style={{ color: "#1A0630", fontWeight: 700, fontSize: 24, marginBottom: 8 }}>
+                  +1 (800) 555-DOCG
+                </p>
+                <p style={{ color: "rgba(26,6,48,0.5)", fontSize: 14, lineHeight: 1.6 }}>
+                  Mon – Fri, 9 AM – 6 PM EST
+                  <br />
+                  <span style={{ color: "#D4616B" }}>24/7 critical support available</span>
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Location - Wide card */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="col-span-12 md:col-span-5 relative overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, rgba(123,97,255,0.08) 0%, rgba(212,97,107,0.04) 100%)",
+                backdropFilter: "blur(20px)",
+                borderRadius: 24,
+                border: "1px solid rgba(123,97,255,0.1)",
+                padding: "clamp(32px,3vw,44px)",
+              }}
+            >
+              <div className="flex items-start gap-5">
+                <div
+                  style={{
+                    width: 56,
+                    height: 56,
+                    borderRadius: 16,
+                    background: "linear-gradient(135deg, #7B61FF, #9B87F5)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
                 >
-                  {ch.label}
-                </p>
-                <p style={{ fontWeight: 700, fontSize: 18, color: "#1A0630", marginBottom: 4 }}>
-                  {ch.value}
-                </p>
-                <p style={{ fontSize: 14, color: "rgba(26,6,48,0.5)", lineHeight: 1.5 }}>
-                  {ch.sub}
-                </p>
-              </motion.div>
-            ))}
+                  <MapPin size={24} style={{ color: "#fff" }} />
+                </div>
+                <div>
+                  <p className="font-mono uppercase" style={{ color: "rgba(26,6,48,0.4)", fontSize: 11, letterSpacing: "0.18em", marginBottom: 8 }}>
+                    HEADQUARTERS
+                  </p>
+                  <p style={{ color: "#1A0630", fontWeight: 700, fontSize: 22, marginBottom: 6 }}>
+                    Toronto, Ontario
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <div
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: "#7B61FF",
+                      }}
+                    />
+                    <span style={{ color: "rgba(26,6,48,0.6)", fontSize: 14 }}>
+                      Canada-sovereign infrastructure
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* SLA Badge - Compact */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="col-span-12 md:col-span-7 relative overflow-hidden"
+              style={{
+                background: "#1A0630",
+                borderRadius: 24,
+                padding: "clamp(28px,3vw,40px)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 24,
+              }}
+            >
+              {/* Animated gradient bar */}
+              <div
+                className="absolute top-0 left-0 right-0"
+                style={{
+                  height: 3,
+                  background: "linear-gradient(90deg, #D4616B, #E8967C, #F2C1AE, #E8967C, #D4616B)",
+                  backgroundSize: "200% 100%",
+                  animation: "shimmer 3s linear infinite",
+                }}
+              />
+              <div className="flex items-center gap-4">
+                <Clock size={24} style={{ color: "#E8967C" }} />
+                <div>
+                  <p style={{ color: "#fff", fontWeight: 700, fontSize: 20 }}>
+                    24 / 7 Critical Support
+                  </p>
+                  <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14 }}>
+                    Enterprise SLA available
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-6">
+                {[
+                  { val: "99.99%", label: "Uptime" },
+                  { val: "<15min", label: "Response" },
+                  { val: "SOC 2", label: "Compliant" },
+                ].map((stat) => (
+                  <div key={stat.label} className="text-center">
+                    <p style={{ color: "#E8967C", fontWeight: 800, fontSize: 20 }}>{stat.val}</p>
+                    <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.4)", fontSize: 10, letterSpacing: "0.1em" }}>
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </div>
+
+        <style>{`
+          @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+          }
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.15); opacity: 0.3; }
+          }
+          @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+        `}</style>
       </section>
 
       {/* ─── FORM + MAP SECTION ─── */}
