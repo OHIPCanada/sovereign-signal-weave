@@ -8,11 +8,11 @@ const PulseRings = () => (
         key={i}
         className="absolute rounded-full border"
         style={{
-          borderColor: `rgba(143,83,255,${0.06 - i * 0.01})`,
-          width: 80,
-          height: 80,
+          borderColor: `rgba(180,140,255,${0.45 - i * 0.07})`,
+          width: 100,
+          height: 100,
         }}
-        animate={{ scale: [1, 8], opacity: [0.15, 0] }}
+        animate={{ scale: [1, 9], opacity: [0.6, 0] }}
         transition={{ duration: 10, repeat: Infinity, delay, ease: "easeOut" }}
       />
     ))}
