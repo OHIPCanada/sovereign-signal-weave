@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import DriftingGrid from "@/components/hero-backgrounds/DriftingGrid";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Send, ArrowRight } from "lucide-react";
 
@@ -29,19 +29,75 @@ const responseProtocol = [
   { label: "Critical infrastructure", time: "Immediate" },
 ];
 
+type FormState = { name: string; email: string; type: string; org: string; message: string };
+type TouchedState = Record<keyof FormState, boolean>;
+
+const initialForm: FormState = { name: "", email: "", type: "", org: "", message: "" };
+const initialTouched: TouchedState = { name: false, email: false, type: false, org: false, message: false };
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function getErrors(form: FormState, touched: TouchedState): Partial<Record<keyof FormState, string>> {
+  const errors: Partial<Record<keyof FormState, string>> = {};
+  if (touched.name && !form.name.trim()) errors.name = "Required";
+  if (touched.name && form.name.length > 100) errors.name = "Max 100 characters";
+  if (touched.email && !form.email.trim()) errors.email = "Required";
+  else if (touched.email && !emailRegex.test(form.email.trim())) errors.email = "Invalid email format";
+  if (touched.email && form.email.length > 255) errors.email = "Max 255 characters";
+  if (touched.message && !form.message.trim()) errors.message = "Required";
+  if (touched.message && form.message.length > 2000) errors.message = "Max 2000 characters";
+  return errors;
+}
+
+/* ── Light-theme label (instrument-grade kicker) ── */
+const labelStyle: React.CSSProperties = {
+  fontSize: 12,
+  letterSpacing: "0.22em",
+  color: "rgba(90,70,160,0.5)",
+  textTransform: "uppercase",
+  fontFamily: "inherit",
+  marginBottom: 6,
+  display: "block",
+};
+const helperStyle: React.CSSProperties = {
+  fontSize: 11,
+  letterSpacing: "0.04em",
+  color: "rgba(90,70,160,0.35)",
+  marginTop: 4,
+  display: "block",
+};
+const errorMsgStyle: React.CSSProperties = {
+  fontSize: 11,
+  letterSpacing: "0.04em",
+  color: "rgba(212,97,107,0.9)",
+  marginTop: 4,
+  display: "block",
+};
+
 const Contact = () => {
   const { toast } = useToast();
-  const [form, setForm] = useState({ name: "", email: "", type: "", org: "", message: "" });
+  const [form, setForm] = useState<FormState>(initialForm);
+  const [touched, setTouched] = useState<TouchedState>(initialTouched);
+  const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+
+  const allTouched: TouchedState = { name: true, email: true, type: true, org: true, message: true };
+  const errors = getErrors(form, submitted ? allTouched : touched);
+
+  const canSubmit = useMemo(() => {
+    return Boolean(form.name.trim() && form.email.trim() && emailRegex.test(form.email.trim()) && form.message.trim());
+  }, [form.email, form.message, form.name]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) return;
+    setSubmitted(true);
+    if (!canSubmit) return;
     setSending(true);
     setTimeout(() => {
       setSending(false);
       toast({ title: "Message received", description: "Our team will respond within 24 hours." });
-      setForm({ name: "", email: "", type: "", org: "", message: "" });
+      setForm(initialForm);
+      setTouched(initialTouched);
+      setSubmitted(false);
     }, 1400);
   };
 
@@ -57,6 +113,19 @@ const Contact = () => {
     outline: "none",
     transition: "border-color 0.2s",
     fontFamily: "inherit",
+  };
+
+  const fieldErrorBorder: React.CSSProperties = {
+    ...fieldStyle,
+    borderColor: "rgba(212,97,107,0.5)",
+  };
+
+  const onFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    e.target.style.borderColor = "rgba(123,97,255,0.4)";
+  };
+  const onBlurField = (field: keyof FormState) => (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    e.target.style.borderColor = "rgba(90,70,160,0.12)";
+    setTouched((t) => ({ ...t, [field]: true }));
   };
 
   return (
@@ -228,6 +297,7 @@ const Contact = () => {
             <motion.form
               id="contact-form"
               onSubmit={handleSubmit}
+              noValidate
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -261,61 +331,95 @@ const Contact = () => {
                 Let's build together.
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
-                <input
-                  placeholder="Full name"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  style={fieldStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
-                  required
-                />
-                <input
-                  placeholder="Email address"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  style={fieldStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
-                  required
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                <div>
+                  <label style={labelStyle}>[ Name ]</label>
+                  <input
+                    placeholder="Full name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    style={errors.name ? fieldErrorBorder : fieldStyle}
+                    onFocus={onFocus}
+                    onBlur={onBlurField("name")}
+                    maxLength={100}
+                  />
+                  {errors.name
+                    ? <span style={errorMsgStyle}>{errors.name}</span>
+                    : <span style={helperStyle}>As it appears on record</span>
+                  }
+                </div>
+                <div>
+                  <label style={labelStyle}>[ Email ]</label>
+                  <input
+                    placeholder="you@organization.com"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    style={errors.email ? fieldErrorBorder : fieldStyle}
+                    onFocus={onFocus}
+                    onBlur={onBlurField("email")}
+                    maxLength={255}
+                  />
+                  {errors.email
+                    ? <span style={errorMsgStyle}>{errors.email}</span>
+                    : <span style={helperStyle}>Primary point of contact</span>
+                  }
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
-                <select
-                  value={form.type}
-                  onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  style={{ ...fieldStyle, appearance: "none" as const, cursor: "pointer" }}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
-                >
-                  <option value="" style={{ background: "#fff" }}>Inquiry type</option>
-                  {inquiryTypes.map((t) => (
-                    <option key={t} value={t} style={{ background: "#fff" }}>{t}</option>
-                  ))}
-                </select>
-                <input
-                  placeholder="Organization (optional)"
-                  value={form.org}
-                  onChange={(e) => setForm({ ...form, org: e.target.value })}
-                  style={fieldStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                <div>
+                  <label style={labelStyle}>[ Inquiry Type ]</label>
+                  <select
+                    value={form.type}
+                    onChange={(e) => setForm({ ...form, type: e.target.value })}
+                    style={{ ...(errors.type ? fieldErrorBorder : fieldStyle), appearance: "none" as const, cursor: "pointer" }}
+                    onFocus={onFocus as any}
+                    onBlur={onBlurField("type") as any}
+                  >
+                    <option value="" style={{ background: "#fff" }}>Select category</option>
+                    {inquiryTypes.map((t) => (
+                      <option key={t} value={t} style={{ background: "#fff" }}>{t}</option>
+                    ))}
+                  </select>
+                  <span style={helperStyle}>Helps route to the right team</span>
+                </div>
+                <div>
+                  <label style={labelStyle}>[ Organization ]</label>
+                  <input
+                    placeholder="Company or institution"
+                    value={form.org}
+                    onChange={(e) => setForm({ ...form, org: e.target.value })}
+                    style={fieldStyle}
+                    onFocus={onFocus}
+                    onBlur={onBlurField("org")}
+                  />
+                  <span style={helperStyle}>Optional — include if applicable</span>
+                </div>
               </div>
 
-              <textarea
-                placeholder="Your message"
-                rows={5}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                style={{ ...fieldStyle, resize: "vertical" as const, minHeight: 100 }}
-                onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
-                onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
-                required
-              />
+              <div>
+                <label style={labelStyle}>[ Message ]</label>
+                <textarea
+                  placeholder="Describe your inquiry or requirements"
+                  rows={5}
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  style={{ ...(errors.message ? fieldErrorBorder : fieldStyle), resize: "vertical" as const, minHeight: 100 }}
+                  onFocus={onFocus as any}
+                  onBlur={onBlurField("message") as any}
+                  maxLength={2000}
+                />
+                <div className="flex justify-between">
+                  {errors.message
+                    ? <span style={errorMsgStyle}>{errors.message}</span>
+                    : <span style={helperStyle}>Include relevant context for faster routing</span>
+                  }
+                  <span style={{ ...helperStyle, textAlign: "right", minWidth: 60 }}>
+                    {form.message.length}/2000
+                  </span>
+                </div>
+              </div>
 
               <motion.button
                 type="submit"
