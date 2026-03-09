@@ -311,7 +311,7 @@ const Interoperability = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: [0, 0.2, 0] }}
                       transition={{ duration: 1, repeat: Infinity }}
-                      style={{ background: "radial-gradient(circle at center, rgba(192,132,252,0.15), transparent 70%)" }}
+                      style={{ background: "radial-gradient(circle at center, rgba(212,97,107,0.1), transparent 70%)" }}
                     />
                   )}
                   
