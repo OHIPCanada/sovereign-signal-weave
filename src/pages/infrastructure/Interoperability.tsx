@@ -298,9 +298,9 @@ const Interoperability = () => {
                   transition={{ duration: 0.4 }}
                   style={{
                     background: isActive
-                      ? "rgba(255,255,255,0.8)"
-                      : "rgba(255,255,255,0.4)",
-                    border: "1px solid",
+                      ? "rgba(255,255,255,0.18)"
+                      : "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(255,255,255,0.25)",
                     backdropFilter: "blur(10px)",
                     boxShadow: isActive ? "0 8px 32px rgba(60,40,120,0.08)" : "none",
                     minWidth: 140,
