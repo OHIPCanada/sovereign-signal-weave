@@ -87,18 +87,40 @@ const Contact = () => {
     return Boolean(form.name.trim() && form.email.trim() && emailRegex.test(form.email.trim()) && form.message.trim());
   }, [form.email, form.message, form.name]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     if (!canSubmit) return;
     setSending(true);
-    setTimeout(() => {
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_key: "058926c4-3c10-4985-b14c-4374b48b9734",
+          name: form.name.trim(),
+          email: form.email.trim(),
+          subject: form.type || "General Inquiry",
+          organization: form.org.trim() || "Not provided",
+          message: form.message.trim(),
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast({ title: "Message received", description: "Our team will respond within 24 hours." });
+        setForm(initialForm);
+        setTouched(initialTouched);
+        setSubmitted(false);
+      } else {
+        toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
+      }
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to send message. Please try again.", variant: "destructive" });
+    } finally {
       setSending(false);
-      toast({ title: "Message received", description: "Our team will respond within 24 hours." });
-      setForm(initialForm);
-      setTouched(initialTouched);
-      setSubmitted(false);
-    }, 1400);
+    }
   };
 
   const fieldStyle: React.CSSProperties = {
