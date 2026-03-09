@@ -1,3 +1,5 @@
+import { reopenConsentBanner } from "./CookieConsent";
+
 const Footer = () => {
   return (
     <footer
