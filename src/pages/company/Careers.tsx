@@ -200,6 +200,7 @@ const Careers = () => {
           `,
         }}
       >
+        <PulseRings />
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
             <motion.div

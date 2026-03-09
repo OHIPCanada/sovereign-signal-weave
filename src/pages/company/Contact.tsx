@@ -76,6 +76,7 @@ const Contact = () => {
           `,
         }}
       >
+        <DriftingGrid />
         {/* Grid overlay */}
         <div
           className="absolute inset-0 pointer-events-none"
