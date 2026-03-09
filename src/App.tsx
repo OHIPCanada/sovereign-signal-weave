@@ -52,6 +52,12 @@ const App = () => (
           <Route path="/infrastructure/audit-trails" element={<AuditTrails />} />
           <Route path="/infrastructure/interoperability" element={<Interoperability />} />
 
+          {/* Platform */}
+          <Route path="/platform/ai-cortex" element={<AICortex />} />
+          <Route path="/platform/emr-layer" element={<EMRLayer />} />
+          <Route path="/platform/virtual-care" element={<VirtualCare />} />
+          <Route path="/platform/patient-access" element={<PatientAccess />} />
+
           {/* Legal */}
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
