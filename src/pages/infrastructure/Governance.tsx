@@ -89,7 +89,7 @@ const Governance = () => {
               </motion.div>
               
               <motion.h1
-                style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.22)" }}
+                style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.22)", textShadow: "0 10px 40px rgba(0,0,0,0.22)" }}
               >
                 {["Privacy by", "architecture,", "not policy."].map((line, li) => (
                   <motion.span
@@ -108,7 +108,7 @@ const Governance = () => {
                 initial={{ opacity: 0 }}
                 animate={heroInView ? { opacity: 1 } : {}}
                 transition={{ delay: 0.7, duration: 0.6 }}
-                style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+        72      style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
               >
                 Data governance isn't a checkbox — it's wired into how we store, route, and process every clinical signal.
               </motion.p>
