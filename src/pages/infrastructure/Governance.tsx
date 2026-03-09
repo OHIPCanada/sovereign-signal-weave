@@ -79,7 +79,7 @@ const Governance = () => {
               >
                 <motion.div
                   className="w-2 h-2 rounded-full"
-                  style={{ background: "#7B61FF" }}
+                  style={{ background: "#E8967C" }}
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
