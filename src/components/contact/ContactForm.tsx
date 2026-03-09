@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Send } from "lucide-react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useContactModal } from "./ContactModalContext";
+
+const HCAPTCHA_SITE_KEY = "50b2fe65-b00b-4b9e-ad62-3ba471098be2";
 
 const inquiryTypes = [
   "Enterprise Partnership",
