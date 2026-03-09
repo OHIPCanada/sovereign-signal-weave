@@ -163,6 +163,8 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
         setForm(initialForm);
         setTouched(initialTouched);
         setSubmitted(false);
+        setHcaptchaToken(null);
+        hcaptchaRef.current?.resetCaptcha();
         closeModal();
       } else {
         toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
