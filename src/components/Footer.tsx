@@ -294,13 +294,20 @@ const Footer = () => {
             </button>
             <span
               style={{
-                padding: "6px 10px",
+                padding: "6px 12px",
                 borderRadius: 999,
-                border: "1px solid rgba(232,150,124,.26)",
-                background: "rgba(232,150,124,.08)",
-                color: "rgba(242,193,174,.85)",
+                border: "1px solid rgba(220,38,38,.3)",
+                background: "rgba(220,38,38,.08)",
+                color: "#ef4444",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
               }}
             >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 36 36" fill="#ef4444">
+                <path d="M36 18c0 9.941-8.059 18-18 18S0 27.941 0 18 8.059 0 18 0s18 8.059 18 18"/>
+                <path fill="#fff" d="M18 4.5c-.5 0-1 .5-1.5 1L14 10l-4.5-1c-.5 0-1 .5-.5 1L11 14l-4 2.5c-.5.5 0 1 .5 1H13l-1 4.5c0 .5.5 1 1 .5l5-3 5 3c.5.5 1 0 1-.5l-1-4.5h5.5c.5 0 1-.5.5-1L25 14l2-4c.5-.5 0-1-.5-1L22 10l-2.5-4.5c-.5-.5-1-1-1.5-1"/>
+              </svg>
               Built in Canada.
             </span>
           </div>
