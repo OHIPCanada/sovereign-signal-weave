@@ -258,7 +258,7 @@ const AuditTrails = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <h2 style={{ color: "#1B0F2E", fontWeight: 700, fontSize: "clamp(28px, 3vw, 44px)", lineHeight: 1.1 }}>
+              <h2 style={{ color: "#1B0F2E", fontWeight: 800, fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95, letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.10)" }}>
                 Structured signal capture.
               </h2>
               <p className="mt-4" style={{ color: "rgba(30,20,50,0.55)", fontSize: 14, lineHeight: 1.6 }}>
