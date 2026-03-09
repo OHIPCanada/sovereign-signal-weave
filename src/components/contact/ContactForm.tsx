@@ -3,8 +3,6 @@ import { Send } from "lucide-react";
 
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useContactModal } from "./ContactModalContext";
 
 const inquiryTypes = [
@@ -25,6 +23,29 @@ type FormState = {
 };
 
 const initialForm: FormState = { name: "", email: "", type: "", org: "", message: "" };
+
+/* Shared field styles matching EMR Layer hero aesthetic */
+const fieldStyle: React.CSSProperties = {
+  background: "rgba(123,97,255,0.08)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  color: "rgba(255,255,255,0.9)",
+  borderRadius: 8,
+  padding: "10px 14px",
+  fontSize: 14,
+  fontFamily: "inherit",
+  outline: "none",
+  width: "100%",
+  transition: "border-color 0.2s, box-shadow 0.2s",
+};
+
+const fieldFocusHandler = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  e.target.style.borderColor = "rgba(123,97,255,0.4)";
+  e.target.style.boxShadow = "0 0 20px rgba(123,97,255,0.12)";
+};
+const fieldBlurHandler = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  e.target.style.borderColor = "rgba(255,255,255,0.1)";
+  e.target.style.boxShadow = "none";
+};
 
 export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean }) {
   const { toast } = useToast();
@@ -61,58 +82,79 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
   return (
     <form onSubmit={handleSubmit} className="grid gap-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Input
+        <input
           ref={firstFieldRef}
-          className="bg-input"
+          style={fieldStyle}
           placeholder="Full name"
           value={form.name}
           onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))}
+          onFocus={fieldFocusHandler}
+          onBlur={fieldBlurHandler}
           required
         />
-        <Input
-          className="bg-input"
+        <input
+          style={fieldStyle}
           placeholder="Email address"
           type="email"
           value={form.email}
           onChange={(e) => setForm((s) => ({ ...s, email: e.target.value }))}
+          onFocus={fieldFocusHandler}
+          onBlur={fieldBlurHandler}
           required
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <select
-          className="flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          style={{ ...fieldStyle, height: 42, appearance: "none" as const }}
           value={form.type}
           onChange={(e) => setForm((s) => ({ ...s, type: e.target.value }))}
+          onFocus={fieldFocusHandler as any}
+          onBlur={fieldBlurHandler as any}
         >
-          <option value="">Inquiry type</option>
+          <option value="" style={{ background: "#1A0630", color: "rgba(255,255,255,0.5)" }}>
+            Inquiry type
+          </option>
           {inquiryTypes.map((t) => (
-            <option key={t} value={t}>
+            <option key={t} value={t} style={{ background: "#1A0630", color: "rgba(255,255,255,0.9)" }}>
               {t}
             </option>
           ))}
         </select>
-        <Input
-          className="bg-input"
+        <input
+          style={fieldStyle}
           placeholder="Organization (optional)"
           value={form.org}
           onChange={(e) => setForm((s) => ({ ...s, org: e.target.value }))}
+          onFocus={fieldFocusHandler}
+          onBlur={fieldBlurHandler}
         />
       </div>
 
-      <Textarea
-        className="bg-input"
+      <textarea
+        style={{ ...fieldStyle, resize: "none" }}
         placeholder="Your message"
         value={form.message}
         onChange={(e) => setForm((s) => ({ ...s, message: e.target.value }))}
+        onFocus={fieldFocusHandler as any}
+        onBlur={fieldBlurHandler as any}
         rows={5}
         required
       />
 
       <div className="flex items-center justify-end gap-3 pt-2">
-        <Button type="submit" variant="coral" disabled={sending || !canSubmit}>
+        <Button
+          type="submit"
+          disabled={sending || !canSubmit}
+          className="px-6 font-semibold tracking-wide border-0"
+          style={{
+            background: "linear-gradient(135deg, #D4616B 0%, #E8967C 100%)",
+            color: "#fff",
+            boxShadow: "0 4px 20px rgba(212,97,107,0.3)",
+          }}
+        >
           {sending ? "Sending…" : "Send message"}
-          <Send />
+          <Send className="ml-2 w-4 h-4" />
         </Button>
       </div>
     </form>
