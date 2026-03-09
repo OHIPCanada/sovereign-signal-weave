@@ -174,7 +174,7 @@ const Deployment = () => {
             transition={{ duration: 0.5 }}
             className="mb-12"
           >
-            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.08)", color: "rgba(123,97,255,0.7)", border: "1px solid rgba(123,97,255,0.12)" }}>
+            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(212,97,107,0.08)", color: "#D4616B", border: "1px solid rgba(212,97,107,0.12)" }}>
               Deployment Models
             </span>
             <h2 className="mt-4" style={{ color: "#111", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
