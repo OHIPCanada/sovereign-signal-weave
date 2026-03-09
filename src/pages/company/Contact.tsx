@@ -330,61 +330,95 @@ const Contact = () => {
                 Let's build together.
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
-                <input
-                  placeholder="Full name"
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  style={fieldStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
-                  required
-                />
-                <input
-                  placeholder="Email address"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  style={fieldStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
-                  required
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                <div>
+                  <label style={labelStyle}>[ Name ]</label>
+                  <input
+                    placeholder="Full name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    style={errors.name ? fieldErrorBorder : fieldStyle}
+                    onFocus={onFocus}
+                    onBlur={onBlurField("name")}
+                    maxLength={100}
+                  />
+                  {errors.name
+                    ? <span style={errorMsgStyle}>{errors.name}</span>
+                    : <span style={helperStyle}>As it appears on record</span>
+                  }
+                </div>
+                <div>
+                  <label style={labelStyle}>[ Email ]</label>
+                  <input
+                    placeholder="you@organization.com"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    style={errors.email ? fieldErrorBorder : fieldStyle}
+                    onFocus={onFocus}
+                    onBlur={onBlurField("email")}
+                    maxLength={255}
+                  />
+                  {errors.email
+                    ? <span style={errorMsgStyle}>{errors.email}</span>
+                    : <span style={helperStyle}>Primary point of contact</span>
+                  }
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
-                <select
-                  value={form.type}
-                  onChange={(e) => setForm({ ...form, type: e.target.value })}
-                  style={{ ...fieldStyle, appearance: "none" as const, cursor: "pointer" }}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
-                >
-                  <option value="" style={{ background: "#fff" }}>Inquiry type</option>
-                  {inquiryTypes.map((t) => (
-                    <option key={t} value={t} style={{ background: "#fff" }}>{t}</option>
-                  ))}
-                </select>
-                <input
-                  placeholder="Organization (optional)"
-                  value={form.org}
-                  onChange={(e) => setForm({ ...form, org: e.target.value })}
-                  style={fieldStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                <div>
+                  <label style={labelStyle}>[ Inquiry Type ]</label>
+                  <select
+                    value={form.type}
+                    onChange={(e) => setForm({ ...form, type: e.target.value })}
+                    style={{ ...(errors.type ? fieldErrorBorder : fieldStyle), appearance: "none" as const, cursor: "pointer" }}
+                    onFocus={onFocus as any}
+                    onBlur={onBlurField("type") as any}
+                  >
+                    <option value="" style={{ background: "#fff" }}>Select category</option>
+                    {inquiryTypes.map((t) => (
+                      <option key={t} value={t} style={{ background: "#fff" }}>{t}</option>
+                    ))}
+                  </select>
+                  <span style={helperStyle}>Helps route to the right team</span>
+                </div>
+                <div>
+                  <label style={labelStyle}>[ Organization ]</label>
+                  <input
+                    placeholder="Company or institution"
+                    value={form.org}
+                    onChange={(e) => setForm({ ...form, org: e.target.value })}
+                    style={fieldStyle}
+                    onFocus={onFocus}
+                    onBlur={onBlurField("org")}
+                  />
+                  <span style={helperStyle}>Optional — include if applicable</span>
+                </div>
               </div>
 
-              <textarea
-                placeholder="Your message"
-                rows={5}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                style={{ ...fieldStyle, resize: "vertical" as const, minHeight: 100 }}
-                onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
-                onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
-                required
-              />
+              <div>
+                <label style={labelStyle}>[ Message ]</label>
+                <textarea
+                  placeholder="Describe your inquiry or requirements"
+                  rows={5}
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  style={{ ...(errors.message ? fieldErrorBorder : fieldStyle), resize: "vertical" as const, minHeight: 100 }}
+                  onFocus={onFocus as any}
+                  onBlur={onBlurField("message") as any}
+                  maxLength={2000}
+                />
+                <div className="flex justify-between">
+                  {errors.message
+                    ? <span style={errorMsgStyle}>{errors.message}</span>
+                    : <span style={helperStyle}>Include relevant context for faster routing</span>
+                  }
+                  <span style={{ ...helperStyle, textAlign: "right", minWidth: 60 }}>
+                    {form.message.length}/2000
+                  </span>
+                </div>
+              </div>
 
               <motion.button
                 type="submit"
