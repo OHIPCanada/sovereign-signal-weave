@@ -31,45 +31,118 @@ const stats = [
 const ChainLinks = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.2 }}>
-        {mounted && Array.from({ length: 12 }).map((_, i) => {
-          const y = 15 + (i % 6) * 14;
-          return (
-            <g key={i}>
-              <motion.rect
-                x={`${5 + (i % 3) * 35}%`}
-                y={`${y}%`}
-                width="60"
-                height="30"
-                rx="4"
-                fill="none"
-                stroke="rgba(212,97,107,0.2)"
-                strokeWidth="1"
-                initial={{ opacity: 0, pathLength: 0 }}
-                animate={{ opacity: 1, pathLength: 1 }}
-                transition={{ delay: i * 0.2, duration: 1 }}
-              />
-              {i < 11 && (
-                <motion.line
-                  x1={`calc(${5 + (i % 3) * 35}% + 60px)`}
-                  y1={`calc(${y}% + 15px)`}
-                  x2={`calc(${5 + ((i + 1) % 3) * 35}%)`}
-                  y2={`calc(${15 + ((i + 1) % 6) * 14}% + 15px)`}
-                  stroke="rgba(212,97,107,0.1)"
+      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.4 }}>
+        <defs>
+          <radialGradient id="chainFade" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="white" stopOpacity="1" />
+            <stop offset="100%" stopColor="white" stopOpacity="0" />
+          </radialGradient>
+          <mask id="chainMask">
+            <rect width="100%" height="100%" fill="url(#chainFade)" />
+          </mask>
+        </defs>
+        <g mask="url(#chainMask)">
+          {mounted && Array.from({ length: 12 }).map((_, i) => {
+            const y = 15 + (i % 6) * 14;
+            return (
+              <g key={i}>
+                <motion.rect
+                  x={`${5 + (i % 3) * 35}%`}
+                  y={`${y}%`}
+                  width="60"
+                  height="30"
+                  rx="4"
+                  fill="none"
+                  stroke="rgba(212,97,107,0.3)"
                   strokeWidth="1"
-                  strokeDasharray="4 4"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ delay: i * 0.2 + 0.5, duration: 0.8 }}
+                  initial={{ opacity: 0, pathLength: 0 }}
+                  animate={{ opacity: 1, pathLength: 1 }}
+                  transition={{ delay: i * 0.2, duration: 1 }}
                 />
-              )}
-            </g>
-          );
-        })}
+                {i < 11 && (
+                  <motion.line
+                    x1={`calc(${5 + (i % 3) * 35}% + 60px)`}
+                    y1={`calc(${y}% + 15px)`}
+                    x2={`calc(${5 + ((i + 1) % 3) * 35}%)`}
+                    y2={`calc(${15 + ((i + 1) % 6) * 14}% + 15px)`}
+                    stroke="rgba(212,97,107,0.15)"
+                    strokeWidth="1"
+                    strokeDasharray="4 4"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ delay: i * 0.2 + 0.5, duration: 0.8 }}
+                  />
+                )}
+              </g>
+            );
+          })}
+          {mounted && Array.from({ length: 10 }).map((_, i) => (
+            <motion.circle
+              key={`pulse-${i}`}
+              cx={`${12 + (i % 5) * 20}%`}
+              cy={`${10 + Math.floor(i / 5) * 55}%`}
+              r="3.5"
+              fill="rgba(212,97,107,0.5)"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: [0, 1, 0], scale: [0, 2, 0] }}
+              transition={{ duration: 3, repeat: Infinity, delay: i * 0.5, ease: "easeOut" }}
+            />
+          ))}
+        </g>
       </svg>
+
+      {/* Floating ambient orbs */}
+      {mounted && (
+        <>
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              width: 300, height: 300, top: "8%", right: "20%",
+              background: "radial-gradient(circle, rgba(212,97,107,0.2) 0%, transparent 70%)",
+              filter: "blur(60px)",
+            }}
+            animate={{ x: [0, 35, -15, 0], y: [0, -30, 20, 0], scale: [1, 1.2, 0.9, 1] }}
+            transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              width: 220, height: 220, bottom: "15%", left: "12%",
+              background: "radial-gradient(circle, rgba(91,31,166,0.22) 0%, transparent 70%)",
+              filter: "blur(50px)",
+            }}
+            animate={{ x: [0, -20, 25, 0], y: [0, 15, -20, 0], scale: [1, 0.85, 1.15, 1] }}
+            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              width: 160, height: 160, top: "50%", left: "60%",
+              background: "radial-gradient(circle, rgba(123,97,255,0.18) 0%, transparent 70%)",
+              filter: "blur(40px)",
+            }}
+            animate={{ x: [0, 20, -10, 0], y: [0, -15, 25, 0] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </>
+      )}
+
+      {/* Scanning line */}
+      {mounted && (
+        <motion.div
+          className="absolute left-0 right-0"
+          style={{
+            height: 1,
+            background: "linear-gradient(90deg, transparent, rgba(212,97,107,0.3), rgba(91,31,166,0.3), transparent)",
+            boxShadow: "0 0 20px rgba(212,97,107,0.15)",
+          }}
+          animate={{ top: ["0%", "100%"] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
+        />
+      )}
     </div>
   );
 };

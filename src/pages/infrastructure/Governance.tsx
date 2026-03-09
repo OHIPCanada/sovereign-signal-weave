@@ -28,20 +28,87 @@ const stats = [
 /* ── Shield Matrix Background ── */
 const ShieldMatrix = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none">
-    <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.3 }}>
-      {Array.from({ length: 20 }).map((_, i) => (
-        <motion.path
-          key={i}
-          d={`M${40 + (i % 5) * 180} ${30 + Math.floor(i / 5) * 150} l20 12 l0 24 l-20 12 l-20 -12 l0 -24 z`}
-          fill="none"
-          stroke="rgba(123,97,255,0.15)"
-          strokeWidth="0.5"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: [0, 0.4, 0.15] }}
-          transition={{ duration: 3, delay: i * 0.15, repeat: Infinity, repeatDelay: 5 }}
-        />
-      ))}
+    <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.5 }}>
+      <defs>
+        <radialGradient id="shieldFade" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="white" stopOpacity="1" />
+          <stop offset="100%" stopColor="white" stopOpacity="0" />
+        </radialGradient>
+        <mask id="shieldMask">
+          <rect width="100%" height="100%" fill="url(#shieldFade)" />
+        </mask>
+      </defs>
+      <g mask="url(#shieldMask)">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <motion.path
+            key={i}
+            d={`M${40 + (i % 5) * 180} ${30 + Math.floor(i / 5) * 150} l20 12 l0 24 l-20 12 l-20 -12 l0 -24 z`}
+            fill="none"
+            stroke="rgba(123,97,255,0.2)"
+            strokeWidth="0.8"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: [0, 0.6, 0.2] }}
+            transition={{ duration: 3, delay: i * 0.15, repeat: Infinity, repeatDelay: 5 }}
+          />
+        ))}
+        {Array.from({ length: 10 }).map((_, i) => (
+          <motion.circle
+            key={`node-${i}`}
+            cx={`${10 + (i % 5) * 20}%`}
+            cy={`${15 + Math.floor(i / 5) * 50}%`}
+            r="4"
+            fill="rgba(232,150,124,0.6)"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: [0, 1, 0], scale: [0, 2, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, delay: i * 0.6, ease: "easeOut" }}
+          />
+        ))}
+      </g>
     </svg>
+
+    {/* Floating ambient orbs */}
+    <motion.div
+      className="absolute rounded-full"
+      style={{
+        width: 350, height: 350, top: "5%", right: "15%",
+        background: "radial-gradient(circle, rgba(91,31,166,0.25) 0%, transparent 70%)",
+        filter: "blur(60px)",
+      }}
+      animate={{ x: [0, 30, -20, 0], y: [0, -25, 15, 0], scale: [1, 1.15, 0.9, 1] }}
+      transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+    />
+    <motion.div
+      className="absolute rounded-full"
+      style={{
+        width: 250, height: 250, bottom: "10%", left: "10%",
+        background: "radial-gradient(circle, rgba(212,97,107,0.2) 0%, transparent 70%)",
+        filter: "blur(50px)",
+      }}
+      animate={{ x: [0, -25, 20, 0], y: [0, 20, -25, 0], scale: [1, 0.85, 1.1, 1] }}
+      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+    />
+    <motion.div
+      className="absolute rounded-full"
+      style={{
+        width: 180, height: 180, top: "45%", left: "55%",
+        background: "radial-gradient(circle, rgba(123,97,255,0.18) 0%, transparent 70%)",
+        filter: "blur(45px)",
+      }}
+      animate={{ x: [0, 20, -15, 0], y: [0, -20, 25, 0] }}
+      transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+    />
+
+    {/* Scanning line */}
+    <motion.div
+      className="absolute left-0 right-0"
+      style={{
+        height: 1,
+        background: "linear-gradient(90deg, transparent, rgba(123,97,255,0.3), rgba(232,150,124,0.3), transparent)",
+        boxShadow: "0 0 20px rgba(123,97,255,0.15)",
+      }}
+      animate={{ top: ["0%", "100%"] }}
+      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+    />
   </div>
 );
 
