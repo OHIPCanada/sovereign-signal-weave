@@ -154,6 +154,7 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
           organization: form.org.trim() || "Not provided",
           message: form.message.trim(),
           "h-captcha-response": hcaptchaToken,
+          botcheck: "",
         }),
       });
 

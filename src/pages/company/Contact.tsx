@@ -110,6 +110,7 @@ const Contact = () => {
           organization: form.org.trim() || "Not provided",
           message: form.message.trim(),
           "h-captcha-response": hcaptchaToken,
+          botcheck: "",
         }),
       });
 
