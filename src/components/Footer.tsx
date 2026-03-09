@@ -1,6 +1,7 @@
-import { reopenConsentBanner } from "./CookieConsent";
+import { reopenConsentBanner, useConsentStatus } from "./CookieConsent";
 
 const Footer = () => {
+  const consentStatus = useConsentStatus();
   return (
     <footer
       className="relative overflow-hidden"
