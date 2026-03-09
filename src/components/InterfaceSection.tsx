@@ -224,7 +224,7 @@ const InterfaceSection = () => {
       }}
     >
       <div
-        className="relative z-10 mx-auto"
+        className="relative z-10 mx-auto px-4 sm:px-0"
         style={{ width: "min(1200px, 92vw)" }}
       >
         {/* Header */}
@@ -303,7 +303,7 @@ const InterfaceSection = () => {
             className="w-full block"
             viewBox="0 0 1200 520"
             fill="none"
-            style={{ height: "auto" }}
+            style={{ height: "auto", minHeight: "clamp(200px, 45vw, 520px)" }}
           >
             <defs>
               {/* Glow filter */}

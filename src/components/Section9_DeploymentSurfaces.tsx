@@ -364,10 +364,10 @@ const Section9_DeploymentSurfaces = () => {
       />
 
       <div
-        className="mx-auto flex flex-col items-center"
+        className="mx-auto flex flex-col items-center px-4 sm:px-0"
         style={{
           width: "min(1200px, 92vw)",
-          gap: "clamp(48px, 6vw, 80px)",
+          gap: "clamp(36px, 6vw, 80px)",
         }}
       >
         {/* ── Text block (top, centered) ── */}
@@ -416,7 +416,7 @@ const Section9_DeploymentSurfaces = () => {
 
           {/* Surface tiles — segmented tab bar */}
           <div
-            className="flex flex-nowrap mt-8 overflow-x-auto scrollbar-hide"
+            className="flex flex-nowrap mt-6 sm:mt-8 overflow-x-auto scrollbar-hide"
             style={{
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(189,166,255,0.18)",
@@ -424,7 +424,8 @@ const Section9_DeploymentSurfaces = () => {
               padding: "5px",
               gap: "2px",
               backdropFilter: "blur(12px)",
-              justifyContent: "center",
+              justifyContent: "flex-start",
+              WebkitOverflowScrolling: "touch",
             }}
           >
             {SURFACES.map((s, i) => (

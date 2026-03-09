@@ -426,6 +426,45 @@
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* ===== Mobile & Tablet Optimizations ===== */
+
+/* Touch-friendly tap targets */
+@media (max-width: 768px) {
+  button, a, select, input, textarea {
+    min-height: 44px;
+  }
+  
+  /* Reduce aggressive headings on mobile */
+  h1, h2 {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Prevent horizontal overflow from radial gradients */
+  section {
+    overflow-x: hidden;
+  }
+  
+  /* Full-width glass cards on mobile */
+  .split-layout-gap {
+    gap: clamp(28px, 5vw, 48px);
+  }
+}
+
+/* Tablet intermediate spacing */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .split-layout-gap {
+    gap: clamp(40px, 6vw, 80px);
+  }
+}
+
+/* Safe area padding for notched devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  footer {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 @keyframes backgroundShift {
   0% { background-position: 30% 20%; }
   100% { background-position: 35% 25%; }

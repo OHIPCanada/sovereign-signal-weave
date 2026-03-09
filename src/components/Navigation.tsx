@@ -208,8 +208,8 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
         isScrolled
-          ? "flex justify-center px-4 pt-4"
-          : "flex justify-between px-6 pt-5 md:px-12 lg:px-20"
+          ? "flex justify-center px-3 sm:px-4 pt-3 sm:pt-4"
+          : "flex justify-between px-4 pt-4 sm:px-6 sm:pt-5 md:px-12 lg:px-20"
       }`}
     >
       <motion.nav

@@ -67,8 +67,8 @@ const Contact = () => {
       <section
         className="relative overflow-hidden flex items-end md:items-center"
         style={{
-          minHeight: "80vh",
-          padding: "clamp(120px, 14vw, 200px) 0 clamp(64px, 7vw, 110px)",
+          minHeight: "clamp(60vh, 80vh, 80vh)",
+          padding: "clamp(100px, 14vw, 200px) 0 clamp(48px, 7vw, 110px)",
           background: `
             radial-gradient(900px 600px at 18% 38%, rgba(143,83,255,0.45), transparent 60%),
             radial-gradient(700px 520px at 78% 22%, rgba(255,192,174,0.18), transparent 62%),
@@ -90,14 +90,14 @@ const Contact = () => {
           }}
         />
 
-        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-          <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center" style={{ gap: "clamp(40px, 6vw, 100px)" }}>
+        <div className="relative z-10 mx-auto px-4 sm:px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
+          <div className="grid grid-cols-1 lg:grid-cols-[0.55fr_1.45fr] items-center" style={{ gap: "clamp(32px, 6vw, 100px)" }}>
             {/* Left — headline */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="flex flex-col gap-5"
+              className="flex flex-col gap-4 sm:gap-5"
             >
               <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
                 [ CONTACT ]
@@ -107,7 +107,7 @@ const Contact = () => {
                   color: "rgba(255,255,255,0.95)",
                   fontWeight: 800,
                   lineHeight: 0.95,
-                  fontSize: "clamp(44px, 5.2vw, 84px)",
+                  fontSize: "clamp(36px, 5.2vw, 84px)",
                   letterSpacing: "-0.02em",
                   textShadow: "0 10px 40px rgba(0,0,0,0.22)",
                 }}
@@ -128,7 +128,7 @@ const Contact = () => {
                 style={{
                   color: "rgba(255,255,255,0.72)",
                   fontWeight: 400,
-                  fontSize: "clamp(15px, 1.25vw, 18px)",
+                  fontSize: "clamp(14px, 1.25vw, 18px)",
                   lineHeight: 1.55,
                   maxWidth: "46ch",
                 }}
@@ -142,7 +142,7 @@ const Contact = () => {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="grid grid-cols-2 gap-4"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
             >
               {channels.map((ch, i) => (
                 <motion.div
@@ -150,55 +150,48 @@ const Contact = () => {
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
-                  className="rounded-[20px] overflow-hidden"
+                  className="rounded-[16px] sm:rounded-[20px] overflow-hidden"
                   style={{
                     background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025))",
                     border: "1px solid rgba(255,255,255,0.12)",
                     backdropFilter: "blur(20px)",
                     WebkitBackdropFilter: "blur(20px)",
                     boxShadow: "0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)",
-                    padding: "28px 24px",
+                    padding: "clamp(18px, 3vw, 28px) clamp(16px, 2.5vw, 24px)",
                   }}
                 >
                   <p
                     className="font-mono uppercase"
-                    style={{ color: "rgba(255,255,255,0.35)", fontSize: 10, letterSpacing: "0.2em", marginBottom: 12 }}
+                    style={{ color: "rgba(255,255,255,0.35)", fontSize: 10, letterSpacing: "0.2em", marginBottom: 10 }}
                   >
                     {ch.label}
                   </p>
                   {ch.href ? (
-                    <a
-                      href={ch.href}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <p
-                        style={{
-                          fontSize: "clamp(14px, 1.2vw, 17px)",
-                          fontWeight: 700,
-                          color: "rgba(255,255,255,0.95)",
-                          letterSpacing: "-0.01em",
-                          lineHeight: 1.2,
-                          marginBottom: 8,
-                        }}
-                      >
-                        {ch.value}
-                      </p>
-                    </a>
-                  ) : (
-                    <p
-                      style={{
-                        fontSize: "clamp(14px, 1.2vw, 17px)",
+                    <a href={ch.href} style={{ textDecoration: "none" }}>
+                      <p style={{
+                        fontSize: "clamp(13px, 1.2vw, 17px)",
                         fontWeight: 700,
                         color: "rgba(255,255,255,0.95)",
                         letterSpacing: "-0.01em",
                         lineHeight: 1.2,
-                        marginBottom: 8,
-                      }}
-                    >
+                        marginBottom: 6,
+                      }}>
+                        {ch.value}
+                      </p>
+                    </a>
+                  ) : (
+                    <p style={{
+                      fontSize: "clamp(13px, 1.2vw, 17px)",
+                      fontWeight: 700,
+                      color: "rgba(255,255,255,0.95)",
+                      letterSpacing: "-0.01em",
+                      lineHeight: 1.2,
+                      marginBottom: 6,
+                    }}>
                       {ch.value}
                     </p>
                   )}
-                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>
+                  <p style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>
                     {ch.sub}
                   </p>
                 </motion.div>
@@ -212,7 +205,7 @@ const Contact = () => {
       <section
         className="relative overflow-hidden"
         style={{
-          padding: "clamp(80px, 8vw, 130px) 0",
+          padding: "clamp(60px, 8vw, 130px) 0",
           background: `
             radial-gradient(1200px 600px at 20% 40%, rgba(123,97,255,0.06), transparent 60%),
             radial-gradient(800px 500px at 80% 60%, rgba(212,97,107,0.05), transparent 60%),
@@ -228,8 +221,8 @@ const Contact = () => {
           }}
         />
 
-        <div className="mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.65fr] gap-12 lg:gap-20 items-start">
+        <div className="mx-auto px-4 sm:px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.65fr] gap-8 lg:gap-20 items-start">
 
             {/* Form */}
             <motion.form
@@ -245,7 +238,7 @@ const Contact = () => {
                 backdropFilter: "blur(24px)",
                 WebkitBackdropFilter: "blur(24px)",
                 borderRadius: 20,
-                padding: "clamp(32px, 4vw, 56px)",
+                padding: "clamp(24px, 4vw, 56px)",
                 boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
               }}
             >
@@ -259,16 +252,16 @@ const Contact = () => {
                 style={{
                   color: "#1a1a2e",
                   fontWeight: 800,
-                  fontSize: "clamp(28px, 3vw, 44px)",
+                  fontSize: "clamp(24px, 3vw, 44px)",
                   lineHeight: 0.95,
                   letterSpacing: "-0.02em",
-                  marginBottom: 36,
+                  marginBottom: 28,
                 }}
               >
                 Let's build together.
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
                 <input
                   placeholder="Full name"
                   value={form.name}
@@ -290,7 +283,7 @@ const Contact = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-4 sm:mb-5">
                 <select
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
@@ -318,7 +311,7 @@ const Contact = () => {
                 rows={5}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
-                style={{ ...fieldStyle, resize: "vertical" as const, minHeight: 120 }}
+                style={{ ...fieldStyle, resize: "vertical" as const, minHeight: 100 }}
                 onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
                 onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
                 required
@@ -329,7 +322,7 @@ const Contact = () => {
                 disabled={sending}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="mt-8 flex items-center gap-3"
+                className="mt-6 sm:mt-8 flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start"
                 style={{
                   background: "linear-gradient(135deg, #D4616B, #E8967C)",
                   color: "#fff",
@@ -367,7 +360,7 @@ const Contact = () => {
                   backdropFilter: "blur(24px)",
                   WebkitBackdropFilter: "blur(24px)",
                   borderRadius: 20,
-                  padding: "36px 30px",
+                  padding: "clamp(24px, 4vw, 36px) clamp(20px, 3vw, 30px)",
                   boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
@@ -377,18 +370,18 @@ const Contact = () => {
                 >
                   [ RESPONSE PROTOCOL ]
                 </p>
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-4 sm:gap-5">
                   {responseProtocol.map((r, i) => (
                     <div
                       key={r.label}
-                      className="flex items-center justify-between"
+                      className="flex items-center justify-between gap-3"
                       style={{
-                        paddingBottom: i < responseProtocol.length - 1 ? 16 : 0,
+                        paddingBottom: i < responseProtocol.length - 1 ? 14 : 0,
                         borderBottom: i < responseProtocol.length - 1 ? "1px solid rgba(90,70,160,0.08)" : "none",
                       }}
                     >
-                      <span style={{ color: "#3a3a5c", fontSize: 15 }}>{r.label}</span>
-                      <span className="font-mono" style={{ color: "#D4616B", fontSize: 13, letterSpacing: "0.05em" }}>
+                      <span style={{ color: "#3a3a5c", fontSize: 14 }}>{r.label}</span>
+                      <span className="font-mono flex-shrink-0" style={{ color: "#D4616B", fontSize: 12, letterSpacing: "0.05em" }}>
                         {r.time}
                       </span>
                     </div>
@@ -404,7 +397,7 @@ const Contact = () => {
                   backdropFilter: "blur(24px)",
                   WebkitBackdropFilter: "blur(24px)",
                   borderRadius: 20,
-                  padding: "36px 30px",
+                  padding: "clamp(24px, 4vw, 36px) clamp(20px, 3vw, 30px)",
                   boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
@@ -412,14 +405,14 @@ const Contact = () => {
                   style={{
                     color: "#1a1a2e",
                     fontWeight: 700,
-                    fontSize: 20,
+                    fontSize: 18,
                     letterSpacing: "-0.01em",
                     marginBottom: 10,
                   }}
                 >
                   Schedule a platform demo
                 </h3>
-                <p style={{ color: "#5a5a7c", fontSize: 15, lineHeight: 1.6, marginBottom: 20 }}>
+                <p style={{ color: "#5a5a7c", fontSize: 14, lineHeight: 1.6, marginBottom: 20 }}>
                   See how DocG's intelligence layer integrates with your existing clinical infrastructure.
                 </p>
                 <motion.button
@@ -447,7 +440,7 @@ const Contact = () => {
                   backdropFilter: "blur(24px)",
                   WebkitBackdropFilter: "blur(24px)",
                   borderRadius: 14,
-                  padding: "20px 24px",
+                  padding: "18px 20px",
                   boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
@@ -462,10 +455,10 @@ const Contact = () => {
                   }}
                 />
                 <div>
-                  <p style={{ color: "#1a1a2e", fontSize: 14, fontWeight: 600 }}>
+                  <p style={{ color: "#1a1a2e", fontSize: 13, fontWeight: 600 }}>
                     SOC 2 Type II & PIPEDA compliant
                   </p>
-                  <p style={{ color: "#7a7a9c", fontSize: 13 }}>
+                  <p style={{ color: "#7a7a9c", fontSize: 12 }}>
                     All communications encrypted end-to-end
                   </p>
                 </div>
