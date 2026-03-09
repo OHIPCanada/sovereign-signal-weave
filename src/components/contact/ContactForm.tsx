@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Send } from "lucide-react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useContactModal } from "./ContactModalContext";
+
+const HCAPTCHA_SITE_KEY = "50b2fe65-b00b-4b9e-ad62-3ba471098be2";
 
 const inquiryTypes = [
   "Enterprise Partnership",
@@ -107,8 +110,10 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
   const [touched, setTouched] = useState<TouchedState>(initialTouched);
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [hcaptchaToken, setHcaptchaToken] = useState<string | null>(null);
 
   const firstFieldRef = useRef<HTMLInputElement | null>(null);
+  const hcaptchaRef = useRef<HCaptcha>(null);
 
   useEffect(() => {
     if (!autoFocus) return;
@@ -120,8 +125,8 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
   const errors = getErrors(form, submitted ? allTouched : touched);
 
   const canSubmit = useMemo(() => {
-    return Boolean(form.name.trim() && form.email.trim() && emailRegex.test(form.email.trim()) && form.message.trim());
-  }, [form.email, form.message, form.name]);
+    return Boolean(form.name.trim() && form.email.trim() && emailRegex.test(form.email.trim()) && form.message.trim() && hcaptchaToken);
+  }, [form.email, form.message, form.name, hcaptchaToken]);
 
   const touch = (field: keyof FormState) => () =>
     setTouched((t) => ({ ...t, [field]: true }));
@@ -148,6 +153,7 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
           subject: form.type || "General Inquiry",
           organization: form.org.trim() || "Not provided",
           message: form.message.trim(),
+          "h-captcha-response": hcaptchaToken,
         }),
       });
 
@@ -157,6 +163,8 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
         setForm(initialForm);
         setTouched(initialTouched);
         setSubmitted(false);
+        setHcaptchaToken(null);
+        hcaptchaRef.current?.resetCaptcha();
         closeModal();
       } else {
         toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
@@ -272,10 +280,26 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
         </div>
       </div>
 
+      {/* hCaptcha */}
+      <div className="pt-2">
+        <HCaptcha
+          ref={hcaptchaRef}
+          sitekey={HCAPTCHA_SITE_KEY}
+          theme="dark"
+          onVerify={(token) => setHcaptchaToken(token)}
+          onExpire={() => setHcaptchaToken(null)}
+        />
+        {submitted && !hcaptchaToken && (
+          <span style={{ fontSize: 11, color: "rgba(212,97,107,0.9)", marginTop: 4, display: "block" }}>
+            Please complete the captcha
+          </span>
+        )}
+      </div>
+
       <div className="flex items-center justify-end gap-3 pt-2">
         <Button
           type="submit"
-          disabled={sending}
+          disabled={sending || !hcaptchaToken}
           className="px-6 font-semibold tracking-wide border-0"
           style={{
             background: "linear-gradient(135deg, #D4616B 0%, #E8967C 100%)",

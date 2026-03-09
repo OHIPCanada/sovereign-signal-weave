@@ -2,9 +2,12 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import DriftingGrid from "@/components/hero-backgrounds/DriftingGrid";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Send, ArrowRight } from "lucide-react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+
+const HCAPTCHA_SITE_KEY = "50b2fe65-b00b-4b9e-ad62-3ba471098be2";
 
 const channels = [
   { label: "Email", value: "contact@docg.ai", sub: "Response within 24 hours", href: "mailto:contact@docg.ai" },
@@ -79,13 +82,15 @@ const Contact = () => {
   const [touched, setTouched] = useState<TouchedState>(initialTouched);
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [hcaptchaToken, setHcaptchaToken] = useState<string | null>(null);
+  const hcaptchaRef = useRef<HCaptcha>(null);
 
   const allTouched: TouchedState = { name: true, email: true, type: true, org: true, message: true };
   const errors = getErrors(form, submitted ? allTouched : touched);
 
   const canSubmit = useMemo(() => {
-    return Boolean(form.name.trim() && form.email.trim() && emailRegex.test(form.email.trim()) && form.message.trim());
-  }, [form.email, form.message, form.name]);
+    return Boolean(form.name.trim() && form.email.trim() && emailRegex.test(form.email.trim()) && form.message.trim() && hcaptchaToken);
+  }, [form.email, form.message, form.name, hcaptchaToken]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,6 +109,7 @@ const Contact = () => {
           subject: form.type || "General Inquiry",
           organization: form.org.trim() || "Not provided",
           message: form.message.trim(),
+          "h-captcha-response": hcaptchaToken,
         }),
       });
 
@@ -113,6 +119,8 @@ const Contact = () => {
         setForm(initialForm);
         setTouched(initialTouched);
         setSubmitted(false);
+        setHcaptchaToken(null);
+        hcaptchaRef.current?.resetCaptcha();
       } else {
         toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
       }
@@ -443,9 +451,25 @@ const Contact = () => {
                 </div>
               </div>
 
+              {/* hCaptcha */}
+              <div className="mt-5">
+                <HCaptcha
+                  ref={hcaptchaRef}
+                  sitekey={HCAPTCHA_SITE_KEY}
+                  theme="light"
+                  onVerify={(token) => setHcaptchaToken(token)}
+                  onExpire={() => setHcaptchaToken(null)}
+                />
+                {submitted && !hcaptchaToken && (
+                  <span style={{ fontSize: 11, color: "rgba(212,97,107,0.9)", marginTop: 4, display: "block" }}>
+                    Please complete the captcha
+                  </span>
+                )}
+              </div>
+
               <motion.button
                 type="submit"
-                disabled={sending}
+                disabled={sending || !hcaptchaToken}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="mt-6 sm:mt-8 flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start"
@@ -459,8 +483,8 @@ const Contact = () => {
                   padding: "16px 36px",
                   borderRadius: 12,
                   border: "none",
-                  cursor: sending ? "wait" : "pointer",
-                  opacity: sending ? 0.7 : 1,
+                  cursor: (sending || !hcaptchaToken) ? "not-allowed" : "pointer",
+                  opacity: (sending || !hcaptchaToken) ? 0.7 : 1,
                   transition: "opacity 0.2s",
                   fontFamily: "inherit",
                 }}
