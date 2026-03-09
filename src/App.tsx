@@ -13,6 +13,12 @@ import Leadership from "./pages/company/Leadership";
 import Careers from "./pages/company/Careers";
 import Contact from "./pages/company/Contact";
 
+// Infrastructure
+import Deployment from "./pages/infrastructure/Deployment";
+import Governance from "./pages/infrastructure/Governance";
+import AuditTrails from "./pages/infrastructure/AuditTrails";
+import Interoperability from "./pages/infrastructure/Interoperability";
+
 // Legal
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsOfService from "./pages/legal/TermsOfService";
@@ -33,6 +39,12 @@ const App = () => (
           <Route path="/company/leadership" element={<Leadership />} />
           <Route path="/company/careers" element={<Careers />} />
           <Route path="/company/contact" element={<Contact />} />
+
+          {/* Infrastructure */}
+          <Route path="/infrastructure/deployment" element={<Deployment />} />
+          <Route path="/infrastructure/governance" element={<Governance />} />
+          <Route path="/infrastructure/audit-trails" element={<AuditTrails />} />
+          <Route path="/infrastructure/interoperability" element={<Interoperability />} />
 
           {/* Legal */}
           <Route path="/privacy" element={<PrivacyPolicy />} />
