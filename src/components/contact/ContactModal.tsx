@@ -12,7 +12,7 @@ export default function ContactModal() {
           <DialogHeader className="text-left">
             <DialogTitle className="text-2xl font-extrabold tracking-tight">Contact</DialogTitle>
             <DialogDescription>
-              Share what you need — partnership, demo, integration — and well respond within 24 hours.
+              Share what you need — partnership, demo, integration — and we’ll respond within 24 hours.
             </DialogDescription>
           </DialogHeader>
           <div className="mt-6">
