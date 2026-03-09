@@ -73,402 +73,250 @@ const Contact = () => {
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* ─── HERO ─── */}
+      {/* ─── HERO + CHANNELS — ONE IMMERSIVE BLOCK ─── */}
       <section
-        className="relative overflow-hidden flex items-end md:items-center"
+        className="relative overflow-hidden"
         style={{
-          minHeight: "70vh",
-          padding: "clamp(120px,14vw,200px) 0 clamp(64px,7vw,100px)",
-          background: `
-            radial-gradient(900px 600px at 18% 38%, rgba(143,83,255,0.45), transparent 60%),
-            radial-gradient(700px 520px at 78% 22%, rgba(255,192,174,0.14), transparent 62%),
-            radial-gradient(900px 700px at 70% 75%, rgba(212,97,107,0.12), transparent 66%),
-            linear-gradient(135deg, #1A0630 0%, #3A0B6E 48%, #5B1FA6 120%)
-          `,
+          minHeight: "100vh",
+          background: "#0A0A0A",
         }}
       >
-        {/* Subtle grid overlay */}
+        {/* Noise texture */}
         <div
-          className="absolute inset-0 pointer-events-none"
+          className="absolute inset-0 pointer-events-none opacity-[0.03]"
           style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)
-            `,
-            backgroundSize: "60px 60px",
+            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           }}
         />
 
-        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px,94vw)" }}>
+        {/* Single warm accent glow */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: "15%",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "80vw",
+            height: "60vh",
+            background: "radial-gradient(ellipse, rgba(212,97,107,0.07) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Content */}
+        <div
+          className="relative z-10 mx-auto px-6 md:px-12"
+          style={{
+            width: "min(1400px, 94vw)",
+            paddingTop: "clamp(140px, 16vw, 220px)",
+            paddingBottom: "clamp(80px, 8vw, 120px)",
+          }}
+        >
+          {/* Hero text */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="text-center max-w-3xl mx-auto"
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-24 md:mb-32"
           >
-            <p
-              className="font-mono uppercase mb-6"
-              style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}
-            >
-              [ CONTACT ]
-            </p>
             <h1
               style={{
-                color: "rgba(255,255,255,0.95)",
-                fontWeight: 800,
-                lineHeight: 0.95,
-                fontSize: "clamp(44px,5.2vw,84px)",
-                letterSpacing: "-0.02em",
+                color: "#F5F5F0",
+                fontWeight: 300,
+                lineHeight: 1.05,
+                fontSize: "clamp(48px, 7vw, 120px)",
+                letterSpacing: "-0.04em",
+                maxWidth: "14ch",
               }}
             >
-              Start the
-              <br />
-              <span
-                style={{
-                  background: "linear-gradient(135deg, #D4616B, #E8967C, #F2C1AE)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                conversation
-              </span>
+              Let's talk
+              <span style={{ color: "rgba(245,245,240,0.2)" }}>.</span>
             </h1>
-            <p
-              className="mt-6"
-              style={{
-                color: "rgba(255,255,255,0.6)",
-                fontSize: "clamp(15px,1.25vw,18px)",
-                lineHeight: 1.6,
-                maxWidth: "52ch",
-                margin: "24px auto 0",
-              }}
-            >
-              Whether you're exploring enterprise integration, requesting a platform demo,
-              or joining the team — we're ready to listen.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ─── SIGNAL MATRIX ─── */}
-      <section
-        style={{
-          background: `
-            radial-gradient(ellipse 900px 500px at 15% 20%, rgba(232,150,124,0.08), transparent 60%),
-            radial-gradient(ellipse 700px 400px at 85% 80%, rgba(242,193,174,0.12), transparent 60%),
-            linear-gradient(180deg, #F9F8FC 0%, #FDFBFF 100%)
-          `,
-          padding: "clamp(80px,8vw,130px) 0",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        {/* Floating organic shapes */}
-        <div className="absolute inset-0 pointer-events-none opacity-20">
-          <div
-            className="absolute"
-            style={{
-              top: "10%",
-              right: "5%",
-              width: 300,
-              height: 300,
-              borderRadius: "40% 60% 60% 40% / 50% 50% 50% 50%",
-              background: "radial-gradient(circle, rgba(232,150,124,0.3), transparent 70%)",
-              filter: "blur(60px)",
-            }}
-          />
-          <div
-            className="absolute"
-            style={{
-              bottom: "15%",
-              left: "8%",
-              width: 250,
-              height: 250,
-              borderRadius: "60% 40% 40% 60% / 60% 60% 40% 40%",
-              background: "radial-gradient(circle, rgba(212,97,107,0.2), transparent 70%)",
-              filter: "blur(50px)",
-            }}
-          />
-        </div>
-
-        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px,94vw)" }}>
-          {/* Section header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-16"
-          >
-            <p
-              className="font-mono uppercase mb-3"
-              style={{ color: "rgba(26,6,48,0.35)", fontSize: 11, letterSpacing: "0.22em" }}
-            >
-              [ REACH OUT ]
-            </p>
-            <h2
-              style={{
-                color: "#1A0630",
-                fontWeight: 800,
-                fontSize: "clamp(32px,4vw,56px)",
-                letterSpacing: "-0.02em",
-                lineHeight: 1.1,
-              }}
-            >
-              Every signal matters
-            </h2>
           </motion.div>
 
-          {/* Bento Grid */}
+          {/* Horizontal rule */}
+          <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 60 }} />
+
+          {/* Contact grid — editorial newspaper layout */}
           <div
-            className="grid gap-6"
-            style={{
-              gridTemplateColumns: "repeat(12, 1fr)",
-            }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0"
+            style={{ borderLeft: "1px solid rgba(255,255,255,0.08)" }}
           >
-            {/* Email - Hero card with gradient */}
+            {/* Email */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="col-span-12 lg:col-span-8 relative overflow-hidden group"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="group"
               style={{
-                background: `
-                  radial-gradient(circle at 10% 20%, rgba(232,150,124,0.15), transparent 50%),
-                  radial-gradient(circle at 90% 80%, rgba(212,97,107,0.12), transparent 50%),
-                  linear-gradient(135deg, #FFFFFF 0%, #FFF7F4 100%)
-                `,
-                borderRadius: 28,
-                border: "2px solid rgba(212,97,107,0.15)",
-                padding: "clamp(40px,4.5vw,64px)",
-                minHeight: 280,
-                position: "relative",
+                borderRight: "1px solid rgba(255,255,255,0.08)",
+                padding: "0 clamp(24px, 3vw, 48px) clamp(40px, 4vw, 60px)",
               }}
             >
-              {/* Subtle line decoration */}
               <div
-                className="absolute top-0 left-0 right-0"
-                style={{
-                  height: 2,
-                  background: "linear-gradient(90deg, transparent, rgba(232,150,124,0.4), transparent)",
-                }}
-              />
-              
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-8">
-                  <div
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: "50%",
-                      background: "#E8967C",
-                      boxShadow: "0 0 20px rgba(232,150,124,0.6), 0 0 40px rgba(232,150,124,0.3)",
-                    }}
-                  />
-                  <span className="font-mono uppercase" style={{ color: "rgba(26,6,48,0.4)", fontSize: 10, letterSpacing: "0.2em" }}>
-                    PRIMARY
-                  </span>
-                </div>
-                <p style={{ color: "rgba(26,6,48,0.45)", fontSize: 13, marginBottom: 10, letterSpacing: "0.05em" }}>
-                  Direct line
-                </p>
-                <a
-                  href="mailto:contact@docg.ai"
-                  className="group/link inline-block"
-                  style={{
-                    textDecoration: "none",
-                  }}
+                className="flex items-center gap-3 mb-8"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 16 }}
+              >
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#D4616B" }} />
+                <span
+                  className="font-mono uppercase"
+                  style={{ color: "rgba(255,255,255,0.3)", fontSize: 10, letterSpacing: "0.2em" }}
                 >
-                  <h3
-                    style={{
-                      background: "linear-gradient(135deg, #1A0630 0%, #D4616B 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      fontWeight: 800,
-                      fontSize: "clamp(32px,4vw,56px)",
-                      letterSpacing: "-0.03em",
-                      lineHeight: 1,
-                      marginBottom: 16,
-                    }}
-                  >
-                    contact@docg.ai
-                  </h3>
-                </a>
-                <div className="flex items-center gap-4 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ADE80" }} />
-                    <span style={{ color: "rgba(26,6,48,0.5)", fontSize: 14 }}>
-                      Enterprise: &lt;4 hours
-                    </span>
-                  </div>
-                  <div style={{ width: 1, height: 16, background: "rgba(26,6,48,0.1)" }} />
-                  <div className="flex items-center gap-2">
-                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#60A5FA" }} />
-                    <span style={{ color: "rgba(26,6,48,0.5)", fontSize: 14 }}>
-                      General: &lt;24 hours
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating accent circle */}
-              <div
-                className="absolute pointer-events-none"
-                style={{
-                  bottom: -40,
-                  right: -40,
-                  width: 200,
-                  height: 200,
-                  borderRadius: "50%",
-                  background: "radial-gradient(circle, rgba(242,193,174,0.4), transparent 70%)",
-                  filter: "blur(40px)",
-                }}
-              />
-            </motion.div>
-
-            {/* Phone - Clean minimal card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="col-span-12 sm:col-span-6 lg:col-span-4 relative"
-              style={{
-                background: "#FFFFFF",
-                borderRadius: 28,
-                border: "1px solid rgba(26,6,48,0.06)",
-                padding: "clamp(32px,3vw,48px)",
-                boxShadow: "0 4px 20px rgba(26,6,48,0.03)",
-              }}
-            >
-              <div
-                className="inline-flex items-center justify-center mb-6"
-                style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 14,
-                  background: "rgba(26,6,48,0.04)",
-                }}
-              >
-                <Phone size={22} style={{ color: "#1A0630" }} />
-              </div>
-              <p className="font-mono uppercase" style={{ color: "rgba(26,6,48,0.35)", fontSize: 10, letterSpacing: "0.18em", marginBottom: 10 }}>
-                CALL
-              </p>
-              <p style={{ color: "#1A0630", fontWeight: 700, fontSize: 20, marginBottom: 12, letterSpacing: "-0.01em" }}>
-                +1 (800) 555-DOCG
-              </p>
-              <p style={{ color: "rgba(26,6,48,0.45)", fontSize: 13, lineHeight: 1.6 }}>
-                Mon – Fri<br />9 AM – 6 PM EST
-              </p>
-              <div
-                className="mt-6 pt-5"
-                style={{ borderTop: "1px solid rgba(26,6,48,0.06)" }}
-              >
-                <span style={{ color: "#D4616B", fontSize: 12, fontWeight: 600, letterSpacing: "0.03em" }}>
-                  24/7 critical support
+                  Email
                 </span>
               </div>
-            </motion.div>
-
-            {/* Location - Image-style card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="col-span-12 sm:col-span-6 lg:col-span-5 relative overflow-hidden"
-              style={{
-                background: "linear-gradient(135deg, #1A0630 0%, #3A0B6E 100%)",
-                borderRadius: 28,
-                padding: "clamp(32px,3vw,48px)",
-              }}
-            >
-              {/* Topographic lines */}
-              <svg
-                className="absolute inset-0 w-full h-full opacity-10"
-                viewBox="0 0 400 300"
-                preserveAspectRatio="xMidYMid slice"
+              <a
+                href="mailto:contact@docg.ai"
+                className="block hover:opacity-70 transition-opacity"
+                style={{ textDecoration: "none" }}
               >
-                {[30, 50, 70, 90, 110].map((y, i) => (
-                  <path
-                    key={i}
-                    d={`M 0 ${y} Q 100 ${y + 10} 200 ${y} T 400 ${y}`}
-                    fill="none"
-                    stroke="rgba(255,255,255,0.3)"
-                    strokeWidth="1"
-                  />
-                ))}
-              </svg>
-
-              <div className="relative z-10">
-                <MapPin size={28} style={{ color: "#E8967C", marginBottom: 16 }} />
-                <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.4)", fontSize: 10, letterSpacing: "0.18em", marginBottom: 10 }}>
-                  HQ
+                <p
+                  style={{
+                    color: "#F5F5F0",
+                    fontWeight: 500,
+                    fontSize: "clamp(16px, 1.4vw, 22px)",
+                    letterSpacing: "-0.01em",
+                    marginBottom: 16,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  contact@docg.ai
                 </p>
-                <p style={{ color: "#FFFFFF", fontWeight: 700, fontSize: 26, marginBottom: 8, letterSpacing: "-0.02em" }}>
-                  Toronto, ON
-                </p>
-                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.6 }}>
-                  Canada-sovereign
-                  <br />
-                  infrastructure
-                </p>
-              </div>
+              </a>
+              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, lineHeight: 1.7 }}>
+                Response within 24 hours
+                <br />
+                Enterprise: under 4 hours
+              </p>
             </motion.div>
 
-            {/* Support - Stats card */}
+            {/* Phone */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="col-span-12 lg:col-span-7 relative overflow-hidden"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
               style={{
-                background: "rgba(26,6,48,0.02)",
-                borderRadius: 28,
-                border: "1px solid rgba(26,6,48,0.05)",
-                padding: "clamp(32px,3vw,48px)",
+                borderRight: "1px solid rgba(255,255,255,0.08)",
+                padding: "0 clamp(24px, 3vw, 48px) clamp(40px, 4vw, 60px)",
               }}
             >
-              <div className="flex items-start justify-between gap-8 flex-wrap">
-                <div>
-                  <Clock size={24} style={{ color: "#D4616B", marginBottom: 12 }} />
-                  <p style={{ color: "#1A0630", fontWeight: 700, fontSize: 22, marginBottom: 6 }}>
-                    24/7 Critical Support
-                  </p>
-                  <p style={{ color: "rgba(26,6,48,0.4)", fontSize: 14 }}>
-                    Enterprise SLA available
-                  </p>
-                </div>
-
-                <div className="flex gap-8">
-                  {[
-                    { val: "99.99%", label: "Uptime" },
-                    { val: "&lt;15m", label: "Response" },
-                    { val: "SOC 2", label: "Certified" },
-                  ].map((stat, i) => (
-                    <div key={stat.label}>
-                      <p style={{ color: "#1A0630", fontWeight: 800, fontSize: 28, lineHeight: 1, marginBottom: 6 }}>
-                        {stat.val}
-                      </p>
-                      <p className="font-mono uppercase" style={{ color: "rgba(26,6,48,0.35)", fontSize: 9, letterSpacing: "0.15em" }}>
-                        {stat.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bottom line accent */}
               <div
-                className="absolute bottom-0 left-0 right-0"
+                className="flex items-center gap-3 mb-8"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 16 }}
+              >
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#E8967C" }} />
+                <span
+                  className="font-mono uppercase"
+                  style={{ color: "rgba(255,255,255,0.3)", fontSize: 10, letterSpacing: "0.2em" }}
+                >
+                  Phone
+                </span>
+              </div>
+              <p
                 style={{
-                  height: 3,
-                  background: "linear-gradient(90deg, transparent, #E8967C, transparent)",
-                  opacity: 0.6,
+                  color: "#F5F5F0",
+                  fontWeight: 500,
+                  fontSize: "clamp(16px, 1.4vw, 22px)",
+                  letterSpacing: "-0.01em",
+                  marginBottom: 16,
+                  lineHeight: 1.3,
                 }}
-              />
+              >
+                +1 (800) 555-DOCG
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, lineHeight: 1.7 }}>
+                Mon – Fri, 9 AM – 6 PM EST
+                <br />
+                24/7 for critical issues
+              </p>
+            </motion.div>
+
+            {/* HQ */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              style={{
+                borderRight: "1px solid rgba(255,255,255,0.08)",
+                padding: "0 clamp(24px, 3vw, 48px) clamp(40px, 4vw, 60px)",
+              }}
+            >
+              <div
+                className="flex items-center gap-3 mb-8"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 16 }}
+              >
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#F2C1AE" }} />
+                <span
+                  className="font-mono uppercase"
+                  style={{ color: "rgba(255,255,255,0.3)", fontSize: 10, letterSpacing: "0.2em" }}
+                >
+                  Headquarters
+                </span>
+              </div>
+              <p
+                style={{
+                  color: "#F5F5F0",
+                  fontWeight: 500,
+                  fontSize: "clamp(16px, 1.4vw, 22px)",
+                  letterSpacing: "-0.01em",
+                  marginBottom: 16,
+                  lineHeight: 1.3,
+                }}
+              >
+                Toronto, Ontario
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, lineHeight: 1.7 }}>
+                Canada-sovereign
+                <br />
+                infrastructure
+              </p>
+            </motion.div>
+
+            {/* Support */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              style={{
+                padding: "0 clamp(24px, 3vw, 48px) clamp(40px, 4vw, 60px)",
+              }}
+            >
+              <div
+                className="flex items-center gap-3 mb-8"
+                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 16 }}
+              >
+                <div
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "#4ADE80",
+                    boxShadow: "0 0 10px rgba(74,222,128,0.5)",
+                  }}
+                />
+                <span
+                  className="font-mono uppercase"
+                  style={{ color: "rgba(255,255,255,0.3)", fontSize: 10, letterSpacing: "0.2em" }}
+                >
+                  Support
+                </span>
+              </div>
+              <p
+                style={{
+                  color: "#F5F5F0",
+                  fontWeight: 500,
+                  fontSize: "clamp(16px, 1.4vw, 22px)",
+                  letterSpacing: "-0.01em",
+                  marginBottom: 16,
+                  lineHeight: 1.3,
+                }}
+              >
+                24 / 7 Critical
+              </p>
+              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, lineHeight: 1.7 }}>
+                Enterprise SLA available
+                <br />
+                99.99% uptime guarantee
+              </p>
             </motion.div>
           </div>
         </div>
