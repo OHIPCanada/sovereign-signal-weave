@@ -228,7 +228,7 @@ const Interoperability = () => {
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.6 }}
                   >
-                    <std.icon className="w-6 h-6" style={{ color: "#7B61FF" }} />
+                    <std.icon className="w-6 h-6" style={{ color: "#D4616B" }} />
                   </motion.div>
                   <div className="flex-1">
                     <div style={{ fontWeight: 700, fontSize: 18, color: "#1B0F2E", marginBottom: 4 }}>{std.title}</div>
