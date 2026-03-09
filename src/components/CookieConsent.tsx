@@ -320,6 +320,7 @@ const CookieConsent = () => {
   const savePreferences = useCallback((prefs: ConsentPreferences) => {
     const withTimestamp = { ...prefs, timestamp: new Date().toISOString() };
     localStorage.setItem(CONSENT_KEY, JSON.stringify(withTimestamp));
+    dispatchConsentChanged();
     setVisible(false);
     setShowDetails(false);
   }, []);
