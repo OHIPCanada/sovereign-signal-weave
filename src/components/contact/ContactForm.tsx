@@ -280,10 +280,26 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
         </div>
       </div>
 
+      {/* hCaptcha */}
+      <div className="pt-2">
+        <HCaptcha
+          ref={hcaptchaRef}
+          sitekey={HCAPTCHA_SITE_KEY}
+          theme="dark"
+          onVerify={(token) => setHcaptchaToken(token)}
+          onExpire={() => setHcaptchaToken(null)}
+        />
+        {submitted && !hcaptchaToken && (
+          <span style={{ fontSize: 11, color: "rgba(212,97,107,0.9)", marginTop: 4, display: "block" }}>
+            Please complete the captcha
+          </span>
+        )}
+      </div>
+
       <div className="flex items-center justify-end gap-3 pt-2">
         <Button
           type="submit"
-          disabled={sending}
+          disabled={sending || !hcaptchaToken}
           className="px-6 font-semibold tracking-wide border-0"
           style={{
             background: "linear-gradient(135deg, #D4616B 0%, #E8967C 100%)",

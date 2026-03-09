@@ -119,6 +119,8 @@ const Contact = () => {
         setForm(initialForm);
         setTouched(initialTouched);
         setSubmitted(false);
+        setHcaptchaToken(null);
+        hcaptchaRef.current?.resetCaptcha();
       } else {
         toast({ title: "Error", description: "Something went wrong. Please try again.", variant: "destructive" });
       }
