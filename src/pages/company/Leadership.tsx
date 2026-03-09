@@ -1,6 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
+import RisingParticles from "@/components/hero-backgrounds/RisingParticles";
 import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
 import clinicOsOrb from "@/assets/clinic-os-orb-new.png";
 import sovereignOrb from "@/assets/sovereign-data-orb.png";
@@ -70,6 +71,7 @@ const Leadership = () => (
         `,
       }}
     >
+      <RisingParticles />
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
         <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
           <motion.div
