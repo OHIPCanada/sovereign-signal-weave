@@ -13,11 +13,11 @@ const auditFeatures = [
 ];
 
 const logTypes = [
-  { type: "ACCESS_LOG", desc: "User authentication, session management, role changes", color: "#7B61FF" },
-  { type: "DATA_LOG", desc: "Record views, edits, exports, and deletions", color: "#D4616B" },
-  { type: "AI_INFERENCE", desc: "Model inputs, outputs, confidence scores, overrides", color: "#E8967C" },
-  { type: "SYSTEM_EVENT", desc: "API calls, integrations, scheduled tasks", color: "#4ade80" },
-  { type: "CONSENT_LOG", desc: "Patient consent grants, revocations, expiries", color: "#00CED1" },
+  { type: "Access Log", desc: "User authentication, session management, role changes", color: "#7B61FF" },
+  { type: "Data Log", desc: "Record views, edits, exports, and deletions", color: "#D4616B" },
+  { type: "AI Inference", desc: "Model inputs, outputs, confidence scores, overrides", color: "#E8967C" },
+  { type: "System Event", desc: "API calls, integrations, scheduled tasks", color: "#C084FC" },
+  { type: "Consent Log", desc: "Patient consent grants, revocations, expiries", color: "#F2C1AE" },
 ];
 
 const stats = [
@@ -27,14 +27,14 @@ const stats = [
   { value: "Immutable", label: "Cryptographic signing" },
 ];
 
-/* ── Blockchain Chain Background (unique to Audit) ── */
+/* ── Chain Links Background (unique to Audit) ── */
 const ChainLinks = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.25 }}>
+      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.2 }}>
         {mounted && Array.from({ length: 12 }).map((_, i) => {
           const y = 15 + (i % 6) * 14;
           return (
@@ -46,7 +46,7 @@ const ChainLinks = () => {
                 height="30"
                 rx="4"
                 fill="none"
-                stroke="rgba(212,97,107,0.3)"
+                stroke="rgba(212,97,107,0.2)"
                 strokeWidth="1"
                 initial={{ opacity: 0, pathLength: 0 }}
                 animate={{ opacity: 1, pathLength: 1 }}
@@ -58,7 +58,7 @@ const ChainLinks = () => {
                   y1={`calc(${y}% + 15px)`}
                   x2={`calc(${5 + ((i + 1) % 3) * 35}%)`}
                   y2={`calc(${15 + ((i + 1) % 6) * 14}% + 15px)`}
-                  stroke="rgba(212,97,107,0.15)"
+                  stroke="rgba(212,97,107,0.1)"
                   strokeWidth="1"
                   strokeDasharray="4 4"
                   initial={{ pathLength: 0 }}
@@ -74,7 +74,6 @@ const ChainLinks = () => {
   );
 };
 
-/* ── Audit Trails: ChainLinks bg + ledger scroll reveal + hash animation ── */
 const AuditTrails = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: scrollRef, offset: ["start end", "end start"] });
@@ -84,14 +83,14 @@ const AuditTrails = () => {
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* HERO — Chain links + ledger appearance */}
+      {/* HERO */}
       <section
         className="relative overflow-hidden flex items-end md:items-center"
         style={{
           minHeight: "80vh",
           padding: "clamp(120px, 14vw, 200px) 0 clamp(64px, 7vw, 110px)",
           background: `
-            radial-gradient(600px 400px at 35% 45%, rgba(212,97,107,0.25), transparent 50%),
+            radial-gradient(600px 400px at 35% 45%, rgba(212,97,107,0.2), transparent 50%),
             radial-gradient(500px 350px at 65% 55%, rgba(91,31,166,0.3), transparent 50%),
             linear-gradient(170deg, #0D0010 0%, #1A0020 50%, #150028 100%)
           `,
@@ -101,7 +100,6 @@ const AuditTrails = () => {
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
             <div className="flex flex-col gap-5">
-              {/* Hash animation above title */}
               <motion.div
                 className="font-mono text-xs overflow-hidden"
                 style={{ color: "rgba(212,97,107,0.6)", letterSpacing: "0.05em" }}
@@ -109,7 +107,7 @@ const AuditTrails = () => {
                 animate={{ width: "100%" }}
                 transition={{ duration: 2, ease: "linear" }}
               >
-                0x8f4e2a1b9c3d7e6f...verified
+                0x8f4e2a1b9c3d7e6f…verified
               </motion.div>
               
               <h1 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em" }}>
@@ -136,7 +134,7 @@ const AuditTrails = () => {
               </motion.p>
             </div>
 
-            {/* Orb with chain overlay */}
+            {/* Orb */}
             <div className="relative flex items-center justify-center">
               <motion.div
                 initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
@@ -147,7 +145,7 @@ const AuditTrails = () => {
                   src={auditOrb}
                   alt="Audit Trails"
                   className="w-full max-w-[450px] object-contain"
-                  style={{ filter: "drop-shadow(0 30px 80px rgba(212,97,107,0.3))" }}
+                  style={{ filter: "drop-shadow(0 30px 80px rgba(212,97,107,0.25))" }}
                 />
               </motion.div>
               {/* Floating hash blocks */}
@@ -156,9 +154,9 @@ const AuditTrails = () => {
                   key={i}
                   className="absolute font-mono text-[10px] px-3 py-1.5 rounded"
                   style={{
-                    background: "rgba(212,97,107,0.1)",
-                    border: "1px solid rgba(212,97,107,0.2)",
-                    color: "rgba(212,97,107,0.7)",
+                    background: "rgba(212,97,107,0.08)",
+                    border: "1px solid rgba(212,97,107,0.15)",
+                    color: "rgba(212,97,107,0.6)",
                     top: `${25 + i * 25}%`,
                     right: `${5 + i * 10}%`,
                   }}
@@ -174,7 +172,7 @@ const AuditTrails = () => {
         </div>
       </section>
 
-      {/* FEATURES — Ledger entry cards */}
+      {/* FEATURES */}
       <section
         ref={scrollRef}
         className="relative overflow-hidden"
@@ -194,13 +192,14 @@ const AuditTrails = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded mb-4" style={{ background: "rgba(212,97,107,0.1)", border: "1px solid rgba(212,97,107,0.2)" }}>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded mb-4" style={{ background: "rgba(212,97,107,0.08)", border: "1px solid rgba(212,97,107,0.15)" }}>
               <motion.div
-                className="w-2 h-2 rounded-full bg-[#D4616B]"
+                className="w-2 h-2 rounded-full"
+                style={{ background: "#D4616B" }}
                 animate={{ opacity: [1, 0.3, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
-              <span className="font-mono text-xs" style={{ color: "#D4616B" }}>RECORDING</span>
+              <span className="text-xs" style={{ color: "#D4616B" }}>Recording</span>
             </div>
             <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
               Complete accountability.
@@ -215,13 +214,13 @@ const AuditTrails = () => {
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ delay: i * 0.12, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ y: -8, borderColor: "rgba(212,97,107,0.4)" }}
+                whileHover={{ y: -8, borderColor: "rgba(212,97,107,0.3)" }}
                 className="p-6 rounded-xl"
-                style={{ background: "rgba(212,97,107,0.05)", border: "1px solid rgba(212,97,107,0.15)" }}
+                style={{ background: "rgba(212,97,107,0.04)", border: "1px solid rgba(212,97,107,0.1)" }}
               >
                 <motion.div
                   className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                  style={{ background: "rgba(212,97,107,0.1)" }}
+                  style={{ background: "rgba(212,97,107,0.08)" }}
                   whileInView={{ rotate: [0, -10, 10, 0] }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.5 + i * 0.12, duration: 0.6 }}
@@ -236,7 +235,7 @@ const AuditTrails = () => {
         </div>
       </section>
 
-      {/* LOG TYPES — Terminal log stream */}
+      {/* LOG TYPES — Structured signal table */}
       <section
         className="relative overflow-hidden"
         style={{
@@ -260,22 +259,17 @@ const AuditTrails = () => {
               </p>
             </motion.div>
 
-            <div className="rounded-xl overflow-hidden" style={{ background: "#000", border: "1px solid rgba(255,255,255,0.1)" }}>
-              {/* Terminal header */}
-              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                  <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                  <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
-                </div>
-                <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>audit-stream.log</span>
+            <div className="rounded-xl overflow-hidden" style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(123,97,255,0.1)" }}>
+              <div className="px-5 py-3 border-b" style={{ borderColor: "rgba(123,97,255,0.08)" }}>
+                <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>Signal Taxonomy</span>
               </div>
               
-              <div className="p-4 font-mono text-sm">
+              <div className="p-4">
                 {logTypes.map((log, i) => (
                   <motion.div
                     key={log.type}
-                    className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0"
+                    className="flex items-center gap-3 py-3 border-b last:border-0"
+                    style={{ borderColor: "rgba(255,255,255,0.04)" }}
                     initial={{ opacity: 0, x: -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
@@ -287,8 +281,8 @@ const AuditTrails = () => {
                       animate={{ opacity: [0.4, 1, 0.4] }}
                       transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
                     />
-                    <span style={{ color: log.color, minWidth: 130 }}>{log.type}</span>
-                    <span style={{ color: "rgba(255,255,255,0.4)" }}>{log.desc}</span>
+                    <span style={{ color: log.color, minWidth: 130, fontSize: 14, fontWeight: 600 }}>{log.type}</span>
+                    <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 13 }}>{log.desc}</span>
                   </motion.div>
                 ))}
               </div>
@@ -297,7 +291,7 @@ const AuditTrails = () => {
         </div>
       </section>
 
-      {/* STATS — Metric blocks */}
+      {/* STATS */}
       <section
         className="relative overflow-hidden"
         style={{
@@ -325,7 +319,7 @@ const AuditTrails = () => {
                 transition={{ delay: i * 0.12, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ scale: 1.05 }}
                 className="p-6 rounded-xl text-center"
-                style={{ background: "rgba(212,97,107,0.05)", border: "1px solid rgba(212,97,107,0.1)", perspective: 1000 }}
+                style={{ background: "rgba(212,97,107,0.04)", border: "1px solid rgba(212,97,107,0.1)", perspective: 1000 }}
               >
                 <div className="font-mono" style={{ fontSize: "clamp(24px, 2.5vw, 36px)", fontWeight: 700, color: "#fff" }}>{s.value}</div>
                 <div className="font-mono mt-2" style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>{s.label}</div>
