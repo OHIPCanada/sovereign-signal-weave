@@ -35,10 +35,10 @@ const navLinks: NavItem[] = [
   {
     label: "INFRASTRUCTURE",
     children: [
-      { label: "Deployment", href: "/#deployment" },
-      { label: "Governance", href: "/#sovereignty" },
-      { label: "Audit Trails", href: "/#signal-integrity" },
-      { label: "Interoperability", href: "/#deployment-surfaces" },
+      { label: "Deployment", href: "/infrastructure/deployment" },
+      { label: "Governance", href: "/infrastructure/governance" },
+      { label: "Audit Trails", href: "/infrastructure/audit-trails" },
+      { label: "Interoperability", href: "/infrastructure/interoperability" },
     ],
   },
   { label: "CONTACT", href: "/company/contact" },
