@@ -268,10 +268,11 @@ const AuditTrails = () => {
             </motion.div>
 
             <div className="rounded-2xl overflow-hidden" style={{
-              background: "rgba(255,255,255,0.7)",
-              border: "1px solid rgba(123,97,255,0.08)",
-              backdropFilter: "blur(20px)",
-              boxShadow: "0 8px 40px rgba(60,40,120,0.06)",
+              background: "rgba(255,255,255,0.18)",
+              border: "1px solid rgba(255,255,255,0.25)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
             }}>
               <div className="px-5 py-3 border-b" style={{ borderColor: "rgba(123,97,255,0.06)" }}>
                 <span className="text-xs font-mono" style={{ color: "rgba(30,20,50,0.4)" }}>Signal Taxonomy</span>
