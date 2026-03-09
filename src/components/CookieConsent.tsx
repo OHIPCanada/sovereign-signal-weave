@@ -32,11 +32,40 @@ export const hasConsent = (type: keyof Omit<ConsentPreferences, "timestamp">): b
   return prefs?.[type] ?? false;
 };
 
-// Custom event for reopening the consent banner
+// Custom events
 const REOPEN_EVENT = "docg:reopen-consent";
+const CONSENT_CHANGED_EVENT = "docg:consent-changed";
 
 export const reopenConsentBanner = () => {
   window.dispatchEvent(new CustomEvent(REOPEN_EVENT));
+};
+
+// Three states: null = not yet set, "partial" = some on, "all" = all on, "minimal" = only necessary
+export type ConsentStatus = "all" | "partial" | "minimal" | null;
+
+export const getConsentStatus = (): ConsentStatus => {
+  const prefs = getConsentPreferences();
+  if (!prefs) return null;
+  if (prefs.analytics && prefs.marketing) return "all";
+  if (prefs.analytics || prefs.marketing) return "partial";
+  return "minimal";
+};
+
+// Call after saving to notify listeners
+const dispatchConsentChanged = () => {
+  window.dispatchEvent(new CustomEvent(CONSENT_CHANGED_EVENT));
+};
+
+export const useConsentStatus = () => {
+  const [status, setStatus] = useState<ConsentStatus>(getConsentStatus);
+
+  useEffect(() => {
+    const update = () => setStatus(getConsentStatus());
+    window.addEventListener(CONSENT_CHANGED_EVENT, update);
+    return () => window.removeEventListener(CONSENT_CHANGED_EVENT, update);
+  }, []);
+
+  return status;
 };
 
 // Forward ref wrapper for framer-motion compatibility
