@@ -1,6 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
+import PulseRings from "@/components/hero-backgrounds/PulseRings";
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
