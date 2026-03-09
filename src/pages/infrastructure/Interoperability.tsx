@@ -275,7 +275,7 @@ const Interoperability = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <h2 style={{ color: "#1B0F2E", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)" }}>
+            <h2 style={{ color: "#1B0F2E", fontWeight: 800, fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95, letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.10)" }}>
               Five steps to unified data.
             </h2>
           </motion.div>
