@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Shield, Lock, CheckCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const badges = [
   {
