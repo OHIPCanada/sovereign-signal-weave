@@ -1,5 +1,7 @@
 import { reopenConsentBanner, useConsentStatus } from "./CookieConsent";
 import { Link } from "react-router-dom";
+import { useContactModal } from "./contact/ContactModalContext";
+
 
 const footerLinks = {
   company: [
