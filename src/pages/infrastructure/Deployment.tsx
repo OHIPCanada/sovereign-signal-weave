@@ -304,9 +304,11 @@ const Deployment = () => {
                     transition={{ delay: i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                     className="flex items-center justify-between p-4 rounded-xl"
                     style={{
-                      background: "rgba(255,255,255,0.7)",
-                      border: "1px solid rgba(123,97,255,0.08)",
-                      boxShadow: "0 2px 12px rgba(60,40,120,0.04)",
+                      background: "rgba(255,255,255,0.18)",
+                      border: "1px solid rgba(255,255,255,0.25)",
+                      backdropFilter: "blur(24px)",
+                      WebkitBackdropFilter: "blur(24px)",
+                      boxShadow: "0 2px 12px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                     }}
                   >
                     <span style={{ color: "#1B0F2E", fontSize: 14, fontWeight: 500 }}>{item.label}</span>

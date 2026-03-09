@@ -333,7 +333,7 @@ const AuditTrails = () => {
                 transition={{ delay: i * 0.12, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ scale: 1.05 }}
                 className="p-6 rounded-xl text-center"
-                style={{ background: "rgba(212,97,107,0.04)", border: "1px solid rgba(212,97,107,0.1)", perspective: 1000 }}
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)", perspective: 1000 }}
               >
                 <div className="font-mono" style={{ fontSize: "clamp(24px, 2.5vw, 36px)", fontWeight: 700, color: "#fff" }}>{s.value}</div>
                 <div className="font-mono mt-2" style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>{s.label}</div>
