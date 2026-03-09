@@ -360,13 +360,13 @@ const Contact = () => {
               {/* Response protocol */}
               <div
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6))",
-                  border: "1px solid rgba(90,70,160,0.1)",
-                  backdropFilter: "blur(16px)",
-                  WebkitBackdropFilter: "blur(16px)",
+                  background: "rgba(255,255,255,0.18)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
                   borderRadius: 20,
                   padding: "36px 30px",
-                  boxShadow: "0 12px 40px rgba(60,40,120,0.05)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
                 <p
