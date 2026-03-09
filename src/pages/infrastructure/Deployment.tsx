@@ -112,6 +112,7 @@ const Deployment = () => {
                 style={{
                   color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95,
                   fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em",
+                  textShadow: "0 10px 40px rgba(0,0,0,0.22)",
                 }}
               >
                 {["Deploy where", "your data", "already lives."].map((line, li) => (
@@ -130,7 +131,7 @@ const Deployment = () => {
                 initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ delay: 0.8, duration: 0.6 }}
-                style={{ color: "rgba(255,255,255,0.7)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+                style={{ color: "rgba(255,255,255,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
               >
                 Sovereign AI infrastructure that runs inside your security perimeter — on-premise, private cloud, or hybrid.
               </motion.p>
@@ -177,7 +178,7 @@ const Deployment = () => {
             <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(212,97,107,0.08)", color: "#D4616B", border: "1px solid rgba(212,97,107,0.12)" }}>
               Deployment Models
             </span>
-            <h2 className="mt-4" style={{ color: "#111", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
+            <h2 className="mt-4" style={{ color: "#1B0F2E", fontWeight: 800, fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95, letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.10)" }}>
               Choose your surface.
             </h2>
           </motion.div>

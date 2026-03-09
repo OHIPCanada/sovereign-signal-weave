@@ -89,7 +89,7 @@ const Governance = () => {
               </motion.div>
               
               <motion.h1
-                style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em" }}
+                style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.22)" }}
               >
                 {["Privacy by", "architecture,", "not policy."].map((line, li) => (
                   <motion.span
@@ -108,7 +108,7 @@ const Governance = () => {
                 initial={{ opacity: 0 }}
                 animate={heroInView ? { opacity: 1 } : {}}
                 transition={{ delay: 0.7, duration: 0.6 }}
-                style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+        style={{ color: "rgba(255,255,255,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
               >
                 Data governance isn't a checkbox — it's wired into how we store, route, and process every clinical signal.
               </motion.p>
@@ -173,7 +173,7 @@ const Governance = () => {
             <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(212,97,107,0.08)", color: "#D4616B", border: "1px solid rgba(212,97,107,0.12)" }}>
               Regulatory Compliance
             </span>
-            <h2 className="mt-4" style={{ color: "#111", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
+            <h2 className="mt-4" style={{ color: "#1B0F2E", fontWeight: 800, fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95, letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.10)" }}>
               Built for Canadian healthcare.
             </h2>
           </motion.div>
@@ -241,7 +241,7 @@ const Governance = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 style={{ color: "#1B0F2E", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)" }}>Privacy-first design.</h2>
+            <h2 style={{ color: "#1B0F2E", fontWeight: 800, fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95, letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.10)" }}>Privacy-first design.</h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -292,7 +292,7 @@ const Governance = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>Governance Metrics</span>
+            <span className="font-mono uppercase text-xs" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.22em" }}>[ Governance Metrics ]</span>
           </motion.div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

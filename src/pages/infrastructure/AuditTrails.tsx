@@ -110,7 +110,7 @@ const AuditTrails = () => {
                 0x8f4e2a1b9c3d7e6f…verified
               </motion.div>
               
-              <h1 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em" }}>
+              <h1 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.22)" }}>
                 {["Every signal", "logged.", "Forever."].map((line, li) => (
                   <motion.span
                     key={li}
@@ -128,7 +128,7 @@ const AuditTrails = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 0.6 }}
-                style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+        style={{ color: "rgba(255,255,255,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
               >
                 Immutable, cryptographically signed audit trails for every clinical interaction.
               </motion.p>
@@ -199,7 +199,7 @@ const AuditTrails = () => {
               />
               <span className="text-xs" style={{ color: "#D4616B", fontWeight: 500 }}>Recording</span>
             </div>
-            <h2 style={{ color: "#111", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
+            <h2 style={{ color: "#1B0F2E", fontWeight: 800, fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95, letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.10)" }}>
               Complete accountability.
             </h2>
           </motion.div>
@@ -258,10 +258,10 @@ const AuditTrails = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <h2 style={{ color: "#1B0F2E", fontWeight: 700, fontSize: "clamp(28px, 3vw, 44px)", lineHeight: 1.1 }}>
+              <h2 style={{ color: "#1B0F2E", fontWeight: 800, fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95, letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.10)" }}>
                 Structured signal capture.
               </h2>
-              <p className="mt-4" style={{ color: "rgba(30,20,50,0.55)", fontSize: 14, lineHeight: 1.6 }}>
+              <p className="mt-4" style={{ color: "rgba(27,15,46,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55 }}>
                 Every event is categorized, timestamped, and linked to its originating context.
               </p>
             </motion.div>
@@ -318,7 +318,7 @@ const AuditTrails = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)" }}>Built for scale.</h2>
+            <h2 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95, letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.22)" }}>Built for scale.</h2>
           </motion.div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
