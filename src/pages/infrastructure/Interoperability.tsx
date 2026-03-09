@@ -116,7 +116,7 @@ const Interoperability = () => {
                 </motion.div>
               </motion.div>
               
-              <h1 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.22)" }}>
+              <h1 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.22)", textShadow: "0 10px 40px rgba(0,0,0,0.22)" }}>
                 {["Connect", "everything.", "Seamlessly."].map((line, li) => (
                   <motion.span
                     key={li}
@@ -134,7 +134,7 @@ const Interoperability = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
-                style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+        72       style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
               >
                 Native HL7 FHIR, v2.x, and CDA support. Pre-built connectors for major Canadian EMRs.
               </motion.p>
