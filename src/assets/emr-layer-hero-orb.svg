@@ -1,0 +1,86 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="coreGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 512) rotate(90) scale(170)">
+      <stop offset="0" stop-color="#E6FBFF"/>
+      <stop offset="0.28" stop-color="#5CD4FF"/>
+      <stop offset="0.62" stop-color="#2384E8"/>
+      <stop offset="1" stop-color="#0D4FA1"/>
+    </radialGradient>
+    <radialGradient id="shellGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 512) rotate(90) scale(270)">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.08"/>
+      <stop offset="0.45" stop-color="#62B8FF" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#1F6EC8" stop-opacity="0.55"/>
+    </radialGradient>
+    <filter id="soft" x="0" y="0" width="1024" height="1024" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="2.5"/>
+    </filter>
+    <filter id="strongGlow" x="0" y="0" width="1024" height="1024" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="8"/>
+    </filter>
+  </defs>
+
+  <g stroke="#56A8FF" stroke-opacity="0.58" stroke-width="3.2" filter="url(#soft)">
+    <line x1="512" y1="512" x2="512" y2="262"/>
+    <line x1="512" y1="512" x2="607" y2="281"/>
+    <line x1="512" y1="512" x2="690" y2="334"/>
+    <line x1="512" y1="512" x2="744" y2="417"/>
+    <line x1="512" y1="512" x2="762" y2="512"/>
+    <line x1="512" y1="512" x2="744" y2="607"/>
+    <line x1="512" y1="512" x2="690" y2="690"/>
+    <line x1="512" y1="512" x2="607" y2="744"/>
+    <line x1="512" y1="512" x2="512" y2="762"/>
+    <line x1="512" y1="512" x2="417" y2="744"/>
+    <line x1="512" y1="512" x2="334" y2="690"/>
+    <line x1="512" y1="512" x2="281" y2="607"/>
+    <line x1="512" y1="512" x2="262" y2="512"/>
+    <line x1="512" y1="512" x2="281" y2="417"/>
+    <line x1="512" y1="512" x2="334" y2="334"/>
+    <line x1="512" y1="512" x2="417" y2="281"/>
+  </g>
+
+  <g stroke="#7AC4FF" stroke-opacity="0.3" stroke-width="2.1" filter="url(#soft)">
+    <line x1="512" y1="262" x2="607" y2="281"/>
+    <line x1="607" y1="281" x2="690" y2="334"/>
+    <line x1="690" y1="334" x2="744" y2="417"/>
+    <line x1="744" y1="417" x2="762" y2="512"/>
+    <line x1="762" y1="512" x2="744" y2="607"/>
+    <line x1="744" y1="607" x2="690" y2="690"/>
+    <line x1="690" y1="690" x2="607" y2="744"/>
+    <line x1="607" y1="744" x2="512" y2="762"/>
+    <line x1="512" y1="762" x2="417" y2="744"/>
+    <line x1="417" y1="744" x2="334" y2="690"/>
+    <line x1="334" y1="690" x2="281" y2="607"/>
+    <line x1="281" y1="607" x2="262" y2="512"/>
+    <line x1="262" y1="512" x2="281" y2="417"/>
+    <line x1="281" y1="417" x2="334" y2="334"/>
+    <line x1="334" y1="334" x2="417" y2="281"/>
+    <line x1="417" y1="281" x2="512" y2="262"/>
+    <line x1="690" y1="334" x2="512" y2="262"/>
+    <line x1="744" y1="607" x2="512" y2="762"/>
+    <line x1="334" y1="690" x2="607" y2="744"/>
+    <line x1="281" y1="417" x2="690" y2="334"/>
+  </g>
+
+  <circle cx="512" cy="512" r="168" fill="url(#shellGlow)"/>
+  <circle cx="512" cy="512" r="126" fill="url(#coreGlow)"/>
+  <circle cx="512" cy="512" r="44" fill="#E6FBFF" filter="url(#strongGlow)"/>
+
+  <g>
+    <circle cx="512" cy="262" r="13" fill="#6BB8FF"/>
+    <circle cx="607" cy="281" r="12" fill="#78C8FF"/>
+    <circle cx="690" cy="334" r="12" fill="#5DA8FF"/>
+    <circle cx="744" cy="417" r="11" fill="#6BB8FF"/>
+    <circle cx="762" cy="512" r="11" fill="#8BD4FF"/>
+    <circle cx="744" cy="607" r="11" fill="#6BB8FF"/>
+    <circle cx="690" cy="690" r="12" fill="#5DA8FF"/>
+    <circle cx="607" cy="744" r="12" fill="#78C8FF"/>
+    <circle cx="512" cy="762" r="13" fill="#6BB8FF"/>
+    <circle cx="417" cy="744" r="12" fill="#78C8FF"/>
+    <circle cx="334" cy="690" r="12" fill="#5DA8FF"/>
+    <circle cx="281" cy="607" r="11" fill="#6BB8FF"/>
+    <circle cx="262" cy="512" r="11" fill="#8BD4FF"/>
+    <circle cx="281" cy="417" r="11" fill="#6BB8FF"/>
+    <circle cx="334" cy="334" r="12" fill="#5DA8FF"/>
+    <circle cx="417" cy="281" r="12" fill="#78C8FF"/>
+  </g>
+</svg>

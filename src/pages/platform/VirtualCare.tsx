@@ -1,7 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import heroOrb from "@/assets/virtual-care-hero-orb.png";
+import heroOrb from "@/assets/virtual-care-hero-orb.svg";
 import { Video, MessageSquare, Phone, Globe, Monitor, Users } from "lucide-react";
 import { useRef, useEffect } from "react";
 
