@@ -208,12 +208,15 @@ const Footer = () => {
             >
               hello@docg.ai
             </a>
-            <span
-              className="block"
-              style={{ fontSize: 14, color: "rgba(255,255,255,.55)", padding: "6px 0" }}
+            <a
+              href="https://www.linkedin.com/company/98831917"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block no-underline transition-colors duration-200 hover:!text-white/90"
+              style={linkStyle}
             >
-              Canada-first
-            </span>
+              LinkedIn
+            </a>
             <Link
               to="/company/contact"
               className="block no-underline transition-colors duration-200 hover:!text-white/90"
