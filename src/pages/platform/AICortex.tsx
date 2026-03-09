@@ -1,7 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import heroOrb from "@/assets/ai-cortex-hero-orb.png";
+import heroOrb from "@/assets/ai-cortex-hero-orb.svg";
 import { Brain, Cpu, Network, Workflow, Shield, Zap } from "lucide-react";
 import { useRef, useEffect } from "react";
 
