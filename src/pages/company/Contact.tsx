@@ -2,9 +2,12 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import DriftingGrid from "@/components/hero-backgrounds/DriftingGrid";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Send, ArrowRight } from "lucide-react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+
+const HCAPTCHA_SITE_KEY = "50b2fe65-b00b-4b9e-ad62-3ba471098be2";
 
 const channels = [
   { label: "Email", value: "contact@docg.ai", sub: "Response within 24 hours", href: "mailto:contact@docg.ai" },
