@@ -5,8 +5,8 @@ import heroOrb from "@/assets/emr-layer-hero-orb.png";
 import { Database, ArrowLeftRight, Layers, Lock, Activity, FileText } from "lucide-react";
 import { useRef, useEffect } from "react";
 
-/* ── Data Stream Waterfall Canvas (unique animation) ── */
-const DataStreamCanvas = () => {
+/* ── Data Stream Waterfall — rendered as hero background ── */
+const DataStreamBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -34,8 +34,7 @@ const DataStreamCanvas = () => {
 
     interface DataPacket { x: number; y: number; speed: number; size: number; color: string; }
     const packets: DataPacket[] = Array.from({ length: 80 }, () => ({
-      x: Math.random(),
-      y: Math.random(),
+      x: Math.random(), y: Math.random(),
       speed: 0.001 + Math.random() * 0.003,
       size: 2 + Math.random() * 3,
       color: Math.random() > 0.5 ? "rgba(212,97,107,0.7)" : "rgba(123,97,255,0.6)",
@@ -50,7 +49,6 @@ const DataStreamCanvas = () => {
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Vertical data streams
       streams.forEach(s => {
         const sx = s.x * w;
         const segments = 20;
@@ -65,7 +63,6 @@ const DataStreamCanvas = () => {
         }
       });
 
-      // Convergence zone (horizontal band in middle)
       const bandY = h * 0.45;
       const bandH = h * 0.1;
       const bandGrad = ctx.createLinearGradient(0, bandY, 0, bandY + bandH);
@@ -76,31 +73,21 @@ const DataStreamCanvas = () => {
       ctx.fillStyle = bandGrad;
       ctx.fillRect(0, bandY, w, bandH);
 
-      // Horizontal scan line
       const scanX = ((t * 0.15) % 1) * w;
       ctx.fillStyle = `rgba(123,97,255,0.12)`;
       ctx.fillRect(scanX - 2, bandY, 4 * DPR, bandH);
 
-      // Data packets flowing down and converging to center
       packets.forEach(p => {
         p.y += p.speed;
         if (p.y > 1) { p.y = 0; p.x = Math.random(); }
-
-        // Pull toward center Y as they pass convergence zone
         const distToCenter = Math.abs(p.y - 0.5);
-        if (distToCenter < 0.15) {
-          p.x += (0.5 - p.x) * 0.002;
-        }
-
+        if (distToCenter < 0.15) p.x += (0.5 - p.x) * 0.002;
         const px = p.x * w;
         const py = p.y * h;
-
         ctx.beginPath();
         ctx.arc(px, py, p.size * DPR, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.fill();
-
-        // Trail
         ctx.beginPath();
         ctx.moveTo(px, py);
         ctx.lineTo(px, py - 8 * DPR);
@@ -116,7 +103,7 @@ const DataStreamCanvas = () => {
     return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
   }, []);
 
-  return <canvas ref={canvasRef} className="w-full" style={{ height: "clamp(300px, 40vh, 500px)", display: "block" }} />;
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.6 }} />;
 };
 
 const integrations = [
@@ -154,7 +141,7 @@ const EMRLayer = () => {
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* Hero */}
+      {/* Hero with Data Stream animation as background */}
       <section
         ref={containerRef}
         className="relative min-h-screen flex items-center overflow-hidden"
@@ -166,6 +153,8 @@ const EMRLayer = () => {
           `,
         }}
       >
+        <DataStreamBackground />
+
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundSize: "128px 128px",
@@ -225,41 +214,6 @@ const EMRLayer = () => {
                 style={{ filter: "drop-shadow(0 0 80px rgba(212,97,107,0.3))" }}
               />
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Data Stream Animation */}
-      <section className="relative overflow-hidden" style={{
-        padding: "clamp(64px, 8vw, 120px) 0",
-        background: `
-          radial-gradient(1100px 600px at 50% 50%, rgba(212,97,107,0.12), transparent 55%),
-          linear-gradient(180deg, #0B0613 0%, #140A2A 50%, #0B0613 100%)
-        `,
-      }}>
-        <div className="mx-auto px-6 md:px-12" style={{ width: "min(1200px, 92vw)" }}>
-          <div className="text-center mb-10">
-            <p className="font-mono uppercase mb-5" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-              [ DATA CONVERGENCE ]
-            </p>
-            <h2 className="mb-5" style={{
-              fontSize: "clamp(44px, 5.2vw, 84px)", fontWeight: 800,
-              color: "rgba(255,255,255,0.95)", lineHeight: 0.95,
-              letterSpacing: "-0.02em",
-              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-            }}>
-              Every signal, unified.
-            </h2>
-          </div>
-
-          <div className="rounded-[28px] overflow-hidden" style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            boxShadow: "0 30px 80px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
-          }}>
-            <DataStreamCanvas />
           </div>
         </div>
       </section>

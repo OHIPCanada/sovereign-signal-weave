@@ -5,8 +5,8 @@ import heroOrb from "@/assets/patient-access-hero-orb.png";
 import { Users, CalendarCheck, Clock, Shield, Smartphone, HeartPulse } from "lucide-react";
 import { useRef, useEffect } from "react";
 
-/* ── Radial Gateway Canvas (unique animation) ── */
-const GatewayCanvas = () => {
+/* ── Radial Gateway Canvas — rendered as hero background ── */
+const GatewayBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -23,7 +23,6 @@ const GatewayCanvas = () => {
     resize();
     window.addEventListener("resize", resize);
 
-    // Orbiting access points
     interface AccessPoint {
       angle: number; radius: number; speed: number;
       size: number; color: string; label: string;
@@ -36,7 +35,6 @@ const GatewayCanvas = () => {
       { angle: Math.PI * 1.6, radius: 0.35, speed: 0.11, size: 6, color: "rgba(232,150,124,0.75)", label: "Follow-Up" },
     ];
 
-    // Incoming patient signals
     interface Signal { angle: number; dist: number; speed: number; }
     const signals: Signal[] = Array.from({ length: 30 }, () => ({
       angle: Math.random() * Math.PI * 2,
@@ -56,7 +54,6 @@ const GatewayCanvas = () => {
       const minDim = Math.min(w, h);
       ctx.clearRect(0, 0, w, h);
 
-      // Central gateway glow
       const gateGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, minDim * 0.15);
       gateGrad.addColorStop(0, `rgba(232,150,124,${0.25 + Math.sin(t * 0.8) * 0.08})`);
       gateGrad.addColorStop(0.5, "rgba(212,97,107,0.08)");
@@ -64,7 +61,6 @@ const GatewayCanvas = () => {
       ctx.fillStyle = gateGrad;
       ctx.fillRect(0, 0, w, h);
 
-      // Concentric orbit rings
       [0.2, 0.28, 0.35, 0.42].forEach((r, i) => {
         ctx.beginPath();
         ctx.arc(cx, cy, minDim * r, 0, Math.PI * 2);
@@ -75,19 +71,15 @@ const GatewayCanvas = () => {
         ctx.setLineDash([]);
       });
 
-      // Draw incoming signals converging to center
       signals.forEach(s => {
         s.dist -= s.speed;
         if (s.dist < 0.05) {
           s.dist = 0.45 + Math.random() * 0.15;
           s.angle = Math.random() * Math.PI * 2;
         }
-
         const sx = cx + Math.cos(s.angle) * minDim * s.dist;
         const sy = cy + Math.sin(s.angle) * minDim * s.dist;
         const alpha = s.dist < 0.15 ? s.dist / 0.15 : 1;
-
-        // Trail line toward center
         ctx.beginPath();
         ctx.moveTo(sx, sy);
         const trailEnd = s.dist + 0.03;
@@ -95,59 +87,45 @@ const GatewayCanvas = () => {
         ctx.strokeStyle = `rgba(232,150,124,${alpha * 0.15})`;
         ctx.lineWidth = 1;
         ctx.stroke();
-
-        // Signal dot
         ctx.beginPath();
         ctx.arc(sx, sy, 2 * DPR, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(232,150,124,${alpha * 0.6})`;
         ctx.fill();
       });
 
-      // Draw access point orbits
       accessPoints.forEach(ap => {
         const a = ap.angle + t * ap.speed;
         const px = cx + Math.cos(a) * minDim * ap.radius;
         const py = cy + Math.sin(a) * minDim * ap.radius;
-
-        // Connection to center
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.lineTo(px, py);
         ctx.strokeStyle = ap.color.replace(/[\d.]+\)$/, "0.12)");
         ctx.lineWidth = 1;
         ctx.stroke();
-
-        // Glow
         ctx.beginPath();
         ctx.arc(px, py, ap.size * 3 * DPR, 0, Math.PI * 2);
         ctx.fillStyle = ap.color.replace(/[\d.]+\)$/, "0.08)");
         ctx.fill();
-
-        // Core
         ctx.beginPath();
         ctx.arc(px, py, ap.size * DPR, 0, Math.PI * 2);
         ctx.fillStyle = ap.color;
         ctx.fill();
-
-        // Inner bright
         ctx.beginPath();
         ctx.arc(px, py, 2 * DPR, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(255,255,255,0.8)";
         ctx.fill();
       });
 
-      // Central gateway core
       ctx.beginPath();
       ctx.arc(cx, cy, 12 * DPR, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(232,150,124,0.9)";
       ctx.fill();
-
       ctx.beginPath();
       ctx.arc(cx, cy, 5 * DPR, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(255,255,255,0.95)";
       ctx.fill();
 
-      // Pulse rings from center
       for (let ring = 0; ring < 2; ring++) {
         const ringT = (t * 0.3 + ring * 0.5) % 1;
         const ringR = ringT * minDim * 0.2;
@@ -166,7 +144,7 @@ const GatewayCanvas = () => {
     return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
   }, []);
 
-  return <canvas ref={canvasRef} className="w-full" style={{ height: "clamp(300px, 40vh, 500px)", display: "block" }} />;
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.7 }} />;
 };
 
 const features = [
@@ -204,7 +182,7 @@ const PatientAccess = () => {
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* Hero */}
+      {/* Hero with Gateway animation as background */}
       <section
         ref={containerRef}
         className="relative min-h-screen flex items-center overflow-hidden"
@@ -216,6 +194,8 @@ const PatientAccess = () => {
           `,
         }}
       >
+        <GatewayBackground />
+
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundSize: "128px 128px",
@@ -275,41 +255,6 @@ const PatientAccess = () => {
                 style={{ filter: "drop-shadow(0 0 80px rgba(232,150,124,0.3))" }}
               />
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Gateway Animation */}
-      <section className="relative overflow-hidden" style={{
-        padding: "clamp(64px, 8vw, 120px) 0",
-        background: `
-          radial-gradient(1100px 600px at 50% 50%, rgba(232,150,124,0.10), transparent 55%),
-          linear-gradient(180deg, #0B0613 0%, #140A2A 50%, #0B0613 100%)
-        `,
-      }}>
-        <div className="mx-auto px-6 md:px-12" style={{ width: "min(1200px, 92vw)" }}>
-          <div className="text-center mb-10">
-            <p className="font-mono uppercase mb-5" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-              [ ACCESS GATEWAY ]
-            </p>
-            <h2 className="mb-5" style={{
-              fontSize: "clamp(44px, 5.2vw, 84px)", fontWeight: 800,
-              color: "rgba(255,255,255,0.95)", lineHeight: 0.95,
-              letterSpacing: "-0.02em",
-              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-            }}>
-              Every journey starts here.
-            </h2>
-          </div>
-
-          <div className="rounded-[28px] overflow-hidden" style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            boxShadow: "0 30px 80px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
-          }}>
-            <GatewayCanvas />
           </div>
         </div>
       </section>

@@ -3,10 +3,10 @@ import Footer from "@/components/Footer";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import heroOrb from "@/assets/ai-cortex-hero-orb.png";
 import { Brain, Cpu, Network, Workflow, Shield, Zap } from "lucide-react";
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect } from "react";
 
-/* ── Neural Pulse Canvas (unique animation) ── */
-const NeuralPulseCanvas = () => {
+/* ── Neural Pulse Canvas — rendered as hero background ── */
+const NeuralPulseBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -41,7 +41,6 @@ const NeuralPulseCanvas = () => {
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      // Central cortex glow
       const cGrad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, h * 0.6);
       cGrad.addColorStop(0, `rgba(123,97,255,${0.12 + Math.sin(t * 0.5) * 0.04})`);
       cGrad.addColorStop(0.5, "rgba(123,97,255,0.03)");
@@ -49,17 +48,14 @@ const NeuralPulseCanvas = () => {
       ctx.fillStyle = cGrad;
       ctx.fillRect(0, 0, w, h);
 
-      // Update + draw nodes
       nodes.forEach(n => {
-        n.x += n.vx;
-        n.y += n.vy;
+        n.x += n.vx; n.y += n.vy;
         if (n.x < 0 || n.x > 1) n.vx *= -1;
         if (n.y < 0 || n.y > 1) n.vy *= -1;
         n.x = Math.max(0, Math.min(1, n.x));
         n.y = Math.max(0, Math.min(1, n.y));
       });
 
-      // Connections
       const DIST = 120 * DPR;
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
@@ -75,8 +71,6 @@ const NeuralPulseCanvas = () => {
             ctx.strokeStyle = `rgba(123,97,255,${alpha * (0.5 + pulse * 0.5)})`;
             ctx.lineWidth = 1;
             ctx.stroke();
-
-            // Traveling pulse along connection
             if (pulse > 0.8) {
               const px = nodes[i].x * w + (nodes[j].x - nodes[i].x) * w * ((t * 0.3) % 1);
               const py = nodes[i].y * h + (nodes[j].y - nodes[i].y) * h * ((t * 0.3) % 1);
@@ -89,31 +83,21 @@ const NeuralPulseCanvas = () => {
         }
       }
 
-      // Draw nodes
       nodes.forEach(n => {
         const px = n.x * w;
         const py = n.y * h;
         const breathe = Math.sin(t * 1.5 + n.phase) * 0.3 + 0.7;
         const r = (n.layer === 0 ? 2 : n.layer === 1 ? 3 : 4) * DPR;
-
-        // Glow
         ctx.beginPath();
         ctx.arc(px, py, r * 4, 0, Math.PI * 2);
-        ctx.fillStyle = n.layer === 2
-          ? `rgba(212,97,107,${0.08 * breathe})`
-          : `rgba(123,97,255,${0.06 * breathe})`;
+        ctx.fillStyle = n.layer === 2 ? `rgba(212,97,107,${0.08 * breathe})` : `rgba(123,97,255,${0.06 * breathe})`;
         ctx.fill();
-
-        // Core
         ctx.beginPath();
         ctx.arc(px, py, r, 0, Math.PI * 2);
-        ctx.fillStyle = n.layer === 2
-          ? `rgba(212,97,107,${0.7 * breathe})`
-          : `rgba(123,97,255,${0.6 * breathe})`;
+        ctx.fillStyle = n.layer === 2 ? `rgba(212,97,107,${0.7 * breathe})` : `rgba(123,97,255,${0.6 * breathe})`;
         ctx.fill();
       });
 
-      // Concentric pulse rings from center
       for (let ring = 0; ring < 3; ring++) {
         const ringT = (t * 0.2 + ring * 0.33) % 1;
         const ringR = ringT * Math.min(w, h) * 0.5;
@@ -132,7 +116,7 @@ const NeuralPulseCanvas = () => {
     return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
   }, []);
 
-  return <canvas ref={canvasRef} className="w-full" style={{ height: "clamp(300px, 40vh, 500px)", display: "block" }} />;
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.7 }} />;
 };
 
 const capabilities = [
@@ -170,7 +154,7 @@ const AICortex = () => {
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* Hero */}
+      {/* Hero with Neural Pulse animation as background */}
       <section
         ref={containerRef}
         className="relative min-h-screen flex items-center overflow-hidden"
@@ -182,6 +166,9 @@ const AICortex = () => {
           `,
         }}
       >
+        {/* Canvas animation as hero background */}
+        <NeuralPulseBackground />
+
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
           backgroundSize: "128px 128px",
@@ -242,47 +229,6 @@ const AICortex = () => {
                 style={{ filter: "drop-shadow(0 0 80px rgba(123,97,255,0.3))" }}
               />
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Neural Pulse Animation Section */}
-      <section className="relative overflow-hidden" style={{
-        padding: "clamp(64px, 8vw, 120px) 0",
-        background: `
-          radial-gradient(1100px 600px at 50% 50%, rgba(123,97,255,0.15), transparent 55%),
-          linear-gradient(180deg, #0B0613 0%, #140A2A 50%, #0B0613 100%)
-        `,
-      }}>
-        <div className="mx-auto px-6 md:px-12" style={{ width: "min(1200px, 92vw)" }}>
-          <div className="text-center mb-10">
-            <p className="font-mono uppercase mb-5" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-              [ NEURAL ARCHITECTURE ]
-            </p>
-            <h2 className="mb-5" style={{
-              fontSize: "clamp(44px, 5.2vw, 84px)", fontWeight: 800,
-              color: "rgba(255,255,255,0.95)", lineHeight: 0.95,
-              letterSpacing: "-0.02em",
-              textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-            }}>
-              Intelligence that thinks in networks.
-            </h2>
-            <p style={{
-              color: "rgba(255,255,255,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)",
-              lineHeight: 1.55, maxWidth: "46ch", margin: "0 auto",
-            }}>
-              A living neural mesh that continuously processes, routes, and verifies clinical signals across the entire care system.
-            </p>
-          </div>
-
-          <div className="rounded-[28px] overflow-hidden" style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            boxShadow: "0 30px 80px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06)",
-          }}>
-            <NeuralPulseCanvas />
           </div>
         </div>
       </section>
