@@ -355,11 +355,6 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
 };
 
 export default Navigation;
-
-  {
-    label: "PLATFORM",
-    children: [
-      { label: "AI Cortex", href: "/#platform" },
       { label: "EMR Layer", href: "/#features" },
       { label: "Virtual Care", href: "/#features" },
       { label: "Patient Access", href: "/#deployment-surfaces" },
