@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -44,6 +44,144 @@ const navLinks: NavItem[] = [
   { label: "CONTACT", href: "/company/contact" },
 ];
 
+function useDropdownClamp(anchorRef: React.RefObject<HTMLDivElement>, open: boolean) {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [leftOffset, setLeftOffset] = useState(0);
+
+  const recompute = useCallback(() => {
+    const anchorEl = anchorRef.current;
+    const dropdownEl = dropdownRef.current;
+    if (!anchorEl || !dropdownEl) return;
+
+    const anchorRect = anchorEl.getBoundingClientRect();
+    const dropW = dropdownEl.offsetWidth || dropdownEl.getBoundingClientRect().width;
+    const vw = window.innerWidth;
+
+    const MARGIN = 8;
+    const preferredViewportLeft = anchorRect.left;
+    const maxViewportLeft = Math.max(MARGIN, vw - dropW - MARGIN);
+    const clampedViewportLeft = Math.min(Math.max(preferredViewportLeft, MARGIN), maxViewportLeft);
+
+    setLeftOffset(clampedViewportLeft - anchorRect.left);
+  }, [anchorRef]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    let raf1 = 0;
+    let raf2 = 0;
+
+    raf1 = window.requestAnimationFrame(() => {
+      raf2 = window.requestAnimationFrame(recompute);
+    });
+
+    window.addEventListener("resize", recompute);
+    window.addEventListener("scroll", recompute, { passive: true });
+
+    return () => {
+      window.cancelAnimationFrame(raf1);
+      window.cancelAnimationFrame(raf2);
+      window.removeEventListener("resize", recompute);
+      window.removeEventListener("scroll", recompute);
+    };
+  }, [open, recompute]);
+
+  return { dropdownRef, leftOffset };
+}
+
+function DesktopNavItem({
+  link,
+  isScrolled,
+  darkMode,
+  open,
+  onMouseEnter,
+  onMouseLeave,
+  onClose,
+}: {
+  link: NavItem;
+  isScrolled: boolean;
+  darkMode: boolean;
+  open: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+  onClose: () => void;
+}) {
+  const anchorRef = useRef<HTMLDivElement>(null);
+  const { dropdownRef, leftOffset } = useDropdownClamp(anchorRef, open);
+
+  return (
+    <div
+      ref={anchorRef}
+      className="relative"
+      onMouseEnter={() => link.children && onMouseEnter()}
+      onMouseLeave={() => link.children && onMouseLeave()}
+    >
+      {link.children ? (
+        <button
+          className={`nav-item transition-colors flex items-center gap-1 ${
+            isScrolled
+              ? "px-4 py-2 rounded-full hover:bg-foreground/5"
+              : "hover:text-accent"
+          } ${!isScrolled && darkMode ? "!text-white/90 hover:!text-white" : ""}`}
+        >
+          {link.label}
+          <ChevronDown
+            className={`w-3 h-3 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+      ) : (
+        (() => {
+          const isHash = link.href?.startsWith("#") || link.href?.includes("/#");
+          const El = isHash ? "a" : Link;
+          const elProps = isHash ? { href: link.href } : { to: link.href! };
+          return (
+            <El
+              {...(elProps as any)}
+              className={`nav-item transition-colors ${
+                isScrolled ? "px-4 py-2 rounded-full hover:bg-foreground/5" : "hover:text-accent"
+              } ${!isScrolled && darkMode ? "!text-white/90 hover:!text-white" : ""}`}
+            >
+              {link.label}
+            </El>
+          );
+        })()
+      )}
+
+      <AnimatePresence>
+        {link.children && open && (
+          <motion.div
+            ref={dropdownRef}
+            style={{ left: leftOffset, right: "auto" }}
+            initial={{ opacity: 0, y: 6, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="absolute top-full mt-2 w-max min-w-[180px] bg-white/85 backdrop-blur-xl border border-white/60 shadow-[0_8px_40px_rgba(0,0,0,0.08)] rounded-xl overflow-hidden"
+          >
+            <div className="py-2">
+              {link.children.map((child) => {
+                const isHash = child.href.includes("#");
+                const El = isHash ? "a" : Link;
+                const props = isHash ? { href: child.href } : { to: child.href };
+                return (
+                  <El
+                    key={child.label}
+                    {...(props as any)}
+                    className="block px-5 py-2.5 text-[11px] font-semibold tracking-[0.12em] uppercase text-foreground/70 hover:text-foreground hover:bg-foreground/4 transition-colors"
+                    onClick={onClose}
+                  >
+                    {child.label}
+                  </El>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -86,9 +224,11 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
       >
         {/* Logo */}
         <Link to="/" className="flex items-center px-3">
-          <span className={`text-[13px] md:text-[14px] font-bold tracking-[0.12em] uppercase transition-colors duration-300 ${
-            !isScrolled && darkMode ? "text-white" : "text-foreground"
-          }`}>
+          <span
+            className={`text-[13px] md:text-[14px] font-bold tracking-[0.12em] uppercase transition-colors duration-300 ${
+              !isScrolled && darkMode ? "text-white" : "text-foreground"
+            }`}
+          >
             DOCG AI
           </span>
         </Link>
@@ -99,80 +239,16 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
         {/* Desktop Navigation */}
         <div className={`hidden md:flex items-center ${isScrolled ? "gap-0" : "gap-8 lg:gap-12"}`}>
           {navLinks.map((link) => (
-            <div
+            <DesktopNavItem
               key={link.label}
-              className="relative"
+              link={link}
+              isScrolled={isScrolled}
+              darkMode={darkMode}
+              open={openDropdown === link.label}
               onMouseEnter={() => link.children && handleMouseEnter(link.label)}
-              onMouseLeave={() => link.children && handleMouseLeave()}
-            >
-              {link.children ? (
-                <button
-                  className={`nav-item transition-colors flex items-center gap-1 ${
-                    isScrolled
-                      ? "px-4 py-2 rounded-full hover:bg-foreground/5"
-                      : "hover:text-accent"
-                   } ${!isScrolled && darkMode ? "!text-white/90 hover:!text-white" : ""}`}
-                 >
-                  {link.label}
-                  <ChevronDown
-                    className={`w-3 h-3 transition-transform duration-200 ${
-                      openDropdown === link.label ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-              ) : (
-                (() => {
-                  const isHash = link.href?.startsWith("#") || link.href?.includes("/#");
-                  const El = isHash ? "a" : Link;
-                  const elProps = isHash ? { href: link.href } : { to: link.href! };
-                  return (
-                    <El
-                      {...(elProps as any)}
-                      className={`nav-item transition-colors ${
-                        isScrolled
-                          ? "px-4 py-2 rounded-full hover:bg-foreground/5"
-                          : "hover:text-accent"
-                      } ${!isScrolled && darkMode ? "!text-white/90 hover:!text-white" : ""}`}
-                    >
-                      {link.label}
-                    </El>
-                  );
-                })()
-              )}
-
-              {/* Dropdown */}
-              <AnimatePresence>
-                {link.children && openDropdown === link.label && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 6, scale: 0.97 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 6, scale: 0.97 }}
-                    transition={{ duration: 0.18, ease: "easeOut" }}
-                    className={`absolute top-full mt-2 w-max min-w-[180px] ${
-                      link.label === "INFRASTRUCTURE" ? "right-0" : "left-0"
-                    } bg-white/85 backdrop-blur-xl border border-white/60 shadow-[0_8px_40px_rgba(0,0,0,0.08)] rounded-xl overflow-hidden`}
-                  >
-                    <div className="py-2">
-                      {link.children.map((child) => {
-                        const isHash = child.href.includes("#");
-                        const El = isHash ? "a" : Link;
-                        const props = isHash ? { href: child.href } : { to: child.href };
-                        return (
-                          <El
-                            key={child.label}
-                            {...(props as any)}
-                            className="block px-5 py-2.5 text-[11px] font-semibold tracking-[0.12em] uppercase text-foreground/70 hover:text-foreground hover:bg-foreground/4 transition-colors"
-                            onClick={() => setOpenDropdown(null)}
-                          >
-                            {child.label}
-                          </El>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+              onMouseLeave={handleMouseLeave}
+              onClose={() => setOpenDropdown(null)}
+            />
           ))}
         </div>
 
@@ -209,9 +285,7 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
                     <>
                       <button
                         onClick={() =>
-                          setOpenMobileDropdown(
-                            openMobileDropdown === link.label ? null : link.label
-                          )
+                          setOpenMobileDropdown(openMobileDropdown === link.label ? null : link.label)
                         }
                         className="nav-item w-full flex items-center justify-between py-3 px-4 rounded-xl transition-colors hover:bg-foreground/5"
                       >
