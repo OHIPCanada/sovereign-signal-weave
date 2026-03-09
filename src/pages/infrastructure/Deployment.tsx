@@ -131,7 +131,7 @@ const Deployment = () => {
                 initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ delay: 0.8, duration: 0.6 }}
-                style={{ color: "rgba(255,255,255,0.7)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+                style={{ color: "rgba(255,255,255,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
               >
                 Sovereign AI infrastructure that runs inside your security perimeter — on-premise, private cloud, or hybrid.
               </motion.p>
