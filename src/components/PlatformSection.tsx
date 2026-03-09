@@ -285,19 +285,19 @@ const PlatformSection = () => {
               friction to care delivery.
             </p>
 
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-              className="self-start px-8 py-4 rounded-full text-sm font-semibold tracking-wide transition-all duration-300"
-              style={{
-                background: "linear-gradient(135deg, #D4616B, #E8967C)",
-                color: "#FFFAF8",
-                border: "none",
-                boxShadow: "0 8px 32px rgba(212, 97, 107, 0.3)",
-              }}
-            >
-              Explore the Platform
-            </motion.button>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+              <Link
+                to="/platform/ai-cortex"
+                className="inline-block self-start px-8 py-4 rounded-full text-sm font-semibold tracking-wide transition-all duration-300 no-underline"
+                style={{
+                  background: "linear-gradient(135deg, #D4616B, #E8967C)",
+                  color: "#FFFAF8",
+                  boxShadow: "0 8px 32px rgba(212, 97, 107, 0.3)",
+                }}
+              >
+                Explore the Platform
+              </Link>
+            </motion.div>
           </motion.div>
 
           {/* ── Right: Glass Architecture Slab ── */}

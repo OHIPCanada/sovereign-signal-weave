@@ -105,13 +105,13 @@ const TrustSection = () => {
           <p className="text-muted-foreground mb-6">
             Ready to secure your healthcare operations?
           </p>
-          <a
-            href="#"
-            className="inline-flex items-center gap-2 text-foreground font-semibold hover:text-secondary transition-colors group"
+          <Link
+            to="/infrastructure/governance"
+            className="inline-flex items-center gap-2 text-foreground font-semibold hover:text-secondary transition-colors group no-underline"
           >
             View Security Documentation
             <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </a>
+          </Link>
         </motion.div>
       </div>
     </section>
