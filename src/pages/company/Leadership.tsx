@@ -1,6 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
+import RisingParticles from "@/components/hero-backgrounds/RisingParticles";
 import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
 import clinicOsOrb from "@/assets/clinic-os-orb-new.png";
 import sovereignOrb from "@/assets/sovereign-data-orb.png";
