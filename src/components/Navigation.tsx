@@ -357,14 +357,6 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
 export default Navigation;
 
   {
-    label: "COMPANY",
-    children: [
-      { label: "Overview", href: "/company/overview" },
-      { label: "Leadership", href: "/company/leadership" },
-      { label: "Careers", href: "/company/careers" },
-    ],
-  },
-  {
     label: "PLATFORM",
     children: [
       { label: "AI Cortex", href: "/#platform" },
