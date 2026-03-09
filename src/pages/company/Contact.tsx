@@ -110,6 +110,7 @@ const Contact = () => {
           organization: form.org.trim() || "Not provided",
           message: form.message.trim(),
           "h-captcha-response": hcaptchaToken,
+          botcheck: "",
         }),
       });
 
@@ -342,6 +343,7 @@ const Contact = () => {
                 boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
               }}
             >
+              <input type="checkbox" name="botcheck" className="hidden" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
               <p
                 className="font-mono uppercase"
                 style={{ color: "rgba(90,70,160,0.5)", fontSize: 12, letterSpacing: "0.22em", marginBottom: 12 }}
