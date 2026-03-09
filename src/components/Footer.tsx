@@ -31,6 +31,7 @@ const linkStyle = {
 
 const Footer = () => {
   const consentStatus = useConsentStatus();
+  const { openModal } = useContactModal();
   return (
     <footer
       className="relative overflow-hidden"
