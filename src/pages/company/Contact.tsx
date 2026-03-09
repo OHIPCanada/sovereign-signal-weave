@@ -3,33 +3,13 @@ import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, MapPin, Phone, Clock, Send, ArrowRight } from "lucide-react";
+import { Send, ArrowRight } from "lucide-react";
 
-const contactChannels = [
-  {
-    icon: Mail,
-    label: "Email",
-    value: "contact@docg.ai",
-    sub: "Response within 24 hours",
-  },
-  {
-    icon: Phone,
-    label: "Phone",
-    value: "+1 (800) 555-DOCG",
-    sub: "Mon – Fri, 9 AM – 6 PM EST",
-  },
-  {
-    icon: MapPin,
-    label: "Headquarters",
-    value: "Toronto, Ontario",
-    sub: "Canada-sovereign infrastructure",
-  },
-  {
-    icon: Clock,
-    label: "Support Hours",
-    value: "24 / 7 Critical",
-    sub: "Enterprise SLA available",
-  },
+const channels = [
+  { label: "Email", value: "contact@docg.ai", sub: "Response within 24 hours", href: "mailto:contact@docg.ai" },
+  { label: "Phone", value: "+1 (800) 555-DOCG", sub: "Mon – Fri, 9 AM – 6 PM EST", href: "tel:+18005553624" },
+  { label: "Headquarters", value: "Toronto, Ontario", sub: "Canada-sovereign infrastructure", href: undefined },
+  { label: "Support", value: "24/7 Critical", sub: "Enterprise SLA available", href: undefined },
 ];
 
 const inquiryTypes = [
@@ -39,6 +19,13 @@ const inquiryTypes = [
   "Media & Press",
   "Careers",
   "General Inquiry",
+];
+
+const responseProtocol = [
+  { label: "General inquiries", time: "< 24 hours" },
+  { label: "Enterprise & partnership", time: "< 4 hours" },
+  { label: "Technical support", time: "< 2 hours" },
+  { label: "Critical infrastructure", time: "Immediate" },
 ];
 
 const Contact = () => {
@@ -67,274 +54,180 @@ const Contact = () => {
     fontSize: 15,
     outline: "none",
     transition: "border-color 0.2s",
+    fontFamily: "inherit",
   };
 
   return (
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* ─── HERO + CHANNELS — ONE IMMERSIVE BLOCK ─── */}
+      {/* ─── HERO ─── */}
       <section
-        className="relative overflow-hidden"
+        className="relative overflow-hidden flex items-end md:items-center"
         style={{
-          minHeight: "100vh",
-          background: "#0A0A0A",
+          minHeight: "80vh",
+          padding: "clamp(120px, 14vw, 200px) 0 clamp(64px, 7vw, 110px)",
+          background: `
+            radial-gradient(900px 600px at 18% 38%, rgba(143,83,255,0.45), transparent 60%),
+            radial-gradient(700px 520px at 78% 22%, rgba(255,192,174,0.18), transparent 62%),
+            radial-gradient(900px 700px at 70% 75%, rgba(212,97,107,0.14), transparent 66%),
+            linear-gradient(135deg, #1A0630 0%, #3A0B6E 48%, #5B1FA6 120%)
+          `,
         }}
       >
-        {/* Noise texture */}
+        {/* Grid overlay */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-[0.03]"
+          className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)
+            `,
+            backgroundSize: "60px 60px",
           }}
         />
 
-        {/* Single warm accent glow */}
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: "15%",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: "80vw",
-            height: "60vh",
-            background: "radial-gradient(ellipse, rgba(212,97,107,0.07) 0%, transparent 70%)",
-          }}
-        />
-
-        {/* Content */}
-        <div
-          className="relative z-10 mx-auto px-6 md:px-12"
-          style={{
-            width: "min(1400px, 94vw)",
-            paddingTop: "clamp(140px, 16vw, 220px)",
-            paddingBottom: "clamp(80px, 8vw, 120px)",
-          }}
-        >
-          {/* Hero text */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-24 md:mb-32"
-          >
-            <h1
-              style={{
-                color: "#F5F5F0",
-                fontWeight: 300,
-                lineHeight: 1.05,
-                fontSize: "clamp(48px, 7vw, 120px)",
-                letterSpacing: "-0.04em",
-                maxWidth: "14ch",
-              }}
-            >
-              Let's talk
-              <span style={{ color: "rgba(245,245,240,0.2)" }}>.</span>
-            </h1>
-          </motion.div>
-
-          {/* Horizontal rule */}
-          <div style={{ height: 1, background: "rgba(255,255,255,0.08)", marginBottom: 60 }} />
-
-          {/* Contact grid — editorial newspaper layout */}
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0"
-            style={{ borderLeft: "1px solid rgba(255,255,255,0.08)" }}
-          >
-            {/* Email */}
+        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
+          <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center" style={{ gap: "clamp(40px, 6vw, 100px)" }}>
+            {/* Left — headline */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="group"
-              style={{
-                borderRight: "1px solid rgba(255,255,255,0.08)",
-                padding: "0 clamp(24px, 3vw, 48px) clamp(40px, 4vw, 60px)",
-              }}
+              transition={{ duration: 0.7 }}
+              className="flex flex-col gap-5"
             >
-              <div
-                className="flex items-center gap-3 mb-8"
-                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 16 }}
+              <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
+                [ CONTACT ]
+              </p>
+              <h1
+                style={{
+                  color: "rgba(255,255,255,0.95)",
+                  fontWeight: 800,
+                  lineHeight: 0.95,
+                  fontSize: "clamp(44px, 5.2vw, 84px)",
+                  letterSpacing: "-0.02em",
+                  textShadow: "0 10px 40px rgba(0,0,0,0.22)",
+                }}
               >
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#D4616B" }} />
+                Start the
+                <br />
                 <span
-                  className="font-mono uppercase"
-                  style={{ color: "rgba(255,255,255,0.3)", fontSize: 10, letterSpacing: "0.2em" }}
-                >
-                  Email
-                </span>
-              </div>
-              <a
-                href="mailto:contact@docg.ai"
-                className="block hover:opacity-70 transition-opacity"
-                style={{ textDecoration: "none" }}
-              >
-                <p
                   style={{
-                    color: "#F5F5F0",
-                    fontWeight: 500,
-                    fontSize: "clamp(16px, 1.4vw, 22px)",
-                    letterSpacing: "-0.01em",
-                    marginBottom: 16,
-                    lineHeight: 1.3,
+                    background: "linear-gradient(135deg, #D4616B, #E8967C, #F2C1AE)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
                   }}
                 >
-                  contact@docg.ai
-                </p>
-              </a>
-              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, lineHeight: 1.7 }}>
-                Response within 24 hours
-                <br />
-                Enterprise: under 4 hours
-              </p>
-            </motion.div>
-
-            {/* Phone */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              style={{
-                borderRight: "1px solid rgba(255,255,255,0.08)",
-                padding: "0 clamp(24px, 3vw, 48px) clamp(40px, 4vw, 60px)",
-              }}
-            >
-              <div
-                className="flex items-center gap-3 mb-8"
-                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 16 }}
-              >
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#E8967C" }} />
-                <span
-                  className="font-mono uppercase"
-                  style={{ color: "rgba(255,255,255,0.3)", fontSize: 10, letterSpacing: "0.2em" }}
-                >
-                  Phone
+                  conversation.
                 </span>
-              </div>
+              </h1>
               <p
                 style={{
-                  color: "#F5F5F0",
-                  fontWeight: 500,
-                  fontSize: "clamp(16px, 1.4vw, 22px)",
-                  letterSpacing: "-0.01em",
-                  marginBottom: 16,
-                  lineHeight: 1.3,
+                  color: "rgba(255,255,255,0.72)",
+                  fontWeight: 400,
+                  fontSize: "clamp(15px, 1.25vw, 18px)",
+                  lineHeight: 1.55,
+                  maxWidth: "46ch",
                 }}
               >
-                +1 (800) 555-DOCG
-              </p>
-              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, lineHeight: 1.7 }}>
-                Mon – Fri, 9 AM – 6 PM EST
-                <br />
-                24/7 for critical issues
+                Whether you're exploring enterprise integration, requesting a platform demo, or joining the team — we're ready to listen.
               </p>
             </motion.div>
 
-            {/* HQ */}
+            {/* Right — channel glass cards */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              style={{
-                borderRight: "1px solid rgba(255,255,255,0.08)",
-                padding: "0 clamp(24px, 3vw, 48px) clamp(40px, 4vw, 60px)",
-              }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="grid grid-cols-2 gap-4"
             >
-              <div
-                className="flex items-center gap-3 mb-8"
-                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 16 }}
-              >
-                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#F2C1AE" }} />
-                <span
-                  className="font-mono uppercase"
-                  style={{ color: "rgba(255,255,255,0.3)", fontSize: 10, letterSpacing: "0.2em" }}
-                >
-                  Headquarters
-                </span>
-              </div>
-              <p
-                style={{
-                  color: "#F5F5F0",
-                  fontWeight: 500,
-                  fontSize: "clamp(16px, 1.4vw, 22px)",
-                  letterSpacing: "-0.01em",
-                  marginBottom: 16,
-                  lineHeight: 1.3,
-                }}
-              >
-                Toronto, Ontario
-              </p>
-              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, lineHeight: 1.7 }}>
-                Canada-sovereign
-                <br />
-                infrastructure
-              </p>
-            </motion.div>
-
-            {/* Support */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              style={{
-                padding: "0 clamp(24px, 3vw, 48px) clamp(40px, 4vw, 60px)",
-              }}
-            >
-              <div
-                className="flex items-center gap-3 mb-8"
-                style={{ borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 16 }}
-              >
-                <div
+              {channels.map((ch, i) => (
+                <motion.div
+                  key={ch.label}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
+                  className="rounded-[20px] overflow-hidden"
                   style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    background: "#4ADE80",
-                    boxShadow: "0 0 10px rgba(74,222,128,0.5)",
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025))",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    backdropFilter: "blur(20px)",
+                    WebkitBackdropFilter: "blur(20px)",
+                    boxShadow: "0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)",
+                    padding: "28px 24px",
                   }}
-                />
-                <span
-                  className="font-mono uppercase"
-                  style={{ color: "rgba(255,255,255,0.3)", fontSize: 10, letterSpacing: "0.2em" }}
                 >
-                  Support
-                </span>
-              </div>
-              <p
-                style={{
-                  color: "#F5F5F0",
-                  fontWeight: 500,
-                  fontSize: "clamp(16px, 1.4vw, 22px)",
-                  letterSpacing: "-0.01em",
-                  marginBottom: 16,
-                  lineHeight: 1.3,
-                }}
-              >
-                24 / 7 Critical
-              </p>
-              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: 13, lineHeight: 1.7 }}>
-                Enterprise SLA available
-                <br />
-                99.99% uptime guarantee
-              </p>
+                  <p
+                    className="font-mono uppercase"
+                    style={{ color: "rgba(255,255,255,0.35)", fontSize: 10, letterSpacing: "0.2em", marginBottom: 12 }}
+                  >
+                    {ch.label}
+                  </p>
+                  {ch.href ? (
+                    <a
+                      href={ch.href}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <p
+                        style={{
+                          fontSize: "clamp(14px, 1.2vw, 17px)",
+                          fontWeight: 700,
+                          color: "rgba(255,255,255,0.95)",
+                          letterSpacing: "-0.01em",
+                          lineHeight: 1.2,
+                          marginBottom: 8,
+                        }}
+                      >
+                        {ch.value}
+                      </p>
+                    </a>
+                  ) : (
+                    <p
+                      style={{
+                        fontSize: "clamp(14px, 1.2vw, 17px)",
+                        fontWeight: 700,
+                        color: "rgba(255,255,255,0.95)",
+                        letterSpacing: "-0.01em",
+                        lineHeight: 1.2,
+                        marginBottom: 8,
+                      }}
+                    >
+                      {ch.value}
+                    </p>
+                  )}
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>
+                    {ch.sub}
+                  </p>
+                </motion.div>
+              ))}
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ─── FORM + MAP SECTION ─── */}
+      {/* ─── FORM SECTION ─── */}
       <section
+        className="relative overflow-hidden"
         style={{
+          padding: "clamp(80px, 8vw, 130px) 0",
           background: `
-            radial-gradient(900px 600px at 30% 30%, rgba(91,29,179,0.22), transparent 60%),
+            radial-gradient(900px 500px at 30% 30%, rgba(91,29,179,0.22), transparent 60%),
             radial-gradient(800px 500px at 70% 70%, rgba(212,97,107,0.1), transparent 60%),
             linear-gradient(180deg, #140022 0%, #2A0B4E 100%)
           `,
-          padding: "clamp(80px,8vw,130px) 0",
         }}
       >
-        <div className="mx-auto px-6 md:px-12" style={{ width: "min(1400px,94vw)" }}>
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.7fr] gap-12 lg:gap-20 items-start">
+        {/* Top separator */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[2px]"
+          style={{
+            background: "linear-gradient(90deg, transparent 5%, rgba(212,97,107,0.4) 30%, rgba(123,97,255,0.5) 70%, transparent 95%)",
+          }}
+        />
+
+        <div className="mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_0.65fr] gap-12 lg:gap-20 items-start">
+
             {/* Form */}
             <motion.form
               onSubmit={handleSubmit}
@@ -343,16 +236,17 @@ const Contact = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                borderRadius: 20,
-                padding: "clamp(32px,4vw,56px)",
+                background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025))",
+                border: "1px solid rgba(255,255,255,0.1)",
                 backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                borderRadius: 20,
+                padding: "clamp(32px, 4vw, 56px)",
               }}
             >
               <p
-                className="font-mono uppercase mb-3"
-                style={{ color: "rgba(255,255,255,0.4)", fontSize: 12, letterSpacing: "0.2em" }}
+                className="font-mono uppercase"
+                style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em", marginBottom: 12 }}
               >
                 [ SEND A MESSAGE ]
               </p>
@@ -360,13 +254,14 @@ const Contact = () => {
                 style={{
                   color: "rgba(255,255,255,0.95)",
                   fontWeight: 800,
-                  fontSize: "clamp(28px,3vw,42px)",
-                  lineHeight: 1,
+                  fontSize: "clamp(28px, 3vw, 44px)",
+                  lineHeight: 0.95,
                   letterSpacing: "-0.02em",
                   marginBottom: 36,
+                  textShadow: "0 10px 40px rgba(0,0,0,0.22)",
                 }}
               >
-                Let's build together
+                Let's build together.
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
@@ -399,13 +294,9 @@ const Contact = () => {
                   onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.5)")}
                   onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
                 >
-                  <option value="" style={{ background: "#1A0630" }}>
-                    Inquiry type
-                  </option>
+                  <option value="" style={{ background: "#1A0630" }}>Inquiry type</option>
                   {inquiryTypes.map((t) => (
-                    <option key={t} value={t} style={{ background: "#1A0630" }}>
-                      {t}
-                    </option>
+                    <option key={t} value={t} style={{ background: "#1A0630" }}>{t}</option>
                   ))}
                 </select>
                 <input
@@ -448,6 +339,7 @@ const Contact = () => {
                   cursor: sending ? "wait" : "pointer",
                   opacity: sending ? 0.7 : 1,
                   transition: "opacity 0.2s",
+                  fontFamily: "inherit",
                 }}
               >
                 {sending ? "Sending…" : "Send message"}
@@ -455,49 +347,43 @@ const Contact = () => {
               </motion.button>
             </motion.form>
 
-            {/* Right info column */}
+            {/* Right sidebar */}
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.15 }}
-              className="flex flex-col gap-10"
+              className="flex flex-col gap-6"
             >
-              {/* Signal card */}
+              {/* Response protocol */}
               <div
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025))",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
                   borderRadius: 20,
                   padding: "36px 30px",
                 }}
               >
                 <p
-                  className="font-mono uppercase mb-4"
-                  style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, letterSpacing: "0.2em" }}
+                  className="font-mono uppercase"
+                  style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em", marginBottom: 20 }}
                 >
                   [ RESPONSE PROTOCOL ]
                 </p>
                 <div className="flex flex-col gap-5">
-                  {[
-                    { label: "General inquiries", time: "< 24 hours" },
-                    { label: "Enterprise & partnership", time: "< 4 hours" },
-                    { label: "Technical support", time: "< 2 hours" },
-                    { label: "Critical infrastructure", time: "Immediate" },
-                  ].map((r, i) => (
+                  {responseProtocol.map((r, i) => (
                     <div
                       key={r.label}
                       className="flex items-center justify-between"
                       style={{
-                        paddingBottom: i < 3 ? 16 : 0,
-                        borderBottom: i < 3 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                        paddingBottom: i < responseProtocol.length - 1 ? 16 : 0,
+                        borderBottom: i < responseProtocol.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
                       }}
                     >
-                      <span style={{ color: "rgba(255,255,255,0.7)", fontSize: 15 }}>{r.label}</span>
-                      <span
-                        className="font-mono"
-                        style={{ color: "#E8967C", fontSize: 13, letterSpacing: "0.05em" }}
-                      >
+                      <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 15 }}>{r.label}</span>
+                      <span className="font-mono" style={{ color: "#E8967C", fontSize: 13, letterSpacing: "0.05em" }}>
                         {r.time}
                       </span>
                     </div>
@@ -505,16 +391,26 @@ const Contact = () => {
                 </div>
               </div>
 
-              {/* CTA card */}
+              {/* Demo CTA */}
               <div
                 style={{
                   background: "linear-gradient(135deg, rgba(123,97,255,0.12), rgba(212,97,107,0.08))",
-                  border: "1px solid rgba(123,97,255,0.15)",
+                  border: "1px solid rgba(123,97,255,0.2)",
+                  backdropFilter: "blur(16px)",
+                  WebkitBackdropFilter: "blur(16px)",
                   borderRadius: 20,
                   padding: "36px 30px",
                 }}
               >
-                <h3 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 700, fontSize: 20, marginBottom: 12 }}>
+                <h3
+                  style={{
+                    color: "rgba(255,255,255,0.95)",
+                    fontWeight: 700,
+                    fontSize: 20,
+                    letterSpacing: "-0.01em",
+                    marginBottom: 10,
+                  }}
+                >
                   Schedule a platform demo
                 </h3>
                 <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 15, lineHeight: 1.6, marginBottom: 20 }}>
@@ -527,22 +423,22 @@ const Contact = () => {
                   style={{
                     color: "#E8967C",
                     fontWeight: 700,
-                    fontSize: 14,
-                    letterSpacing: "0.1em",
+                    fontSize: 13,
+                    letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     textDecoration: "none",
                   }}
                 >
-                  Request demo <ArrowRight size={16} />
+                  Request demo <ArrowRight size={15} />
                 </motion.a>
               </div>
 
-              {/* Compliance badge */}
+              {/* Compliance */}
               <div
                 className="flex items-center gap-4"
                 style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.08)",
                   borderRadius: 14,
                   padding: "20px 24px",
                 }}
@@ -554,6 +450,7 @@ const Contact = () => {
                     borderRadius: "50%",
                     background: "#4ADE80",
                     boxShadow: "0 0 12px rgba(74,222,128,0.4)",
+                    flexShrink: 0,
                   }}
                 />
                 <div>
