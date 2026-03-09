@@ -110,7 +110,7 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
       />
 
       <div className="flex items-center justify-end gap-3 pt-2">
-        <Button type="submit" variant="primary" disabled={sending || !canSubmit}>
+        <Button type="submit" variant="coral" disabled={sending || !canSubmit}>
           {sending ? "Sending…" : "Send message"}
           <Send />
         </Button>

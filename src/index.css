@@ -112,37 +112,6 @@
     --sidebar-ring: 270 60% 50%;
   }
 
-  /* Scoped theme for the Contact modal: dark blue, consistent tokens */
-  .contact-modal-theme {
-    color-scheme: dark;
-
-    --background: 222 54% 10%;
-    --foreground: 210 40% 98%;
-
-    --card: 222 50% 12%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222 50% 12%;
-    --popover-foreground: 210 40% 98%;
-
-    --muted: 222 28% 18%;
-    --muted-foreground: 215 20% 72%;
-
-    --border: 222 30% 24%;
-    --input: 222 32% 18%;
-
-    /* CTA + focus */
-    --primary: 202 100% 55%;
-    --primary-foreground: 222 54% 10%;
-    --ring: 202 100% 55%;
-
-    /* Keep accents cohesive inside the modal */
-    --secondary: 222 45% 16%;
-    --secondary-foreground: 210 40% 98%;
-
-    --accent: 222 35% 20%;
-    --accent-foreground: 210 40% 98%;
-  }
 }
 
 @layer base {
