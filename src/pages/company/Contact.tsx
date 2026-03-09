@@ -109,6 +109,7 @@ const Contact = () => {
           subject: form.type || "General Inquiry",
           organization: form.org.trim() || "Not provided",
           message: form.message.trim(),
+          "h-captcha-response": hcaptchaToken,
         }),
       });
 
