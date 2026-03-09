@@ -27,39 +27,167 @@ const stats = [
   { value: "99.99%", label: "Message delivery" },
 ];
 
-/* ── Data Flow Lines Background ── */
+/* ── Data Pipeline Network — unique to Interoperability ── */
 const DataFlowLines = () => {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
+
+    const resize = () => {
+      const r = canvas.getBoundingClientRect();
+      canvas.width = r.width * DPR;
+      canvas.height = r.height * DPR;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Hub nodes (left sources → center transform → right targets)
+    interface Hub { x: number; y: number; label: string; type: "source" | "core" | "target"; }
+    const hubs: Hub[] = [
+      { x: 0.08, y: 0.25, label: "HL7", type: "source" },
+      { x: 0.08, y: 0.50, label: "FHIR", type: "source" },
+      { x: 0.08, y: 0.75, label: "CDA", type: "source" },
+      { x: 0.50, y: 0.50, label: "CORE", type: "core" },
+      { x: 0.92, y: 0.25, label: "EMR", type: "target" },
+      { x: 0.92, y: 0.50, label: "LAB", type: "target" },
+      { x: 0.92, y: 0.75, label: "PHR", type: "target" },
+    ];
+
+    // Packets traveling along routes
+    interface Packet { fromIdx: number; toIdx: number; progress: number; speed: number; color: string; }
+    const packets: Packet[] = [];
+    const spawnPacket = () => {
+      const sources = [0, 1, 2];
+      const targets = [4, 5, 6];
+      const from = sources[Math.floor(Math.random() * 3)];
+      const to = targets[Math.floor(Math.random() * 3)];
+      packets.push({
+        fromIdx: from, toIdx: to, progress: 0,
+        speed: 0.003 + Math.random() * 0.004,
+        color: from === 0 ? "rgba(123,97,255,0.8)" : from === 1 ? "rgba(212,97,107,0.8)" : "rgba(232,150,124,0.8)",
+      });
+    };
+
+    let raf: number;
+    const t0 = performance.now();
+    let lastSpawn = 0;
+
+    const draw = (now: number) => {
+      const t = (now - t0) / 1000;
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Spawn packets
+      if (t - lastSpawn > 0.4) { spawnPacket(); lastSpawn = t; }
+
+      // Draw static route lines (source → core → target)
+      [0, 1, 2].forEach(si => {
+        const s = hubs[si];
+        const core = hubs[3];
+        // Source to core
+        ctx.beginPath();
+        ctx.moveTo(s.x * w, s.y * h);
+        ctx.quadraticCurveTo(0.3 * w, (s.y * 0.5 + core.y * 0.5) * h, core.x * w, core.y * h);
+        ctx.strokeStyle = `rgba(123,97,255,${0.06 + Math.sin(t + si) * 0.02})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        [4, 5, 6].forEach(ti => {
+          const target = hubs[ti];
+          ctx.beginPath();
+          ctx.moveTo(core.x * w, core.y * h);
+          ctx.quadraticCurveTo(0.7 * w, (core.y * 0.5 + target.y * 0.5) * h, target.x * w, target.y * h);
+          ctx.strokeStyle = `rgba(212,97,107,${0.05 + Math.sin(t + ti) * 0.02})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        });
+      });
+
+      // Draw hub nodes
+      hubs.forEach((hub, i) => {
+        const hx = hub.x * w;
+        const hy = hub.y * h;
+        const r = hub.type === "core" ? 14 * DPR : 8 * DPR;
+        const pulseR = r + Math.sin(t * 2 + i) * 3 * DPR;
+
+        // Glow
+        const glow = ctx.createRadialGradient(hx, hy, 0, hx, hy, pulseR * 3);
+        const baseColor = hub.type === "source" ? "123,97,255" : hub.type === "core" ? "232,150,124" : "212,97,107";
+        glow.addColorStop(0, `rgba(${baseColor},0.2)`);
+        glow.addColorStop(1, `rgba(${baseColor},0)`);
+        ctx.fillStyle = glow;
+        ctx.fillRect(hx - pulseR * 3, hy - pulseR * 3, pulseR * 6, pulseR * 6);
+
+        // Node
+        ctx.beginPath();
+        ctx.arc(hx, hy, pulseR, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${baseColor},0.15)`;
+        ctx.fill();
+        ctx.strokeStyle = `rgba(${baseColor},0.4)`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      });
+
+      // Animate packets
+      for (let i = packets.length - 1; i >= 0; i--) {
+        const p = packets[i];
+        p.progress += p.speed;
+
+        const from = hubs[p.fromIdx];
+        const core = hubs[3];
+        const to = hubs[p.toIdx];
+
+        let px: number, py: number;
+        if (p.progress < 0.5) {
+          // Source → Core (first half)
+          const t2 = p.progress * 2;
+          const mx = 0.3;
+          const my = (from.y * 0.5 + core.y * 0.5);
+          px = ((1-t2)*(1-t2)*from.x + 2*(1-t2)*t2*mx + t2*t2*core.x) * w;
+          py = ((1-t2)*(1-t2)*from.y + 2*(1-t2)*t2*my + t2*t2*core.y) * h;
+        } else {
+          // Core → Target (second half)
+          const t2 = (p.progress - 0.5) * 2;
+          const mx = 0.7;
+          const my = (core.y * 0.5 + to.y * 0.5);
+          px = ((1-t2)*(1-t2)*core.x + 2*(1-t2)*t2*mx + t2*t2*to.x) * w;
+          py = ((1-t2)*(1-t2)*core.y + 2*(1-t2)*t2*my + t2*t2*to.y) * h;
+        }
+
+        // Draw packet
+        ctx.beginPath();
+        ctx.arc(px, py, 3 * DPR, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        // Trailing glow
+        const trail = ctx.createRadialGradient(px, py, 0, px, py, 10 * DPR);
+        trail.addColorStop(0, p.color.replace("0.8", "0.3"));
+        trail.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = trail;
+        ctx.fillRect(px - 10 * DPR, py - 10 * DPR, 20 * DPR, 20 * DPR);
+
+        if (p.progress > 1) packets.splice(i, 1);
+      }
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    raf = requestAnimationFrame(draw);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.3 }}>
-        {mounted && Array.from({ length: 8 }).map((_, i) => {
-          const startY = 10 + i * 12;
-          return (
-            <g key={i}>
-              <motion.path
-                d={`M0 ${startY}% Q 25% ${startY + (i % 2 === 0 ? 5 : -5)}%, 50% ${startY}% T 100% ${startY}%`}
-                fill="none"
-                stroke="rgba(123,97,255,0.15)"
-                strokeWidth="1"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 2, delay: i * 0.2, ease: "easeInOut" }}
-              />
-              <motion.circle
-                r="3"
-                fill="#C084FC"
-                initial={{ offsetDistance: "0%" }}
-                animate={{ offsetDistance: "100%" }}
-                transition={{ duration: 4, delay: i * 0.3, repeat: Infinity, ease: "linear" }}
-                style={{ offsetPath: `path("M0 ${startY * 6} Q ${window.innerWidth * 0.25} ${(startY + (i % 2 === 0 ? 5 : -5)) * 6}, ${window.innerWidth * 0.5} ${startY * 6} T ${window.innerWidth} ${startY * 6}")` }}
-              />
-            </g>
-          );
-        })}
-      </svg>
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.7 }} />
     </div>
   );
 };
