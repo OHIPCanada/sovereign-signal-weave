@@ -3,8 +3,7 @@ import { motion } from "framer-motion";
 /**
  * Overview page — Neural Pathways
  * Flowing Bézier curves that "draw" themselves across the background like
- * signals propagating through a cortex. Combines animated path drawing
- * (framer-motion pathLength) with glowing node hotspots.
+ * signals propagating through a cortex. Nodes slowly drift/float.
  */
 
 const pathways = [
@@ -18,15 +17,15 @@ const pathways = [
 ];
 
 const hotspots = [
-  { x: 760, y: 200, r: 4, delay: 0.2 },
-  { x: 1120, y: 340, r: 5, delay: 2.0 },
-  { x: 500, y: 390, r: 3.5, delay: 1.0 },
-  { x: 820, y: 150, r: 4, delay: 3.2 },
-  { x: 280, y: 280, r: 3, delay: 4.5 },
-  { x: 1260, y: 190, r: 5, delay: 1.6 },
-  { x: 560, y: 490, r: 3.5, delay: 5.1 },
-  { x: 1040, y: 80, r: 4, delay: 2.8 },
-  { x: 940, y: 460, r: 3, delay: 0.9 },
+  { x: 760, y: 200, r: 4, delay: 0.2,  dx: 18, dy: -22 },
+  { x: 1120, y: 340, r: 5, delay: 2.0, dx: -24, dy: 16 },
+  { x: 500, y: 390, r: 3.5, delay: 1.0, dx: 20, dy: 24 },
+  { x: 820, y: 150, r: 4, delay: 3.2,  dx: -18, dy: 20 },
+  { x: 280, y: 280, r: 3, delay: 4.5,  dx: 22, dy: -18 },
+  { x: 1260, y: 190, r: 5, delay: 1.6, dx: -20, dy: 22 },
+  { x: 560, y: 490, r: 3.5, delay: 5.1, dx: 16, dy: -20 },
+  { x: 1040, y: 80,  r: 4, delay: 2.8, dx: -22, dy: 18 },
+  { x: 940, y: 460,  r: 3, delay: 0.9, dx: 20, dy: -16 },
 ];
 
 const FloatingOrbs = () => (
@@ -36,7 +35,7 @@ const FloatingOrbs = () => (
       viewBox="0 0 1440 600"
       preserveAspectRatio="xMidYMid slice"
     >
-      {/* Flowing neural pathways — draw-in → hold → fade */}
+      {/* Flowing neural pathways */}
       {pathways.map((p, i) => (
         <motion.path
           key={`p${i}`}
@@ -61,9 +60,22 @@ const FloatingOrbs = () => (
         />
       ))}
 
-      {/* Node hotspots — outer pulse ring + solid core */}
+      {/* Drifting node hotspots */}
       {hotspots.map((h, i) => (
-        <g key={`h${i}`}>
+        <motion.g
+          key={`h${i}`}
+          animate={{
+            x: [0, h.dx, -h.dx * 0.6, h.dx * 0.4, 0],
+            y: [0, h.dy, h.dy * 0.5, -h.dy * 0.4, 0],
+          }}
+          transition={{
+            duration: 14 + i * 2.1,
+            repeat: Infinity,
+            delay: i * 0.7,
+            ease: "easeInOut",
+          }}
+        >
+          {/* Outer pulse ring */}
           <motion.circle
             cx={h.x}
             cy={h.y}
@@ -71,7 +83,7 @@ const FloatingOrbs = () => (
             fill="none"
             stroke="rgba(185,155,255,0.35)"
             strokeWidth={0.8}
-            animate={{ r: [h.r + 5, h.r + 12, h.r + 5], opacity: [0.35, 0.65, 0.35] }}
+            animate={{ r: [h.r + 5, h.r + 13, h.r + 5], opacity: [0.35, 0.65, 0.35] }}
             transition={{
               duration: 3.2 + i * 0.45,
               repeat: Infinity,
@@ -79,6 +91,7 @@ const FloatingOrbs = () => (
               ease: "easeInOut",
             }}
           />
+          {/* Core dot */}
           <motion.circle
             cx={h.x}
             cy={h.y}
@@ -92,7 +105,7 @@ const FloatingOrbs = () => (
               ease: "easeInOut",
             }}
           />
-        </g>
+        </motion.g>
       ))}
     </svg>
   </div>
