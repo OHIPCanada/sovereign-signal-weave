@@ -243,7 +243,7 @@ const Interoperability = () => {
                           viewport={{ once: true }}
                           transition={{ delay: 0.4 + i * 0.12 + fi * 0.08 }}
                         >
-                          <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#C084FC" }} />
+                          <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#E8967C" }} />
                           <span style={{ fontSize: 12, color: "rgba(30,20,50,0.5)" }}>{f}</span>
                         </motion.div>
                       ))}
