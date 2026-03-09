@@ -1,6 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
+import DriftingGrid from "@/components/hero-backgrounds/DriftingGrid";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Send, ArrowRight } from "lucide-react";
