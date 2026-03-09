@@ -261,7 +261,7 @@ const AuditTrails = () => {
               <h2 style={{ color: "#1B0F2E", fontWeight: 800, fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95, letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.10)" }}>
                 Structured signal capture.
               </h2>
-              <p className="mt-4" style={{ color: "rgba(30,20,50,0.55)", fontSize: 14, lineHeight: 1.6 }}>
+              <p className="mt-4" style={{ color: "rgba(27,15,46,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55 }}>
                 Every event is categorized, timestamped, and linked to its originating context.
               </p>
             </motion.div>
