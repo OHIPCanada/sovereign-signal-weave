@@ -112,6 +112,7 @@ const Deployment = () => {
                 style={{
                   color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95,
                   fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em",
+                  textShadow: "0 10px 40px rgba(0,0,0,0.22)",
                 }}
               >
                 {["Deploy where", "your data", "already lives."].map((line, li) => (
