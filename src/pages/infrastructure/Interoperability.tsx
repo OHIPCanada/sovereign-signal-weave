@@ -204,13 +204,14 @@ const Interoperability = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: i * 0.12, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ y: -4, boxShadow: "0 20px 60px rgba(123,97,255,0.1)" }}
+                whileHover={{ y: -4, boxShadow: "0 20px 60px rgba(0,0,0,0.08)" }}
                 className="relative p-6 rounded-2xl overflow-hidden"
                 style={{
-                  background: "linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
-                  border: "1px solid rgba(123,97,255,0.1)",
-                  backdropFilter: "blur(20px)",
-                  boxShadow: "0 8px 40px rgba(60,40,120,0.06)",
+                  background: "rgba(255,255,255,0.18)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
                 {/* Accent line on hover */}
