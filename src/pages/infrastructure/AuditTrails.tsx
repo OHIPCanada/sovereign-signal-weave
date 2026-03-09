@@ -212,13 +212,14 @@ const AuditTrails = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ delay: i * 0.12, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ y: -6, boxShadow: "0 16px 48px rgba(212,97,107,0.08)" }}
+                whileHover={{ y: -6, boxShadow: "0 16px 48px rgba(0,0,0,0.08)" }}
                 className="p-6 rounded-2xl"
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
-                  border: "1px solid rgba(212,97,107,0.08)",
-                  backdropFilter: "blur(20px)",
-                  boxShadow: "0 4px 24px rgba(60,40,120,0.05)",
+                  background: "rgba(255,255,255,0.18)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
                 <motion.div
@@ -267,10 +268,11 @@ const AuditTrails = () => {
             </motion.div>
 
             <div className="rounded-2xl overflow-hidden" style={{
-              background: "rgba(255,255,255,0.7)",
-              border: "1px solid rgba(123,97,255,0.08)",
-              backdropFilter: "blur(20px)",
-              boxShadow: "0 8px 40px rgba(60,40,120,0.06)",
+              background: "rgba(255,255,255,0.18)",
+              border: "1px solid rgba(255,255,255,0.25)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
             }}>
               <div className="px-5 py-3 border-b" style={{ borderColor: "rgba(123,97,255,0.06)" }}>
                 <span className="text-xs font-mono" style={{ color: "rgba(30,20,50,0.4)" }}>Signal Taxonomy</span>
@@ -331,7 +333,7 @@ const AuditTrails = () => {
                 transition={{ delay: i * 0.12, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={{ scale: 1.05 }}
                 className="p-6 rounded-xl text-center"
-                style={{ background: "rgba(212,97,107,0.04)", border: "1px solid rgba(212,97,107,0.1)", perspective: 1000 }}
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)", perspective: 1000 }}
               >
                 <div className="font-mono" style={{ fontSize: "clamp(24px, 2.5vw, 36px)", fontWeight: 700, color: "#fff" }}>{s.value}</div>
                 <div className="font-mono mt-2" style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>{s.label}</div>
