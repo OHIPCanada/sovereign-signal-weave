@@ -101,7 +101,7 @@ const NeuralPulseBackground = () => {
 
       for (let ring = 0; ring < 3; ring++) {
         const ringT = (t * 0.2 + ring * 0.33) % 1;
-        const ringR = ringT * Math.min(w, h) * 0.5;
+        const ringR = Math.max(0.1, ringT * Math.min(w, h) * 0.5);
         const ringAlpha = (1 - ringT) * 0.08;
         ctx.beginPath();
         ctx.arc(w * 0.5, h * 0.5, ringR, 0, Math.PI * 2);
