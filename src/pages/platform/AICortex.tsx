@@ -39,6 +39,7 @@ const NeuralPulseBackground = () => {
       const t = (now - t0) / 1000;
       const w = canvas.width;
       const h = canvas.height;
+      if (w === 0 || h === 0) { raf = requestAnimationFrame(draw); return; }
       ctx.clearRect(0, 0, w, h);
 
       const cGrad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, h * 0.6);
