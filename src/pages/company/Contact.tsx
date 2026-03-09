@@ -238,13 +238,13 @@ const Contact = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               style={{
-                background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6))",
-                border: "1px solid rgba(90,70,160,0.1)",
+                background: "rgba(255,255,255,0.18)",
+                border: "1px solid rgba(255,255,255,0.25)",
                 backdropFilter: "blur(24px)",
                 WebkitBackdropFilter: "blur(24px)",
                 borderRadius: 20,
                 padding: "clamp(32px, 4vw, 56px)",
-                boxShadow: "0 20px 60px rgba(60,40,120,0.06)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
               }}
             >
               <p
