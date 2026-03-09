@@ -1,5 +1,7 @@
 import { reopenConsentBanner, useConsentStatus } from "./CookieConsent";
 import { Link } from "react-router-dom";
+import { useContactModal } from "./contact/ContactModalContext";
+
 
 const footerLinks = {
   company: [
@@ -29,6 +31,7 @@ const linkStyle = {
 
 const Footer = () => {
   const consentStatus = useConsentStatus();
+  const { openModal } = useContactModal();
   return (
     <footer
       className="relative overflow-hidden"
@@ -88,8 +91,9 @@ const Footer = () => {
 
           {/* Buttons */}
           <div className="flex gap-3 flex-wrap">
-            <a
-              href="/company/contact#contact-form"
+            <button
+              type="button"
+              onClick={openModal}
               className="inline-block no-underline transition-all duration-200 hover:-translate-y-px"
               style={{
                 background:
@@ -102,12 +106,14 @@ const Footer = () => {
                 fontSize: 14,
                 fontWeight: 600,
                 letterSpacing: "0.04em",
+                cursor: "pointer",
               }}
             >
               Request Investor Deck
-            </a>
-            <a
-              href="/company/contact#contact-form"
+            </button>
+            <button
+              type="button"
+              onClick={openModal}
               className="inline-block no-underline transition-all duration-200 hover:-translate-y-px"
               style={{
                 background: "rgba(255,255,255,.04)",
@@ -118,10 +124,11 @@ const Footer = () => {
                 fontSize: 14,
                 fontWeight: 600,
                 letterSpacing: "0.04em",
+                cursor: "pointer",
               }}
             >
               Contact
-            </a>
+            </button>
           </div>
         </div>
 
