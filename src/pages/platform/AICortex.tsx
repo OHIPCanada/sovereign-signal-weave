@@ -76,7 +76,7 @@ const NeuralPulseBackground = () => {
               const px = nodes[i].x * w + (nodes[j].x - nodes[i].x) * w * ((t * 0.3) % 1);
               const py = nodes[i].y * h + (nodes[j].y - nodes[i].y) * h * ((t * 0.3) % 1);
               ctx.beginPath();
-              ctx.arc(px, py, 2 * DPR, 0, Math.PI * 2);
+              ctx.arc(px, py, Math.max(0.1, 2 * DPR), 0, Math.PI * 2);
               ctx.fillStyle = "rgba(212,97,107,0.6)";
               ctx.fill();
             }
