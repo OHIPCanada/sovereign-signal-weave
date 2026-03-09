@@ -22,7 +22,39 @@ type FormState = {
   message: string;
 };
 
+type TouchedState = Record<keyof FormState, boolean>;
+
 const initialForm: FormState = { name: "", email: "", type: "", org: "", message: "" };
+const initialTouched: TouchedState = { name: false, email: false, type: false, org: false, message: false };
+
+/* ── label style: instrument-grade kicker ── */
+const labelStyle: React.CSSProperties = {
+  fontSize: 12,
+  letterSpacing: "0.22em",
+  color: "rgba(255,255,255,0.45)",
+  textTransform: "uppercase",
+  fontFamily: "inherit",
+  marginBottom: 6,
+  display: "block",
+};
+
+/* ── helper text ── */
+const helperStyle: React.CSSProperties = {
+  fontSize: 11,
+  letterSpacing: "0.04em",
+  color: "rgba(255,255,255,0.32)",
+  marginTop: 4,
+  display: "block",
+};
+
+/* ── validation error ── */
+const errorStyle: React.CSSProperties = {
+  fontSize: 11,
+  letterSpacing: "0.04em",
+  color: "rgba(212,97,107,0.9)",
+  marginTop: 4,
+  display: "block",
+};
 
 /* Shared field styles matching EMR Layer hero aesthetic */
 const fieldStyle: React.CSSProperties = {
@@ -38,6 +70,11 @@ const fieldStyle: React.CSSProperties = {
   transition: "border-color 0.2s, box-shadow 0.2s",
 };
 
+const fieldErrorStyle: React.CSSProperties = {
+  ...fieldStyle,
+  borderColor: "rgba(212,97,107,0.5)",
+};
+
 const fieldFocusHandler = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
   e.target.style.borderColor = "rgba(123,97,255,0.4)";
   e.target.style.boxShadow = "0 0 20px rgba(123,97,255,0.12)";
@@ -47,11 +84,28 @@ const fieldBlurHandler = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaEle
   e.target.style.boxShadow = "none";
 };
 
+/* ── Validation helpers ── */
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function getErrors(form: FormState, touched: TouchedState): Partial<Record<keyof FormState, string>> {
+  const errors: Partial<Record<keyof FormState, string>> = {};
+  if (touched.name && !form.name.trim()) errors.name = "Required";
+  if (touched.email && !form.email.trim()) errors.email = "Required";
+  else if (touched.email && !emailRegex.test(form.email.trim())) errors.email = "Invalid email format";
+  if (touched.message && !form.message.trim()) errors.message = "Required";
+  if (touched.name && form.name.length > 100) errors.name = "Max 100 characters";
+  if (touched.email && form.email.length > 255) errors.email = "Max 255 characters";
+  if (touched.message && form.message.length > 2000) errors.message = "Max 2000 characters";
+  return errors;
+}
+
 export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean }) {
   const { toast } = useToast();
   const { closeModal } = useContactModal();
 
   const [form, setForm] = useState<FormState>(initialForm);
+  const [touched, setTouched] = useState<TouchedState>(initialTouched);
+  const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
 
   const firstFieldRef = useRef<HTMLInputElement | null>(null);
@@ -62,12 +116,24 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
     return () => window.clearTimeout(t);
   }, [autoFocus]);
 
+  const allTouched: TouchedState = { name: true, email: true, type: true, org: true, message: true };
+  const errors = getErrors(form, submitted ? allTouched : touched);
+
   const canSubmit = useMemo(() => {
-    return Boolean(form.name.trim() && form.email.trim() && form.message.trim());
+    return Boolean(form.name.trim() && form.email.trim() && emailRegex.test(form.email.trim()) && form.message.trim());
   }, [form.email, form.message, form.name]);
+
+  const touch = (field: keyof FormState) => () =>
+    setTouched((t) => ({ ...t, [field]: true }));
+
+  const handleBlur = (field: keyof FormState) => (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setTouched((t) => ({ ...t, [field]: true }));
+    fieldBlurHandler(e);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitted(true);
     if (!canSubmit) return;
 
     setSending(true);
@@ -75,77 +141,120 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
       setSending(false);
       toast({ title: "Message received", description: "Our team will respond within 24 hours." });
       setForm(initialForm);
+      setTouched(initialTouched);
+      setSubmitted(false);
       closeModal();
     }, 800);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <input
-          ref={firstFieldRef}
-          style={fieldStyle}
-          placeholder="Full name"
-          value={form.name}
-          onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))}
-          onFocus={fieldFocusHandler}
-          onBlur={fieldBlurHandler}
-          required
-        />
-        <input
-          style={fieldStyle}
-          placeholder="Email address"
-          type="email"
-          value={form.email}
-          onChange={(e) => setForm((s) => ({ ...s, email: e.target.value }))}
-          onFocus={fieldFocusHandler}
-          onBlur={fieldBlurHandler}
-          required
-        />
+    <form onSubmit={handleSubmit} className="grid gap-5" noValidate>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* Name */}
+        <div>
+          <label style={labelStyle}>[ Name ]</label>
+          <input
+            ref={firstFieldRef}
+            style={errors.name ? fieldErrorStyle : fieldStyle}
+            placeholder="Full name"
+            value={form.name}
+            onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))}
+            onFocus={fieldFocusHandler}
+            onBlur={handleBlur("name")}
+            maxLength={100}
+          />
+          {errors.name
+            ? <span style={errorStyle}>{errors.name}</span>
+            : <span style={helperStyle}>As it appears on record</span>
+          }
+        </div>
+
+        {/* Email */}
+        <div>
+          <label style={labelStyle}>[ Email ]</label>
+          <input
+            style={errors.email ? fieldErrorStyle : fieldStyle}
+            placeholder="you@organization.com"
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm((s) => ({ ...s, email: e.target.value }))}
+            onFocus={fieldFocusHandler}
+            onBlur={handleBlur("email")}
+            maxLength={255}
+          />
+          {errors.email
+            ? <span style={errorStyle}>{errors.email}</span>
+            : <span style={helperStyle}>Primary point of contact</span>
+          }
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <select
-          style={{ ...fieldStyle, height: 42, appearance: "none" as const }}
-          value={form.type}
-          onChange={(e) => setForm((s) => ({ ...s, type: e.target.value }))}
-          onFocus={fieldFocusHandler as any}
-          onBlur={fieldBlurHandler as any}
-        >
-          <option value="" style={{ background: "#1A0630", color: "rgba(255,255,255,0.5)" }}>
-            Inquiry type
-          </option>
-          {inquiryTypes.map((t) => (
-            <option key={t} value={t} style={{ background: "#1A0630", color: "rgba(255,255,255,0.9)" }}>
-              {t}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* Inquiry Type */}
+        <div>
+          <label style={labelStyle}>[ Inquiry Type ]</label>
+          <select
+            style={{ ...(errors.type ? fieldErrorStyle : fieldStyle), height: 42, appearance: "none" as const }}
+            value={form.type}
+            onChange={(e) => setForm((s) => ({ ...s, type: e.target.value }))}
+            onFocus={fieldFocusHandler as any}
+            onBlur={handleBlur("type") as any}
+          >
+            <option value="" style={{ background: "#1A0630", color: "rgba(255,255,255,0.5)" }}>
+              Select category
             </option>
-          ))}
-        </select>
-        <input
-          style={fieldStyle}
-          placeholder="Organization (optional)"
-          value={form.org}
-          onChange={(e) => setForm((s) => ({ ...s, org: e.target.value }))}
-          onFocus={fieldFocusHandler}
-          onBlur={fieldBlurHandler}
-        />
+            {inquiryTypes.map((t) => (
+              <option key={t} value={t} style={{ background: "#1A0630", color: "rgba(255,255,255,0.9)" }}>
+                {t}
+              </option>
+            ))}
+          </select>
+          <span style={helperStyle}>Helps route to the right team</span>
+        </div>
+
+        {/* Organization */}
+        <div>
+          <label style={labelStyle}>[ Organization ]</label>
+          <input
+            style={fieldStyle}
+            placeholder="Company or institution"
+            value={form.org}
+            onChange={(e) => setForm((s) => ({ ...s, org: e.target.value }))}
+            onFocus={fieldFocusHandler}
+            onBlur={handleBlur("org")}
+          />
+          <span style={helperStyle}>Optional — include if applicable</span>
+        </div>
       </div>
 
-      <textarea
-        style={{ ...fieldStyle, resize: "none" }}
-        placeholder="Your message"
-        value={form.message}
-        onChange={(e) => setForm((s) => ({ ...s, message: e.target.value }))}
-        onFocus={fieldFocusHandler as any}
-        onBlur={fieldBlurHandler as any}
-        rows={5}
-        required
-      />
+      {/* Message */}
+      <div>
+        <label style={labelStyle}>[ Message ]</label>
+        <textarea
+          style={{ ...(errors.message ? fieldErrorStyle : fieldStyle), resize: "none" }}
+          placeholder="Describe your inquiry or requirements"
+          value={form.message}
+          onChange={(e) => setForm((s) => ({ ...s, message: e.target.value }))}
+          onFocus={fieldFocusHandler as any}
+          onBlur={handleBlur("message") as any}
+          rows={5}
+          maxLength={2000}
+        />
+        <div className="flex justify-between">
+          {errors.message
+            ? <span style={errorStyle}>{errors.message}</span>
+            : <span style={helperStyle}>Include relevant context for faster routing</span>
+          }
+          <span style={{ ...helperStyle, textAlign: "right", minWidth: 60 }}>
+            {form.message.length}/2000
+          </span>
+        </div>
+      </div>
 
       <div className="flex items-center justify-end gap-3 pt-2">
         <Button
           type="submit"
-          disabled={sending || !canSubmit}
+          disabled={sending}
           className="px-6 font-semibold tracking-wide border-0"
           style={{
             background: "linear-gradient(135deg, #D4616B 0%, #E8967C 100%)",
