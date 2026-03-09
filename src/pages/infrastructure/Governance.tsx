@@ -108,7 +108,7 @@ const Governance = () => {
                 initial={{ opacity: 0 }}
                 animate={heroInView ? { opacity: 1 } : {}}
                 transition={{ delay: 0.7, duration: 0.6 }}
-        72      style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+        style={{ color: "rgba(255,255,255,0.72)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
               >
                 Data governance isn't a checkbox — it's wired into how we store, route, and process every clinical signal.
               </motion.p>
