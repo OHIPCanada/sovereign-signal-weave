@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import { motion, useInView } from "framer-motion";
 import governanceOrb from "@/assets/governance-hero-orb.png";
 import { ShieldCheck, Globe, FileText, Lock, Users, Scale } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 
 const frameworks = [
   { icon: Globe, title: "PIPEDA", subtitle: "Federal Privacy Law", desc: "Full compliance with Canada's Personal Information Protection and Electronic Documents Act. Built-in consent management, purpose limitation, and data minimization." },
