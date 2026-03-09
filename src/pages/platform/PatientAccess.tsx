@@ -263,9 +263,9 @@ const PatientAccess = () => {
       <section className="relative overflow-hidden" style={{
         padding: "clamp(64px, 8vw, 120px) 0",
         background: `
-          radial-gradient(1200px 700px at 20% 20%, rgba(232,150,124,0.12), transparent 55%),
-          radial-gradient(900px 600px at 80% 80%, rgba(123,97,255,0.10), transparent 60%),
-          linear-gradient(180deg, #F9F8FC 0%, #F1EEF8 100%)
+          radial-gradient(900px 600px at 85% 85%, rgba(242,193,174,0.35), transparent 60%),
+          radial-gradient(800px 500px at 15% 10%, rgba(205,188,232,0.45), transparent 60%),
+          linear-gradient(135deg, #F4EFFA 0%, #E9DFF4 50%, #F8F4FB 100%)
         `,
       }}>
         <div className="mx-auto px-6 md:px-12" style={{ width: "min(1200px, 92vw)" }}>
