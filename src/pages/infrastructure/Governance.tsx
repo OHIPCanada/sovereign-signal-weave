@@ -34,12 +34,12 @@ const containerAnim = {
 
 const slideFromLeft = {
   hidden: { opacity: 0, x: -80, filter: "blur(6px)" },
-  show: { opacity: 1, x: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+  show: { opacity: 1, x: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
 const slideFromRight = {
   hidden: { opacity: 0, x: 80, filter: "blur(6px)" },
-  show: { opacity: 1, x: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+  show: { opacity: 1, x: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
 };
 
 const Governance = () => (
