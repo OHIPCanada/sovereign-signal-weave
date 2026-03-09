@@ -110,7 +110,7 @@ const AuditTrails = () => {
                 0x8f4e2a1b9c3d7e6f…verified
               </motion.div>
               
-              <h1 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.22)" }}>
+              <h1 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.22)", textShadow: "0 10px 40px rgba(0,0,0,0.22)" }}>
                 {["Every signal", "logged.", "Forever."].map((line, li) => (
                   <motion.span
                     key={li}
@@ -128,7 +128,7 @@ const AuditTrails = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 0.6 }}
-                style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+        72       style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
               >
                 Immutable, cryptographically signed audit trails for every clinical interaction.
               </motion.p>
