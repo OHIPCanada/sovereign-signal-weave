@@ -27,122 +27,125 @@ const stats = [
   { value: "Immutable", label: "Cryptographic signing" },
 ];
 
-/* ── Chain Links Background ── */
+/* ── Blockchain Cascade — unique to Audit Trails ── */
 const ChainLinks = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    setMounted(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
+
+    const resize = () => {
+      const r = canvas.getBoundingClientRect();
+      canvas.width = r.width * DPR;
+      canvas.height = r.height * DPR;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Falling block elements
+    interface Block { x: number; y: number; speed: number; w: number; h: number; col: number; }
+    const blocks: Block[] = Array.from({ length: 40 }, (_, i) => ({
+      x: Math.random(),
+      y: Math.random() * -1,
+      speed: 0.15 + Math.random() * 0.25,
+      w: 30 + Math.random() * 50,
+      h: 14 + Math.random() * 10,
+      col: i % 3,
+    }));
+
+    // Hash characters for matrix effect
+    const chars = "0123456789abcdef";
+    interface MatrixDrop { x: number; y: number; speed: number; char: string; }
+    const drops: MatrixDrop[] = Array.from({ length: 60 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      speed: 0.002 + Math.random() * 0.004,
+      char: chars[Math.floor(Math.random() * chars.length)],
+    }));
+
+    let raf: number;
+    const t0 = performance.now();
+
+    const draw = (now: number) => {
+      const t = (now - t0) / 1000;
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Matrix-style falling hex characters
+      ctx.font = `${10 * DPR}px monospace`;
+      drops.forEach(d => {
+        d.y += d.speed;
+        if (d.y > 1) {
+          d.y = -0.02;
+          d.x = Math.random();
+          d.char = chars[Math.floor(Math.random() * chars.length)];
+        }
+        const alpha = 0.08 + Math.sin(t * 2 + d.x * 10) * 0.04;
+        ctx.fillStyle = `rgba(212,97,107,${alpha})`;
+        ctx.fillText(d.char, d.x * w, d.y * h);
+      });
+
+      // Falling blockchain blocks
+      blocks.forEach(b => {
+        b.y += b.speed * 0.002;
+        if (b.y > 1.1) {
+          b.y = -0.1;
+          b.x = Math.random();
+        }
+
+        const bx = b.x * w;
+        const by = b.y * h;
+        const alpha = Math.min(1, Math.sin(b.y * Math.PI)) * 0.2;
+        const colors = ["rgba(212,97,107,", "rgba(123,97,255,", "rgba(232,150,124,"];
+
+        // Block outline
+        ctx.strokeStyle = `${colors[b.col]}${alpha})`;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(bx, by, b.w * DPR, b.h * DPR);
+
+        // Inner hash text
+        ctx.fillStyle = `${colors[b.col]}${alpha * 0.6})`;
+        ctx.font = `${7 * DPR}px monospace`;
+        ctx.fillText("0x" + Math.floor(b.x * 0xffff).toString(16), bx + 3 * DPR, by + b.h * DPR * 0.7);
+
+        // Chain link line to next block below
+        ctx.beginPath();
+        ctx.moveTo(bx + b.w * DPR * 0.5, by + b.h * DPR);
+        ctx.lineTo(bx + b.w * DPR * 0.5, by + b.h * DPR + 20 * DPR);
+        ctx.strokeStyle = `${colors[b.col]}${alpha * 0.4})`;
+        ctx.setLineDash([3 * DPR, 3 * DPR]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+
+      // Horizontal verification scan
+      const scanY = ((t * 0.08) % 1) * h;
+      const scanGrad = ctx.createLinearGradient(0, scanY - 10 * DPR, 0, scanY + 10 * DPR);
+      scanGrad.addColorStop(0, "rgba(212,97,107,0)");
+      scanGrad.addColorStop(0.5, "rgba(212,97,107,0.12)");
+      scanGrad.addColorStop(1, "rgba(212,97,107,0)");
+      ctx.fillStyle = scanGrad;
+      ctx.fillRect(0, scanY - 10 * DPR, w, 20 * DPR);
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    raf = requestAnimationFrame(draw);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.4 }}>
-        <defs>
-          <radialGradient id="chainFade" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="white" stopOpacity="1" />
-            <stop offset="100%" stopColor="white" stopOpacity="0" />
-          </radialGradient>
-          <mask id="chainMask">
-            <rect width="100%" height="100%" fill="url(#chainFade)" />
-          </mask>
-        </defs>
-        <g mask="url(#chainMask)">
-          {mounted && Array.from({ length: 12 }).map((_, i) => {
-            const y = 15 + (i % 6) * 14;
-            return (
-              <g key={i}>
-                <motion.rect
-                  x={`${5 + (i % 3) * 35}%`}
-                  y={`${y}%`}
-                  width="60"
-                  height="30"
-                  rx="4"
-                  fill="none"
-                  stroke="rgba(212,97,107,0.3)"
-                  strokeWidth="1"
-                  initial={{ opacity: 0, pathLength: 0 }}
-                  animate={{ opacity: 1, pathLength: 1 }}
-                  transition={{ delay: i * 0.2, duration: 1 }}
-                />
-                {i < 11 && (
-                  <motion.line
-                    x1={`calc(${5 + (i % 3) * 35}% + 60px)`}
-                    y1={`calc(${y}% + 15px)`}
-                    x2={`calc(${5 + ((i + 1) % 3) * 35}%)`}
-                    y2={`calc(${15 + ((i + 1) % 6) * 14}% + 15px)`}
-                    stroke="rgba(212,97,107,0.15)"
-                    strokeWidth="1"
-                    strokeDasharray="4 4"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ delay: i * 0.2 + 0.5, duration: 0.8 }}
-                  />
-                )}
-              </g>
-            );
-          })}
-          {mounted && Array.from({ length: 10 }).map((_, i) => (
-            <motion.circle
-              key={`pulse-${i}`}
-              cx={`${12 + (i % 5) * 20}%`}
-              cy={`${10 + Math.floor(i / 5) * 55}%`}
-              r="3.5"
-              fill="rgba(212,97,107,0.5)"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: [0, 1, 0], scale: [0, 2, 0] }}
-              transition={{ duration: 3, repeat: Infinity, delay: i * 0.5, ease: "easeOut" }}
-            />
-          ))}
-        </g>
-      </svg>
-
-      {/* Floating ambient orbs */}
-      {mounted && (
-        <>
-          <motion.div
-            className="absolute rounded-full"
-            style={{
-              width: 300, height: 300, top: "8%", right: "20%",
-              background: "radial-gradient(circle, rgba(212,97,107,0.2) 0%, transparent 70%)",
-              filter: "blur(60px)",
-            }}
-            animate={{ x: [0, 35, -15, 0], y: [0, -30, 20, 0], scale: [1, 1.2, 0.9, 1] }}
-            transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute rounded-full"
-            style={{
-              width: 220, height: 220, bottom: "15%", left: "12%",
-              background: "radial-gradient(circle, rgba(91,31,166,0.22) 0%, transparent 70%)",
-              filter: "blur(50px)",
-            }}
-            animate={{ x: [0, -20, 25, 0], y: [0, 15, -20, 0], scale: [1, 0.85, 1.15, 1] }}
-            transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute rounded-full"
-            style={{
-              width: 160, height: 160, top: "50%", left: "60%",
-              background: "radial-gradient(circle, rgba(123,97,255,0.18) 0%, transparent 70%)",
-              filter: "blur(40px)",
-            }}
-            animate={{ x: [0, 20, -10, 0], y: [0, -15, 25, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </>
-      )}
-
-      {/* Scanning line */}
-      {mounted && (
-        <motion.div
-          className="absolute left-0 right-0"
-          style={{
-            height: 1,
-            background: "linear-gradient(90deg, transparent, rgba(212,97,107,0.3), rgba(91,31,166,0.3), transparent)",
-            boxShadow: "0 0 20px rgba(212,97,107,0.15)",
-          }}
-          animate={{ top: ["0%", "100%"] }}
-          transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
-        />
-      )}
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.8 }} />
     </div>
   );
 };

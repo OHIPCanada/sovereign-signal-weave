@@ -25,92 +25,120 @@ const stats = [
   { value: "Multi-jurisdictional", label: "Governance routing" },
 ];
 
-/* ── Shield Matrix Background ── */
-const ShieldMatrix = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-    <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.5 }}>
-      <defs>
-        <radialGradient id="shieldFade" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="white" stopOpacity="1" />
-          <stop offset="100%" stopColor="white" stopOpacity="0" />
-        </radialGradient>
-        <mask id="shieldMask">
-          <rect width="100%" height="100%" fill="url(#shieldFade)" />
-        </mask>
-      </defs>
-      <g mask="url(#shieldMask)">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <motion.path
-            key={i}
-            d={`M${40 + (i % 5) * 180} ${30 + Math.floor(i / 5) * 150} l20 12 l0 24 l-20 12 l-20 -12 l0 -24 z`}
-            fill="none"
-            stroke="rgba(123,97,255,0.2)"
-            strokeWidth="0.8"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{ pathLength: 1, opacity: [0, 0.6, 0.2] }}
-            transition={{ duration: 3, delay: i * 0.15, repeat: Infinity, repeatDelay: 5 }}
-          />
-        ))}
-        {Array.from({ length: 10 }).map((_, i) => (
-          <motion.circle
-            key={`node-${i}`}
-            cx={`${10 + (i % 5) * 20}%`}
-            cy={`${15 + Math.floor(i / 5) * 50}%`}
-            r="4"
-            fill="rgba(232,150,124,0.6)"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: [0, 1, 0], scale: [0, 2, 0] }}
-            transition={{ duration: 3.5, repeat: Infinity, delay: i * 0.6, ease: "easeOut" }}
-          />
-        ))}
-      </g>
-    </svg>
+/* ── Concentric Shield Rings — unique to Governance ── */
+const ShieldMatrix = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [mounted, setMounted] = useState(false);
 
-    {/* Floating ambient orbs */}
-    <motion.div
-      className="absolute rounded-full"
-      style={{
-        width: 350, height: 350, top: "5%", right: "15%",
-        background: "radial-gradient(circle, rgba(91,31,166,0.25) 0%, transparent 70%)",
-        filter: "blur(60px)",
-      }}
-      animate={{ x: [0, 30, -20, 0], y: [0, -25, 15, 0], scale: [1, 1.15, 0.9, 1] }}
-      transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-    />
-    <motion.div
-      className="absolute rounded-full"
-      style={{
-        width: 250, height: 250, bottom: "10%", left: "10%",
-        background: "radial-gradient(circle, rgba(212,97,107,0.2) 0%, transparent 70%)",
-        filter: "blur(50px)",
-      }}
-      animate={{ x: [0, -25, 20, 0], y: [0, 20, -25, 0], scale: [1, 0.85, 1.1, 1] }}
-      transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-    />
-    <motion.div
-      className="absolute rounded-full"
-      style={{
-        width: 180, height: 180, top: "45%", left: "55%",
-        background: "radial-gradient(circle, rgba(123,97,255,0.18) 0%, transparent 70%)",
-        filter: "blur(45px)",
-      }}
-      animate={{ x: [0, 20, -15, 0], y: [0, -20, 25, 0] }}
-      transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
-    />
+  useEffect(() => {
+    setMounted(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+    const DPR = Math.min(2, window.devicePixelRatio || 1);
 
-    {/* Scanning line */}
-    <motion.div
-      className="absolute left-0 right-0"
-      style={{
-        height: 1,
-        background: "linear-gradient(90deg, transparent, rgba(123,97,255,0.3), rgba(232,150,124,0.3), transparent)",
-        boxShadow: "0 0 20px rgba(123,97,255,0.15)",
-      }}
-      animate={{ top: ["0%", "100%"] }}
-      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-    />
-  </div>
-);
+    const resize = () => {
+      const r = canvas.getBoundingClientRect();
+      canvas.width = r.width * DPR;
+      canvas.height = r.height * DPR;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    let raf: number;
+    const t0 = performance.now();
+
+    // Shield nodes orbiting in concentric rings
+    interface OrbitNode { ring: number; angle: number; speed: number; size: number; }
+    const orbitNodes: OrbitNode[] = Array.from({ length: 24 }, (_, i) => ({
+      ring: Math.floor(i / 6),
+      angle: (i % 6) * (Math.PI * 2 / 6) + Math.random() * 0.5,
+      speed: 0.08 + Math.random() * 0.12,
+      size: 2.5 + Math.random() * 2,
+    }));
+
+    const draw = (now: number) => {
+      const t = (now - t0) / 1000;
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w * 0.55;
+      const cy = h * 0.5;
+      const minDim = Math.min(w, h);
+      ctx.clearRect(0, 0, w, h);
+
+      // Central pulse glow
+      const pulseSize = 0.08 + Math.sin(t * 0.6) * 0.03;
+      const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, minDim * pulseSize);
+      coreGrad.addColorStop(0, `rgba(232,150,124,${0.3 + Math.sin(t * 0.8) * 0.1})`);
+      coreGrad.addColorStop(1, "rgba(232,150,124,0)");
+      ctx.fillStyle = coreGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Concentric rings with rotating dashes
+      const ringRadii = [0.12, 0.22, 0.33, 0.44];
+      ringRadii.forEach((r, ri) => {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(t * (ri % 2 === 0 ? 0.1 : -0.08) * (1 + ri * 0.3));
+        ctx.beginPath();
+        ctx.arc(0, 0, minDim * r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(123,97,255,${0.08 + Math.sin(t * 0.4 + ri) * 0.04})`;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([8 * DPR, 16 * DPR]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+      });
+
+      // Orbit nodes
+      orbitNodes.forEach(node => {
+        const r = ringRadii[node.ring] * minDim;
+        const a = node.angle + t * node.speed * (node.ring % 2 === 0 ? 1 : -1);
+        const nx = cx + Math.cos(a) * r;
+        const ny = cy + Math.sin(a) * r;
+
+        // Node glow
+        const glow = ctx.createRadialGradient(nx, ny, 0, nx, ny, node.size * 4 * DPR);
+        glow.addColorStop(0, node.ring < 2 ? "rgba(123,97,255,0.4)" : "rgba(232,150,124,0.4)");
+        glow.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(nx - node.size * 4 * DPR, ny - node.size * 4 * DPR, node.size * 8 * DPR, node.size * 8 * DPR);
+
+        // Node dot
+        ctx.beginPath();
+        ctx.arc(nx, ny, node.size * DPR, 0, Math.PI * 2);
+        ctx.fillStyle = node.ring < 2 ? "rgba(123,97,255,0.7)" : "rgba(232,150,124,0.7)";
+        ctx.fill();
+      });
+
+      // Ripple pulses from center
+      for (let i = 0; i < 3; i++) {
+        const rippleT = ((t * 0.3 + i * 0.33) % 1);
+        const rippleR = rippleT * minDim * 0.5;
+        const rippleAlpha = (1 - rippleT) * 0.15;
+        ctx.beginPath();
+        ctx.arc(cx, cy, rippleR, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(232,150,124,${rippleAlpha})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    raf = requestAnimationFrame(draw);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.7 }} />
+    </div>
+  );
+};
 
 const Governance = () => {
   const heroRef = useRef<HTMLDivElement>(null);
