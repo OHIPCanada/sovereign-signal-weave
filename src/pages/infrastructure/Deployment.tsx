@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import deploymentOrb from "@/assets/deployment-hero-orb.png";
-import { Server, Cloud, Shield, Zap } from "lucide-react";
+import { Server, Cloud, Zap } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
 const deploymentModels = [
@@ -56,7 +56,6 @@ const HexGrid = () => {
   );
 };
 
-/* ── Deployment: HexGrid bg + magnetic cursor cards + perspective text ── */
 const Deployment = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
@@ -83,7 +82,7 @@ const Deployment = () => {
     <div ref={containerRef} className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* HERO */}
+      {/* HERO — Dark */}
       <section
         className="relative overflow-hidden flex items-end md:items-center"
         style={{
@@ -110,9 +109,6 @@ const Deployment = () => {
                 Infrastructure · Deployment
               </motion.p>
               <motion.h1
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.01 }}
                 style={{
                   color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95,
                   fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em",
@@ -140,7 +136,6 @@ const Deployment = () => {
               </motion.p>
             </div>
 
-            {/* Orb with magnetic cursor tracking */}
             <motion.div
               className="flex items-center justify-center"
               style={{ perspective: 1000, rotateX: orbRotateX, rotateY: orbRotateY }}
@@ -159,12 +154,16 @@ const Deployment = () => {
         </div>
       </section>
 
-      {/* DEPLOYMENT MODELS */}
+      {/* DEPLOYMENT MODELS — Light studio */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: "linear-gradient(180deg, #0A0012 0%, #12001F 100%)",
+          background: `
+            radial-gradient(1000px 600px at 20% 40%, rgba(212,97,107,0.18), transparent 60%),
+            radial-gradient(900px 500px at 80% 60%, rgba(123,97,255,0.2), transparent 60%),
+            linear-gradient(180deg, #F9F8FC 0%, #F1EEF8 100%)
+          `,
         }}
       >
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
@@ -175,10 +174,10 @@ const Deployment = () => {
             transition={{ duration: 0.5 }}
             className="mb-12"
           >
-            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.12)", color: "rgba(123,97,255,0.8)", border: "1px solid rgba(123,97,255,0.2)" }}>
-              DEPLOYMENT MODELS
+            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.08)", color: "rgba(123,97,255,0.7)", border: "1px solid rgba(123,97,255,0.12)" }}>
+              Deployment Models
             </span>
-            <h2 className="mt-4" style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
+            <h2 className="mt-4" style={{ color: "#111", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
               Choose your surface.
             </h2>
           </motion.div>
@@ -187,28 +186,29 @@ const Deployment = () => {
             {deploymentModels.map((model, i) => (
               <motion.div
                 key={model.title}
-                initial={{ opacity: 0, x: -40, filter: "blur(8px)" }}
-                whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: 0.3 + i * 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ borderColor: "rgba(212,97,107,0.4)", boxShadow: "0 0 40px rgba(212,97,107,0.08)" }}
-                className="rounded-lg p-6"
+                transition={{ delay: 0.2 + i * 0.15, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ y: -6, boxShadow: "0 20px 60px rgba(123,97,255,0.12)" }}
+                className="rounded-2xl p-6"
                 style={{
-                  background: "rgba(10,0,18,0.8)",
-                  border: "1px solid rgba(123,97,255,0.15)",
-                  backdropFilter: "blur(10px)",
+                  background: "linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.5) 100%)",
+                  border: "1px solid rgba(123,97,255,0.1)",
+                  backdropFilter: "blur(20px)",
+                  boxShadow: "0 8px 40px rgba(60,40,120,0.06)",
                 }}
               >
                 <motion.div
-                  className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                  style={{ background: "linear-gradient(135deg, rgba(212,97,107,0.15), rgba(123,97,255,0.15))" }}
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                  style={{ background: "linear-gradient(135deg, rgba(212,97,107,0.12), rgba(123,97,255,0.1))" }}
                   whileHover={{ rotate: 90 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <model.icon className="w-6 h-6" style={{ color: "#E8967C" }} />
+                  <model.icon className="w-6 h-6" style={{ color: "#7B61FF" }} />
                 </motion.div>
-                <div className="mb-2" style={{ color: "#fff", fontSize: 18, fontWeight: 700 }}>{model.title}</div>
-                <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>{model.desc}</div>
+                <div className="mb-2" style={{ color: "#1B0F2E", fontSize: 18, fontWeight: 700 }}>{model.title}</div>
+                <div style={{ color: "rgba(30,20,50,0.6)", fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>{model.desc}</div>
                 <div className="flex flex-col gap-2">
                   {model.features.map((f, fi) => (
                     <motion.div
@@ -217,10 +217,10 @@ const Deployment = () => {
                       initial={{ opacity: 0 }}
                       whileInView={{ opacity: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: 0.6 + i * 0.2 + fi * 0.1 }}
+                      transition={{ delay: 0.4 + i * 0.15 + fi * 0.08 }}
                     >
-                      <span style={{ color: "#7B61FF", fontFamily: "monospace" }}>→</span>
-                      <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", fontFamily: "monospace" }}>{f}</span>
+                      <span style={{ color: "#D4616B", fontSize: 12 }}>→</span>
+                      <span style={{ fontSize: 12, color: "rgba(30,20,50,0.55)" }}>{f}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -230,12 +230,16 @@ const Deployment = () => {
         </div>
       </section>
 
-      {/* COMPLIANCE & STATS */}
+      {/* COMPLIANCE & STATS — Light atmospheric */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: "linear-gradient(180deg, #12001F 0%, #1A0630 100%)",
+          background: `
+            radial-gradient(900px 600px at 85% 85%, rgba(242,193,174,0.3), transparent 60%),
+            radial-gradient(800px 500px at 15% 15%, rgba(205,188,232,0.4), transparent 60%),
+            linear-gradient(135deg, #F4EFFA 0%, #E9DFF4 50%, #F8F4FB 100%)
+          `,
         }}
       >
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
@@ -244,7 +248,7 @@ const Deployment = () => {
             <div>
               <motion.p
                 className="font-mono uppercase mb-6"
-                style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, letterSpacing: "0.15em" }}
+                style={{ color: "rgba(20,10,42,0.4)", fontSize: 11, letterSpacing: "0.15em" }}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
@@ -259,20 +263,17 @@ const Deployment = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.15, type: "spring", stiffness: 200, damping: 20 }}
-                    className="relative p-5 rounded-lg overflow-hidden"
-                    style={{ background: "rgba(123,97,255,0.08)", border: "1px solid rgba(123,97,255,0.15)" }}
+                    className="relative p-5 rounded-xl overflow-hidden"
+                    style={{
+                      background: "rgba(255,255,255,0.7)",
+                      border: "1px solid rgba(123,97,255,0.1)",
+                      backdropFilter: "blur(10px)",
+                      boxShadow: "0 4px 24px rgba(60,40,120,0.06)",
+                    }}
                   >
-                    <motion.div
-                      className="absolute inset-0"
-                      initial={{ x: "-100%" }}
-                      whileInView={{ x: "100%" }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.5 + i * 0.15, duration: 0.8, ease: "easeOut" }}
-                      style={{ background: "linear-gradient(90deg, transparent, rgba(123,97,255,0.12), transparent)" }}
-                    />
-                    <div className="relative z-10">
-                      <div className="font-mono" style={{ fontSize: "clamp(26px, 2.5vw, 38px)", fontWeight: 700, color: "#fff" }}>{s.value}</div>
-                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginTop: 4 }}>{s.label}</div>
+                    <div>
+                      <div style={{ fontSize: "clamp(26px, 2.5vw, 38px)", fontWeight: 700, color: "#1B0F2E" }}>{s.value}</div>
+                      <div style={{ fontSize: 11, color: "rgba(30,20,50,0.45)", marginTop: 4 }}>{s.label}</div>
                     </div>
                   </motion.div>
                 ))}
@@ -283,7 +284,7 @@ const Deployment = () => {
             <div>
               <motion.p
                 className="font-mono uppercase mb-6"
-                style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, letterSpacing: "0.15em" }}
+                style={{ color: "rgba(20,10,42,0.4)", fontSize: 11, letterSpacing: "0.15em" }}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
@@ -298,13 +299,17 @@ const Deployment = () => {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex items-center justify-between p-4 rounded-lg"
-                    style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(123,97,255,0.1)" }}
+                    className="flex items-center justify-between p-4 rounded-xl"
+                    style={{
+                      background: "rgba(255,255,255,0.7)",
+                      border: "1px solid rgba(123,97,255,0.08)",
+                      boxShadow: "0 2px 12px rgba(60,40,120,0.04)",
+                    }}
                   >
-                    <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 14 }}>{item.label}</span>
+                    <span style={{ color: "#1B0F2E", fontSize: 14, fontWeight: 500 }}>{item.label}</span>
                     <motion.div
-                      className="flex items-center gap-2 px-3 py-1.5 rounded"
-                      style={{ background: "rgba(212,97,107,0.1)", border: "1px solid rgba(212,97,107,0.25)" }}
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg"
+                      style={{ background: "rgba(212,97,107,0.08)", border: "1px solid rgba(212,97,107,0.15)" }}
                       initial={{ scale: 0 }}
                       whileInView={{ scale: 1 }}
                       viewport={{ once: true }}
@@ -316,7 +321,7 @@ const Deployment = () => {
                         animate={{ opacity: [1, 0.4, 1] }}
                         transition={{ duration: 1.5, repeat: Infinity }}
                       />
-                      <span className="text-xs" style={{ color: "#E8967C" }}>{item.status}</span>
+                      <span className="text-xs" style={{ color: "#D4616B", fontWeight: 500 }}>{item.status}</span>
                     </motion.div>
                   </motion.div>
                 ))}

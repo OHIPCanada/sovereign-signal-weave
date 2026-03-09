@@ -27,7 +27,7 @@ const stats = [
   { value: "99.99%", label: "Message delivery" },
 ];
 
-/* ── Data Flow Lines Background (unique to Interoperability) ── */
+/* ── Data Flow Lines Background ── */
 const DataFlowLines = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -82,7 +82,7 @@ const Interoperability = () => {
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* HERO */}
+      {/* HERO — Dark */}
       <section
         className="relative overflow-hidden flex items-end md:items-center"
         style={{
@@ -140,7 +140,6 @@ const Interoperability = () => {
               </motion.p>
             </div>
 
-            {/* Orb with connector nodes */}
             <div className="relative flex items-center justify-center">
               <motion.img
                 src={interopOrb}
@@ -151,7 +150,6 @@ const Interoperability = () => {
                 transition={{ delay: 0.4, duration: 1, ease: [0.16, 1, 0.3, 1] }}
                 style={{ filter: "drop-shadow(0 30px 80px rgba(91,31,166,0.3))" }}
               />
-              {/* Animated connection pulses */}
               {[45, 135, 225, 315].map((angle, i) => (
                 <motion.div
                   key={i}
@@ -171,12 +169,16 @@ const Interoperability = () => {
         </div>
       </section>
 
-      {/* STANDARDS */}
+      {/* STANDARDS — Light studio */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: "linear-gradient(180deg, #16002A 0%, #0B0613 100%)",
+          background: `
+            radial-gradient(1000px 600px at 20% 40%, rgba(192,132,252,0.15), transparent 55%),
+            radial-gradient(800px 500px at 85% 70%, rgba(232,150,124,0.18), transparent 55%),
+            linear-gradient(180deg, #F9F8FC 0%, #F4EFFA 100%)
+          `,
         }}
       >
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
@@ -186,10 +188,10 @@ const Interoperability = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.1)", color: "rgba(192,132,252,0.9)", border: "1px solid rgba(123,97,255,0.2)" }}>
+            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.08)", color: "rgba(192,132,252,0.9)", border: "1px solid rgba(123,97,255,0.12)" }}>
               Protocols
             </span>
-            <h2 className="mt-4" style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
+            <h2 className="mt-4" style={{ color: "#111", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
               Speak every language.
             </h2>
           </motion.div>
@@ -198,13 +200,18 @@ const Interoperability = () => {
             {standards.map((std, i) => (
               <motion.div
                 key={std.title}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: i * 0.12, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ borderColor: "rgba(192,132,252,0.4)", y: -4 }}
-                className="relative p-6 rounded-xl overflow-hidden group"
-                style={{ background: "rgba(123,97,255,0.04)", border: "1px solid rgba(123,97,255,0.1)" }}
+                whileHover={{ y: -4, boxShadow: "0 20px 60px rgba(123,97,255,0.1)" }}
+                className="relative p-6 rounded-2xl overflow-hidden"
+                style={{
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
+                  border: "1px solid rgba(123,97,255,0.1)",
+                  backdropFilter: "blur(20px)",
+                  boxShadow: "0 8px 40px rgba(60,40,120,0.06)",
+                }}
               >
                 {/* Accent line on hover */}
                 <motion.div
@@ -216,16 +223,16 @@ const Interoperability = () => {
                 
                 <div className="flex items-start gap-4">
                   <motion.div
-                    className="w-12 h-12 rounded-lg flex items-center justify-center"
-                    style={{ background: "rgba(192,132,252,0.08)", border: "1px solid rgba(192,132,252,0.15)" }}
+                    className="w-12 h-12 rounded-xl flex items-center justify-center"
+                    style={{ background: "rgba(192,132,252,0.08)" }}
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.6 }}
                   >
-                    <std.icon className="w-6 h-6" style={{ color: "#C084FC" }} />
+                    <std.icon className="w-6 h-6" style={{ color: "#7B61FF" }} />
                   </motion.div>
                   <div className="flex-1">
-                    <div style={{ fontWeight: 700, fontSize: 18, color: "#fff", marginBottom: 4 }}>{std.title}</div>
-                    <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, marginBottom: 12 }}>{std.desc}</div>
+                    <div style={{ fontWeight: 700, fontSize: 18, color: "#1B0F2E", marginBottom: 4 }}>{std.title}</div>
+                    <div style={{ fontSize: 14, color: "rgba(30,20,50,0.55)", lineHeight: 1.6, marginBottom: 12 }}>{std.desc}</div>
                     <div className="grid grid-cols-2 gap-2">
                       {std.features.map((f, fi) => (
                         <motion.div
@@ -237,7 +244,7 @@ const Interoperability = () => {
                           transition={{ delay: 0.4 + i * 0.12 + fi * 0.08 }}
                         >
                           <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#C084FC" }} />
-                          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>{f}</span>
+                          <span style={{ fontSize: 12, color: "rgba(30,20,50,0.5)" }}>{f}</span>
                         </motion.div>
                       ))}
                     </div>
@@ -249,12 +256,16 @@ const Interoperability = () => {
         </div>
       </section>
 
-      {/* INTEGRATION FLOW */}
+      {/* INTEGRATION FLOW — Light warm atmospheric */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: "linear-gradient(180deg, #0B0613 0%, #0D001A 100%)",
+          background: `
+            radial-gradient(900px 500px at 70% 40%, rgba(242,193,174,0.25), transparent 55%),
+            radial-gradient(800px 500px at 20% 60%, rgba(205,188,232,0.3), transparent 55%),
+            linear-gradient(180deg, #F4EFFA 0%, #F7F3FF 50%, #FFFAF8 100%)
+          `,
         }}
       >
         <div ref={pipelineRef} className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
@@ -264,7 +275,7 @@ const Interoperability = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)" }}>
+            <h2 style={{ color: "#1B0F2E", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)" }}>
               Five steps to unified data.
             </h2>
           </motion.div>
@@ -277,16 +288,20 @@ const Interoperability = () => {
               return (
                 <motion.div
                   key={flow.step}
-                  className="flex-1 rounded-xl p-5 relative overflow-hidden"
+                  className="flex-1 rounded-2xl p-5 relative overflow-hidden"
                   initial={{ opacity: 0.3 }}
                   animate={{ 
-                    opacity: isActive ? 1 : 0.3,
-                    borderColor: isCurrent ? "rgba(192,132,252,0.5)" : isActive ? "rgba(123,97,255,0.2)" : "rgba(255,255,255,0.05)",
+                    opacity: isActive ? 1 : 0.4,
+                    borderColor: isCurrent ? "rgba(192,132,252,0.4)" : isActive ? "rgba(123,97,255,0.15)" : "rgba(123,97,255,0.06)",
                   }}
                   transition={{ duration: 0.4 }}
                   style={{
-                    background: isActive ? "rgba(123,97,255,0.06)" : "rgba(0,0,0,0.3)",
+                    background: isActive
+                      ? "rgba(255,255,255,0.8)"
+                      : "rgba(255,255,255,0.4)",
                     border: "1px solid",
+                    backdropFilter: "blur(10px)",
+                    boxShadow: isActive ? "0 8px 32px rgba(60,40,120,0.08)" : "none",
                     minWidth: 140,
                   }}
                 >
@@ -294,20 +309,20 @@ const Interoperability = () => {
                     <motion.div
                       className="absolute inset-0"
                       initial={{ opacity: 0 }}
-                      animate={{ opacity: [0, 0.3, 0] }}
+                      animate={{ opacity: [0, 0.2, 0] }}
                       transition={{ duration: 1, repeat: Infinity }}
                       style={{ background: "radial-gradient(circle at center, rgba(192,132,252,0.15), transparent 70%)" }}
                     />
                   )}
                   
                   <div className="relative z-10">
-                    <div className="font-mono text-xs mb-2" style={{ color: isActive ? "#C084FC" : "rgba(255,255,255,0.3)" }}>
+                    <div className="font-mono text-xs mb-2" style={{ color: isActive ? "#7B61FF" : "rgba(30,20,50,0.3)" }}>
                       {flow.step}
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: 16, color: isActive ? "#fff" : "rgba(255,255,255,0.4)", marginBottom: 4 }}>
+                    <div style={{ fontWeight: 700, fontSize: 16, color: isActive ? "#1B0F2E" : "rgba(30,20,50,0.35)", marginBottom: 4 }}>
                       {flow.title}
                     </div>
-                    <div style={{ fontSize: 12, color: isActive ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.25)", lineHeight: 1.5 }}>
+                    <div style={{ fontSize: 12, color: isActive ? "rgba(30,20,50,0.6)" : "rgba(30,20,50,0.25)", lineHeight: 1.5 }}>
                       {flow.desc}
                     </div>
                   </div>
@@ -317,7 +332,7 @@ const Interoperability = () => {
                       className="hidden md:flex absolute -right-2 top-1/2 -translate-y-1/2 z-20"
                       animate={{ opacity: isActive ? 1 : 0.2 }}
                     >
-                      <ArrowRight className="w-4 h-4" style={{ color: isActive ? "#C084FC" : "rgba(255,255,255,0.2)" }} />
+                      <ArrowRight className="w-4 h-4" style={{ color: isActive ? "#C084FC" : "rgba(30,20,50,0.2)" }} />
                     </motion.div>
                   )}
                 </motion.div>
@@ -327,7 +342,7 @@ const Interoperability = () => {
         </div>
       </section>
 
-      {/* STATS */}
+      {/* STATS — Dark closing */}
       <section
         className="relative overflow-hidden"
         style={{

@@ -27,7 +27,7 @@ const stats = [
   { value: "Immutable", label: "Cryptographic signing" },
 ];
 
-/* ── Chain Links Background (unique to Audit) ── */
+/* ── Chain Links Background ── */
 const ChainLinks = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -83,7 +83,7 @@ const AuditTrails = () => {
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* HERO */}
+      {/* HERO — Dark */}
       <section
         className="relative overflow-hidden flex items-end md:items-center"
         style={{
@@ -134,7 +134,6 @@ const AuditTrails = () => {
               </motion.p>
             </div>
 
-            {/* Orb */}
             <div className="relative flex items-center justify-center">
               <motion.div
                 initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
@@ -148,7 +147,6 @@ const AuditTrails = () => {
                   style={{ filter: "drop-shadow(0 30px 80px rgba(212,97,107,0.25))" }}
                 />
               </motion.div>
-              {/* Floating hash blocks */}
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
@@ -172,19 +170,19 @@ const AuditTrails = () => {
         </div>
       </section>
 
-      {/* FEATURES */}
+      {/* FEATURES — Light studio */}
       <section
         ref={scrollRef}
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: "linear-gradient(180deg, #150028 0%, #0D0010 100%)",
+          background: `
+            radial-gradient(1000px 600px at 30% 50%, rgba(212,97,107,0.15), transparent 55%),
+            radial-gradient(800px 500px at 75% 40%, rgba(205,188,232,0.3), transparent 55%),
+            linear-gradient(180deg, #F9F8FC 0%, #F4EFFA 100%)
+          `,
         }}
       >
-        <motion.div className="absolute inset-0 pointer-events-none" style={{ y: chainY }}>
-          <ChainLinks />
-        </motion.div>
-        
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <motion.div
             className="mb-12"
@@ -192,16 +190,16 @@ const AuditTrails = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded mb-4" style={{ background: "rgba(212,97,107,0.08)", border: "1px solid rgba(212,97,107,0.15)" }}>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg mb-4" style={{ background: "rgba(212,97,107,0.06)", border: "1px solid rgba(212,97,107,0.1)" }}>
               <motion.div
                 className="w-2 h-2 rounded-full"
                 style={{ background: "#D4616B" }}
                 animate={{ opacity: [1, 0.3, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
-              <span className="text-xs" style={{ color: "#D4616B" }}>Recording</span>
+              <span className="text-xs" style={{ color: "#D4616B", fontWeight: 500 }}>Recording</span>
             </div>
-            <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
+            <h2 style={{ color: "#111", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
               Complete accountability.
             </h2>
           </motion.div>
@@ -210,16 +208,21 @@ const AuditTrails = () => {
             {auditFeatures.map((f, i) => (
               <motion.div
                 key={f.title}
-                initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ delay: i * 0.12, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ y: -8, borderColor: "rgba(212,97,107,0.3)" }}
-                className="p-6 rounded-xl"
-                style={{ background: "rgba(212,97,107,0.04)", border: "1px solid rgba(212,97,107,0.1)" }}
+                whileHover={{ y: -6, boxShadow: "0 16px 48px rgba(212,97,107,0.08)" }}
+                className="p-6 rounded-2xl"
+                style={{
+                  background: "linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
+                  border: "1px solid rgba(212,97,107,0.08)",
+                  backdropFilter: "blur(20px)",
+                  boxShadow: "0 4px 24px rgba(60,40,120,0.05)",
+                }}
               >
                 <motion.div
-                  className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
                   style={{ background: "rgba(212,97,107,0.08)" }}
                   whileInView={{ rotate: [0, -10, 10, 0] }}
                   viewport={{ once: true }}
@@ -227,20 +230,24 @@ const AuditTrails = () => {
                 >
                   <f.icon className="w-6 h-6" style={{ color: "#D4616B" }} />
                 </motion.div>
-                <div style={{ fontWeight: 700, fontSize: 17, color: "#fff", marginBottom: 8 }}>{f.title}</div>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>{f.desc}</div>
+                <div style={{ fontWeight: 700, fontSize: 17, color: "#1B0F2E", marginBottom: 8 }}>{f.title}</div>
+                <div style={{ fontSize: 13, color: "rgba(30,20,50,0.55)", lineHeight: 1.6 }}>{f.desc}</div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* LOG TYPES — Structured signal table */}
+      {/* LOG TYPES — Light warm */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: "linear-gradient(180deg, #0D0010 0%, #0A000D 100%)",
+          background: `
+            radial-gradient(900px 500px at 80% 60%, rgba(242,193,174,0.3), transparent 55%),
+            radial-gradient(700px 500px at 10% 30%, rgba(123,97,255,0.12), transparent 55%),
+            linear-gradient(180deg, #F4EFFA 0%, #F7F3FF 50%, #FFFAF8 100%)
+          `,
         }}
       >
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
@@ -251,38 +258,43 @@ const AuditTrails = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(28px, 3vw, 44px)", lineHeight: 1.1 }}>
+              <h2 style={{ color: "#1B0F2E", fontWeight: 700, fontSize: "clamp(28px, 3vw, 44px)", lineHeight: 1.1 }}>
                 Structured signal capture.
               </h2>
-              <p className="mt-4" style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.6 }}>
+              <p className="mt-4" style={{ color: "rgba(30,20,50,0.55)", fontSize: 14, lineHeight: 1.6 }}>
                 Every event is categorized, timestamped, and linked to its originating context.
               </p>
             </motion.div>
 
-            <div className="rounded-xl overflow-hidden" style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(123,97,255,0.1)" }}>
-              <div className="px-5 py-3 border-b" style={{ borderColor: "rgba(123,97,255,0.08)" }}>
-                <span className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>Signal Taxonomy</span>
+            <div className="rounded-2xl overflow-hidden" style={{
+              background: "rgba(255,255,255,0.7)",
+              border: "1px solid rgba(123,97,255,0.08)",
+              backdropFilter: "blur(20px)",
+              boxShadow: "0 8px 40px rgba(60,40,120,0.06)",
+            }}>
+              <div className="px-5 py-3 border-b" style={{ borderColor: "rgba(123,97,255,0.06)" }}>
+                <span className="text-xs font-mono" style={{ color: "rgba(30,20,50,0.4)" }}>Signal Taxonomy</span>
               </div>
               
-              <div className="p-4">
+              <div className="p-5">
                 {logTypes.map((log, i) => (
                   <motion.div
                     key={log.type}
                     className="flex items-center gap-3 py-3 border-b last:border-0"
-                    style={{ borderColor: "rgba(255,255,255,0.04)" }}
+                    style={{ borderColor: "rgba(123,97,255,0.05)" }}
                     initial={{ opacity: 0, x: -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
-                    transition={{ delay: i * 0.15, duration: 0.5 }}
+                    transition={{ delay: i * 0.12, duration: 0.5 }}
                   >
                     <motion.span
-                      className="w-2 h-2 rounded-full flex-shrink-0"
+                      className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                       style={{ background: log.color }}
-                      animate={{ opacity: [0.4, 1, 0.4] }}
+                      animate={{ opacity: [0.5, 1, 0.5] }}
                       transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
                     />
-                    <span style={{ color: log.color, minWidth: 130, fontSize: 14, fontWeight: 600 }}>{log.type}</span>
-                    <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 13 }}>{log.desc}</span>
+                    <span style={{ color: log.color, minWidth: 120, fontSize: 14, fontWeight: 600 }}>{log.type}</span>
+                    <span style={{ color: "rgba(30,20,50,0.5)", fontSize: 13 }}>{log.desc}</span>
                   </motion.div>
                 ))}
               </div>
@@ -291,7 +303,7 @@ const AuditTrails = () => {
         </div>
       </section>
 
-      {/* STATS */}
+      {/* STATS — Dark closing */}
       <section
         className="relative overflow-hidden"
         style={{
