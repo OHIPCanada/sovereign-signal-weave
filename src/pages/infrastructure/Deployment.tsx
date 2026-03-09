@@ -174,7 +174,7 @@ const Deployment = () => {
             transition={{ duration: 0.5 }}
             className="mb-12"
           >
-            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.08)", color: "rgba(123,97,255,0.7)", border: "1px solid rgba(123,97,255,0.12)" }}>
+            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(212,97,107,0.08)", color: "#D4616B", border: "1px solid rgba(212,97,107,0.12)" }}>
               Deployment Models
             </span>
             <h2 className="mt-4" style={{ color: "#111", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
@@ -205,7 +205,7 @@ const Deployment = () => {
                   whileHover={{ rotate: 90 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <model.icon className="w-6 h-6" style={{ color: "#7B61FF" }} />
+                  <model.icon className="w-6 h-6" style={{ color: "#D4616B" }} />
                 </motion.div>
                 <div className="mb-2" style={{ color: "#1B0F2E", fontSize: 18, fontWeight: 700 }}>{model.title}</div>
                 <div style={{ color: "rgba(30,20,50,0.6)", fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>{model.desc}</div>

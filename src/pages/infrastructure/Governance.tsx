@@ -79,11 +79,11 @@ const Governance = () => {
               >
                 <motion.div
                   className="w-2 h-2 rounded-full"
-                  style={{ background: "#7B61FF" }}
+                  style={{ background: "#E8967C" }}
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
-                <span className="font-mono uppercase text-xs" style={{ color: "rgba(123,97,255,0.8)", letterSpacing: "0.15em" }}>
+                <span className="font-mono uppercase text-xs" style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.15em" }}>
                   Governance Active
                 </span>
               </motion.div>
@@ -170,7 +170,7 @@ const Governance = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.08)", color: "rgba(123,97,255,0.7)", border: "1px solid rgba(123,97,255,0.12)" }}>
+            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(212,97,107,0.08)", color: "#D4616B", border: "1px solid rgba(212,97,107,0.12)" }}>
               Regulatory Compliance
             </span>
             <h2 className="mt-4" style={{ color: "#111", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
@@ -206,7 +206,7 @@ const Governance = () => {
                 
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "rgba(123,97,255,0.08)" }}>
-                    <fw.icon className="w-6 h-6" style={{ color: "#7B61FF" }} />
+                    <fw.icon className="w-6 h-6" style={{ color: "#D4616B" }} />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">

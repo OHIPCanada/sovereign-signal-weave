@@ -111,8 +111,8 @@ const Interoperability = () => {
                   animate={{ boxShadow: ["0 0 0 rgba(123,97,255,0)", "0 0 20px rgba(123,97,255,0.2)", "0 0 0 rgba(123,97,255,0)"] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <Zap className="w-4 h-4" style={{ color: "#C084FC" }} />
-                  <span className="font-mono text-xs" style={{ color: "#C084FC" }}>Connected</span>
+                  <Zap className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                  <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>Connected</span>
                 </motion.div>
               </motion.div>
               
@@ -188,7 +188,7 @@ const Interoperability = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.08)", color: "rgba(192,132,252,0.9)", border: "1px solid rgba(123,97,255,0.12)" }}>
+            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(212,97,107,0.08)", color: "#D4616B", border: "1px solid rgba(212,97,107,0.12)" }}>
               Protocols
             </span>
             <h2 className="mt-4" style={{ color: "#111", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
@@ -218,7 +218,7 @@ const Interoperability = () => {
                   className="absolute top-0 left-0 w-full h-1"
                   initial={{ scaleX: 0 }}
                   whileHover={{ scaleX: 1 }}
-                  style={{ background: "linear-gradient(90deg, transparent, #C084FC, transparent)", transformOrigin: "left" }}
+                  style={{ background: "linear-gradient(90deg, transparent, #E8967C, transparent)", transformOrigin: "left" }}
                 />
                 
                 <div className="flex items-start gap-4">
@@ -228,7 +228,7 @@ const Interoperability = () => {
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.6 }}
                   >
-                    <std.icon className="w-6 h-6" style={{ color: "#7B61FF" }} />
+                    <std.icon className="w-6 h-6" style={{ color: "#D4616B" }} />
                   </motion.div>
                   <div className="flex-1">
                     <div style={{ fontWeight: 700, fontSize: 18, color: "#1B0F2E", marginBottom: 4 }}>{std.title}</div>
@@ -243,7 +243,7 @@ const Interoperability = () => {
                           viewport={{ once: true }}
                           transition={{ delay: 0.4 + i * 0.12 + fi * 0.08 }}
                         >
-                          <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#C084FC" }} />
+                          <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#E8967C" }} />
                           <span style={{ fontSize: 12, color: "rgba(30,20,50,0.5)" }}>{f}</span>
                         </motion.div>
                       ))}
@@ -311,12 +311,12 @@ const Interoperability = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: [0, 0.2, 0] }}
                       transition={{ duration: 1, repeat: Infinity }}
-                      style={{ background: "radial-gradient(circle at center, rgba(192,132,252,0.15), transparent 70%)" }}
+                      style={{ background: "radial-gradient(circle at center, rgba(212,97,107,0.1ransparent 70%)" }}
                     />
                   )}
                   
                   <div className="relative z-10">
-                    <div className="font-mono text-xs mb-2" style={{ color: isActive ? "#7B61FF" : "rgba(30,20,50,0.3)" }}>
+                    <div className="font-mono text-xs mb-2" style={{ color: isActive ? "#D4616B" : "rgba(30,20,50,0.3)" }}>
                       {flow.step}
                     </div>
                     <div style={{ fontWeight: 700, fontSize: 16, color: isActive ? "#1B0F2E" : "rgba(30,20,50,0.35)", marginBottom: 4 }}>
@@ -332,7 +332,7 @@ const Interoperability = () => {
                       className="hidden md:flex absolute -right-2 top-1/2 -translate-y-1/2 z-20"
                       animate={{ opacity: isActive ? 1 : 0.2 }}
                     >
-                      <ArrowRight className="w-4 h-4" style={{ color: isActive ? "#C084FC" : "rgba(30,20,50,0.2)" }} />
+                      <ArrowRight className="w-4 h-4" style={{ color: isActive ? "#E8967C" : "rgba(30,20,50,0.2)" }} />
                     </motion.div>
                   )}
                 </motion.div>
