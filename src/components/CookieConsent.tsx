@@ -32,11 +32,40 @@ export const hasConsent = (type: keyof Omit<ConsentPreferences, "timestamp">): b
   return prefs?.[type] ?? false;
 };
 
-// Custom event for reopening the consent banner
+// Custom events
 const REOPEN_EVENT = "docg:reopen-consent";
+const CONSENT_CHANGED_EVENT = "docg:consent-changed";
 
 export const reopenConsentBanner = () => {
   window.dispatchEvent(new CustomEvent(REOPEN_EVENT));
+};
+
+// Three states: null = not yet set, "partial" = some on, "all" = all on, "minimal" = only necessary
+export type ConsentStatus = "all" | "partial" | "minimal" | null;
+
+export const getConsentStatus = (): ConsentStatus => {
+  const prefs = getConsentPreferences();
+  if (!prefs) return null;
+  if (prefs.analytics && prefs.marketing) return "all";
+  if (prefs.analytics || prefs.marketing) return "partial";
+  return "minimal";
+};
+
+// Call after saving to notify listeners
+const dispatchConsentChanged = () => {
+  window.dispatchEvent(new CustomEvent(CONSENT_CHANGED_EVENT));
+};
+
+export const useConsentStatus = () => {
+  const [status, setStatus] = useState<ConsentStatus>(getConsentStatus);
+
+  useEffect(() => {
+    const update = () => setStatus(getConsentStatus());
+    window.addEventListener(CONSENT_CHANGED_EVENT, update);
+    return () => window.removeEventListener(CONSENT_CHANGED_EVENT, update);
+  }, []);
+
+  return status;
 };
 
 // Forward ref wrapper for framer-motion compatibility
@@ -257,7 +286,7 @@ const ConsentBannerContent = forwardRef<HTMLDivElement, {
 
 ConsentBannerContent.displayName = "ConsentBannerContent";
 
-const CookieConsent = () => {
+const CookieConsent = forwardRef<HTMLDivElement>((_, ref) => {
   const [visible, setVisible] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [preferences, setPreferences] = useState<ConsentPreferences>(defaultPreferences);
@@ -269,7 +298,6 @@ const CookieConsent = () => {
       const timer = setTimeout(() => setVisible(true), 1500);
       return () => clearTimeout(timer);
     } else {
-      // Load existing preferences for editing
       setPreferences(existing);
     }
   }, []);
@@ -278,12 +306,9 @@ const CookieConsent = () => {
   useEffect(() => {
     const handleReopen = () => {
       const existing = getConsentPreferences();
-      if (existing) {
-        setPreferences(existing);
-      }
+      if (existing) setPreferences(existing);
       setVisible(true);
     };
-    
     window.addEventListener(REOPEN_EVENT, handleReopen);
     return () => window.removeEventListener(REOPEN_EVENT, handleReopen);
   }, []);
@@ -291,6 +316,7 @@ const CookieConsent = () => {
   const savePreferences = useCallback((prefs: ConsentPreferences) => {
     const withTimestamp = { ...prefs, timestamp: new Date().toISOString() };
     localStorage.setItem(CONSENT_KEY, JSON.stringify(withTimestamp));
+    dispatchConsentChanged();
     setVisible(false);
     setShowDetails(false);
   }, []);
@@ -312,28 +338,33 @@ const CookieConsent = () => {
   }, []);
 
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          initial={{ opacity: 0, y: 100 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 100 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-0 left-0 right-0 z-[100] p-4 md:p-6"
-        >
-          <ConsentBannerContent
-            preferences={preferences}
-            showDetails={showDetails}
-            setShowDetails={setShowDetails}
-            togglePreference={togglePreference}
-            acceptAll={acceptAll}
-            acceptSelected={acceptSelected}
-            rejectNonEssential={rejectNonEssential}
-          />
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div ref={ref}>
+      <AnimatePresence>
+        {visible && (
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed bottom-0 left-0 right-0 z-[100] p-4 md:p-6"
+          >
+            <ConsentBannerContent
+              preferences={preferences}
+              showDetails={showDetails}
+              setShowDetails={setShowDetails}
+              togglePreference={togglePreference}
+              acceptAll={acceptAll}
+              acceptSelected={acceptSelected}
+              rejectNonEssential={rejectNonEssential}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
-};
+});
+
+CookieConsent.displayName = "CookieConsent";
 
 export default CookieConsent;
+

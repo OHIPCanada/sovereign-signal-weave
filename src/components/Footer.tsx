@@ -1,6 +1,7 @@
-import { reopenConsentBanner } from "./CookieConsent";
+import { reopenConsentBanner, useConsentStatus } from "./CookieConsent";
 
 const Footer = () => {
+  const consentStatus = useConsentStatus();
   return (
     <footer
       className="relative overflow-hidden"
@@ -270,9 +271,35 @@ const Footer = () => {
             </a>
             <button
               onClick={reopenConsentBanner}
-              className="no-underline transition-colors duration-200 hover:!text-white/80 bg-transparent border-0 cursor-pointer p-0"
+              className="inline-flex items-center gap-1.5 no-underline transition-colors duration-200 hover:!text-white/80 bg-transparent border-0 cursor-pointer p-0"
               style={{ color: "rgba(255,255,255,.55)", font: "inherit", fontSize: 13 }}
             >
+              {consentStatus !== null && (
+                <span
+                  className="relative flex h-2 w-2"
+                  title={
+                    consentStatus === "all" ? "All cookies accepted"
+                    : consentStatus === "partial" ? "Some cookies accepted"
+                    : "Only essential cookies"
+                  }
+                >
+                  {consentStatus === "all" && (
+                    <span
+                      className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-50"
+                      style={{ background: "#4ade80" }}
+                    />
+                  )}
+                  <span
+                    className="relative inline-flex rounded-full h-2 w-2"
+                    style={{
+                      background:
+                        consentStatus === "all" ? "#4ade80"
+                        : consentStatus === "partial" ? "#facc15"
+                        : "rgba(255,255,255,0.35)",
+                    }}
+                  />
+                </span>
+              )}
               Manage Cookies
             </button>
             <span
