@@ -1,10 +1,9 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion, useScroll, useTransform } from "framer-motion";
-import RisingParticles from "@/components/hero-backgrounds/RisingParticles";
 import auditOrb from "@/assets/audit-trails-hero-orb.png";
 import { Clock, Link2, Eye, Database } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const auditFeatures = [
   { icon: Clock, title: "Real-time Logging", desc: "Every clinical signal, AI inference, and user action is logged in real-time with millisecond precision timestamps." },
@@ -28,111 +27,182 @@ const stats = [
   { value: "Immutable", label: "Cryptographic signing" },
 ];
 
-/* ── Audit Trails: RisingParticles bg + typewriter log reveals + chain cascade ── */
+/* ── Blockchain Chain Background (unique to Audit) ── */
+const ChainLinks = () => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.25 }}>
+        {mounted && Array.from({ length: 12 }).map((_, i) => {
+          const y = 15 + (i % 6) * 14;
+          return (
+            <g key={i}>
+              <motion.rect
+                x={`${5 + (i % 3) * 35}%`}
+                y={`${y}%`}
+                width="60"
+                height="30"
+                rx="4"
+                fill="none"
+                stroke="rgba(212,97,107,0.3)"
+                strokeWidth="1"
+                initial={{ opacity: 0, pathLength: 0 }}
+                animate={{ opacity: 1, pathLength: 1 }}
+                transition={{ delay: i * 0.2, duration: 1 }}
+              />
+              {i < 11 && (
+                <motion.line
+                  x1={`calc(${5 + (i % 3) * 35}% + 60px)`}
+                  y1={`calc(${y}% + 15px)`}
+                  x2={`calc(${5 + ((i + 1) % 3) * 35}%)`}
+                  y2={`calc(${15 + ((i + 1) % 6) * 14}% + 15px)`}
+                  stroke="rgba(212,97,107,0.15)"
+                  strokeWidth="1"
+                  strokeDasharray="4 4"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ delay: i * 0.2 + 0.5, duration: 0.8 }}
+                />
+              )}
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  );
+};
 
+/* ── Audit Trails: ChainLinks bg + ledger scroll reveal + hash animation ── */
 const AuditTrails = () => {
-  const orbRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: orbRef, offset: ["start end", "end start"] });
-  const orbRotate = useTransform(scrollYProgress, [0, 1], [0, 15]);
-  const orbScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1.05, 0.95]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: scrollRef, offset: ["start end", "end start"] });
+  const chainY = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
   return (
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* HERO — RisingParticles + scroll-linked orb */}
+      {/* HERO — Chain links + ledger appearance */}
       <section
         className="relative overflow-hidden flex items-end md:items-center"
         style={{
           minHeight: "80vh",
           padding: "clamp(120px, 14vw, 200px) 0 clamp(64px, 7vw, 110px)",
           background: `
-            radial-gradient(900px 600px at 18% 38%, rgba(143,83,255,0.45), transparent 60%),
-            radial-gradient(700px 520px at 78% 22%, rgba(255,192,174,0.18), transparent 62%),
-            radial-gradient(900px 700px at 70% 75%, rgba(212,97,107,0.14), transparent 66%),
-            linear-gradient(135deg, #1A0630 0%, #3A0B6E 48%, #5B1FA6 120%)
+            radial-gradient(600px 400px at 35% 45%, rgba(212,97,107,0.25), transparent 50%),
+            radial-gradient(500px 350px at 65% 55%, rgba(91,31,166,0.3), transparent 50%),
+            linear-gradient(170deg, #0D0010 0%, #1A0020 50%, #150028 100%)
           `,
         }}
       >
-        <RisingParticles />
+        <ChainLinks />
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
-            {/* Text — staggered bottom-up with blur */}
             <div className="flex flex-col gap-5">
-              {[
-                <p key="tag" className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-                  [ INFRASTRUCTURE / AUDIT TRAILS ]
-                </p>,
-                <h1 key="h1" style={{
-                  color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95,
-                  fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em",
-                  textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-                }}>
-                  Every signal<br />logged.<br />Forever.
-                </h1>,
-                <p key="desc" style={{ color: "rgba(255,255,255,0.72)", fontWeight: 400, fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}>
-                  Immutable, cryptographically signed audit trails for every clinical interaction. Full traceability for regulators, clinicians, and patients.
-                </p>,
-              ].map((el, i) => (
+              {/* Hash animation above title */}
+              <motion.div
+                className="font-mono text-xs overflow-hidden"
+                style={{ color: "rgba(212,97,107,0.6)", letterSpacing: "0.05em" }}
+                initial={{ width: 0 }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 2, ease: "linear" }}
+              >
+                0x8f4e2a1b9c3d7e6f...verified
+              </motion.div>
+              
+              <h1 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em" }}>
+                {["Every signal", "logged.", "Forever."].map((line, li) => (
+                  <motion.span
+                    key={li}
+                    className="block"
+                    initial={{ opacity: 0, x: -100, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                    transition={{ delay: 0.3 + li * 0.2, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    {line}
+                  </motion.span>
+                ))}
+              </h1>
+              
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 0.6 }}
+                style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+              >
+                Immutable, cryptographically signed audit trails for every clinical interaction.
+              </motion.p>
+            </div>
+
+            {/* Orb with chain overlay */}
+            <div className="relative flex items-center justify-center">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5, rotate: -20 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                transition={{ delay: 0.5, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <img
+                  src={auditOrb}
+                  alt="Audit Trails"
+                  className="w-full max-w-[450px] object-contain"
+                  style={{ filter: "drop-shadow(0 30px 80px rgba(212,97,107,0.3))" }}
+                />
+              </motion.div>
+              {/* Floating hash blocks */}
+              {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 50, filter: "blur(8px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  transition={{ delay: 0.15 + i * 0.18, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute font-mono text-[10px] px-3 py-1.5 rounded"
+                  style={{
+                    background: "rgba(212,97,107,0.1)",
+                    border: "1px solid rgba(212,97,107,0.2)",
+                    color: "rgba(212,97,107,0.7)",
+                    top: `${25 + i * 25}%`,
+                    right: `${5 + i * 10}%`,
+                  }}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1 + i * 0.3, duration: 0.6 }}
                 >
-                  {el}
+                  BLOCK_{1024 + i}
                 </motion.div>
               ))}
             </div>
-
-            {/* Orb — scroll-linked rotation */}
-            <motion.div
-              ref={orbRef}
-              style={{ rotateZ: orbRotate, scale: orbScale }}
-              className="flex items-center justify-center"
-            >
-              <motion.img
-                src={auditOrb}
-                alt="Audit Trails"
-                className="w-full max-w-[500px] object-contain"
-                style={{ filter: "drop-shadow(0 20px 60px rgba(123,97,255,0.3))" }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.5 }}
-              />
-            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* FEATURES — cascading chain-link cards */}
+      {/* FEATURES — Ledger entry cards */}
       <section
+        ref={scrollRef}
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: `
-            radial-gradient(1200px 600px at 20% 50%, rgba(212,97,107,0.15), transparent 60%),
-            radial-gradient(1000px 700px at 85% 30%, rgba(123,97,255,0.15), transparent 65%),
-            linear-gradient(180deg, #F9F8FC 0%, #F1EEF8 100%)
-          `,
+          background: "linear-gradient(180deg, #150028 0%, #0D0010 100%)",
         }}
       >
-        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{
-          background: "linear-gradient(90deg, transparent 5%, rgba(123, 97, 255, 0.5) 30%, rgba(0, 255, 255, 0.3) 60%, rgba(212, 97, 107, 0.4) 85%, transparent 95%)",
-        }} />
-
+        <motion.div className="absolute inset-0 pointer-events-none" style={{ y: chainY }}>
+          <ChainLinks />
+        </motion.div>
+        
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
             className="mb-12"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
           >
-            <p className="font-mono uppercase" style={{ color: "rgba(17,17,17,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-              [ AUDIT CAPABILITIES ]
-            </p>
-            <h2 style={{ color: "#111111", fontWeight: 800, fontSize: "clamp(36px, 4vw, 64px)", lineHeight: 0.95, letterSpacing: "-0.02em", marginTop: 16 }}>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded mb-4" style={{ background: "rgba(212,97,107,0.1)", border: "1px solid rgba(212,97,107,0.2)" }}>
+              <motion.div
+                className="w-2 h-2 rounded-full bg-[#D4616B]"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
+              <span className="font-mono text-xs" style={{ color: "#D4616B" }}>RECORDING</span>
+            </div>
+            <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
               Complete accountability.
             </h2>
           </motion.div>
@@ -141,143 +211,124 @@ const AuditTrails = () => {
             {auditFeatures.map((f, i) => (
               <motion.div
                 key={f.title}
-                initial={{ opacity: 0, y: 80, rotate: -3 }}
-                whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-30px" }}
-                transition={{ delay: i * 0.12, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -6, rotate: 1, scale: 1.02 }}
-                className="rounded-[20px]"
-                style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
-                  border: "1px solid rgba(90,70,160,0.12)",
-                  boxShadow: "0 20px 60px rgba(60,40,120,0.1), inset 0 1px 0 rgba(255,255,255,0.8)",
-                  padding: "28px 24px",
-                }}
+                transition={{ delay: i * 0.12, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ y: -8, borderColor: "rgba(212,97,107,0.4)" }}
+                className="p-6 rounded-xl"
+                style={{ background: "rgba(212,97,107,0.05)", border: "1px solid rgba(212,97,107,0.15)" }}
               >
                 <motion.div
-                  className="mb-4 w-12 h-12 rounded-xl flex items-center justify-center"
-                  style={{ background: "linear-gradient(135deg, rgba(123,97,255,0.15), rgba(212,97,107,0.1))" }}
-                  animate={{ scale: [1, 1.15, 1] }}
-                  transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.6 }}
+                  className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
+                  style={{ background: "rgba(212,97,107,0.1)" }}
+                  whileInView={{ rotate: [0, -10, 10, 0] }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.5 + i * 0.12, duration: 0.6 }}
                 >
-                  <f.icon className="w-6 h-6" style={{ color: "#5B1FA6" }} />
+                  <f.icon className="w-6 h-6" style={{ color: "#D4616B" }} />
                 </motion.div>
-                <div style={{ fontWeight: 700, fontSize: 17, color: "#111", letterSpacing: "-0.01em", lineHeight: 1.2 }}>{f.title}</div>
-                <div style={{ fontWeight: 400, fontSize: 13, color: "rgba(30,30,30,0.65)", marginTop: 10, lineHeight: 1.55 }}>{f.desc}</div>
+                <div style={{ fontWeight: 700, fontSize: 17, color: "#fff", marginBottom: 8 }}>{f.title}</div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>{f.desc}</div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* LOG TYPES — typewriter sequential reveal with glowing dot pulse */}
+      {/* LOG TYPES — Terminal log stream */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: `
-            radial-gradient(900px 500px at 50% 30%, rgba(91,29,179,.25), transparent 60%),
-            radial-gradient(700px 500px at 80% 70%, rgba(232,150,124,.12), transparent 65%),
-            linear-gradient(180deg, #140022 0%, #2A0B4E 100%)
-          `,
+          background: "linear-gradient(180deg, #0D0010 0%, #0A000D 100%)",
         }}
       >
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-          <div className="grid grid-cols-1 md:grid-cols-[0.4fr_1.6fr] items-start split-layout-gap">
+          <div className="grid grid-cols-1 md:grid-cols-[0.35fr_1.65fr] items-start gap-12">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-                [ LOG TAXONOMY ]
-              </p>
-              <h2 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, fontSize: "clamp(32px, 3.5vw, 56px)", lineHeight: 0.95, letterSpacing: "-0.02em", marginTop: 16 }}>
-                Structured<br />signal capture.
+              <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(28px, 3vw, 44px)", lineHeight: 1.1 }}>
+                Structured signal capture.
               </h2>
-              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, lineHeight: 1.6, marginTop: 16, maxWidth: "32ch" }}>
+              <p className="mt-4" style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, lineHeight: 1.6 }}>
                 Every event is categorized, timestamped, and linked to its originating context.
               </p>
             </motion.div>
 
-            <div className="flex flex-col gap-3">
-              {logTypes.map((log, i) => (
-                <motion.div
-                  key={log.type}
-                  initial={{ opacity: 0, scaleX: 0, originX: 0 }}
-                  whileInView={{ opacity: 1, scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.12, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  className="rounded-[14px] px-5 py-4 flex items-center gap-4"
-                  style={{
-                    background: "linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))",
-                    border: "1px solid rgba(255,255,255,0.08)", transformOrigin: "left",
-                  }}
-                >
+            <div className="rounded-xl overflow-hidden" style={{ background: "#000", border: "1px solid rgba(255,255,255,0.1)" }}>
+              {/* Terminal header */}
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+                  <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+                  <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
+                </div>
+                <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>audit-stream.log</span>
+              </div>
+              
+              <div className="p-4 font-mono text-sm">
+                {logTypes.map((log, i) => (
                   <motion.div
-                    className="w-3 h-3 rounded-full flex-shrink-0"
-                    style={{ background: log.color }}
-                    animate={{ boxShadow: [`0 0 6px ${log.color}40`, `0 0 18px ${log.color}80`, `0 0 6px ${log.color}40`] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                  />
-                  <code style={{ fontFamily: "monospace", fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.85)", minWidth: 140 }}>
-                    {log.type}
-                  </code>
-                  <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>{log.desc}</span>
-                </motion.div>
-              ))}
+                    key={log.type}
+                    className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0"
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.15, duration: 0.5 }}
+                  >
+                    <motion.span
+                      className="w-2 h-2 rounded-full flex-shrink-0"
+                      style={{ background: log.color }}
+                      animate={{ opacity: [0.4, 1, 0.4] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
+                    />
+                    <span style={{ color: log.color, minWidth: 130 }}>{log.type}</span>
+                    <span style={{ color: "rgba(255,255,255,0.4)" }}>{log.desc}</span>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* STATS — bounce-in with staggered spring */}
+      {/* STATS — Metric blocks */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: `
-            radial-gradient(1000px 600px at 30% 50%, rgba(212,97,107,0.15), transparent 60%),
-            radial-gradient(800px 600px at 70% 40%, rgba(123,97,255,0.12), transparent 65%),
-            linear-gradient(180deg, #F7F3FF 0%, #FFFFFF 100%)
-          `,
+          background: "linear-gradient(180deg, #0A000D 0%, #150028 100%)",
         }}
       >
-        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1200px, 92vw)" }}>
+        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1200px, 94vw)" }}>
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            className="text-center mb-10"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="text-center mb-12"
           >
-            <p className="font-mono uppercase" style={{ color: "rgba(17,17,17,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-              [ AUDIT PERFORMANCE ]
-            </p>
-            <h2 style={{ color: "#111", fontWeight: 800, fontSize: "clamp(36px, 4vw, 64px)", lineHeight: 0.95, letterSpacing: "-0.02em", marginTop: 16 }}>
-              Built for scale.
-            </h2>
+            <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)" }}>Built for scale.</h2>
           </motion.div>
-
+          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {stats.map((s, i) => (
               <motion.div
                 key={s.label}
-                initial={{ opacity: 0, y: 60, scale: 0.7 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, rotateY: -30 }}
+                whileInView={{ opacity: 1, rotateY: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.08, type: "spring", stiffness: 250, damping: 20 }}
-                whileHover={{ scale: 1.06, y: -4 }}
-                className="rounded-[20px] text-center"
-                style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
-                  border: "1px solid rgba(90,70,160,0.1)",
-                  boxShadow: "0 16px 48px rgba(60,40,120,0.08)", padding: "32px 20px",
-                }}
+                transition={{ delay: i * 0.12, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ scale: 1.05 }}
+                className="p-6 rounded-xl text-center"
+                style={{ background: "rgba(212,97,107,0.05)", border: "1px solid rgba(212,97,107,0.1)", perspective: 1000 }}
               >
-                <div style={{ fontSize: "clamp(20px, 2vw, 28px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em" }}>{s.value}</div>
-                <div style={{ fontSize: 12, color: "rgba(30,30,30,0.55)", marginTop: 6 }}>{s.label}</div>
+                <div className="font-mono" style={{ fontSize: "clamp(24px, 2.5vw, 36px)", fontWeight: 700, color: "#fff" }}>{s.value}</div>
+                <div className="font-mono mt-2" style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>{s.label}</div>
               </motion.div>
             ))}
           </div>

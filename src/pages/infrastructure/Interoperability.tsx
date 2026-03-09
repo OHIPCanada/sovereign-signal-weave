@@ -1,10 +1,9 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion, useInView } from "framer-motion";
-import FloatingOrbs from "@/components/hero-backgrounds/FloatingOrbs";
 import interopOrb from "@/assets/interoperability-hero-orb.png";
-import { Plug, FileJson, RefreshCw, Layers, CheckCircle2, ArrowRight } from "lucide-react";
-import { useRef } from "react";
+import { Plug, FileJson, RefreshCw, Layers, CheckCircle2, ArrowRight, Zap } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
 
 const standards = [
   { icon: FileJson, title: "HL7 FHIR R4", desc: "Native FHIR R4 support for modern healthcare data exchange. RESTful APIs, resource bundles, and subscription-based updates.", features: ["Patient resources", "Observation mapping", "Medication records", "Clinical documents"] },
@@ -28,164 +27,222 @@ const stats = [
   { value: "99.99%", label: "Message delivery" },
 ];
 
-/* ── Interoperability: FloatingOrbs bg + rotateY card flips + sequential pipeline lighting ── */
+/* ── Data Flow Lines Background (unique to Interoperability) ── */
+const DataFlowLines = () => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.35 }}>
+        {mounted && Array.from({ length: 8 }).map((_, i) => {
+          const startY = 10 + i * 12;
+          return (
+            <g key={i}>
+              <motion.path
+                d={`M0 ${startY}% Q 25% ${startY + (i % 2 === 0 ? 5 : -5)}%, 50% ${startY}% T 100% ${startY}%`}
+                fill="none"
+                stroke="rgba(0,206,209,0.2)"
+                strokeWidth="1"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 2, delay: i * 0.2, ease: "easeInOut" }}
+              />
+              <motion.circle
+                r="3"
+                fill="#00CED1"
+                initial={{ offsetDistance: "0%" }}
+                animate={{ offsetDistance: "100%" }}
+                transition={{ duration: 4, delay: i * 0.3, repeat: Infinity, ease: "linear" }}
+                style={{ offsetPath: `path("M0 ${startY * 6} Q ${window.innerWidth * 0.25} ${(startY + (i % 2 === 0 ? 5 : -5)) * 6}, ${window.innerWidth * 0.5} ${startY * 6} T ${window.innerWidth} ${startY * 6}")` }}
+              />
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  );
+};
 
+/* ── Interoperability: DataFlow bg + connector animations + pipeline lighting ── */
 const Interoperability = () => {
   const pipelineRef = useRef<HTMLDivElement>(null);
-  const pipelineInView = useInView(pipelineRef, { once: true, margin: "-80px" });
+  const pipelineInView = useInView(pipelineRef, { once: true, margin: "-100px" });
+  const [activeStep, setActiveStep] = useState(-1);
+
+  useEffect(() => {
+    if (pipelineInView) {
+      const interval = setInterval(() => {
+        setActiveStep((prev) => (prev < 4 ? prev + 1 : prev));
+      }, 400);
+      return () => clearInterval(interval);
+    }
+  }, [pipelineInView]);
 
   return (
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* HERO — FloatingOrbs + elastic text bounce + spinning orb */}
+      {/* HERO — Data flow + API connector visual */}
       <section
         className="relative overflow-hidden flex items-end md:items-center"
         style={{
           minHeight: "80vh",
           padding: "clamp(120px, 14vw, 200px) 0 clamp(64px, 7vw, 110px)",
           background: `
-            radial-gradient(900px 600px at 18% 38%, rgba(143,83,255,0.45), transparent 60%),
-            radial-gradient(700px 520px at 78% 22%, rgba(255,192,174,0.18), transparent 62%),
-            radial-gradient(900px 700px at 70% 75%, rgba(212,97,107,0.14), transparent 66%),
-            linear-gradient(135deg, #1A0630 0%, #3A0B6E 48%, #5B1FA6 120%)
+            radial-gradient(600px 400px at 40% 50%, rgba(0,206,209,0.15), transparent 50%),
+            radial-gradient(500px 350px at 60% 50%, rgba(91,31,166,0.25), transparent 50%),
+            linear-gradient(175deg, #000D12 0%, #001520 50%, #0A1520 100%)
           `,
         }}
       >
-        <FloatingOrbs />
+        <DataFlowLines />
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
             <div className="flex flex-col gap-5">
-              <motion.p
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
-                className="font-mono uppercase"
-                style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}
+              <motion.div
+                className="flex items-center gap-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
               >
-                [ INFRASTRUCTURE / INTEROPERABILITY ]
-              </motion.p>
-              {/* Elastic bounce heading */}
-              <motion.h1
-                initial={{ opacity: 0, y: 80 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 120, damping: 12, delay: 0.2 }}
-                style={{
-                  color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95,
-                  fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em",
-                  textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-                }}
-              >
-                Connect<br />everything.<br />Seamlessly.
-              </motion.h1>
+                <motion.div
+                  className="flex items-center gap-2 px-3 py-1.5 rounded"
+                  style={{ background: "rgba(0,206,209,0.1)", border: "1px solid rgba(0,206,209,0.2)" }}
+                  animate={{ boxShadow: ["0 0 0 rgba(0,206,209,0)", "0 0 20px rgba(0,206,209,0.3)", "0 0 0 rgba(0,206,209,0)"] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <Zap className="w-4 h-4" style={{ color: "#00CED1" }} />
+                  <span className="font-mono text-xs" style={{ color: "#00CED1" }}>CONNECTED</span>
+                </motion.div>
+              </motion.div>
+              
+              <h1 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em" }}>
+                {["Connect", "everything.", "Seamlessly."].map((line, li) => (
+                  <motion.span
+                    key={li}
+                    className="block"
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 + li * 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    {line}
+                  </motion.span>
+                ))}
+              </h1>
+              
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                style={{ color: "rgba(255,255,255,0.72)", fontWeight: 400, fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                style={{ color: "rgba(255,255,255,0.6)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
               >
                 Native HL7 FHIR, v2.x, and CDA support. Pre-built connectors for major Canadian EMRs.
               </motion.p>
             </div>
 
-            {/* Orb — continuous slow Y rotation */}
-            <motion.div
-              initial={{ opacity: 0, rotateY: -30 }}
-              animate={{ opacity: 1, rotateY: 0 }}
-              transition={{ duration: 1.2, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="flex items-center justify-center"
-              style={{ perspective: 900 }}
-            >
+            {/* Orb with connector nodes */}
+            <div className="relative flex items-center justify-center">
               <motion.img
                 src={interopOrb}
                 alt="Interoperability"
-                className="w-full max-w-[500px] object-contain"
-                style={{ filter: "drop-shadow(0 20px 60px rgba(123,97,255,0.3))" }}
-                animate={{ rotateY: [0, 8, 0, -8, 0] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                className="w-full max-w-[450px] object-contain"
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                style={{ filter: "drop-shadow(0 30px 80px rgba(0,206,209,0.25))" }}
               />
-            </motion.div>
+              {/* Animated connection pulses */}
+              {[45, 135, 225, 315].map((angle, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-3 h-3 rounded-full"
+                  style={{
+                    background: "#00CED1",
+                    left: `calc(50% + ${Math.cos((angle * Math.PI) / 180) * 180}px)`,
+                    top: `calc(50% + ${Math.sin((angle * Math.PI) / 180) * 180}px)`,
+                  }}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: [0, 1.5, 1], opacity: [0, 1, 0.6] }}
+                  transition={{ delay: 1 + i * 0.2, duration: 0.6 }}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* STANDARDS — rotateY flip-in cards */}
+      {/* STANDARDS — API card grid with hover connections */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: `
-            radial-gradient(1200px 600px at 20% 50%, rgba(212,97,107,0.15), transparent 60%),
-            radial-gradient(1000px 700px at 85% 30%, rgba(123,97,255,0.15), transparent 65%),
-            linear-gradient(180deg, #F9F8FC 0%, #F1EEF8 100%)
-          `,
+          background: "linear-gradient(180deg, #001520 0%, #000D12 100%)",
         }}
       >
-        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{
-          background: "linear-gradient(90deg, transparent 5%, rgba(123, 97, 255, 0.5) 30%, rgba(0, 255, 255, 0.3) 60%, rgba(212, 97, 107, 0.4) 85%, transparent 95%)",
-        }} />
-
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
             className="mb-12"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
           >
-            <p className="font-mono uppercase" style={{ color: "rgba(17,17,17,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-              [ SUPPORTED STANDARDS ]
-            </p>
-            <h2 style={{ color: "#111111", fontWeight: 800, fontSize: "clamp(36px, 4vw, 64px)", lineHeight: 0.95, letterSpacing: "-0.02em", marginTop: 16 }}>
+            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(0,206,209,0.1)", color: "#00CED1", border: "1px solid rgba(0,206,209,0.2)" }}>
+              PROTOCOLS
+            </span>
+            <h2 className="mt-4" style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
               Speak every language.
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6" style={{ perspective: 1200 }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {standards.map((std, i) => (
               <motion.div
                 key={std.title}
-                initial={{ opacity: 0, rotateY: i % 2 === 0 ? -25 : 25 }}
-                whileInView={{ opacity: 1, rotateY: 0 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: i * 0.15, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                whileHover={{ y: -4, scale: 1.01 }}
-                className="rounded-[20px]"
-                style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
-                  border: "1px solid rgba(90,70,160,0.12)",
-                  boxShadow: "0 20px 60px rgba(60,40,120,0.1), inset 0 1px 0 rgba(255,255,255,0.8)",
-                  padding: "28px 24px", transformStyle: "preserve-3d",
-                }}
+                transition={{ delay: i * 0.12, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ borderColor: "rgba(0,206,209,0.5)", y: -4 }}
+                className="relative p-6 rounded-xl overflow-hidden group"
+                style={{ background: "rgba(0,206,209,0.03)", border: "1px solid rgba(0,206,209,0.1)" }}
               >
-                <div className="flex items-start gap-4 mb-4">
+                {/* Connection line on hover */}
+                <motion.div
+                  className="absolute top-0 left-0 w-full h-1"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  style={{ background: "linear-gradient(90deg, transparent, #00CED1, transparent)", transformOrigin: "left" }}
+                />
+                
+                <div className="flex items-start gap-4">
                   <motion.div
-                    className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center"
-                    style={{ background: "linear-gradient(135deg, rgba(123,97,255,0.15), rgba(212,97,107,0.1))" }}
-                    animate={{ rotate: [0, 360] }}
-                    transition={{ duration: 20 + i * 3, repeat: Infinity, ease: "linear" }}
+                    className="w-12 h-12 rounded-lg flex items-center justify-center"
+                    style={{ background: "rgba(0,206,209,0.1)", border: "1px solid rgba(0,206,209,0.2)" }}
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.6 }}
                   >
-                    <std.icon className="w-6 h-6" style={{ color: "#5B1FA6" }} />
+                    <std.icon className="w-6 h-6" style={{ color: "#00CED1" }} />
                   </motion.div>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: 18, color: "#111", letterSpacing: "-0.01em" }}>{std.title}</div>
-                    <div style={{ fontWeight: 400, fontSize: 13, color: "rgba(30,30,30,0.65)", marginTop: 4, lineHeight: 1.5 }}>{std.desc}</div>
+                  <div className="flex-1">
+                    <div style={{ fontWeight: 700, fontSize: 18, color: "#fff", marginBottom: 4 }}>{std.title}</div>
+                    <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, marginBottom: 12 }}>{std.desc}</div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {std.features.map((f, fi) => (
+                        <motion.div
+                          key={f}
+                          className="flex items-center gap-2"
+                          initial={{ opacity: 0 }}
+                          whileInView={{ opacity: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.4 + i * 0.12 + fi * 0.08 }}
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#00CED1" }} />
+                          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>{f}</span>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div className="grid grid-cols-2 gap-2 mt-4">
-                  {std.features.map((f, fi) => (
-                    <motion.div
-                      key={f}
-                      className="flex items-center gap-2"
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.5 + i * 0.15 + fi * 0.08 }}
-                    >
-                      <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#D4616B" }} />
-                      <span style={{ fontSize: 12, color: "rgba(30,30,30,0.7)" }}>{f}</span>
-                    </motion.div>
-                  ))}
                 </div>
               </motion.div>
             ))}
@@ -193,138 +250,119 @@ const Interoperability = () => {
         </div>
       </section>
 
-      {/* INTEGRATION FLOW — sequential pipeline lighting */}
+      {/* INTEGRATION FLOW — Sequential pipeline with active step */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: `
-            radial-gradient(900px 500px at 50% 30%, rgba(91,29,179,.25), transparent 60%),
-            radial-gradient(700px 500px at 80% 70%, rgba(232,150,124,.12), transparent 65%),
-            linear-gradient(180deg, #140022 0%, #2A0B4E 100%)
-          `,
+          background: "linear-gradient(180deg, #000D12 0%, #001015 100%)",
         }}
       >
-        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
+        <div ref={pipelineRef} className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
             className="text-center mb-12"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
           >
-            <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-              [ INTEGRATION PIPELINE ]
-            </p>
-            <h2 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, fontSize: "clamp(32px, 3.5vw, 56px)", lineHeight: 0.95, letterSpacing: "-0.02em", marginTop: 16 }}>
+            <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)" }}>
               Five steps to unified data.
             </h2>
           </motion.div>
 
-          <div ref={pipelineRef} className="flex flex-col md:flex-row items-stretch gap-4 justify-center">
-            {integrationFlow.map((flow, i) => (
-              <motion.div
-                key={flow.step}
-                initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                animate={pipelineInView ? { opacity: 1, scale: 1, y: 0 } : {}}
-                transition={{
-                  delay: i * 0.25,
-                  duration: 0.6,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                className="flex-1 rounded-[16px] p-5 relative overflow-hidden"
-                style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025))",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  minWidth: 160,
-                }}
-              >
-                {/* Sequential glow sweep */}
+          <div className="flex flex-col md:flex-row items-stretch gap-3 justify-center">
+            {integrationFlow.map((flow, i) => {
+              const isActive = i <= activeStep;
+              const isCurrent = i === activeStep;
+              
+              return (
                 <motion.div
-                  className="absolute inset-0"
-                  initial={{ opacity: 0 }}
-                  animate={pipelineInView ? { opacity: [0, 0.4, 0] } : {}}
-                  transition={{ delay: i * 0.25 + 0.3, duration: 0.8 }}
-                  style={{ background: "radial-gradient(circle at 50% 50%, rgba(232,150,124,0.25), transparent 70%)" }}
-                />
-                <div className="relative z-10">
-                  <motion.div
-                    style={{ fontFamily: "monospace", fontSize: 11, color: "rgba(232,150,124,0.8)", fontWeight: 700, marginBottom: 8 }}
-                    animate={pipelineInView ? { color: ["rgba(232,150,124,0.4)", "rgba(232,150,124,1)", "rgba(232,150,124,0.8)"] } : {}}
-                    transition={{ delay: i * 0.25, duration: 0.8 }}
-                  >
-                    {flow.step}
-                  </motion.div>
-                  <div style={{ fontWeight: 700, fontSize: 16, color: "rgba(255,255,255,0.95)", marginBottom: 4 }}>{flow.title}</div>
-                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", lineHeight: 1.5 }}>{flow.desc}</div>
-                </div>
-                {i < integrationFlow.length - 1 && (
-                  <motion.div
-                    className="hidden md:block absolute -right-3 top-1/2 -translate-y-1/2 z-20"
-                    animate={pipelineInView ? { opacity: [0, 1], x: [8, 0] } : {}}
-                    transition={{ delay: i * 0.25 + 0.4, duration: 0.4 }}
-                  >
-                    <ArrowRight className="w-5 h-5 text-white/40" />
-                  </motion.div>
-                )}
-              </motion.div>
-            ))}
+                  key={flow.step}
+                  className="flex-1 rounded-xl p-5 relative overflow-hidden"
+                  initial={{ opacity: 0.3 }}
+                  animate={{ 
+                    opacity: isActive ? 1 : 0.3,
+                    borderColor: isCurrent ? "rgba(0,206,209,0.6)" : isActive ? "rgba(0,206,209,0.2)" : "rgba(255,255,255,0.05)",
+                  }}
+                  transition={{ duration: 0.4 }}
+                  style={{
+                    background: isActive ? "rgba(0,206,209,0.05)" : "rgba(0,0,0,0.3)",
+                    border: "1px solid",
+                    minWidth: 140,
+                  }}
+                >
+                  {/* Active glow */}
+                  {isCurrent && (
+                    <motion.div
+                      className="absolute inset-0"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: [0, 0.3, 0] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                      style={{ background: "radial-gradient(circle at center, rgba(0,206,209,0.2), transparent 70%)" }}
+                    />
+                  )}
+                  
+                  <div className="relative z-10">
+                    <div className="font-mono text-xs mb-2" style={{ color: isActive ? "#00CED1" : "rgba(255,255,255,0.3)" }}>
+                      {flow.step}
+                    </div>
+                    <div style={{ fontWeight: 700, fontSize: 16, color: isActive ? "#fff" : "rgba(255,255,255,0.4)", marginBottom: 4 }}>
+                      {flow.title}
+                    </div>
+                    <div style={{ fontSize: 12, color: isActive ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.25)", lineHeight: 1.5 }}>
+                      {flow.desc}
+                    </div>
+                  </div>
+                  
+                  {i < integrationFlow.length - 1 && (
+                    <motion.div
+                      className="hidden md:flex absolute -right-2 top-1/2 -translate-y-1/2 z-20"
+                      animate={{ opacity: isActive ? 1 : 0.2 }}
+                    >
+                      <ArrowRight className="w-4 h-4" style={{ color: isActive ? "#00CED1" : "rgba(255,255,255,0.2)" }} />
+                    </motion.div>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* STATS — wave stagger from center outward */}
+      {/* STATS */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(64px, 7vw, 110px) 0",
-          background: `
-            radial-gradient(1000px 600px at 30% 50%, rgba(212,97,107,0.15), transparent 60%),
-            radial-gradient(800px 600px at 70% 40%, rgba(123,97,255,0.12), transparent 65%),
-            linear-gradient(180deg, #F7F3FF 0%, #FFFFFF 100%)
-          `,
+          background: "linear-gradient(180deg, #001015 0%, #001520 100%)",
         }}
       >
-        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1200px, 92vw)" }}>
+        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1200px, 94vw)" }}>
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            className="text-center mb-10"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="text-center mb-12"
           >
-            <p className="font-mono uppercase" style={{ color: "rgba(17,17,17,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-              [ INTEGRATION METRICS ]
-            </p>
-            <h2 style={{ color: "#111", fontWeight: 800, fontSize: "clamp(36px, 4vw, 64px)", lineHeight: 0.95, letterSpacing: "-0.02em", marginTop: 16 }}>
-              Enterprise-ready.
-            </h2>
+            <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)" }}>Enterprise-ready.</h2>
           </motion.div>
-
+          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {stats.map((s, i) => {
-              // Wave from center: indices 1,2 appear first, then 0,3
-              const waveDelay = [0.15, 0, 0, 0.15][i];
-              return (
-                <motion.div
-                  key={s.label}
-                  initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: waveDelay + i * 0.06, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  whileHover={{ y: -6, boxShadow: "0 24px 60px rgba(60,40,120,0.15)" }}
-                  className="rounded-[20px] text-center"
-                  style={{
-                    background: "linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
-                    border: "1px solid rgba(90,70,160,0.1)",
-                    boxShadow: "0 16px 48px rgba(60,40,120,0.08)", padding: "32px 20px",
-                  }}
-                >
-                  <div style={{ fontSize: "clamp(20px, 2vw, 28px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em" }}>{s.value}</div>
-                  <div style={{ fontSize: 12, color: "rgba(30,30,30,0.55)", marginTop: 6 }}>{s.label}</div>
-                </motion.div>
-              );
-            })}
+            {stats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+                whileHover={{ borderColor: "rgba(0,206,209,0.4)", y: -4 }}
+                className="p-6 rounded-xl text-center"
+                style={{ background: "rgba(0,206,209,0.03)", border: "1px solid rgba(0,206,209,0.1)" }}
+              >
+                <div className="font-mono" style={{ fontSize: "clamp(24px, 2.5vw, 36px)", fontWeight: 700, color: "#fff" }}>{s.value}</div>
+                <div className="font-mono mt-2" style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>{s.label}</div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
