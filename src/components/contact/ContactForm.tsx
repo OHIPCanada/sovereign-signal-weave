@@ -63,12 +63,14 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           ref={firstFieldRef}
+          className="bg-input"
           placeholder="Full name"
           value={form.name}
           onChange={(e) => setForm((s) => ({ ...s, name: e.target.value }))}
           required
         />
         <Input
+          className="bg-input"
           placeholder="Email address"
           type="email"
           value={form.email}
@@ -79,7 +81,7 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <select
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="flex h-10 w-full rounded-md border border-input bg-input px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           value={form.type}
           onChange={(e) => setForm((s) => ({ ...s, type: e.target.value }))}
         >
@@ -91,6 +93,7 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
           ))}
         </select>
         <Input
+          className="bg-input"
           placeholder="Organization (optional)"
           value={form.org}
           onChange={(e) => setForm((s) => ({ ...s, org: e.target.value }))}
@@ -98,6 +101,7 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
       </div>
 
       <Textarea
+        className="bg-input"
         placeholder="Your message"
         value={form.message}
         onChange={(e) => setForm((s) => ({ ...s, message: e.target.value }))}
@@ -106,7 +110,7 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
       />
 
       <div className="flex items-center justify-end gap-3 pt-2">
-        <Button type="submit" variant="coral" disabled={sending || !canSubmit}>
+        <Button type="submit" variant="primary" disabled={sending || !canSubmit}>
           {sending ? "Sending…" : "Send message"}
           <Send />
         </Button>

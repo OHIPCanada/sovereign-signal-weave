@@ -7,7 +7,7 @@ export default function ContactModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden">
+      <DialogContent className="contact-modal-theme max-w-2xl p-0 overflow-hidden">
         <div className="p-6 sm:p-8">
           <DialogHeader className="text-left">
             <DialogTitle className="text-2xl font-extrabold tracking-tight">Contact</DialogTitle>
