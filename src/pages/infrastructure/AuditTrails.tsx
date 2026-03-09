@@ -212,13 +212,14 @@ const AuditTrails = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-30px" }}
                 transition={{ delay: i * 0.12, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ y: -6, boxShadow: "0 16px 48px rgba(212,97,107,0.08)" }}
+                whileHover={{ y: -6, boxShadow: "0 16px 48px rgba(0,0,0,0.08)" }}
                 className="p-6 rounded-2xl"
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
-                  border: "1px solid rgba(212,97,107,0.08)",
-                  backdropFilter: "blur(20px)",
-                  boxShadow: "0 4px 24px rgba(60,40,120,0.05)",
+                  background: "rgba(255,255,255,0.18)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
                 <motion.div
