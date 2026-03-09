@@ -83,7 +83,7 @@ const Governance = () => {
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
-                <span className="font-mono uppercase text-xs" style={{ color: "rgba(123,97,255,0.8)", letterSpacing: "0.15em" }}>
+                <span className="font-mono uppercase text-xs" style={{ color: "rgba(255,255,255,0.5)", letterSpacing: "0.15em" }}>
                   Governance Active
                 </span>
               </motion.div>
