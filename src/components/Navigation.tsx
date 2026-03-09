@@ -148,7 +148,9 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 6, scale: 0.97 }}
                     transition={{ duration: 0.18, ease: "easeOut" }}
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2 min-w-[180px] bg-white/85 backdrop-blur-xl border border-white/60 shadow-[0_8px_40px_rgba(0,0,0,0.08)] rounded-xl overflow-hidden"
+                    className={`absolute top-full mt-2 w-max min-w-[180px] ${
+                      link.label === "INFRASTRUCTURE" ? "right-0" : "left-0"
+                    } bg-white/85 backdrop-blur-xl border border-white/60 shadow-[0_8px_40px_rgba(0,0,0,0.08)] rounded-xl overflow-hidden`}
                   >
                     <div className="py-2">
                       {link.children.map((child) => {
