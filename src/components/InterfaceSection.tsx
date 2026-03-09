@@ -303,7 +303,7 @@ const InterfaceSection = () => {
             className="w-full block"
             viewBox="0 0 1200 520"
             fill="none"
-            style={{ height: "auto" }}
+            style={{ height: "auto", minHeight: "clamp(200px, 45vw, 520px)" }}
           >
             <defs>
               {/* Glow filter */}

@@ -506,10 +506,10 @@ const SignalIntegritySection = () => {
       }}
     >
       <div
-        className="relative z-10 mx-auto flex flex-col items-center"
+        className="relative z-10 mx-auto flex flex-col items-center px-4 sm:px-0"
         style={{
           width: "min(1200px, 92vw)",
-          gap: "clamp(48px, 6vw, 80px)",
+          gap: "clamp(36px, 6vw, 80px)",
         }}
       >
         {/* Top — Copy (centered) */}
