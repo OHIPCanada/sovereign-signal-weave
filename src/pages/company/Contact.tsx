@@ -205,15 +205,15 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* ─── FORM SECTION ─── */}
+      {/* ─── FORM SECTION — LIGHT THEME ─── */}
       <section
         className="relative overflow-hidden"
         style={{
           padding: "clamp(80px, 8vw, 130px) 0",
           background: `
-            radial-gradient(900px 500px at 30% 30%, rgba(91,29,179,0.22), transparent 60%),
-            radial-gradient(800px 500px at 70% 70%, rgba(212,97,107,0.1), transparent 60%),
-            linear-gradient(180deg, #140022 0%, #2A0B4E 100%)
+            radial-gradient(1200px 600px at 20% 40%, rgba(123,97,255,0.06), transparent 60%),
+            radial-gradient(800px 500px at 80% 60%, rgba(212,97,107,0.05), transparent 60%),
+            linear-gradient(180deg, #F7F3FF 0%, #F1EEF8 50%, #FAFAFA 100%)
           `,
         }}
       >
@@ -221,7 +221,7 @@ const Contact = () => {
         <div
           className="absolute top-0 left-0 right-0 h-[2px]"
           style={{
-            background: "linear-gradient(90deg, transparent 5%, rgba(212,97,107,0.4) 30%, rgba(123,97,255,0.5) 70%, transparent 95%)",
+            background: "linear-gradient(90deg, transparent 5%, rgba(212,97,107,0.3) 30%, rgba(123,97,255,0.35) 70%, transparent 95%)",
           }}
         />
 
@@ -236,29 +236,29 @@ const Contact = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               style={{
-                background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025))",
-                border: "1px solid rgba(255,255,255,0.1)",
-                backdropFilter: "blur(16px)",
-                WebkitBackdropFilter: "blur(16px)",
+                background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6))",
+                border: "1px solid rgba(90,70,160,0.1)",
+                backdropFilter: "blur(24px)",
+                WebkitBackdropFilter: "blur(24px)",
                 borderRadius: 20,
                 padding: "clamp(32px, 4vw, 56px)",
+                boxShadow: "0 20px 60px rgba(60,40,120,0.06)",
               }}
             >
               <p
                 className="font-mono uppercase"
-                style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em", marginBottom: 12 }}
+                style={{ color: "rgba(90,70,160,0.5)", fontSize: 12, letterSpacing: "0.22em", marginBottom: 12 }}
               >
                 [ SEND A MESSAGE ]
               </p>
               <h2
                 style={{
-                  color: "rgba(255,255,255,0.95)",
+                  color: "#1a1a2e",
                   fontWeight: 800,
                   fontSize: "clamp(28px, 3vw, 44px)",
                   lineHeight: 0.95,
                   letterSpacing: "-0.02em",
                   marginBottom: 36,
-                  textShadow: "0 10px 40px rgba(0,0,0,0.22)",
                 }}
               >
                 Let's build together.
@@ -270,8 +270,8 @@ const Contact = () => {
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   style={fieldStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.5)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
+                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
+                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
                   required
                 />
                 <input
@@ -280,8 +280,8 @@ const Contact = () => {
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   style={fieldStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.5)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
+                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
+                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
                   required
                 />
               </div>
@@ -291,12 +291,12 @@ const Contact = () => {
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
                   style={{ ...fieldStyle, appearance: "none" as const, cursor: "pointer" }}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.5)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
+                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
+                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
                 >
-                  <option value="" style={{ background: "#1A0630" }}>Inquiry type</option>
+                  <option value="" style={{ background: "#fff" }}>Inquiry type</option>
                   {inquiryTypes.map((t) => (
-                    <option key={t} value={t} style={{ background: "#1A0630" }}>{t}</option>
+                    <option key={t} value={t} style={{ background: "#fff" }}>{t}</option>
                   ))}
                 </select>
                 <input
@@ -304,8 +304,8 @@ const Contact = () => {
                   value={form.org}
                   onChange={(e) => setForm({ ...form, org: e.target.value })}
                   style={fieldStyle}
-                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.5)")}
-                  onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
+                  onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
+                  onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
                 />
               </div>
 
@@ -315,8 +315,8 @@ const Contact = () => {
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 style={{ ...fieldStyle, resize: "vertical" as const, minHeight: 120 }}
-                onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.5)")}
-                onBlur={(e) => (e.target.style.borderColor = "rgba(255,255,255,0.1)")}
+                onFocus={(e) => (e.target.style.borderColor = "rgba(123,97,255,0.4)")}
+                onBlur={(e) => (e.target.style.borderColor = "rgba(90,70,160,0.12)")}
                 required
               />
 
@@ -358,17 +358,18 @@ const Contact = () => {
               {/* Response protocol */}
               <div
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025))",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6))",
+                  border: "1px solid rgba(90,70,160,0.1)",
                   backdropFilter: "blur(16px)",
                   WebkitBackdropFilter: "blur(16px)",
                   borderRadius: 20,
                   padding: "36px 30px",
+                  boxShadow: "0 12px 40px rgba(60,40,120,0.05)",
                 }}
               >
                 <p
                   className="font-mono uppercase"
-                  style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em", marginBottom: 20 }}
+                  style={{ color: "rgba(90,70,160,0.5)", fontSize: 12, letterSpacing: "0.22em", marginBottom: 20 }}
                 >
                   [ RESPONSE PROTOCOL ]
                 </p>
@@ -379,11 +380,11 @@ const Contact = () => {
                       className="flex items-center justify-between"
                       style={{
                         paddingBottom: i < responseProtocol.length - 1 ? 16 : 0,
-                        borderBottom: i < responseProtocol.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                        borderBottom: i < responseProtocol.length - 1 ? "1px solid rgba(90,70,160,0.08)" : "none",
                       }}
                     >
-                      <span style={{ color: "rgba(255,255,255,0.65)", fontSize: 15 }}>{r.label}</span>
-                      <span className="font-mono" style={{ color: "#E8967C", fontSize: 13, letterSpacing: "0.05em" }}>
+                      <span style={{ color: "#3a3a5c", fontSize: 15 }}>{r.label}</span>
+                      <span className="font-mono" style={{ color: "#D4616B", fontSize: 13, letterSpacing: "0.05em" }}>
                         {r.time}
                       </span>
                     </div>
@@ -394,8 +395,8 @@ const Contact = () => {
               {/* Demo CTA */}
               <div
                 style={{
-                  background: "linear-gradient(135deg, rgba(123,97,255,0.12), rgba(212,97,107,0.08))",
-                  border: "1px solid rgba(123,97,255,0.2)",
+                  background: "linear-gradient(135deg, rgba(123,97,255,0.08), rgba(212,97,107,0.05))",
+                  border: "1px solid rgba(123,97,255,0.15)",
                   backdropFilter: "blur(16px)",
                   WebkitBackdropFilter: "blur(16px)",
                   borderRadius: 20,
@@ -404,7 +405,7 @@ const Contact = () => {
               >
                 <h3
                   style={{
-                    color: "rgba(255,255,255,0.95)",
+                    color: "#1a1a2e",
                     fontWeight: 700,
                     fontSize: 20,
                     letterSpacing: "-0.01em",
@@ -413,7 +414,7 @@ const Contact = () => {
                 >
                   Schedule a platform demo
                 </h3>
-                <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 15, lineHeight: 1.6, marginBottom: 20 }}>
+                <p style={{ color: "#5a5a7c", fontSize: 15, lineHeight: 1.6, marginBottom: 20 }}>
                   See how DocG's intelligence layer integrates with your existing clinical infrastructure.
                 </p>
                 <motion.a
@@ -421,7 +422,7 @@ const Contact = () => {
                   whileHover={{ x: 4 }}
                   className="flex items-center gap-2"
                   style={{
-                    color: "#E8967C",
+                    color: "#D4616B",
                     fontWeight: 700,
                     fontSize: 13,
                     letterSpacing: "0.12em",
@@ -437,8 +438,8 @@ const Contact = () => {
               <div
                 className="flex items-center gap-4"
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "rgba(255,255,255,0.6)",
+                  border: "1px solid rgba(90,70,160,0.08)",
                   borderRadius: 14,
                   padding: "20px 24px",
                 }}
@@ -454,10 +455,10 @@ const Contact = () => {
                   }}
                 />
                 <div>
-                  <p style={{ color: "rgba(255,255,255,0.85)", fontSize: 14, fontWeight: 600 }}>
+                  <p style={{ color: "#1a1a2e", fontSize: 14, fontWeight: 600 }}>
                     SOC 2 Type II & PIPEDA compliant
                   </p>
-                  <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 13 }}>
+                  <p style={{ color: "#7a7a9c", fontSize: 13 }}>
                     All communications encrypted end-to-end
                   </p>
                 </div>
