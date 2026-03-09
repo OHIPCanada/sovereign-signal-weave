@@ -253,14 +253,14 @@ const Footer = () => {
           <span>© {new Date().getFullYear()} DocG AI. All rights reserved.</span>
           <div className="flex gap-3.5 items-center flex-wrap">
             <a
-              href="#"
+              href="/privacy"
               className="no-underline transition-colors duration-200 hover:!text-white/80"
               style={{ color: "rgba(255,255,255,.55)" }}
             >
               Privacy
             </a>
             <a
-              href="#"
+              href="/terms"
               className="no-underline transition-colors duration-200 hover:!text-white/80"
               style={{ color: "rgba(255,255,255,.55)" }}
             >

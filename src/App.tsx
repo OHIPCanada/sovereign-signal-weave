@@ -12,6 +12,10 @@ import Leadership from "./pages/company/Leadership";
 import Careers from "./pages/company/Careers";
 import Contact from "./pages/company/Contact";
 
+// Legal
+import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
+import TermsOfService from "./pages/legal/TermsOfService";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -28,6 +32,10 @@ const App = () => (
           <Route path="/company/leadership" element={<Leadership />} />
           <Route path="/company/careers" element={<Careers />} />
           <Route path="/company/contact" element={<Contact />} />
+
+          {/* Legal */}
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
