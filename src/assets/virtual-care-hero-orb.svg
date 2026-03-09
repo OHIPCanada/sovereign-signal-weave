@@ -1,15 +1,15 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <radialGradient id="coreGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 512) rotate(90) scale(170)">
-      <stop offset="0" stop-color="#FFE6F0"/>
-      <stop offset="0.28" stop-color="#FF5C8A"/>
+    <radialGradient id="coreGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 512) rotate(90) scale(160)">
+      <stop offset="0" stop-color="#FFF0E6"/>
+      <stop offset="0.28" stop-color="#FF8A5C"/>
       <stop offset="0.62" stop-color="#D4616B"/>
-      <stop offset="1" stop-color="#A10D3A"/>
+      <stop offset="1" stop-color="#8A1F3A"/>
     </radialGradient>
-    <radialGradient id="shellGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 512) rotate(90) scale(270)">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.08"/>
-      <stop offset="0.45" stop-color="#FF6285" stop-opacity="0.24"/>
-      <stop offset="1" stop-color="#C81F4A" stop-opacity="0.55"/>
+    <radialGradient id="shellGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 512) rotate(90) scale(250)">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.06"/>
+      <stop offset="0.5" stop-color="#FF8562" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#C83F4A" stop-opacity="0.4"/>
     </radialGradient>
     <filter id="soft" x="0" y="0" width="1024" height="1024" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
       <feGaussianBlur stdDeviation="2.5"/>
@@ -19,68 +19,81 @@
     </filter>
   </defs>
 
-  <g stroke="#FF567A" stroke-opacity="0.58" stroke-width="3.2" filter="url(#soft)">
-    <line x1="512" y1="512" x2="512" y2="262"/>
-    <line x1="512" y1="512" x2="607" y2="281"/>
-    <line x1="512" y1="512" x2="690" y2="334"/>
-    <line x1="512" y1="512" x2="744" y2="417"/>
-    <line x1="512" y1="512" x2="762" y2="512"/>
-    <line x1="512" y1="512" x2="744" y2="607"/>
-    <line x1="512" y1="512" x2="690" y2="690"/>
-    <line x1="512" y1="512" x2="607" y2="744"/>
-    <line x1="512" y1="512" x2="512" y2="762"/>
-    <line x1="512" y1="512" x2="417" y2="744"/>
-    <line x1="512" y1="512" x2="334" y2="690"/>
-    <line x1="512" y1="512" x2="281" y2="607"/>
-    <line x1="512" y1="512" x2="262" y2="512"/>
-    <line x1="512" y1="512" x2="281" y2="417"/>
-    <line x1="512" y1="512" x2="334" y2="334"/>
-    <line x1="512" y1="512" x2="417" y2="281"/>
+  <!-- Signal wave arcs — representing broadcast/communication -->
+  <g stroke="#FF7A5C" stroke-opacity="0.25" stroke-width="2.2" fill="none" filter="url(#soft)">
+    <path d="M512 300 Q620 406 512 512"/>
+    <path d="M512 300 Q404 406 512 512"/>
+    <path d="M724 512 Q618 620 512 512"/>
+    <path d="M724 512 Q618 404 512 512"/>
+    <path d="M512 724 Q404 618 512 512"/>
+    <path d="M512 724 Q620 618 512 512"/>
+    <path d="M300 512 Q406 404 512 512"/>
+    <path d="M300 512 Q406 620 512 512"/>
   </g>
 
-  <g stroke="#FF7A96" stroke-opacity="0.3" stroke-width="2.1" filter="url(#soft)">
-    <line x1="512" y1="262" x2="607" y2="281"/>
-    <line x1="607" y1="281" x2="690" y2="334"/>
-    <line x1="690" y1="334" x2="744" y2="417"/>
-    <line x1="744" y1="417" x2="762" y2="512"/>
-    <line x1="762" y1="512" x2="744" y2="607"/>
-    <line x1="744" y1="607" x2="690" y2="690"/>
-    <line x1="690" y1="690" x2="607" y2="744"/>
-    <line x1="607" y1="744" x2="512" y2="762"/>
-    <line x1="512" y1="762" x2="417" y2="744"/>
-    <line x1="417" y1="744" x2="334" y2="690"/>
-    <line x1="334" y1="690" x2="281" y2="607"/>
-    <line x1="281" y1="607" x2="262" y2="512"/>
-    <line x1="262" y1="512" x2="281" y2="417"/>
-    <line x1="281" y1="417" x2="334" y2="334"/>
-    <line x1="334" y1="334" x2="417" y2="281"/>
-    <line x1="417" y1="281" x2="512" y2="262"/>
-    <line x1="690" y1="334" x2="512" y2="262"/>
-    <line x1="744" y1="607" x2="512" y2="762"/>
-    <line x1="334" y1="690" x2="607" y2="744"/>
-    <line x1="281" y1="417" x2="690" y2="334"/>
+  <!-- Outer triangular constellation -->
+  <g stroke="#E8967C" stroke-opacity="0.4" stroke-width="2.6" filter="url(#soft)">
+    <line x1="512" y1="270" x2="720" y2="420"/>
+    <line x1="720" y1="420" x2="660" y2="680"/>
+    <line x1="660" y1="680" x2="364" y2="680"/>
+    <line x1="364" y1="680" x2="304" y2="420"/>
+    <line x1="304" y1="420" x2="512" y2="270"/>
   </g>
 
-  <circle cx="512" cy="512" r="168" fill="url(#shellGlow)"/>
-  <circle cx="512" cy="512" r="126" fill="url(#coreGlow)"/>
-  <circle cx="512" cy="512" r="44" fill="#FFE6F0" filter="url(#strongGlow)"/>
+  <!-- Inner pentagon -->
+  <g stroke="#FF8A5C" stroke-opacity="0.3" stroke-width="1.8" filter="url(#soft)">
+    <line x1="512" y1="350" x2="632" y2="440"/>
+    <line x1="632" y1="440" x2="598" y2="600"/>
+    <line x1="598" y1="600" x2="426" y2="600"/>
+    <line x1="426" y1="600" x2="392" y2="440"/>
+    <line x1="392" y1="440" x2="512" y2="350"/>
+  </g>
 
+  <!-- Radial spokes from center to outer constellation -->
+  <g stroke="#D4616B" stroke-opacity="0.45" stroke-width="2.8" filter="url(#soft)">
+    <line x1="512" y1="512" x2="512" y2="270"/>
+    <line x1="512" y1="512" x2="720" y2="420"/>
+    <line x1="512" y1="512" x2="660" y2="680"/>
+    <line x1="512" y1="512" x2="364" y2="680"/>
+    <line x1="512" y1="512" x2="304" y2="420"/>
+  </g>
+
+  <!-- Inner spokes to pentagon -->
+  <g stroke="#E8967C" stroke-opacity="0.25" stroke-width="1.5" filter="url(#soft)">
+    <line x1="512" y1="512" x2="512" y2="350"/>
+    <line x1="512" y1="512" x2="632" y2="440"/>
+    <line x1="512" y1="512" x2="598" y2="600"/>
+    <line x1="512" y1="512" x2="426" y2="600"/>
+    <line x1="512" y1="512" x2="392" y2="440"/>
+  </g>
+
+  <circle cx="512" cy="512" r="148" fill="url(#shellGlow)"/>
+  <circle cx="512" cy="512" r="105" fill="url(#coreGlow)"/>
+  <circle cx="512" cy="512" r="36" fill="#FFF0E6" filter="url(#strongGlow)"/>
+
+  <!-- Outer nodes -->
   <g>
-    <circle cx="512" cy="262" r="13" fill="#FF6B8A"/>
-    <circle cx="607" cy="281" r="12" fill="#FF78A0"/>
-    <circle cx="690" cy="334" r="12" fill="#FF5D80"/>
-    <circle cx="744" cy="417" r="11" fill="#FF6B8A"/>
-    <circle cx="762" cy="512" r="11" fill="#FF8BAA"/>
-    <circle cx="744" cy="607" r="11" fill="#FF6B8A"/>
-    <circle cx="690" cy="690" r="12" fill="#FF5D80"/>
-    <circle cx="607" cy="744" r="12" fill="#FF78A0"/>
-    <circle cx="512" cy="762" r="13" fill="#FF6B8A"/>
-    <circle cx="417" cy="744" r="12" fill="#FF78A0"/>
-    <circle cx="334" cy="690" r="12" fill="#FF5D80"/>
-    <circle cx="281" cy="607" r="11" fill="#FF6B8A"/>
-    <circle cx="262" cy="512" r="11" fill="#FF8BAA"/>
-    <circle cx="281" cy="417" r="11" fill="#FF6B8A"/>
-    <circle cx="334" cy="334" r="12" fill="#FF5D80"/>
-    <circle cx="417" cy="281" r="12" fill="#FF78A0"/>
+    <circle cx="512" cy="270" r="14" fill="#E8967C"/>
+    <circle cx="720" cy="420" r="13" fill="#FF8A5C"/>
+    <circle cx="660" cy="680" r="13" fill="#D4616B"/>
+    <circle cx="364" cy="680" r="13" fill="#D4616B"/>
+    <circle cx="304" cy="420" r="13" fill="#FF8A5C"/>
+  </g>
+
+  <!-- Inner nodes -->
+  <g>
+    <circle cx="512" cy="350" r="10" fill="#F2C1AE"/>
+    <circle cx="632" cy="440" r="9" fill="#E8967C"/>
+    <circle cx="598" cy="600" r="9" fill="#D4616B"/>
+    <circle cx="426" cy="600" r="9" fill="#D4616B"/>
+    <circle cx="392" cy="440" r="9" fill="#E8967C"/>
+  </g>
+
+  <!-- Wave arc endpoint nodes -->
+  <g>
+    <circle cx="512" cy="300" r="7" fill="#FF9E78"/>
+    <circle cx="724" cy="512" r="7" fill="#FF9E78"/>
+    <circle cx="512" cy="724" r="7" fill="#FF9E78"/>
+    <circle cx="300" cy="512" r="7" fill="#FF9E78"/>
   </g>
 </svg>
