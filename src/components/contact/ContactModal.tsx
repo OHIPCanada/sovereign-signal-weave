@@ -8,7 +8,7 @@ export default function ContactModal() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className="dark max-w-2xl p-0 overflow-hidden border-0"
+        className="dark max-w-2xl w-[calc(100vw-32px)] p-0 overflow-hidden border-0"
         style={{
           background: `
             radial-gradient(600px 400px at 30% 30%, rgba(212,97,107,0.15), transparent 60%),
