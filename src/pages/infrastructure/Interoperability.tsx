@@ -332,7 +332,7 @@ const Interoperability = () => {
                       className="hidden md:flex absolute -right-2 top-1/2 -translate-y-1/2 z-20"
                       animate={{ opacity: isActive ? 1 : 0.2 }}
                     >
-                      <ArrowRight className="w-4 h-4" style={{ color: isActive ? "#C0E8967 : "rgba(30,20,50,0.2)" }} />
+                      <ArrowRight className="w-4 h-4" style={{ color: isActive ? "#E8967C" : "rgba(30,20,50,0.2)" }} />
                     </motion.div>
                   )}
                 </motion.div>
