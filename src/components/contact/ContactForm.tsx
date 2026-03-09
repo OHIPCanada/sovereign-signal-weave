@@ -110,8 +110,10 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
   const [touched, setTouched] = useState<TouchedState>(initialTouched);
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [hcaptchaToken, setHcaptchaToken] = useState<string | null>(null);
 
   const firstFieldRef = useRef<HTMLInputElement | null>(null);
+  const hcaptchaRef = useRef<HCaptcha>(null);
 
   useEffect(() => {
     if (!autoFocus) return;
