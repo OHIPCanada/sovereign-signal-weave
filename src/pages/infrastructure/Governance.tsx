@@ -256,10 +256,11 @@ const Governance = () => {
                 whileHover={{ y: -4 }}
                 className="p-6 rounded-2xl"
                 style={{
-                  background: "rgba(255,255,255,0.7)",
-                  border: "1px solid rgba(123,97,255,0.08)",
-                  backdropFilter: "blur(10px)",
-                  boxShadow: "0 4px 24px rgba(60,40,120,0.05)",
+                  background: "rgba(255,255,255,0.18)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
                 <motion.div
