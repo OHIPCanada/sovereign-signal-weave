@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import deploymentOrb from "@/assets/deployment-hero-orb.png";
-import { Server, Cloud, Shield, Zap, CheckCircle2 } from "lucide-react";
+import { Server, Cloud, Shield, Zap } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
 const deploymentModels = [
@@ -35,7 +35,7 @@ const HexGrid = () => {
       <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.4 }}>
         <defs>
           <pattern id="hexGrid" width="60" height="52" patternUnits="userSpaceOnUse">
-            <path d="M30 0 L60 15 L60 37 L30 52 L0 37 L0 15 Z" fill="none" stroke="rgba(123,97,255,0.15)" strokeWidth="0.5" />
+            <path d="M30 0 L60 15 L60 37 L30 52 L0 37 L0 15 Z" fill="none" stroke="rgba(123,97,255,0.12)" strokeWidth="0.5" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#hexGrid)" />
@@ -45,9 +45,9 @@ const HexGrid = () => {
             cx={`${15 + (i % 4) * 25}%`}
             cy={`${20 + Math.floor(i / 4) * 40}%`}
             r="3"
-            fill="rgba(212,97,107,0.6)"
+            fill="rgba(212,97,107,0.5)"
             initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: [0, 1, 0], scale: [0, 1.5, 0] }}
+            animate={{ opacity: [0, 0.8, 0], scale: [0, 1.5, 0] }}
             transition={{ duration: 3, repeat: Infinity, delay: i * 0.7, ease: "easeOut" }}
           />
         ))}
@@ -56,7 +56,7 @@ const HexGrid = () => {
   );
 };
 
-/* ── Deployment: HexGrid bg + magnetic cursor cards + glitch text + data pulse stats ── */
+/* ── Deployment: HexGrid bg + magnetic cursor cards + perspective text ── */
 const Deployment = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
@@ -83,7 +83,7 @@ const Deployment = () => {
     <div ref={containerRef} className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* HERO — HexGrid + magnetic orb + glitch title */}
+      {/* HERO */}
       <section
         className="relative overflow-hidden flex items-end md:items-center"
         style={{
@@ -99,7 +99,6 @@ const Deployment = () => {
         <HexGrid />
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
-            {/* Text with glitch flicker effect */}
             <div className="flex flex-col gap-5">
               <motion.p
                 initial={{ opacity: 0, letterSpacing: "0.5em" }}
@@ -108,7 +107,7 @@ const Deployment = () => {
                 className="font-mono uppercase"
                 style={{ color: "rgba(255,255,255,0.45)", fontSize: 12 }}
               >
-                [ INFRASTRUCTURE / DEPLOYMENT ]
+                Infrastructure · Deployment
               </motion.p>
               <motion.h1
                 initial={{ opacity: 0 }}
@@ -160,7 +159,7 @@ const Deployment = () => {
         </div>
       </section>
 
-      {/* DEPLOYMENT MODELS — Terminal-style reveal with typing cursor */}
+      {/* DEPLOYMENT MODELS */}
       <section
         className="relative overflow-hidden"
         style={{
@@ -168,8 +167,6 @@ const Deployment = () => {
           background: "linear-gradient(180deg, #0A0012 0%, #12001F 100%)",
         }}
       >
-        <div className="absolute inset-0" style={{ background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(123,97,255,0.03) 2px, rgba(123,97,255,0.03) 4px)" }} />
-        
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <motion.div
             initial={{ opacity: 0 }}
@@ -178,29 +175,12 @@ const Deployment = () => {
             transition={{ duration: 0.5 }}
             className="mb-12"
           >
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                <div className="w-3 h-3 rounded-full bg-[#27ca40]" />
-              </div>
-              <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>deployment-config.yaml</span>
-            </div>
-            <motion.h2
-              className="font-mono"
-              style={{ color: "#4ade80", fontSize: "clamp(24px, 3vw, 40px)", fontWeight: 600 }}
-              initial={{ width: 0 }}
-              whileInView={{ width: "auto" }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.5, ease: "linear" }}
-            >
-              <span className="overflow-hidden whitespace-nowrap inline-block">$ select deployment_model --list</span>
-              <motion.span
-                animate={{ opacity: [1, 0] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
-                className="inline-block w-3 h-8 bg-[#4ade80] ml-1 align-middle"
-              />
-            </motion.h2>
+            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.12)", color: "rgba(123,97,255,0.8)", border: "1px solid rgba(123,97,255,0.2)" }}>
+              DEPLOYMENT MODELS
+            </span>
+            <h2 className="mt-4" style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
+              Choose your surface.
+            </h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -211,23 +191,23 @@ const Deployment = () => {
                 whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: 0.3 + i * 0.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ borderColor: "rgba(74,222,128,0.5)", boxShadow: "0 0 40px rgba(74,222,128,0.15)" }}
+                whileHover={{ borderColor: "rgba(212,97,107,0.4)", boxShadow: "0 0 40px rgba(212,97,107,0.08)" }}
                 className="rounded-lg p-6"
                 style={{
                   background: "rgba(10,0,18,0.8)",
-                  border: "1px solid rgba(123,97,255,0.2)",
+                  border: "1px solid rgba(123,97,255,0.15)",
                   backdropFilter: "blur(10px)",
                 }}
               >
                 <motion.div
                   className="w-12 h-12 rounded-lg flex items-center justify-center mb-4"
-                  style={{ background: "linear-gradient(135deg, rgba(74,222,128,0.2), rgba(123,97,255,0.2))" }}
+                  style={{ background: "linear-gradient(135deg, rgba(212,97,107,0.15), rgba(123,97,255,0.15))" }}
                   whileHover={{ rotate: 90 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <model.icon className="w-6 h-6" style={{ color: "#4ade80" }} />
+                  <model.icon className="w-6 h-6" style={{ color: "#E8967C" }} />
                 </motion.div>
-                <div className="font-mono mb-2" style={{ color: "#4ade80", fontSize: 18, fontWeight: 600 }}>{model.title}</div>
+                <div className="mb-2" style={{ color: "#fff", fontSize: 18, fontWeight: 700 }}>{model.title}</div>
                 <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>{model.desc}</div>
                 <div className="flex flex-col gap-2">
                   {model.features.map((f, fi) => (
@@ -250,7 +230,7 @@ const Deployment = () => {
         </div>
       </section>
 
-      {/* COMPLIANCE & STATS — Data pulse counters + status badges */}
+      {/* COMPLIANCE & STATS */}
       <section
         className="relative overflow-hidden"
         style={{
@@ -260,16 +240,16 @@ const Deployment = () => {
       >
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-            {/* Stats with data pulse animation */}
+            {/* Stats */}
             <div>
               <motion.p
-                className="font-mono uppercase mb-3"
+                className="font-mono uppercase mb-6"
                 style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, letterSpacing: "0.15em" }}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
               >
-                system.metrics.performance
+                Performance Metrics
               </motion.p>
               <div className="grid grid-cols-2 gap-4">
                 {stats.map((s, i) => (
@@ -288,27 +268,27 @@ const Deployment = () => {
                       whileInView={{ x: "100%" }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.5 + i * 0.15, duration: 0.8, ease: "easeOut" }}
-                      style={{ background: "linear-gradient(90deg, transparent, rgba(74,222,128,0.15), transparent)" }}
+                      style={{ background: "linear-gradient(90deg, transparent, rgba(123,97,255,0.12), transparent)" }}
                     />
                     <div className="relative z-10">
                       <div className="font-mono" style={{ fontSize: "clamp(26px, 2.5vw, 38px)", fontWeight: 700, color: "#fff" }}>{s.value}</div>
-                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginTop: 4, fontFamily: "monospace" }}>{s.label}</div>
+                      <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginTop: 4 }}>{s.label}</div>
                     </div>
                   </motion.div>
                 ))}
               </div>
             </div>
 
-            {/* Compliance with status indicators */}
+            {/* Compliance */}
             <div>
               <motion.p
-                className="font-mono uppercase mb-3"
+                className="font-mono uppercase mb-6"
                 style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, letterSpacing: "0.15em" }}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
               >
-                compliance.certifications.status
+                Certifications
               </motion.p>
               <div className="flex flex-col gap-3">
                 {complianceItems.map((item, i) => (
@@ -321,21 +301,22 @@ const Deployment = () => {
                     className="flex items-center justify-between p-4 rounded-lg"
                     style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(123,97,255,0.1)" }}
                   >
-                    <span className="font-mono" style={{ color: "rgba(255,255,255,0.8)", fontSize: 14 }}>{item.label}</span>
+                    <span style={{ color: "rgba(255,255,255,0.8)", fontSize: 14 }}>{item.label}</span>
                     <motion.div
                       className="flex items-center gap-2 px-3 py-1.5 rounded"
-                      style={{ background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.3)" }}
+                      style={{ background: "rgba(212,97,107,0.1)", border: "1px solid rgba(212,97,107,0.25)" }}
                       initial={{ scale: 0 }}
                       whileInView={{ scale: 1 }}
                       viewport={{ once: true }}
                       transition={{ delay: 0.4 + i * 0.12, type: "spring", stiffness: 400 }}
                     >
                       <motion.div
-                        className="w-2 h-2 rounded-full bg-[#4ade80]"
+                        className="w-2 h-2 rounded-full"
+                        style={{ background: "#D4616B" }}
                         animate={{ opacity: [1, 0.4, 1] }}
                         transition={{ duration: 1.5, repeat: Infinity }}
                       />
-                      <span className="font-mono text-xs" style={{ color: "#4ade80" }}>{item.status}</span>
+                      <span className="text-xs" style={{ color: "#E8967C" }}>{item.status}</span>
                     </motion.div>
                   </motion.div>
                 ))}

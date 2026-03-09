@@ -2,7 +2,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion, useInView } from "framer-motion";
 import governanceOrb from "@/assets/governance-hero-orb.png";
-import { ShieldCheck, Globe, FileText, Lock, Users, Scale, Check } from "lucide-react";
+import { ShieldCheck, Globe, FileText, Lock, Users, Scale } from "lucide-react";
 import { useRef } from "react";
 
 const frameworks = [
@@ -34,10 +34,10 @@ const ShieldMatrix = () => (
           key={i}
           d={`M${40 + (i % 5) * 180} ${30 + Math.floor(i / 5) * 150} l20 12 l0 24 l-20 12 l-20 -12 l0 -24 z`}
           fill="none"
-          stroke="rgba(123,97,255,0.2)"
+          stroke="rgba(123,97,255,0.15)"
           strokeWidth="0.5"
           initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: [0, 0.5, 0.2] }}
+          animate={{ pathLength: 1, opacity: [0, 0.4, 0.15] }}
           transition={{ duration: 3, delay: i * 0.15, repeat: Infinity, repeatDelay: 5 }}
         />
       ))}
@@ -45,7 +45,6 @@ const ShieldMatrix = () => (
   </div>
 );
 
-/* ── Governance: ShieldMatrix bg + compliance checklist reveal + stacked jurisdiction cards ── */
 const Governance = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const heroInView = useInView(heroRef, { once: true });
@@ -54,7 +53,7 @@ const Governance = () => {
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* HERO — Shield matrix + orbiting checkmarks */}
+      {/* HERO */}
       <section
         ref={heroRef}
         className="relative overflow-hidden flex items-end md:items-center"
@@ -63,7 +62,7 @@ const Governance = () => {
           padding: "clamp(120px, 14vw, 200px) 0 clamp(64px, 7vw, 110px)",
           background: `
             radial-gradient(700px 500px at 30% 40%, rgba(91,31,166,0.4), transparent 50%),
-            radial-gradient(500px 400px at 70% 60%, rgba(74,222,128,0.1), transparent 50%),
+            radial-gradient(500px 400px at 70% 60%, rgba(212,97,107,0.12), transparent 50%),
             linear-gradient(165deg, #0A0015 0%, #150028 50%, #1A0630 100%)
           `,
         }}
@@ -79,12 +78,13 @@ const Governance = () => {
                 transition={{ duration: 0.6 }}
               >
                 <motion.div
-                  className="w-2 h-2 rounded-full bg-[#4ade80]"
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: "#7B61FF" }}
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
-                <span className="font-mono uppercase text-xs" style={{ color: "rgba(74,222,128,0.8)", letterSpacing: "0.15em" }}>
-                  GOVERNANCE ACTIVE
+                <span className="font-mono uppercase text-xs" style={{ color: "rgba(123,97,255,0.8)", letterSpacing: "0.15em" }}>
+                  Governance Active
                 </span>
               </motion.div>
               
@@ -123,14 +123,14 @@ const Governance = () => {
                 initial={{ opacity: 0, scale: 0.6 }}
                 animate={heroInView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                style={{ filter: "drop-shadow(0 30px 80px rgba(74,222,128,0.2))" }}
+                style={{ filter: "drop-shadow(0 30px 80px rgba(91,31,166,0.35))" }}
               />
-              {/* Orbiting checkmarks */}
+              {/* Orbiting shield accents */}
               {[0, 1, 2].map((i) => (
                 <motion.div
                   key={i}
                   className="absolute w-10 h-10 rounded-full flex items-center justify-center"
-                  style={{ background: "rgba(74,222,128,0.15)", border: "1px solid rgba(74,222,128,0.3)" }}
+                  style={{ background: "rgba(212,97,107,0.1)", border: "1px solid rgba(212,97,107,0.2)" }}
                   initial={{ opacity: 0 }}
                   animate={heroInView ? {
                     opacity: 1,
@@ -145,7 +145,7 @@ const Governance = () => {
                     y: { delay: 0.8 + i * 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] },
                   }}
                 >
-                  <Check className="w-5 h-5" style={{ color: "#4ade80" }} />
+                  <ShieldCheck className="w-5 h-5" style={{ color: "#E8967C" }} />
                 </motion.div>
               ))}
             </div>
@@ -153,7 +153,7 @@ const Governance = () => {
         </div>
       </section>
 
-      {/* FRAMEWORKS — Jurisdiction cards with stacked reveal */}
+      {/* FRAMEWORKS */}
       <section
         className="relative overflow-hidden"
         style={{
@@ -168,8 +168,8 @@ const Governance = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.15)", color: "rgba(123,97,255,0.8)", border: "1px solid rgba(123,97,255,0.2)" }}>
-              REGULATORY_COMPLIANCE
+            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.12)", color: "rgba(123,97,255,0.8)", border: "1px solid rgba(123,97,255,0.2)" }}>
+              Regulatory Compliance
             </span>
             <h2 className="mt-4" style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
               Built for Canadian healthcare.
@@ -187,27 +187,27 @@ const Governance = () => {
                 whileHover={{ scale: 1.02, y: -4 }}
                 className="relative p-6 rounded-xl overflow-hidden group"
                 style={{
-                  background: "linear-gradient(135deg, rgba(123,97,255,0.08), rgba(74,222,128,0.03))",
-                  border: "1px solid rgba(123,97,255,0.15)",
+                  background: "linear-gradient(135deg, rgba(123,97,255,0.06), rgba(212,97,107,0.03))",
+                  border: "1px solid rgba(123,97,255,0.12)",
                 }}
               >
-                {/* Progress bar on hover */}
+                {/* Accent bar on hover */}
                 <motion.div
                   className="absolute bottom-0 left-0 h-1"
-                  style={{ background: "linear-gradient(90deg, #7B61FF, #4ade80)" }}
+                  style={{ background: "linear-gradient(90deg, #7B61FF, #D4616B)" }}
                   initial={{ width: 0 }}
                   whileHover={{ width: "100%" }}
                   transition={{ duration: 0.6 }}
                 />
                 
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.2)" }}>
-                    <fw.icon className="w-6 h-6" style={{ color: "#4ade80" }} />
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: "rgba(123,97,255,0.1)", border: "1px solid rgba(123,97,255,0.15)" }}>
+                    <fw.icon className="w-6 h-6" style={{ color: "#7B61FF" }} />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <span style={{ fontWeight: 700, fontSize: 18, color: "#fff" }}>{fw.title}</span>
-                      <span className="px-2 py-0.5 rounded text-xs font-mono" style={{ background: "rgba(212,97,107,0.15)", color: "#E8967C" }}>{fw.subtitle}</span>
+                      <span className="px-2 py-0.5 rounded text-xs" style={{ background: "rgba(212,97,107,0.12)", color: "#E8967C" }}>{fw.subtitle}</span>
                     </div>
                     <div style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>{fw.desc}</div>
                   </div>
@@ -218,7 +218,7 @@ const Governance = () => {
         </div>
       </section>
 
-      {/* PRINCIPLES — Vertical accordion expand */}
+      {/* PRINCIPLES */}
       <section
         className="relative overflow-hidden"
         style={{
@@ -263,7 +263,7 @@ const Governance = () => {
         </div>
       </section>
 
-      {/* STATS — Metric dashboard */}
+      {/* STATS */}
       <section
         className="relative overflow-hidden"
         style={{
@@ -278,7 +278,7 @@ const Governance = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>governance.metrics.dashboard</span>
+            <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>Governance Metrics</span>
           </motion.div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -289,7 +289,7 @@ const Governance = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.6 }}
-                whileHover={{ borderColor: "rgba(74,222,128,0.4)" }}
+                whileHover={{ borderColor: "rgba(212,97,107,0.3)" }}
                 className="p-6 rounded-xl text-center"
                 style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(123,97,255,0.1)" }}
               >
