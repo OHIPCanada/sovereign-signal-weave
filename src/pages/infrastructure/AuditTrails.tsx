@@ -318,7 +318,7 @@ const AuditTrails = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)" }}>Built for scale.</h2>
+            <h2 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, fontSize: "clamp(44px, 5.2vw, 84px)", lineHeight: 0.95, letterSpacing: "-0.02em", textShadow: "0 10px 40px rgba(0,0,0,0.22)" }}>Built for scale.</h2>
           </motion.div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

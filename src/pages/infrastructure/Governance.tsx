@@ -292,7 +292,7 @@ const Governance = () => {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>Governance Metrics</span>
+            <span className="font-mono uppercase text-xs" style={{ color: "rgba(255,255,255,0.45)", letterSpacing: "0.22em" }}>[ Governance Metrics ]</span>
           </motion.div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
