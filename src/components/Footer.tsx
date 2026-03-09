@@ -268,6 +268,13 @@ const Footer = () => {
             >
               Terms
             </a>
+            <button
+              onClick={reopenConsentBanner}
+              className="no-underline transition-colors duration-200 hover:!text-white/80 bg-transparent border-0 cursor-pointer p-0"
+              style={{ color: "rgba(255,255,255,.55)", font: "inherit", fontSize: 13 }}
+            >
+              Manage Cookies
+            </button>
             <span
               style={{
                 padding: "6px 10px",
