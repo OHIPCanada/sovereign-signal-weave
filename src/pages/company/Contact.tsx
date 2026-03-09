@@ -47,10 +47,10 @@ const Contact = () => {
   const fieldStyle: React.CSSProperties = {
     width: "100%",
     padding: "14px 18px",
-    background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.1)",
+    background: "rgba(255,255,255,0.7)",
+    border: "1px solid rgba(90,70,160,0.12)",
     borderRadius: 10,
-    color: "rgba(255,255,255,0.92)",
+    color: "#1a1a2e",
     fontSize: 15,
     outline: "none",
     transition: "border-color 0.2s",
