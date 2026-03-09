@@ -451,9 +451,25 @@ const Contact = () => {
                 </div>
               </div>
 
+              {/* hCaptcha */}
+              <div className="mt-5">
+                <HCaptcha
+                  ref={hcaptchaRef}
+                  sitekey={HCAPTCHA_SITE_KEY}
+                  theme="light"
+                  onVerify={(token) => setHcaptchaToken(token)}
+                  onExpire={() => setHcaptchaToken(null)}
+                />
+                {submitted && !hcaptchaToken && (
+                  <span style={{ fontSize: 11, color: "rgba(212,97,107,0.9)", marginTop: 4, display: "block" }}>
+                    Please complete the captcha
+                  </span>
+                )}
+              </div>
+
               <motion.button
                 type="submit"
-                disabled={sending}
+                disabled={sending || !hcaptchaToken}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="mt-6 sm:mt-8 flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start"
@@ -467,8 +483,8 @@ const Contact = () => {
                   padding: "16px 36px",
                   borderRadius: 12,
                   border: "none",
-                  cursor: sending ? "wait" : "pointer",
-                  opacity: sending ? 0.7 : 1,
+                  cursor: (sending || !hcaptchaToken) ? "not-allowed" : "pointer",
+                  opacity: (sending || !hcaptchaToken) ? 0.7 : 1,
                   transition: "opacity 0.2s",
                   fontFamily: "inherit",
                 }}
