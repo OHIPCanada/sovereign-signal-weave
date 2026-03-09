@@ -89,8 +89,8 @@ const Contact = () => {
   const errors = getErrors(form, submitted ? allTouched : touched);
 
   const canSubmit = useMemo(() => {
-    return Boolean(form.name.trim() && form.email.trim() && emailRegex.test(form.email.trim()) && form.message.trim());
-  }, [form.email, form.message, form.name]);
+    return Boolean(form.name.trim() && form.email.trim() && emailRegex.test(form.email.trim()) && form.message.trim() && hcaptchaToken);
+  }, [form.email, form.message, form.name, hcaptchaToken]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
