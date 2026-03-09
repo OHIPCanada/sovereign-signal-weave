@@ -267,10 +267,11 @@ const Deployment = () => {
                     transition={{ delay: i * 0.15, type: "spring", stiffness: 200, damping: 20 }}
                     className="relative p-5 rounded-xl overflow-hidden"
                     style={{
-                      background: "rgba(255,255,255,0.7)",
-                      border: "1px solid rgba(123,97,255,0.1)",
-                      backdropFilter: "blur(10px)",
-                      boxShadow: "0 4px 24px rgba(60,40,120,0.06)",
+                      background: "rgba(255,255,255,0.18)",
+                      border: "1px solid rgba(255,255,255,0.25)",
+                      backdropFilter: "blur(24px)",
+                      WebkitBackdropFilter: "blur(24px)",
+                      boxShadow: "0 4px 24px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                     }}
                   >
                     <div>
