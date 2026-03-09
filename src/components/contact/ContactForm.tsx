@@ -179,6 +179,7 @@ export default function ContactForm({ autoFocus = false }: { autoFocus?: boolean
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-5" noValidate>
+      <input type="checkbox" name="botcheck" className="hidden" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {/* Name */}
         <div>
