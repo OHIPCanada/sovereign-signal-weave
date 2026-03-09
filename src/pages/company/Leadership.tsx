@@ -196,12 +196,12 @@ const Leadership = () => (
                 transition={{ delay: i * 0.1, duration: 0.6 }}
                 whileHover={{ y: -4 }}
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.45) 100%)",
+                  background: "rgba(255,255,255,0.18)",
                   backdropFilter: "blur(24px)",
                   WebkitBackdropFilter: "blur(24px)",
                   borderRadius: 20,
-                  border: "1px solid rgba(90,70,160,0.12)",
-                  boxShadow: "0 20px 60px rgba(60,40,120,0.1), inset 0 1px 0 rgba(255,255,255,0.7)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                   padding: 20,
                   transition: "transform 0.2s ease-out",
                 }}
