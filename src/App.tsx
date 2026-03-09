@@ -19,6 +19,12 @@ import Governance from "./pages/infrastructure/Governance";
 import AuditTrails from "./pages/infrastructure/AuditTrails";
 import Interoperability from "./pages/infrastructure/Interoperability";
 
+// Platform
+import AICortex from "./pages/platform/AICortex";
+import EMRLayer from "./pages/platform/EMRLayer";
+import VirtualCare from "./pages/platform/VirtualCare";
+import PatientAccess from "./pages/platform/PatientAccess";
+
 // Legal
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsOfService from "./pages/legal/TermsOfService";
@@ -45,6 +51,12 @@ const App = () => (
           <Route path="/infrastructure/governance" element={<Governance />} />
           <Route path="/infrastructure/audit-trails" element={<AuditTrails />} />
           <Route path="/infrastructure/interoperability" element={<Interoperability />} />
+
+          {/* Platform */}
+          <Route path="/platform/ai-cortex" element={<AICortex />} />
+          <Route path="/platform/emr-layer" element={<EMRLayer />} />
+          <Route path="/platform/virtual-care" element={<VirtualCare />} />
+          <Route path="/platform/patient-access" element={<PatientAccess />} />
 
           {/* Legal */}
           <Route path="/privacy" element={<PrivacyPolicy />} />

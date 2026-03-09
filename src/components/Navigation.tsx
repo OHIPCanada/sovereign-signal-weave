@@ -26,10 +26,10 @@ const navLinks: NavItem[] = [
   {
     label: "PLATFORM",
     children: [
-      { label: "AI Cortex", href: "/#platform" },
-      { label: "EMR Layer", href: "/#features" },
-      { label: "Virtual Care", href: "/#features" },
-      { label: "Patient Access", href: "/#deployment-surfaces" },
+      { label: "AI Cortex", href: "/platform/ai-cortex" },
+      { label: "EMR Layer", href: "/platform/emr-layer" },
+      { label: "Virtual Care", href: "/platform/virtual-care" },
+      { label: "Patient Access", href: "/platform/patient-access" },
     ],
   },
   {
