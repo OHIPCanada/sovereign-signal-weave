@@ -1,4 +1,31 @@
 import { reopenConsentBanner, useConsentStatus } from "./CookieConsent";
+import { Link } from "react-router-dom";
+
+const footerLinks = {
+  company: [
+    { label: "Overview", to: "/company/overview" },
+    { label: "Leadership", to: "/company/leadership" },
+    { label: "Careers", to: "/company/careers" },
+  ],
+  platform: [
+    { label: "AI Cortex", to: "/platform/ai-cortex" },
+    { label: "EMR Layer", to: "/platform/emr-layer" },
+    { label: "Virtual Care", to: "/platform/virtual-care" },
+    { label: "Patient Access", to: "/platform/patient-access" },
+  ],
+  infrastructure: [
+    { label: "Deployment", to: "/infrastructure/deployment" },
+    { label: "Governance", to: "/infrastructure/governance" },
+    { label: "Audit Trails", to: "/infrastructure/audit-trails" },
+    { label: "Interoperability", to: "/infrastructure/interoperability" },
+  ],
+};
+
+const linkStyle = {
+  color: "rgba(255,255,255,.72)",
+  fontSize: 14,
+  padding: "6px 0",
+};
 
 const Footer = () => {
   const consentStatus = useConsentStatus();
@@ -61,8 +88,8 @@ const Footer = () => {
 
           {/* Buttons */}
           <div className="flex gap-3 flex-wrap">
-            <a
-              href="#"
+            <Link
+              to="/company/contact"
               className="inline-block no-underline transition-all duration-200 hover:-translate-y-px"
               style={{
                 background:
@@ -78,9 +105,9 @@ const Footer = () => {
               }}
             >
               Request Investor Deck
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              to="/company/contact"
               className="inline-block no-underline transition-all duration-200 hover:-translate-y-px"
               style={{
                 background: "rgba(255,255,255,.04)",
@@ -94,7 +121,7 @@ const Footer = () => {
               }}
             >
               Contact
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -110,27 +137,19 @@ const Footer = () => {
           <div>
             <div
               className="font-mono uppercase mb-3.5"
-              style={{
-                fontSize: 12,
-                letterSpacing: "0.22em",
-                color: "rgba(255,255,255,.55)",
-              }}
+              style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(255,255,255,.55)" }}
             >
               Company
             </div>
-            {["Overview", "Leadership", "Careers"].map((item) => (
-              <a
-                key={item}
-                href="#"
+            {footerLinks.company.map((item) => (
+              <Link
+                key={item.label}
+                to={item.to}
                 className="block no-underline transition-colors duration-200 hover:!text-white/90"
-                style={{
-                  color: "rgba(255,255,255,.72)",
-                  fontSize: 14,
-                  padding: "6px 0",
-                }}
+                style={linkStyle}
               >
-                {item}
-              </a>
+                {item.label}
+              </Link>
             ))}
           </div>
 
@@ -138,62 +157,39 @@ const Footer = () => {
           <div>
             <div
               className="font-mono uppercase mb-3.5"
-              style={{
-                fontSize: 12,
-                letterSpacing: "0.22em",
-                color: "rgba(255,255,255,.55)",
-              }}
+              style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(255,255,255,.55)" }}
             >
               Platform
             </div>
-            {["AI Cortex", "EMR Layer", "Virtual Care", "Patient Access"].map(
-              (item) => (
-                <a
-                  key={item}
-                  href="#"
-                  className="block no-underline transition-colors duration-200 hover:!text-white/90"
-                  style={{
-                    color: "rgba(255,255,255,.72)",
-                    fontSize: 14,
-                    padding: "6px 0",
-                  }}
-                >
-                  {item}
-                </a>
-              )
-            )}
+            {footerLinks.platform.map((item) => (
+              <Link
+                key={item.label}
+                to={item.to}
+                className="block no-underline transition-colors duration-200 hover:!text-white/90"
+                style={linkStyle}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
 
           {/* Infrastructure */}
           <div>
             <div
               className="font-mono uppercase mb-3.5"
-              style={{
-                fontSize: 12,
-                letterSpacing: "0.22em",
-                color: "rgba(255,255,255,.55)",
-              }}
+              style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(255,255,255,.55)" }}
             >
               Infrastructure
             </div>
-            {[
-              "Deployment",
-              "Governance",
-              "Audit Trails",
-              "Interoperability",
-            ].map((item) => (
-              <a
-                key={item}
-                href="#"
+            {footerLinks.infrastructure.map((item) => (
+              <Link
+                key={item.label}
+                to={item.to}
                 className="block no-underline transition-colors duration-200 hover:!text-white/90"
-                style={{
-                  color: "rgba(255,255,255,.72)",
-                  fontSize: 14,
-                  padding: "6px 0",
-                }}
+                style={linkStyle}
               >
-                {item}
-              </a>
+                {item.label}
+              </Link>
             ))}
           </div>
 
@@ -201,46 +197,30 @@ const Footer = () => {
           <div>
             <div
               className="font-mono uppercase mb-3.5"
-              style={{
-                fontSize: 12,
-                letterSpacing: "0.22em",
-                color: "rgba(255,255,255,.55)",
-              }}
+              style={{ fontSize: 12, letterSpacing: "0.22em", color: "rgba(255,255,255,.55)" }}
             >
               Contact
             </div>
             <a
               href="mailto:hello@docg.ai"
               className="block no-underline transition-colors duration-200 hover:!text-white/90"
-              style={{
-                color: "rgba(255,255,255,.72)",
-                fontSize: 14,
-                padding: "6px 0",
-              }}
+              style={linkStyle}
             >
               hello@docg.ai
             </a>
             <span
               className="block"
-              style={{
-                fontSize: 14,
-                color: "rgba(255,255,255,.55)",
-                padding: "6px 0",
-              }}
+              style={{ fontSize: 14, color: "rgba(255,255,255,.55)", padding: "6px 0" }}
             >
               Canada-first
             </span>
-            <a
-              href="#"
+            <Link
+              to="/company/contact"
               className="block no-underline transition-colors duration-200 hover:!text-white/90"
-              style={{
-                color: "rgba(255,255,255,.72)",
-                fontSize: 14,
-                padding: "6px 0",
-              }}
+              style={linkStyle}
             >
-              LinkedIn
-            </a>
+              Contact Us
+            </Link>
           </div>
         </div>
 
@@ -255,20 +235,20 @@ const Footer = () => {
         >
           <span>© {new Date().getFullYear()} DocG AI. All rights reserved.</span>
           <div className="flex gap-3.5 items-center flex-wrap">
-            <a
-              href="/privacy"
+            <Link
+              to="/privacy"
               className="no-underline transition-colors duration-200 hover:!text-white/80"
               style={{ color: "rgba(255,255,255,.55)" }}
             >
               Privacy
-            </a>
-            <a
-              href="/terms"
+            </Link>
+            <Link
+              to="/terms"
               className="no-underline transition-colors duration-200 hover:!text-white/80"
               style={{ color: "rgba(255,255,255,.55)" }}
             >
               Terms
-            </a>
+            </Link>
             <button
               onClick={reopenConsentBanner}
               className="inline-flex items-center gap-1.5 no-underline transition-colors duration-200 hover:!text-white/80 bg-transparent border-0 cursor-pointer p-0"

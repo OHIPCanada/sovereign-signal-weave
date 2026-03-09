@@ -1,6 +1,7 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Link } from "react-router-dom";
 import heroOrb from "@/assets/virtual-care-hero-orb.svg";
 import { Video, MessageSquare, Phone, Globe, Monitor, Users } from "lucide-react";
 import { useRef, useEffect } from "react";
@@ -209,18 +210,19 @@ const VirtualCare = () => {
                 across any modality — video, voice, messaging — with full clinical context and
                 sovereign data governance.
               </p>
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                className="self-start px-8 py-4 rounded-full text-sm font-semibold tracking-wide"
-                style={{
-                  background: "linear-gradient(135deg, #D4616B, #E8967C)",
-                  color: "#FFFAF8",
-                  boxShadow: "0 8px 32px rgba(212,97,107,0.3)",
-                }}
-              >
-                Schedule a Demo
-              </motion.button>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <Link
+                  to="/company/contact"
+                  className="inline-block self-start px-8 py-4 rounded-full text-sm font-semibold tracking-wide no-underline"
+                  style={{
+                    background: "linear-gradient(135deg, #D4616B, #E8967C)",
+                    color: "#FFFAF8",
+                    boxShadow: "0 8px 32px rgba(212,97,107,0.3)",
+                  }}
+                >
+                  Schedule a Demo
+                </Link>
+              </motion.div>
             </motion.div>
 
             <motion.div

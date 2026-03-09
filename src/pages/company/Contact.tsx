@@ -421,21 +421,20 @@ const Contact = () => {
                 <p style={{ color: "#5a5a7c", fontSize: 15, lineHeight: 1.6, marginBottom: 20 }}>
                   See how DocG's intelligence layer integrates with your existing clinical infrastructure.
                 </p>
-                <motion.a
-                  href="#"
+                <motion.button
+                  onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
                   whileHover={{ x: 4 }}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0"
                   style={{
                     color: "#D4616B",
                     fontWeight: 700,
                     fontSize: 13,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
-                    textDecoration: "none",
                   }}
                 >
                   Request demo <ArrowRight size={15} />
-                </motion.a>
+                </motion.button>
               </div>
 
               {/* Compliance */}
