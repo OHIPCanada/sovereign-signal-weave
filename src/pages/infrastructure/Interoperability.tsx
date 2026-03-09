@@ -111,8 +111,8 @@ const Interoperability = () => {
                   animate={{ boxShadow: ["0 0 0 rgba(123,97,255,0)", "0 0 20px rgba(123,97,255,0.2)", "0 0 0 rgba(123,97,255,0)"] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  <Zap className="w-4 h-4" style={{ color: "#C084FC" }} />
-                  <span className="font-mono text-xs" style={{ color: "#C084FC" }}>Connected</span>
+                  <Zap className="w-4 h-4" style={{ color: "rgba(255,255,255,0.6)" }} />
+                  <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>Connected</span>
                 </motion.div>
               </motion.div>
               
