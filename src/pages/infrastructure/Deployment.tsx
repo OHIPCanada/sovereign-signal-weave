@@ -191,13 +191,14 @@ const Deployment = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
                 transition={{ delay: 0.2 + i * 0.15, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                whileHover={{ y: -6, boxShadow: "0 20px 60px rgba(123,97,255,0.12)" }}
+                whileHover={{ y: -6, boxShadow: "0 20px 60px rgba(0,0,0,0.08)" }}
                 className="rounded-2xl p-6"
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.5) 100%)",
-                  border: "1px solid rgba(123,97,255,0.1)",
-                  backdropFilter: "blur(20px)",
-                  boxShadow: "0 8px 40px rgba(60,40,120,0.06)",
+                  background: "rgba(255,255,255,0.18)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
                 <motion.div
