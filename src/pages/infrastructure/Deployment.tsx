@@ -205,7 +205,7 @@ const Deployment = () => {
                   whileHover={{ rotate: 90 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <model.icon className="w-6 h-6" style={{ color: "#7B61FF" }} />
+                  <model.icon className="w-6 h-6" style={{ color: "#D4616B" }} />
                 </motion.div>
                 <div className="mb-2" style={{ color: "#1B0F2E", fontSize: 18, fontWeight: 700 }}>{model.title}</div>
                 <div style={{ color: "rgba(30,20,50,0.6)", fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>{model.desc}</div>

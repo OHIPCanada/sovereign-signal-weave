@@ -218,7 +218,7 @@ const Interoperability = () => {
                   className="absolute top-0 left-0 w-full h-1"
                   initial={{ scaleX: 0 }}
                   whileHover={{ scaleX: 1 }}
-                  style={{ background: "linear-gradient(90deg, transparent, #C084FC, transparent)", transformOrigin: "left" }}
+                  style={{ background: "linear-gradient(90deg, transparent, #E8967C, transparent)", transformOrigin: "left" }}
                 />
                 
                 <div className="flex items-start gap-4">

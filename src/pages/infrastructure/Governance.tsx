@@ -206,7 +206,7 @@ const Governance = () => {
                 
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "rgba(123,97,255,0.08)" }}>
-                    <fw.icon className="w-6 h-6" style={{ color: "#7B61FF" }} />
+                    <fw.icon className="w-6 h-6" style={{ color: "#D4616B" }} />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
