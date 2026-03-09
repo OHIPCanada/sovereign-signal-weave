@@ -355,11 +355,6 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
 };
 
 export default Navigation;
-    ],
-  },
-  {
-    label: "INFRASTRUCTURE",
-    children: [
       { label: "Deployment", href: "/#deployment" },
       { label: "Governance", href: "/#sovereignty" },
       { label: "Audit Trails", href: "/#signal-integrity" },
