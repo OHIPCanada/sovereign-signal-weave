@@ -27,7 +27,7 @@ export default function ContactModal() {
           }}
         />
 
-        <div classN4 sm:p-6 md"relative z-10 p-6 sm:p-8">
+        <div className="relative z-10 p-4 sm:p-6 md:p-8">
           <DialogHeader className="text-left">
             <p
               className="font-mono uppercase mb-2"
