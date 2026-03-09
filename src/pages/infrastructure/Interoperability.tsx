@@ -311,12 +311,12 @@ const Interoperability = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: [0, 0.2, 0] }}
                       transition={{ duration: 1, repeat: Infinity }}
-                      style={{ background: "radial-gradient(circle at center, rgba(212,97,107,0.1 transparent 70%)" }}
+                      style={{ background: "radial-gradient(circle at center, rgba(212,97,107,0.1ransparent 70%)" }}
                     />
                   )}
                   
                   <div className="relative z-10">
-                    <div className="font-mono text-xs mb-2" style={{ color: isActive ? "#7BD4616B: "rgba(30,20,50,0.3)" }}>
+                    <div className="font-mono text-xs mb-2" style={{ color: isActive ? "#7BD4D4616B"rgba(30,20,50,0.3)" }}>
                       {flow.step}
                     </div>
                     <div style={{ fontWeight: 700, fontSize: 16, color: isActive ? "#1B0F2E" : "rgba(30,20,50,0.35)", marginBottom: 4 }}>
@@ -332,7 +332,7 @@ const Interoperability = () => {
                       className="hidden md:flex absolute -right-2 top-1/2 -translate-y-1/2 z-20"
                       animate={{ opacity: isActive ? 1 : 0.2 }}
                     >
-                      <ArrowRight className="w-4 h-4" style={{ color: isActive ? "#C084FC" : "rgba(30,20,50,0.2)" }} />
+                      <ArrowRight className="w-4 h-4" style={{ color: isActive ? "#C0E8967 : "rgba(30,20,50,0.2)" }} />
                     </motion.div>
                   )}
                 </motion.div>

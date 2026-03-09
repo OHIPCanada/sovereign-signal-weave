@@ -13,10 +13,10 @@ const auditFeatures = [
 ];
 
 const logTypes = [
-  { type: "Access Log", desc: "User authentication, session management, role changes", color: "#7B61FF" },
+  { type: "Access Log", desc: "User authentication, session management, role changes", color: "#1B0F2E" },
   { type: "Data Log", desc: "Record views, edits, exports, and deletions", color: "#D4616B" },
   { type: "AI Inference", desc: "Model inputs, outputs, confidence scores, overrides", color: "#E8967C" },
-  { type: "System Event", desc: "API calls, integrations, scheduled tasks", color: "#C084FC" },
+  { type: "System Event", desc: "API calls, integrations, scheduled tasks", color: "#1B0F2E" },
   { type: "Consent Log", desc: "Patient consent grants, revocations, expiries", color: "#F2C1AE" },
 ];
 
