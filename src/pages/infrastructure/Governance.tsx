@@ -1,9 +1,9 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { motion } from "framer-motion";
-import PulseRings from "@/components/hero-backgrounds/PulseRings";
+import { motion, useInView } from "framer-motion";
 import governanceOrb from "@/assets/governance-hero-orb.png";
-import { ShieldCheck, Globe, FileText, Lock, Users, Scale } from "lucide-react";
+import { ShieldCheck, Globe, FileText, Lock, Users, Scale, Check } from "lucide-react";
+import { useRef } from "react";
 
 const frameworks = [
   { icon: Globe, title: "PIPEDA", subtitle: "Federal Privacy Law", desc: "Full compliance with Canada's Personal Information Protection and Electronic Documents Act. Built-in consent management, purpose limitation, and data minimization." },
@@ -25,278 +25,285 @@ const stats = [
   { value: "Multi-jurisdictional", label: "Governance routing" },
 ];
 
-/* ── Governance: PulseRings bg + horizontal slide frameworks + pulsing shield icons ── */
+/* ── Shield Matrix Background (unique to Governance) ── */
+const ShieldMatrix = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.3 }}>
+      {Array.from({ length: 20 }).map((_, i) => (
+        <motion.path
+          key={i}
+          d={`M${40 + (i % 5) * 180} ${30 + Math.floor(i / 5) * 150} l20 12 l0 24 l-20 12 l-20 -12 l0 -24 z`}
+          fill="none"
+          stroke="rgba(123,97,255,0.2)"
+          strokeWidth="0.5"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: [0, 0.5, 0.2] }}
+          transition={{ duration: 3, delay: i * 0.15, repeat: Infinity, repeatDelay: 5 }}
+        />
+      ))}
+    </svg>
+  </div>
+);
 
-const containerAnim = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.15, delayChildren: 0.2 } },
-};
+/* ── Governance: ShieldMatrix bg + compliance checklist reveal + stacked jurisdiction cards ── */
+const Governance = () => {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const heroInView = useInView(heroRef, { once: true });
 
-const slideFromLeft = {
-  hidden: { opacity: 0, x: -80, filter: "blur(6px)" },
-  show: { opacity: 1, x: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
-};
+  return (
+    <div className="relative overflow-x-hidden">
+      <Navigation darkMode />
 
-const slideFromRight = {
-  hidden: { opacity: 0, x: 80, filter: "blur(6px)" },
-  show: { opacity: 1, x: 0, filter: "blur(0px)", transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } },
-};
-
-const Governance = () => (
-  <div className="relative overflow-x-hidden">
-    <Navigation darkMode />
-
-    {/* HERO — PulseRings radar + text clip reveal */}
-    <section
-      className="relative overflow-hidden flex items-end md:items-center"
-      style={{
-        minHeight: "80vh",
-        padding: "clamp(120px, 14vw, 200px) 0 clamp(64px, 7vw, 110px)",
-        background: `
-          radial-gradient(900px 600px at 18% 38%, rgba(143,83,255,0.45), transparent 60%),
-          radial-gradient(700px 520px at 78% 22%, rgba(255,192,174,0.18), transparent 62%),
-          radial-gradient(900px 700px at 70% 75%, rgba(212,97,107,0.14), transparent 66%),
-          linear-gradient(135deg, #1A0630 0%, #3A0B6E 48%, #5B1FA6 120%)
-        `,
-      }}
-    >
-      <PulseRings />
-      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-        <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
-          <div className="flex flex-col gap-5 overflow-hidden">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="font-mono uppercase"
-              style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}
-            >
-              [ INFRASTRUCTURE / GOVERNANCE ]
-            </motion.p>
-            {/* Clip-path reveal for heading */}
-            <motion.h1
-              initial={{ clipPath: "inset(0 100% 0 0)" }}
-              animate={{ clipPath: "inset(0 0% 0 0)" }}
-              transition={{ duration: 1.1, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95,
-                fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em",
-                textShadow: "0 10px 40px rgba(0,0,0,0.22)",
-              }}
-            >
-              Privacy by<br />architecture,<br />not policy.
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.6 }}
-              style={{ color: "rgba(255,255,255,0.72)", fontWeight: 400, fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
-            >
-              Data governance isn't a checkbox — it's wired into how we store, route, and process every clinical signal.
-            </motion.p>
-          </div>
-
-          {/* Orb — pulse breathe + shield glow */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center justify-center"
-          >
-            <motion.img
-              src={governanceOrb}
-              alt="Governance Framework"
-              className="w-full max-w-[500px] object-contain"
-              style={{ filter: "drop-shadow(0 20px 60px rgba(123,97,255,0.3))" }}
-              animate={{ scale: [1, 1.03, 1], filter: ["drop-shadow(0 20px 60px rgba(123,97,255,0.3))", "drop-shadow(0 20px 80px rgba(123,97,255,0.5))", "drop-shadow(0 20px 60px rgba(123,97,255,0.3))"] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </motion.div>
-        </div>
-      </div>
-    </section>
-
-    {/* FRAMEWORKS — alternating slide-in from left/right */}
-    <section
-      className="relative overflow-hidden"
-      style={{
-        padding: "clamp(64px, 7vw, 110px) 0",
-        background: `
-          radial-gradient(1200px 600px at 20% 50%, rgba(212,97,107,0.15), transparent 60%),
-          radial-gradient(1000px 700px at 85% 30%, rgba(123,97,255,0.15), transparent 65%),
-          linear-gradient(180deg, #F9F8FC 0%, #F1EEF8 100%)
-        `,
-      }}
-    >
-      <div className="absolute top-0 left-0 right-0 h-[2px]" style={{
-        background: "linear-gradient(90deg, transparent 5%, rgba(123, 97, 255, 0.5) 30%, rgba(0, 255, 255, 0.3) 60%, rgba(212, 97, 107, 0.4) 85%, transparent 95%)",
-      }} />
-
-      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, filter: "blur(8px)" }}
-          whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mb-12"
-        >
-          <p className="font-mono uppercase" style={{ color: "rgba(17,17,17,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-            [ REGULATORY FRAMEWORKS ]
-          </p>
-          <h2 style={{ color: "#111111", fontWeight: 800, fontSize: "clamp(36px, 4vw, 64px)", lineHeight: 0.95, letterSpacing: "-0.02em", marginTop: 16 }}>
-            Built for Canadian healthcare.
-          </h2>
-        </motion.div>
-
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          variants={containerAnim}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-40px" }}
-        >
-          {frameworks.map((fw, i) => (
-            <motion.div
-              key={fw.title}
-              variants={i % 2 === 0 ? slideFromLeft : slideFromRight}
-              whileHover={{ y: -4, scale: 1.01 }}
-              className="rounded-[20px] flex gap-5"
-              style={{
-                background: "linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
-                border: "1px solid rgba(90,70,160,0.12)",
-                boxShadow: "0 20px 60px rgba(60,40,120,0.1), inset 0 1px 0 rgba(255,255,255,0.8)",
-                padding: "28px 24px",
-              }}
-            >
+      {/* HERO — Shield matrix + orbiting checkmarks */}
+      <section
+        ref={heroRef}
+        className="relative overflow-hidden flex items-end md:items-center"
+        style={{
+          minHeight: "80vh",
+          padding: "clamp(120px, 14vw, 200px) 0 clamp(64px, 7vw, 110px)",
+          background: `
+            radial-gradient(700px 500px at 30% 40%, rgba(91,31,166,0.4), transparent 50%),
+            radial-gradient(500px 400px at 70% 60%, rgba(74,222,128,0.1), transparent 50%),
+            linear-gradient(165deg, #0A0015 0%, #150028 50%, #1A0630 100%)
+          `,
+        }}
+      >
+        <ShieldMatrix />
+        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
+          <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
+            <div className="flex flex-col gap-5">
               <motion.div
-                className="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, rgba(123,97,255,0.15), rgba(212,97,107,0.1))" }}
-                animate={{ boxShadow: ["0 0 0px rgba(123,97,255,0)", "0 0 20px rgba(123,97,255,0.25)", "0 0 0px rgba(123,97,255,0)"] }}
-                transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
+                className="flex items-center gap-2"
+                initial={{ opacity: 0, x: -30 }}
+                animate={heroInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6 }}
               >
-                <fw.icon className="w-7 h-7" style={{ color: "#5B1FA6" }} />
+                <motion.div
+                  className="w-2 h-2 rounded-full bg-[#4ade80]"
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                <span className="font-mono uppercase text-xs" style={{ color: "rgba(74,222,128,0.8)", letterSpacing: "0.15em" }}>
+                  GOVERNANCE ACTIVE
+                </span>
               </motion.div>
-              <div>
-                <div className="flex items-center gap-3 mb-1">
-                  <span style={{ fontWeight: 700, fontSize: 18, color: "#111" }}>{fw.title}</span>
-                  <span className="px-2 py-0.5 rounded-full" style={{ background: "rgba(212,97,107,0.1)", fontSize: 11, fontWeight: 600, color: "#D4616B" }}>{fw.subtitle}</span>
-                </div>
-                <div style={{ fontWeight: 400, fontSize: 14, color: "rgba(30,30,30,0.65)", lineHeight: 1.55 }}>{fw.desc}</div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
-    </section>
+              
+              <motion.h1
+                style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, lineHeight: 0.95, fontSize: "clamp(44px, 5.2vw, 84px)", letterSpacing: "-0.02em" }}
+              >
+                {["Privacy by", "architecture,", "not policy."].map((line, li) => (
+                  <motion.span
+                    key={li}
+                    className="block overflow-hidden"
+                    initial={{ y: "120%" }}
+                    animate={heroInView ? { y: 0 } : {}}
+                    transition={{ delay: 0.2 + li * 0.12, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    {line}
+                  </motion.span>
+                ))}
+              </motion.h1>
+              
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={heroInView ? { opacity: 1 } : {}}
+                transition={{ delay: 0.7, duration: 0.6 }}
+                style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}
+              >
+                Data governance isn't a checkbox — it's wired into how we store, route, and process every clinical signal.
+              </motion.p>
+            </div>
 
-    {/* PRINCIPLES — vertical accordion reveal */}
-    <section
-      className="relative overflow-hidden"
-      style={{
-        padding: "clamp(64px, 7vw, 110px) 0",
-        background: `
-          radial-gradient(900px 500px at 50% 30%, rgba(91,29,179,.25), transparent 60%),
-          radial-gradient(700px 500px at 80% 70%, rgba(232,150,124,.12), transparent 65%),
-          linear-gradient(180deg, #140022 0%, #2A0B4E 100%)
-        `,
-      }}
-    >
-      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-        <div className="grid grid-cols-1 md:grid-cols-[0.4fr_1.6fr] items-start split-layout-gap">
+            {/* Orb with orbiting shield icons */}
+            <div className="relative flex items-center justify-center">
+              <motion.img
+                src={governanceOrb}
+                alt="Governance Framework"
+                className="w-full max-w-[420px] object-contain relative z-10"
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={heroInView ? { opacity: 1, scale: 1 } : {}}
+                transition={{ delay: 0.3, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                style={{ filter: "drop-shadow(0 30px 80px rgba(74,222,128,0.2))" }}
+              />
+              {/* Orbiting checkmarks */}
+              {[0, 1, 2].map((i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ background: "rgba(74,222,128,0.15)", border: "1px solid rgba(74,222,128,0.3)" }}
+                  initial={{ opacity: 0 }}
+                  animate={heroInView ? {
+                    opacity: 1,
+                    rotate: 360,
+                    x: Math.cos((i * 120 * Math.PI) / 180) * 200,
+                    y: Math.sin((i * 120 * Math.PI) / 180) * 200,
+                  } : {}}
+                  transition={{
+                    opacity: { delay: 0.8 + i * 0.2, duration: 0.4 },
+                    rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                    x: { delay: 0.8 + i * 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+                    y: { delay: 0.8 + i * 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+                  }}
+                >
+                  <Check className="w-5 h-5" style={{ color: "#4ade80" }} />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FRAMEWORKS — Jurisdiction cards with stacked reveal */}
+      <section
+        className="relative overflow-hidden"
+        style={{
+          padding: "clamp(64px, 7vw, 110px) 0",
+          background: "linear-gradient(180deg, #150028 0%, #0D001A 100%)",
+        }}
+      >
+        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <motion.div
-            initial={{ opacity: 0, y: 40, filter: "blur(6px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            className="mb-12"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
           >
-            <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-              [ CORE PRINCIPLES ]
-            </p>
-            <h2 style={{ color: "rgba(255,255,255,0.95)", fontWeight: 800, fontSize: "clamp(32px, 3.5vw, 56px)", lineHeight: 0.95, letterSpacing: "-0.02em", marginTop: 16 }}>
-              Privacy-first<br />design.
+            <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(123,97,255,0.15)", color: "rgba(123,97,255,0.8)", border: "1px solid rgba(123,97,255,0.2)" }}>
+              REGULATORY_COMPLIANCE
+            </span>
+            <h2 className="mt-4" style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)", lineHeight: 1.1 }}>
+              Built for Canadian healthcare.
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {principles.map((p, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {frameworks.map((fw, i) => (
               <motion.div
-                key={p.title}
-                initial={{ opacity: 0, scaleY: 0.3, originY: 0 }}
-                whileInView={{ opacity: 1, scaleY: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="rounded-[16px] p-6"
-                style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025))", border: "1px solid rgba(255,255,255,0.1)", transformOrigin: "top" }}
+                key={fw.title}
+                initial={{ opacity: 0, y: 60, rotateX: -15 }}
+                whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.15, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ scale: 1.02, y: -4 }}
+                className="relative p-6 rounded-xl overflow-hidden group"
+                style={{
+                  background: "linear-gradient(135deg, rgba(123,97,255,0.08), rgba(74,222,128,0.03))",
+                  border: "1px solid rgba(123,97,255,0.15)",
+                }}
               >
+                {/* Progress bar on hover */}
                 <motion.div
-                  animate={{ rotate: [0, 5, -5, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, delay: i * 0.8 }}
-                >
-                  <p.icon className="w-8 h-8 mb-4" style={{ color: "rgba(232,150,124,0.9)" }} />
-                </motion.div>
-                <div style={{ fontWeight: 700, fontSize: 16, color: "rgba(255,255,255,0.95)", marginBottom: 8 }}>{p.title}</div>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.55 }}>{p.desc}</div>
+                  className="absolute bottom-0 left-0 h-1"
+                  style={{ background: "linear-gradient(90deg, #7B61FF, #4ade80)" }}
+                  initial={{ width: 0 }}
+                  whileHover={{ width: "100%" }}
+                  transition={{ duration: 0.6 }}
+                />
+                
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ background: "rgba(74,222,128,0.1)", border: "1px solid rgba(74,222,128,0.2)" }}>
+                    <fw.icon className="w-6 h-6" style={{ color: "#4ade80" }} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span style={{ fontWeight: 700, fontSize: 18, color: "#fff" }}>{fw.title}</span>
+                      <span className="px-2 py-0.5 rounded text-xs font-mono" style={{ background: "rgba(212,97,107,0.15)", color: "#E8967C" }}>{fw.subtitle}</span>
+                    </div>
+                    <div style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>{fw.desc}</div>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    {/* STATS — staggered counter pop with blur */}
-    <section
-      className="relative overflow-hidden"
-      style={{
-        padding: "clamp(64px, 7vw, 110px) 0",
-        background: `
-          radial-gradient(1000px 600px at 30% 50%, rgba(212,97,107,0.15), transparent 60%),
-          radial-gradient(800px 600px at 70% 40%, rgba(123,97,255,0.12), transparent 65%),
-          linear-gradient(180deg, #F7F3FF 0%, #FFFFFF 100%)
-        `,
-      }}
-    >
-      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1200px, 92vw)" }}>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="text-center mb-12"
-        >
-          <p className="font-mono uppercase" style={{ color: "rgba(17,17,17,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
-            [ GOVERNANCE AT SCALE ]
-          </p>
-          <h2 style={{ color: "#111", fontWeight: 800, fontSize: "clamp(36px, 4vw, 64px)", lineHeight: 0.95, letterSpacing: "-0.02em", marginTop: 16 }}>
-            Compliance, automated.
-          </h2>
-        </motion.div>
+      {/* PRINCIPLES — Vertical accordion expand */}
+      <section
+        className="relative overflow-hidden"
+        style={{
+          padding: "clamp(64px, 7vw, 110px) 0",
+          background: "linear-gradient(180deg, #0D001A 0%, #0A0012 100%)",
+        }}
+      >
+        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1200px, 94vw)" }}>
+          <motion.div
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "clamp(32px, 4vw, 56px)" }}>Privacy-first design.</h2>
+          </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stats.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ scale: 1.05 }}
-              className="rounded-[20px] text-center"
-              style={{
-                background: "linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
-                border: "1px solid rgba(90,70,160,0.1)",
-                boxShadow: "0 16px 48px rgba(60,40,120,0.08)", padding: "32px 20px",
-              }}
-            >
-              <div style={{ fontSize: "clamp(20px, 2vw, 28px)", fontWeight: 800, color: "#111", letterSpacing: "-0.02em" }}>{s.value}</div>
-              <div style={{ fontSize: 12, color: "rgba(30,30,30,0.55)", marginTop: 6 }}>{s.label}</div>
-            </motion.div>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {principles.map((p, i) => (
+              <motion.div
+                key={p.title}
+                initial={{ opacity: 0, height: 80 }}
+                whileInView={{ opacity: 1, height: "auto" }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="p-6 rounded-xl"
+                style={{ background: "rgba(123,97,255,0.05)", border: "1px solid rgba(123,97,255,0.1)" }}
+              >
+                <motion.div
+                  initial={{ rotate: -180, opacity: 0 }}
+                  whileInView={{ rotate: 0, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.2 + 0.3, duration: 0.6, type: "spring" }}
+                >
+                  <p.icon className="w-10 h-10 mb-4" style={{ color: "#E8967C" }} />
+                </motion.div>
+                <div style={{ fontWeight: 700, fontSize: 18, color: "#fff", marginBottom: 8 }}>{p.title}</div>
+                <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.6 }}>{p.desc}</div>
+              </motion.div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <Footer />
-  </div>
-);
+      {/* STATS — Metric dashboard */}
+      <section
+        className="relative overflow-hidden"
+        style={{
+          padding: "clamp(64px, 7vw, 110px) 0",
+          background: "linear-gradient(180deg, #0A0012 0%, #150028 100%)",
+        }}
+      >
+        <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1200px, 94vw)" }}>
+          <motion.div
+            className="text-center mb-10"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <span className="font-mono text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>governance.metrics.dashboard</span>
+          </motion.div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {stats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+                whileHover={{ borderColor: "rgba(74,222,128,0.4)" }}
+                className="p-6 rounded-xl text-center"
+                style={{ background: "rgba(0,0,0,0.4)", border: "1px solid rgba(123,97,255,0.1)" }}
+              >
+                <div className="font-mono" style={{ fontSize: "clamp(22px, 2.5vw, 32px)", fontWeight: 700, color: "#fff" }}>{s.value}</div>
+                <div className="font-mono mt-2" style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>{s.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+};
 
 export default Governance;
