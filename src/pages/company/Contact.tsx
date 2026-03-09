@@ -48,8 +48,9 @@ const Contact = () => {
   const fieldStyle: React.CSSProperties = {
     width: "100%",
     padding: "14px 18px",
-    background: "rgba(255,255,255,0.7)",
-    border: "1px solid rgba(90,70,160,0.12)",
+    background: "rgba(255,255,255,0.18)",
+    border: "1px solid rgba(255,255,255,0.25)",
+    backdropFilter: "blur(12px)",
     borderRadius: 10,
     color: "#1a1a2e",
     fontSize: 15,
@@ -238,13 +239,13 @@ const Contact = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               style={{
-                background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6))",
-                border: "1px solid rgba(90,70,160,0.1)",
+                background: "rgba(255,255,255,0.18)",
+                border: "1px solid rgba(255,255,255,0.25)",
                 backdropFilter: "blur(24px)",
                 WebkitBackdropFilter: "blur(24px)",
                 borderRadius: 20,
                 padding: "clamp(32px, 4vw, 56px)",
-                boxShadow: "0 20px 60px rgba(60,40,120,0.06)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
               }}
             >
               <p
@@ -360,13 +361,13 @@ const Contact = () => {
               {/* Response protocol */}
               <div
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.6))",
-                  border: "1px solid rgba(90,70,160,0.1)",
-                  backdropFilter: "blur(16px)",
-                  WebkitBackdropFilter: "blur(16px)",
+                  background: "rgba(255,255,255,0.18)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
                   borderRadius: 20,
                   padding: "36px 30px",
-                  boxShadow: "0 12px 40px rgba(60,40,120,0.05)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
                 <p
@@ -397,12 +398,13 @@ const Contact = () => {
               {/* Demo CTA */}
               <div
                 style={{
-                  background: "linear-gradient(135deg, rgba(123,97,255,0.08), rgba(212,97,107,0.05))",
-                  border: "1px solid rgba(123,97,255,0.15)",
-                  backdropFilter: "blur(16px)",
-                  WebkitBackdropFilter: "blur(16px)",
+                  background: "rgba(255,255,255,0.18)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
                   borderRadius: 20,
                   padding: "36px 30px",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
                 <h3
@@ -440,10 +442,13 @@ const Contact = () => {
               <div
                 className="flex items-center gap-4"
                 style={{
-                  background: "rgba(255,255,255,0.6)",
-                  border: "1px solid rgba(90,70,160,0.08)",
+                  background: "rgba(255,255,255,0.18)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
                   borderRadius: 14,
                   padding: "20px 24px",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
                 <div

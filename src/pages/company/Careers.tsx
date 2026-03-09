@@ -326,11 +326,11 @@ const Careers = () => {
                 transition={{ delay: i * 0.1, duration: 0.6 }}
                 className="rounded-[20px] overflow-hidden"
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.45) 100%)",
+                  background: "rgba(255,255,255,0.18)",
                   backdropFilter: "blur(24px)",
                   WebkitBackdropFilter: "blur(24px)",
-                  border: "1px solid rgba(90,70,160,0.12)",
-                  boxShadow: "0 20px 60px rgba(60,40,120,0.1), inset 0 1px 0 rgba(255,255,255,0.7)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
                 <div className="p-6 md:p-8">
@@ -656,9 +656,11 @@ const Careers = () => {
                 transition={{ delay: i * 0.1, duration: 0.6 }}
                 className="rounded-[20px]"
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5))",
-                  border: "1px solid rgba(90,70,160,0.1)",
-                  boxShadow: "0 16px 48px rgba(60,40,120,0.08), inset 0 1px 0 rgba(255,255,255,0.8)",
+                  background: "rgba(255,255,255,0.18)",
+                  border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                   padding: "32px 28px",
                 }}
               >
