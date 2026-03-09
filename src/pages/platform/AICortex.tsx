@@ -274,7 +274,7 @@ const AICortex = () => {
                   boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
-                <cap.icon className="w-8 h-8 mb-4" style={{ color: "#7B61FF" }} />
+                <cap.icon className="w-8 h-8 mb-4" style={{ color: "#D4616B" }} />
                 <h3 className="text-lg font-semibold mb-2" style={{ color: "#1B0F2E" }}>{cap.title}</h3>
                 <p style={{ color: "rgba(27,15,46,0.72)", fontSize: 15, lineHeight: 1.55 }}>{cap.desc}</p>
               </motion.div>
