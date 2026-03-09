@@ -82,6 +82,8 @@ const Contact = () => {
   const [touched, setTouched] = useState<TouchedState>(initialTouched);
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [hcaptchaToken, setHcaptchaToken] = useState<string | null>(null);
+  const hcaptchaRef = useRef<HCaptcha>(null);
 
   const allTouched: TouchedState = { name: true, email: true, type: true, org: true, message: true };
   const errors = getErrors(form, submitted ? allTouched : touched);
