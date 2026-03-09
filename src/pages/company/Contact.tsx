@@ -233,6 +233,7 @@ const Contact = () => {
 
             {/* Form */}
             <motion.form
+              id="contact-form"
               onSubmit={handleSubmit}
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}

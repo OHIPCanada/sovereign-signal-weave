@@ -88,8 +88,8 @@ const Footer = () => {
 
           {/* Buttons */}
           <div className="flex gap-3 flex-wrap">
-            <Link
-              to="/company/contact"
+            <a
+              href="/company/contact#contact-form"
               className="inline-block no-underline transition-all duration-200 hover:-translate-y-px"
               style={{
                 background:
@@ -105,9 +105,9 @@ const Footer = () => {
               }}
             >
               Request Investor Deck
-            </Link>
-            <Link
-              to="/company/contact"
+            </a>
+            <a
+              href="/company/contact#contact-form"
               className="inline-block no-underline transition-all duration-200 hover:-translate-y-px"
               style={{
                 background: "rgba(255,255,255,.04)",
@@ -121,7 +121,7 @@ const Footer = () => {
               }}
             >
               Contact
-            </Link>
+            </a>
           </div>
         </div>
 
