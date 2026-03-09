@@ -187,18 +187,19 @@ const EMRLayer = () => {
                 DocG's EMR Layer creates a living data fabric over your existing clinical systems —
                 normalizing, enriching, and routing health data without replacing what works.
               </p>
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-                className="self-start px-8 py-4 rounded-full text-sm font-semibold tracking-wide"
-                style={{
-                  background: "linear-gradient(135deg, #D4616B, #E8967C)",
-                  color: "#FFFAF8",
-                  boxShadow: "0 8px 32px rgba(212,97,107,0.3)",
-                }}
-              >
-                View Integration Docs
-              </motion.button>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <Link
+                  to="/company/contact"
+                  className="inline-block self-start px-8 py-4 rounded-full text-sm font-semibold tracking-wide no-underline"
+                  style={{
+                    background: "linear-gradient(135deg, #D4616B, #E8967C)",
+                    color: "#FFFAF8",
+                    boxShadow: "0 8px 32px rgba(212,97,107,0.3)",
+                  }}
+                >
+                  View Integration Docs
+                </Link>
+              </motion.div>
             </motion.div>
 
             <motion.div
