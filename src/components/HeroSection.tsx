@@ -129,7 +129,7 @@ const HeroSection = () => {
                   transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: floatDelay }}
                 />
                 <motion.p
-                  className={`${isMobile ? "text-[8px]" : "text-[10px]"} font-bold tracking-[0.15em] uppercase text-foreground text-center mt-1 whitespace-nowrap`}
+                  className={`${isMobile ? "text-[9px]" : "text-[10px]"} font-bold tracking-[0.15em] uppercase text-foreground text-center mt-1 whitespace-nowrap leading-tight`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: orb.delay + 0.7 }}
