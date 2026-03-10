@@ -33,6 +33,7 @@ const Governance = () => {
 
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead title="Governance — PIPEDA & Provincial Compliance" description="Automated regulatory compliance for Canadian healthcare. PIPEDA, provincial health privacy laws & clinical governance — policy enforcement built into the infrastructure." path="/infrastructure/governance" />
       <Navigation darkMode />
 
       <section

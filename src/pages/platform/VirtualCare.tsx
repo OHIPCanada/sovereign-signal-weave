@@ -22,6 +22,7 @@ const VirtualCare = () => {
 
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead title="Virtual Care — Telehealth & Remote Patient Monitoring" description="Enterprise-grade virtual care platform for Canadian healthcare. Secure video consultations, remote monitoring & AI-assisted triage — PIPEDA compliant and built for Canadian physicians." path="/platform/virtual-care" />
       <Navigation darkMode />
 
       <section

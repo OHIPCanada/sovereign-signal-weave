@@ -23,6 +23,7 @@ const AICortex = () => {
 
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead title="AI Cortex — Clinical Intelligence Engine" description="DocG AI's AI Cortex delivers real-time clinical decision support, diagnostic intelligence and predictive analytics for Canadian physicians. PIPEDA-compliant, sovereign AI built for healthcare." path="/platform/ai-cortex" />
       <Navigation darkMode />
 
       {/* Hero with Neural Pulse animation as background */}

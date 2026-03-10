@@ -22,6 +22,7 @@ const PatientAccess = () => {
 
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead title="Patient Access — Secure Patient Portal" description="Empower patients with secure, intelligent access to their health records. Appointment booking, prescription management & care coordination — built for Canadian healthcare standards." path="/platform/patient-access" />
       <Navigation darkMode />
 
       <section
