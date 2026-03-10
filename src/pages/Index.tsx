@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
+import SEOHead from "@/components/SEOHead";
 import ManifestoSection from "@/components/ManifestoSection";
 import PlatformSection from "@/components/PlatformSection";
 import Section4SystemTransformation from "@/components/Section4SystemTransformation";
