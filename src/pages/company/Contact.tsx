@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import DriftingGrid from "@/components/hero-backgrounds/DriftingGrid";
 import { useMemo, useRef, useState } from "react";
@@ -161,6 +162,7 @@ const Contact = () => {
 
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead title="Contact — Get in Touch" description="Contact DocG AI for partnership inquiries, investment discussions or platform demos. Serving healthcare organizations across Toronto, Vancouver, Montreal and all of Canada." path="/company/contact" />
       <Navigation darkMode />
 
       {/* ─── HERO ─── */}

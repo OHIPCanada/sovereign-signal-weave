@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import FloatingOrbs from "@/components/hero-backgrounds/FloatingOrbs";
 import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
@@ -46,6 +47,7 @@ const stats = [
 
 const Overview = () => (
   <div className="relative overflow-x-hidden">
+    <SEOHead title="Company Overview — Canadian Healthcare AI Infrastructure" description="DocG AI is a Canadian healthcare infrastructure company building intelligence-first clinical operating systems. Sovereign data, audit integrity & interoperability — headquartered in Canada." path="/company/overview" />
     <Navigation darkMode />
 
     {/* ─── HERO ─── */}

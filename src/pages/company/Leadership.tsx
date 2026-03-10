@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import RisingParticles from "@/components/hero-backgrounds/RisingParticles";
 import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
@@ -55,6 +56,7 @@ const principles = [
 
 const Leadership = () => (
   <div className="relative overflow-x-hidden">
+    <SEOHead title="Leadership — Healthcare AI Experts" description="Meet the DocG AI leadership team. Healthcare technology veterans, AI researchers & clinical infrastructure architects building Canada's intelligence-first clinical operating system." path="/company/leadership" />
     <Navigation darkMode />
 
     {/* ─── HERO ─── */}

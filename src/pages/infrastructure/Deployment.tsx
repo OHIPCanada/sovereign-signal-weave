@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import deploymentOrb from "@/assets/deployment-hero-orb.png";
 import { Server, Cloud, Zap } from "lucide-react";
@@ -31,6 +32,7 @@ const Deployment = () => {
 
   return (
     <div ref={containerRef} className="relative overflow-x-hidden">
+      <SEOHead title="Deployment — Sovereign Healthcare Infrastructure" description="On-premise, hybrid or cloud deployment for Canadian health systems. Air-gapped capability, Canadian data residency & SOC 2 compliance — your infrastructure, your sovereignty." path="/infrastructure/deployment" />
       <Navigation darkMode />
 
       {/* HERO — Dark */}

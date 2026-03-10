@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion, useInView } from "framer-motion";
 import interopOrb from "@/assets/interoperability-hero-orb.png";
 import { Plug, FileJson, RefreshCw, Layers, CheckCircle2, ArrowRight, Zap } from "lucide-react";
@@ -44,6 +45,7 @@ const Interoperability = () => {
 
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead title="Interoperability — FHIR & HL7 Healthcare Standards" description="Native FHIR R4 & HL7 v2 support for seamless healthcare data exchange across Canadian systems. Connect EMRs, labs, pharmacies & provincial registries with zero friction." path="/infrastructure/interoperability" />
       <Navigation darkMode />
 
       <section

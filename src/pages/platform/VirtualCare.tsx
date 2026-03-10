@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroOrb from "@/assets/virtual-care-hero-orb.svg";
@@ -21,6 +22,7 @@ const VirtualCare = () => {
 
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead title="Virtual Care — Telehealth & Remote Patient Monitoring" description="Enterprise-grade virtual care platform for Canadian healthcare. Secure video consultations, remote monitoring & AI-assisted triage — PIPEDA compliant and built for Canadian physicians." path="/platform/virtual-care" />
       <Navigation darkMode />
 
       <section

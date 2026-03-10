@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import HeroSection from "@/components/HeroSection";
+import SEOHead from "@/components/SEOHead";
 import ManifestoSection from "@/components/ManifestoSection";
 import PlatformSection from "@/components/PlatformSection";
 import Section4SystemTransformation from "@/components/Section4SystemTransformation";
@@ -15,6 +16,11 @@ import Footer from "@/components/Footer";
 const Index = () => {
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead
+        title="Intelligence-First Clinical Operating System"
+        description="DocG AI builds sovereign, intelligence-first clinical infrastructure for Canadian healthcare. AI-powered EMR, virtual care, audit trails & interoperability — built in Canada for doctors and health systems in Toronto, Vancouver & Montreal."
+        path="/"
+      />
       <Navigation />
       <HeroSection />
       <ManifestoSection />

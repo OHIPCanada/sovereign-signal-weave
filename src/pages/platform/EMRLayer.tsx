@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroOrb from "@/assets/emr-layer-hero-orb.svg";
@@ -21,6 +22,7 @@ const EMRLayer = () => {
 
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead title="EMR Layer — Unified Medical Record Integration" description="Seamlessly integrate with existing EMR systems across Canadian clinics and hospitals. FHIR R4 & HL7 native, sovereign data processing with zero vendor lock-in." path="/platform/emr-layer" />
       <Navigation darkMode />
 
       <section

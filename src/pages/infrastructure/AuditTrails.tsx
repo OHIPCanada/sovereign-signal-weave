@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion, useScroll, useTransform } from "framer-motion";
 import auditOrb from "@/assets/audit-trails-hero-orb.png";
 import { Clock, Link2, Eye, Database } from "lucide-react";
@@ -35,6 +36,7 @@ const AuditTrails = () => {
 
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead title="Audit Trails — Immutable Compliance Logging" description="Tamper-proof audit logging for every clinical signal, AI inference & user action. Real-time compliance monitoring with cryptographic verification — built for Canadian healthcare regulations." path="/infrastructure/audit-trails" />
       <Navigation darkMode />
 
       <section
