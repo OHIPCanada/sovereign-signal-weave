@@ -1,111 +1,11 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroOrb from "@/assets/emr-layer-hero-orb.svg";
 import { Database, ArrowLeftRight, Layers, Lock, Activity, FileText } from "lucide-react";
-import { useRef, useEffect } from "react";
-
-/* ── Data Stream Waterfall — rendered as hero background ── */
-const DataStreamBackground = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-    const DPR = Math.min(2, window.devicePixelRatio || 1);
-
-    const resize = () => {
-      const r = canvas.getBoundingClientRect();
-      canvas.width = r.width * DPR;
-      canvas.height = r.height * DPR;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    interface Stream { x: number; speed: number; width: number; color: string; offset: number; }
-    const streams: Stream[] = Array.from({ length: 24 }, (_, i) => ({
-      x: (i / 24) + Math.random() * 0.02,
-      speed: 0.3 + Math.random() * 0.5,
-      width: 2 + Math.random() * 4,
-      color: Math.random() > 0.6 ? "coral" : "purple",
-      offset: Math.random() * 1000,
-    }));
-
-    interface DataPacket { x: number; y: number; speed: number; size: number; color: string; }
-    const packets: DataPacket[] = Array.from({ length: 80 }, () => ({
-      x: Math.random(), y: Math.random(),
-      speed: 0.001 + Math.random() * 0.003,
-      size: 2 + Math.random() * 3,
-      color: Math.random() > 0.5 ? "rgba(212,97,107,0.7)" : "rgba(123,97,255,0.6)",
-    }));
-
-    let raf: number;
-    const t0 = performance.now();
-
-    const draw = (now: number) => {
-      const t = (now - t0) / 1000;
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-
-      streams.forEach(s => {
-        const sx = s.x * w;
-        const segments = 20;
-        for (let i = 0; i < segments; i++) {
-          const segY = ((i / segments + t * s.speed * 0.1 + s.offset) % 1) * h;
-          const segH = h / segments * 0.6;
-          const alpha = Math.sin((i / segments) * Math.PI) * 0.15;
-          ctx.fillStyle = s.color === "coral"
-            ? `rgba(232,150,124,${alpha})`
-            : `rgba(123,97,255,${alpha})`;
-          ctx.fillRect(sx - s.width / 2, segY, s.width * DPR, segH);
-        }
-      });
-
-      const bandY = h * 0.45;
-      const bandH = h * 0.1;
-      const bandGrad = ctx.createLinearGradient(0, bandY, 0, bandY + bandH);
-      bandGrad.addColorStop(0, "rgba(123,97,255,0)");
-      bandGrad.addColorStop(0.3, `rgba(123,97,255,${0.08 + Math.sin(t) * 0.03})`);
-      bandGrad.addColorStop(0.7, `rgba(212,97,107,${0.06 + Math.sin(t * 1.3) * 0.03})`);
-      bandGrad.addColorStop(1, "rgba(212,97,107,0)");
-      ctx.fillStyle = bandGrad;
-      ctx.fillRect(0, bandY, w, bandH);
-
-      const scanX = ((t * 0.15) % 1) * w;
-      ctx.fillStyle = `rgba(123,97,255,0.12)`;
-      ctx.fillRect(scanX - 2, bandY, 4 * DPR, bandH);
-
-      packets.forEach(p => {
-        p.y += p.speed;
-        if (p.y > 1) { p.y = 0; p.x = Math.random(); }
-        const distToCenter = Math.abs(p.y - 0.5);
-        if (distToCenter < 0.15) p.x += (0.5 - p.x) * 0.002;
-        const px = p.x * w;
-        const py = p.y * h;
-        ctx.beginPath();
-        ctx.arc(px, py, p.size * DPR, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(px, py);
-        ctx.lineTo(px, py - 8 * DPR);
-        ctx.strokeStyle = p.color.replace(/[\d.]+\)$/, "0.2)");
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      });
-
-      raf = requestAnimationFrame(draw);
-    };
-
-    raf = requestAnimationFrame(draw);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
-  }, []);
-
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.6 }} />;
-};
+import DataStreamBackground from "@/components/hero-backgrounds/DataStreamBackground";
+import { useMouseParallax } from "@/hooks/useMouseParallax";
 
 const integrations = [
   { icon: Database, title: "Deep EMR Integration", desc: "Bi-directional integration with Epic, Cerner, MEDITECH, and AllScripts — reading and writing clinical data in real-time." },
@@ -117,32 +17,12 @@ const integrations = [
 ];
 
 const EMRLayer = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
-  const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
-
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        mouseX.set((e.clientX - rect.left - rect.width / 2) / 25);
-        mouseY.set((e.clientY - rect.top - rect.height / 2) / 25);
-      }
-    };
-    window.addEventListener("mousemove", handleMouse);
-    return () => window.removeEventListener("mousemove", handleMouse);
-  }, [mouseX, mouseY]);
-
-  const orbRotateX = useTransform(springY, [-20, 20], [8, -8]);
-  const orbRotateY = useTransform(springX, [-20, 20], [-8, 8]);
+  const { containerRef, orbRotateX, orbRotateY } = useMouseParallax();
 
   return (
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* Hero with Data Stream animation as background */}
       <section
         ref={containerRef}
         className="relative min-h-screen flex items-center overflow-hidden"
