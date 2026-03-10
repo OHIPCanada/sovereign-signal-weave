@@ -56,6 +56,7 @@ const principles = [
 
 const Leadership = () => (
   <div className="relative overflow-x-hidden">
+    <SEOHead title="Leadership — Healthcare AI Experts" description="Meet the DocG AI leadership team. Healthcare technology veterans, AI researchers & clinical infrastructure architects building Canada's intelligence-first clinical operating system." path="/company/leadership" />
     <Navigation darkMode />
 
     {/* ─── HERO ─── */}

@@ -185,6 +185,7 @@ const Careers = () => {
 
   return (
     <div className="relative overflow-x-hidden">
+      <SEOHead title="Careers — Build the Future of Canadian Healthcare" description="Join DocG AI and help build Canada's intelligence-first clinical infrastructure. Engineering, AI research, clinical & product roles in Toronto, Vancouver & Montreal." path="/company/careers" />
       <Navigation darkMode />
 
       {/* ─── HERO ─── */}

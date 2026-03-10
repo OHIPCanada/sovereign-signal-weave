@@ -7,6 +7,7 @@ const lastUpdated = "March 9, 2026";
 
 const PrivacyPolicy = () => (
   <div className="relative overflow-x-hidden">
+    <SEOHead title="Privacy Policy" description="DocG AI privacy policy. How we collect, use and protect your personal information under PIPEDA and Canadian privacy law." path="/privacy" />
     <Navigation />
 
     {/* Hero */}

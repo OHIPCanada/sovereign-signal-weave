@@ -7,6 +7,7 @@ const lastUpdated = "March 9, 2026";
 
 const TermsOfService = () => (
   <div className="relative overflow-x-hidden">
+    <SEOHead title="Terms of Service" description="DocG AI terms of service. Legal terms governing the use of our intelligence-first clinical operating system and healthcare infrastructure platform." path="/terms" />
     <Navigation />
 
     {/* Hero */}

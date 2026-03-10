@@ -47,6 +47,7 @@ const stats = [
 
 const Overview = () => (
   <div className="relative overflow-x-hidden">
+    <SEOHead title="Company Overview — Canadian Healthcare AI Infrastructure" description="DocG AI is a Canadian healthcare infrastructure company building intelligence-first clinical operating systems. Sovereign data, audit integrity & interoperability — headquartered in Canada." path="/company/overview" />
     <Navigation darkMode />
 
     {/* ─── HERO ─── */}
