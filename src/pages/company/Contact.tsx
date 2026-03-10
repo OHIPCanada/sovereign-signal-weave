@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import DriftingGrid from "@/components/hero-backgrounds/DriftingGrid";
 import { useMemo, useRef, useState } from "react";

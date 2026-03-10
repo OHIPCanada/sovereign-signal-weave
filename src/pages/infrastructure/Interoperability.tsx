@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion, useInView } from "framer-motion";
 import interopOrb from "@/assets/interoperability-hero-orb.png";
 import { Plug, FileJson, RefreshCw, Layers, CheckCircle2, ArrowRight, Zap } from "lucide-react";

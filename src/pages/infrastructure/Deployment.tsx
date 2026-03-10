@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import deploymentOrb from "@/assets/deployment-hero-orb.png";
 import { Server, Cloud, Zap } from "lucide-react";

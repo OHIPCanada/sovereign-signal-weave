@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import PulseRings from "@/components/hero-backgrounds/PulseRings";
 import { useState, useRef } from "react";

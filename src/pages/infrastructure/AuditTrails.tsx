@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion, useScroll, useTransform } from "framer-motion";
 import auditOrb from "@/assets/audit-trails-hero-orb.png";
 import { Clock, Link2, Eye, Database } from "lucide-react";

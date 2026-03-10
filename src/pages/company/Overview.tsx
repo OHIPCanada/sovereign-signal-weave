@@ -1,5 +1,6 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import FloatingOrbs from "@/components/hero-backgrounds/FloatingOrbs";
 import aiCortexOrb from "@/assets/ai-cortex-orb-new.png";
