@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import docgLogo from "@/assets/docg-logo.jpg";
 
 interface SubLink {
   label: string;
@@ -224,13 +225,13 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
       >
         {/* Logo */}
         <Link to="/" className="flex items-center px-3">
-          <span
-            className={`text-[13px] md:text-[14px] font-bold tracking-[0.12em] uppercase transition-colors duration-300 ${
-              !isScrolled && darkMode ? "text-white" : "text-foreground"
+          <img
+            src={docgLogo}
+            alt="DocG AI"
+            className={`h-[22px] md:h-[26px] w-auto transition-all duration-300 ${
+              !isScrolled && darkMode ? "brightness-0 invert" : ""
             }`}
-          >
-            DOCG AI
-          </span>
+          />
         </Link>
 
         {/* Divider - only in island mode */}
