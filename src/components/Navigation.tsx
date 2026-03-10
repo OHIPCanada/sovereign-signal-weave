@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
-import docgLogo from "@/assets/docg-logo.jpg";
+import docgLogo from "@/assets/docg-logo.png";
 
 interface SubLink {
   label: string;
@@ -229,7 +229,7 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
             src={docgLogo}
             alt="DocG AI"
             className={`h-[22px] md:h-[26px] w-auto transition-all duration-300 ${
-              !isScrolled && darkMode ? "brightness-0 invert mix-blend-screen" : "mix-blend-multiply"
+              !isScrolled && darkMode ? "brightness-0 invert" : ""
             }`}
           />
         </Link>
