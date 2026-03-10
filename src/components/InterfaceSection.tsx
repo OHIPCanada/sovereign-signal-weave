@@ -281,7 +281,7 @@ const InterfaceSection = () => {
         >
           {/* Stage labels */}
           <div
-            className="absolute flex justify-between pointer-events-none z-10"
+            className="absolute hidden sm:flex justify-between pointer-events-none z-10"
             style={{
               top: 18,
               left: 22,
