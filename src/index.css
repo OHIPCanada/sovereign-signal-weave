@@ -430,7 +430,10 @@
 
 /* Touch-friendly tap targets */
 @media (max-width: 768px) {
-  button, a, select, input, textarea {
+  /* Touch-friendly tap targets — only for primary interactive elements */
+  nav button, nav a,
+  form button, form a,
+  .btn, [role="button"] {
     min-height: 44px;
   }
   
