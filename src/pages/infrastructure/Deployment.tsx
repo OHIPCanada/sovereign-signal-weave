@@ -1,9 +1,10 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import deploymentOrb from "@/assets/deployment-hero-orb.png";
 import { Server, Cloud, Zap } from "lucide-react";
-import { useRef, useEffect, useState } from "react";
+import { useMouseParallax } from "@/hooks/useMouseParallax";
+import HexGridBackground from "@/components/hero-backgrounds/HexGridBackground";
 
 const deploymentModels = [
   { icon: Server, title: "On-Premise", desc: "Full sovereign deployment within your data center. Zero external data exposure, complete control over infrastructure and security boundaries.", features: ["Air-gapped capability", "Hardware security modules", "Custom network topology", "Local key management"] },
@@ -25,135 +26,8 @@ const stats = [
   { value: "Zero", label: "Data breaches" },
 ];
 
-/* ── Hexagonal Grid Background (unique to Deployment) ── */
-const HexGrid = () => {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Hexagonal pattern */}
-      <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.5 }}>
-        <defs>
-          <pattern id="hexGrid" width="60" height="52" patternUnits="userSpaceOnUse">
-            <path d="M30 0 L60 15 L60 37 L30 52 L0 37 L0 15 Z" fill="none" stroke="rgba(123,97,255,0.15)" strokeWidth="0.5" />
-          </pattern>
-          <radialGradient id="hexFade" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="white" stopOpacity="1" />
-            <stop offset="100%" stopColor="white" stopOpacity="0" />
-          </radialGradient>
-          <mask id="hexMask">
-            <rect width="100%" height="100%" fill="url(#hexFade)" />
-          </mask>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#hexGrid)" mask="url(#hexMask)" />
-        {mounted && Array.from({ length: 12 }).map((_, i) => (
-          <motion.circle
-            key={i}
-            cx={`${10 + (i % 4) * 25}%`}
-            cy={`${15 + Math.floor(i / 4) * 30}%`}
-            r="4"
-            fill="rgba(212,97,107,0.6)"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: [0, 1, 0], scale: [0, 2, 0] }}
-            transition={{ duration: 3, repeat: Infinity, delay: i * 0.5, ease: "easeOut" }}
-          />
-        ))}
-        {/* Connection lines between nodes */}
-        {mounted && Array.from({ length: 6 }).map((_, i) => {
-          const x1 = 10 + (i % 4) * 25;
-          const y1 = 15 + Math.floor(i / 4) * 30;
-          const x2 = 10 + ((i + 1) % 4) * 25;
-          const y2 = 15 + Math.floor((i + 1) / 4) * 30;
-          return (
-            <motion.line
-              key={`line-${i}`}
-              x1={`${x1}%`} y1={`${y1}%`}
-              x2={`${x2}%`} y2={`${y2}%`}
-              stroke="rgba(123,97,255,0.12)"
-              strokeWidth="0.5"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: [0, 0.6, 0] }}
-              transition={{ duration: 4, repeat: Infinity, delay: i * 0.8, ease: "easeInOut" }}
-            />
-          );
-        })}
-      </svg>
-
-      {/* Floating ambient orbs */}
-      {mounted && (
-        <>
-          <motion.div
-            className="absolute rounded-full"
-            style={{
-              width: 300, height: 300, top: "10%", left: "60%",
-              background: "radial-gradient(circle, rgba(91,31,166,0.25) 0%, transparent 70%)",
-              filter: "blur(60px)",
-            }}
-            animate={{ x: [0, 40, -20, 0], y: [0, -30, 20, 0], scale: [1, 1.2, 0.9, 1] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute rounded-full"
-            style={{
-              width: 200, height: 200, bottom: "15%", left: "15%",
-              background: "radial-gradient(circle, rgba(212,97,107,0.2) 0%, transparent 70%)",
-              filter: "blur(50px)",
-            }}
-            animate={{ x: [0, -30, 20, 0], y: [0, 20, -30, 0], scale: [1, 0.85, 1.15, 1] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute rounded-full"
-            style={{
-              width: 150, height: 150, top: "40%", right: "10%",
-              background: "radial-gradient(circle, rgba(123,97,255,0.2) 0%, transparent 70%)",
-              filter: "blur(40px)",
-            }}
-            animate={{ x: [0, 20, -10, 0], y: [0, -20, 30, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </>
-      )}
-
-      {/* Scanning line effect */}
-      {mounted && (
-        <motion.div
-          className="absolute left-0 right-0"
-          style={{
-            height: 1,
-            background: "linear-gradient(90deg, transparent, rgba(123,97,255,0.3), rgba(212,97,107,0.3), transparent)",
-            boxShadow: "0 0 20px rgba(123,97,255,0.2)",
-          }}
-          animate={{ top: ["0%", "100%"] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-        />
-      )}
-    </div>
-  );
-};
-
 const Deployment = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
-  const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
-
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        mouseX.set((e.clientX - rect.left - rect.width / 2) / 25);
-        mouseY.set((e.clientY - rect.top - rect.height / 2) / 25);
-      }
-    };
-    window.addEventListener("mousemove", handleMouse);
-    return () => window.removeEventListener("mousemove", handleMouse);
-  }, [mouseX, mouseY]);
-
-  const orbRotateX = useTransform(springY, [-20, 20], [8, -8]);
-  const orbRotateY = useTransform(springX, [-20, 20], [-8, 8]);
+  const { containerRef, orbRotateX, orbRotateY } = useMouseParallax();
 
   return (
     <div ref={containerRef} className="relative overflow-x-hidden">
@@ -172,7 +46,7 @@ const Deployment = () => {
           `,
         }}
       >
-        <HexGrid />
+        <HexGridBackground />
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <div className="grid grid-cols-1 md:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
             <div className="flex flex-col gap-5">
@@ -245,13 +119,7 @@ const Deployment = () => {
         }}
       >
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mb-12"
-          >
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="mb-12">
             <span className="font-mono text-xs px-3 py-1.5 rounded" style={{ background: "rgba(212,97,107,0.08)", color: "#D4616B", border: "1px solid rgba(212,97,107,0.12)" }}>
               Deployment Models
             </span>
@@ -271,10 +139,8 @@ const Deployment = () => {
                 whileHover={{ y: -6, boxShadow: "0 20px 60px rgba(0,0,0,0.08)" }}
                 className="rounded-2xl p-6"
                 style={{
-                  background: "rgba(255,255,255,0.18)",
-                  border: "1px solid rgba(255,255,255,0.25)",
-                  backdropFilter: "blur(24px)",
-                  WebkitBackdropFilter: "blur(24px)",
+                  background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.25)",
+                  backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
                   boxShadow: "0 8px 32px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                 }}
               >
@@ -290,14 +156,7 @@ const Deployment = () => {
                 <div style={{ color: "rgba(30,20,50,0.6)", fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>{model.desc}</div>
                 <div className="flex flex-col gap-2">
                   {model.features.map((f, fi) => (
-                    <motion.div
-                      key={f}
-                      className="flex items-center gap-2"
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.4 + i * 0.15 + fi * 0.08 }}
-                    >
+                    <motion.div key={f} className="flex items-center gap-2" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 + i * 0.15 + fi * 0.08 }}>
                       <span style={{ color: "#D4616B", fontSize: 12 }}>→</span>
                       <span style={{ fontSize: 12, color: "rgba(30,20,50,0.55)" }}>{f}</span>
                     </motion.div>
@@ -309,7 +168,7 @@ const Deployment = () => {
         </div>
       </section>
 
-      {/* COMPLIANCE & STATS — Light atmospheric */}
+      {/* COMPLIANCE & STATS */}
       <section
         className="relative overflow-hidden"
         style={{
@@ -323,15 +182,8 @@ const Deployment = () => {
       >
         <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-            {/* Stats */}
             <div>
-              <motion.p
-                className="font-mono uppercase mb-6"
-                style={{ color: "rgba(20,10,42,0.4)", fontSize: 11, letterSpacing: "0.15em" }}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-              >
+              <motion.p className="font-mono uppercase mb-6" style={{ color: "rgba(20,10,42,0.4)", fontSize: 11, letterSpacing: "0.15em" }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
                 Performance Metrics
               </motion.p>
               <div className="grid grid-cols-2 gap-4">
@@ -344,31 +196,20 @@ const Deployment = () => {
                     transition={{ delay: i * 0.15, type: "spring", stiffness: 200, damping: 20 }}
                     className="relative p-5 rounded-xl overflow-hidden"
                     style={{
-                      background: "rgba(255,255,255,0.18)",
-                      border: "1px solid rgba(255,255,255,0.25)",
-                      backdropFilter: "blur(24px)",
-                      WebkitBackdropFilter: "blur(24px)",
+                      background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.25)",
+                      backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
                       boxShadow: "0 4px 24px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                     }}
                   >
-                    <div>
-                      <div style={{ fontSize: "clamp(26px, 2.5vw, 38px)", fontWeight: 700, color: "#1B0F2E" }}>{s.value}</div>
-                      <div style={{ fontSize: 11, color: "rgba(30,20,50,0.45)", marginTop: 4 }}>{s.label}</div>
-                    </div>
+                    <div style={{ fontSize: "clamp(26px, 2.5vw, 38px)", fontWeight: 700, color: "#1B0F2E" }}>{s.value}</div>
+                    <div style={{ fontSize: 11, color: "rgba(30,20,50,0.45)", marginTop: 4 }}>{s.label}</div>
                   </motion.div>
                 ))}
               </div>
             </div>
 
-            {/* Compliance */}
             <div>
-              <motion.p
-                className="font-mono uppercase mb-6"
-                style={{ color: "rgba(20,10,42,0.4)", fontSize: 11, letterSpacing: "0.15em" }}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-              >
+              <motion.p className="font-mono uppercase mb-6" style={{ color: "rgba(20,10,42,0.4)", fontSize: 11, letterSpacing: "0.15em" }} initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
                 Certifications
               </motion.p>
               <div className="flex flex-col gap-3">
@@ -381,10 +222,8 @@ const Deployment = () => {
                     transition={{ delay: i * 0.12, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                     className="flex items-center justify-between p-4 rounded-xl"
                     style={{
-                      background: "rgba(255,255,255,0.18)",
-                      border: "1px solid rgba(255,255,255,0.25)",
-                      backdropFilter: "blur(24px)",
-                      WebkitBackdropFilter: "blur(24px)",
+                      background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.25)",
+                      backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
                       boxShadow: "0 2px 12px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.4)",
                     }}
                   >
@@ -397,12 +236,7 @@ const Deployment = () => {
                       viewport={{ once: true }}
                       transition={{ delay: 0.4 + i * 0.12, type: "spring", stiffness: 400 }}
                     >
-                      <motion.div
-                        className="w-2 h-2 rounded-full"
-                        style={{ background: "#D4616B" }}
-                        animate={{ opacity: [1, 0.4, 1] }}
-                        transition={{ duration: 1.5, repeat: Infinity }}
-                      />
+                      <motion.div className="w-2 h-2 rounded-full" style={{ background: "#D4616B" }} animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 1.5, repeat: Infinity }} />
                       <span className="text-xs" style={{ color: "#D4616B", fontWeight: 500 }}>{item.status}</span>
                     </motion.div>
                   </motion.div>

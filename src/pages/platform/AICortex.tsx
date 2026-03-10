@@ -4,122 +4,9 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroOrb from "@/assets/ai-cortex-hero-orb.svg";
 import { Brain, Cpu, Network, Workflow, Shield, Zap } from "lucide-react";
-import { useRef, useEffect } from "react";
-
-/* ── Neural Pulse Canvas — rendered as hero background ── */
-const NeuralPulseBackground = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-    const DPR = Math.min(2, window.devicePixelRatio || 1);
-
-    const resize = () => {
-      const r = canvas.getBoundingClientRect();
-      canvas.width = r.width * DPR;
-      canvas.height = r.height * DPR;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    interface Node { x: number; y: number; vx: number; vy: number; layer: number; phase: number; }
-    const nodes: Node[] = Array.from({ length: 60 }, () => ({
-      x: Math.random(), y: Math.random(),
-      vx: (Math.random() - 0.5) * 0.0004,
-      vy: (Math.random() - 0.5) * 0.0004,
-      layer: Math.floor(Math.random() * 3),
-      phase: Math.random() * Math.PI * 2,
-    }));
-
-    let raf: number;
-    const t0 = performance.now();
-
-    const draw = (now: number) => {
-      const t = (now - t0) / 1000;
-      const w = canvas.width;
-      const h = canvas.height;
-      if (w === 0 || h === 0) { raf = requestAnimationFrame(draw); return; }
-      ctx.clearRect(0, 0, w, h);
-
-      const cGrad = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, h * 0.6);
-      cGrad.addColorStop(0, `rgba(123,97,255,${0.12 + Math.sin(t * 0.5) * 0.04})`);
-      cGrad.addColorStop(0.5, "rgba(123,97,255,0.03)");
-      cGrad.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = cGrad;
-      ctx.fillRect(0, 0, w, h);
-
-      nodes.forEach(n => {
-        n.x += n.vx; n.y += n.vy;
-        if (n.x < 0 || n.x > 1) n.vx *= -1;
-        if (n.y < 0 || n.y > 1) n.vy *= -1;
-        n.x = Math.max(0, Math.min(1, n.x));
-        n.y = Math.max(0, Math.min(1, n.y));
-      });
-
-      const DIST = 120 * DPR;
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const dx = (nodes[i].x - nodes[j].x) * w;
-          const dy = (nodes[i].y - nodes[j].y) * h;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < DIST) {
-            const alpha = (1 - d / DIST) * 0.25;
-            const pulse = Math.sin(t * 2 + nodes[i].phase + nodes[j].phase) * 0.5 + 0.5;
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x * w, nodes[i].y * h);
-            ctx.lineTo(nodes[j].x * w, nodes[j].y * h);
-            ctx.strokeStyle = `rgba(123,97,255,${alpha * (0.5 + pulse * 0.5)})`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
-            if (pulse > 0.8) {
-              const px = nodes[i].x * w + (nodes[j].x - nodes[i].x) * w * ((t * 0.3) % 1);
-              const py = nodes[i].y * h + (nodes[j].y - nodes[i].y) * h * ((t * 0.3) % 1);
-              ctx.beginPath();
-              ctx.arc(px, py, Math.max(0.1, 2 * DPR), 0, Math.PI * 2);
-              ctx.fillStyle = "rgba(212,97,107,0.6)";
-              ctx.fill();
-            }
-          }
-        }
-      }
-
-      nodes.forEach(n => {
-        const px = n.x * w;
-        const py = n.y * h;
-        const breathe = Math.sin(t * 1.5 + n.phase) * 0.3 + 0.7;
-        const r = Math.max(0.1, (n.layer === 0 ? 2 : n.layer === 1 ? 3 : 4) * DPR);
-        ctx.beginPath();
-        ctx.arc(px, py, r * 4, 0, Math.PI * 2);
-        ctx.fillStyle = n.layer === 2 ? `rgba(212,97,107,${0.08 * breathe})` : `rgba(123,97,255,${0.06 * breathe})`;
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(px, py, r, 0, Math.PI * 2);
-        ctx.fillStyle = n.layer === 2 ? `rgba(212,97,107,${0.7 * breathe})` : `rgba(123,97,255,${0.6 * breathe})`;
-        ctx.fill();
-      });
-
-      for (let ring = 0; ring < 3; ring++) {
-        const ringT = (t * 0.2 + ring * 0.33) % 1;
-        const ringR = Math.max(0.1, ringT * Math.min(w, h) * 0.5);
-        const ringAlpha = (1 - ringT) * 0.08;
-        ctx.beginPath();
-        ctx.arc(w * 0.5, h * 0.5, ringR, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(123,97,255,${ringAlpha})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-      }
-
-      raf = requestAnimationFrame(draw);
-    };
-
-    raf = requestAnimationFrame(draw);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
-  }, []);
-
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.7 }} />;
-};
+import { useRef } from "react";
+import NeuralPulseBackground from "@/components/hero-backgrounds/NeuralPulseBackground";
+import { useMouseParallax } from "@/hooks/useMouseParallax";
 
 const capabilities = [
   { icon: Brain, title: "Clinical Reasoning Engine", desc: "Multi-modal AI reasoning across patient data, clinical guidelines, and institutional protocols — in real-time." },
@@ -131,26 +18,7 @@ const capabilities = [
 ];
 
 const AICortex = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
-  const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
-
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        mouseX.set((e.clientX - rect.left - rect.width / 2) / 25);
-        mouseY.set((e.clientY - rect.top - rect.height / 2) / 25);
-      }
-    };
-    window.addEventListener("mousemove", handleMouse);
-    return () => window.removeEventListener("mousemove", handleMouse);
-  }, [mouseX, mouseY]);
-
-  const orbRotateX = useTransform(springY, [-20, 20], [8, -8]);
-  const orbRotateY = useTransform(springX, [-20, 20], [-8, 8]);
+  const { containerRef, orbRotateX, orbRotateY } = useMouseParallax();
 
   return (
     <div className="relative overflow-x-hidden">
@@ -168,7 +36,6 @@ const AICortex = () => {
           `,
         }}
       >
-        {/* Canvas animation as hero background */}
         <NeuralPulseBackground />
 
         <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{

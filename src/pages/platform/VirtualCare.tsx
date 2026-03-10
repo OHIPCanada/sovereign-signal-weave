@@ -1,133 +1,11 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroOrb from "@/assets/virtual-care-hero-orb.svg";
 import { Video, MessageSquare, Phone, Globe, Monitor, Users } from "lucide-react";
-import { useRef, useEffect } from "react";
-
-/* ── Signal Wave Canvas — rendered as hero background ── */
-const SignalWaveBackground = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d")!;
-    const DPR = Math.min(2, window.devicePixelRatio || 1);
-
-    const resize = () => {
-      const r = canvas.getBoundingClientRect();
-      canvas.width = r.width * DPR;
-      canvas.height = r.height * DPR;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    let raf: number;
-    const t0 = performance.now();
-
-    interface CareNode { x: number; y: number; label: string; pulse: number; }
-    const careNodes: CareNode[] = [
-      { x: 0.15, y: 0.3, label: "Patient", pulse: 0 },
-      { x: 0.85, y: 0.3, label: "Clinician", pulse: Math.PI },
-      { x: 0.5, y: 0.7, label: "AI Cortex", pulse: Math.PI * 0.5 },
-      { x: 0.25, y: 0.7, label: "Pharmacy", pulse: Math.PI * 1.5 },
-      { x: 0.75, y: 0.7, label: "Lab", pulse: Math.PI * 0.75 },
-    ];
-
-    const draw = (now: number) => {
-      const t = (now - t0) / 1000;
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
-
-      const bg = ctx.createRadialGradient(w * 0.5, h * 0.5, 0, w * 0.5, h * 0.5, h * 0.7);
-      bg.addColorStop(0, "rgba(123,97,255,0.06)");
-      bg.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, w, h);
-
-      for (let i = 0; i < careNodes.length; i++) {
-        for (let j = i + 1; j < careNodes.length; j++) {
-          const n1 = careNodes[i];
-          const n2 = careNodes[j];
-          const x1 = n1.x * w, y1 = n1.y * h;
-          const x2 = n2.x * w, y2 = n2.y * h;
-
-          ctx.beginPath();
-          const steps = 60;
-          for (let s = 0; s <= steps; s++) {
-            const p = s / steps;
-            const baseX = x1 + (x2 - x1) * p;
-            const baseY = y1 + (y2 - y1) * p;
-            const perpX = -(y2 - y1);
-            const perpY = x2 - x1;
-            const len = Math.sqrt(perpX * perpX + perpY * perpY);
-            const waveAmp = Math.sin(p * Math.PI) * 15 * DPR;
-            const wave = Math.sin(p * 8 + t * 3 + i + j) * waveAmp;
-            const px = baseX + (perpX / len) * wave;
-            const py = baseY + (perpY / len) * wave;
-            if (s === 0) ctx.moveTo(px, py);
-            else ctx.lineTo(px, py);
-          }
-          const alpha = 0.12 + Math.sin(t * 1.5 + i * 2) * 0.05;
-          ctx.strokeStyle = j === 2 ? `rgba(212,97,107,${alpha})` : `rgba(123,97,255,${alpha})`;
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-
-          const dotP = ((t * 0.2 + i * 0.3 + j * 0.2) % 1);
-          const dotX = x1 + (x2 - x1) * dotP;
-          const dotY = y1 + (y2 - y1) * dotP;
-          const dotWaveAmp = Math.sin(dotP * Math.PI) * 15 * DPR;
-          const dotWave = Math.sin(dotP * 8 + t * 3 + i + j) * dotWaveAmp;
-          const perpX2 = -(y2 - y1), perpY2 = x2 - x1;
-          const len2 = Math.sqrt(perpX2 * perpX2 + perpY2 * perpY2);
-          ctx.beginPath();
-          ctx.arc(dotX + (perpX2 / len2) * dotWave, dotY + (perpY2 / len2) * dotWave, 3 * DPR, 0, Math.PI * 2);
-          ctx.fillStyle = j === 2 ? "rgba(242,193,174,0.8)" : "rgba(189,166,255,0.8)";
-          ctx.fill();
-        }
-      }
-
-      careNodes.forEach((node, i) => {
-        const nx = node.x * w;
-        const ny = node.y * h;
-        const breathe = Math.sin(t * 1.2 + node.pulse) * 0.3 + 0.7;
-
-        ctx.beginPath();
-        ctx.arc(nx, ny, 30 * DPR, 0, Math.PI * 2);
-        ctx.fillStyle = i === 2 ? `rgba(212,97,107,${0.08 * breathe})` : `rgba(123,97,255,${0.06 * breathe})`;
-        ctx.fill();
-
-        const pulseR = 20 * DPR + ((t * 0.5 + node.pulse) % 1) * 25 * DPR;
-        const pulseAlpha = (1 - ((t * 0.5 + node.pulse) % 1)) * 0.15;
-        ctx.beginPath();
-        ctx.arc(nx, ny, pulseR, 0, Math.PI * 2);
-        ctx.strokeStyle = i === 2 ? `rgba(212,97,107,${pulseAlpha})` : `rgba(123,97,255,${pulseAlpha})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.arc(nx, ny, 8 * DPR, 0, Math.PI * 2);
-        ctx.fillStyle = i === 2 ? "rgba(212,97,107,0.85)" : "rgba(123,97,255,0.75)";
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(nx, ny, 3 * DPR, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(255,255,255,0.9)";
-        ctx.fill();
-      });
-
-      raf = requestAnimationFrame(draw);
-    };
-
-    raf = requestAnimationFrame(draw);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
-  }, []);
-
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.7 }} />;
-};
+import SignalWaveBackground from "@/components/hero-backgrounds/SignalWaveBackground";
+import { useMouseParallax } from "@/hooks/useMouseParallax";
 
 const features = [
   { icon: Video, title: "Video Consultations", desc: "HD video with real-time AI assistance, automatic note generation, and clinical decision support overlay." },
@@ -139,32 +17,12 @@ const features = [
 ];
 
 const VirtualCare = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
-  const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
-
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        mouseX.set((e.clientX - rect.left - rect.width / 2) / 25);
-        mouseY.set((e.clientY - rect.top - rect.height / 2) / 25);
-      }
-    };
-    window.addEventListener("mousemove", handleMouse);
-    return () => window.removeEventListener("mousemove", handleMouse);
-  }, [mouseX, mouseY]);
-
-  const orbRotateX = useTransform(springY, [-20, 20], [8, -8]);
-  const orbRotateY = useTransform(springX, [-20, 20], [-8, 8]);
+  const { containerRef, orbRotateX, orbRotateY } = useMouseParallax();
 
   return (
     <div className="relative overflow-x-hidden">
       <Navigation darkMode />
 
-      {/* Hero with Signal Wave animation as background */}
       <section
         ref={containerRef}
         className="relative min-h-screen flex items-center overflow-hidden"
@@ -293,7 +151,7 @@ const VirtualCare = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Stats */}
       <section className="relative overflow-hidden" style={{
         padding: "clamp(64px, 8vw, 120px) 0",
         background: `
