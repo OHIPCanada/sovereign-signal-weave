@@ -8,7 +8,7 @@ import clinicOsOrb from "@/assets/clinic-os-orb-new.png";
 import sovereignOrb from "@/assets/sovereign-data-orb.png";
 import auditOrb from "@/assets/audit-integrity-orb.png";
 
-const Overview = () => {
+const pillars = [
   {
     label: "AI Cortex",
     desc: "Context-aware reasoning that operates across the full clinical signal chain — not a chatbot bolted onto a dashboard.",
