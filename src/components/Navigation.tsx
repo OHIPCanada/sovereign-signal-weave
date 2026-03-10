@@ -224,13 +224,13 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
       >
         {/* Logo */}
         <Link to="/" className="flex items-center px-3">
-          <span
-            className={`text-[13px] md:text-[14px] font-bold tracking-[0.12em] uppercase transition-colors duration-300 ${
-              !isScrolled && darkMode ? "text-white" : "text-foreground"
+          <img
+            src={docgLogo}
+            alt="DocG AI"
+            className={`h-[22px] md:h-[26px] w-auto transition-all duration-300 ${
+              !isScrolled && darkMode ? "brightness-0 invert" : ""
             }`}
-          >
-            DOCG AI
-          </span>
+          />
         </Link>
 
         {/* Divider - only in island mode */}
