@@ -230,7 +230,7 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
             alt="DocG AI"
             className={`w-auto transition-all duration-300 h-[22px] md:h-[26px] ${
               !isScrolled && darkMode
-                ? "invert drop-shadow-[0_0_1px_rgba(255,255,255,1)]"
+                ? "invert"
                 : ""
             }`}
           />
