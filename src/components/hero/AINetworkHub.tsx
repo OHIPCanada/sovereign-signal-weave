@@ -269,43 +269,26 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
               />
 
               {/* ── CUBE FACES (glass) ── */}
-              {/* Left face */}
-              <polygon
-                points={faces.left}
-                fill={`url(#cubeLeft${i})`}
-                stroke={mod.color}
-                strokeWidth="0.8"
-                strokeOpacity="0.3"
-              />
-              {/* Right face */}
-              <polygon
-                points={faces.right}
-                fill={`url(#cubeRight${i})`}
-                stroke={mod.color}
-                strokeWidth="0.8"
-                strokeOpacity="0.3"
-              />
-              {/* Top face */}
-              <polygon
-                points={faces.top}
-                fill={`url(#cubeTop${i})`}
-                stroke={mod.color}
-                strokeWidth="1"
-                strokeOpacity="0.5"
-              />
+              <polygon points={faces.left} fill={`url(#cubeLeft${i})`}
+                stroke={mod.color} strokeWidth="1.2" strokeOpacity="0.4" />
+              <polygon points={faces.right} fill={`url(#cubeRight${i})`}
+                stroke={mod.color} strokeWidth="1.2" strokeOpacity="0.4" />
+              <polygon points={faces.top} fill={`url(#cubeTop${i})`}
+                stroke={mod.color} strokeWidth="1.5" strokeOpacity="0.6" />
 
               {/* ── NEON EDGES ── */}
-              {/* Top diamond edges */}
-              <motion.polygon
-                points={faces.top}
-                fill="none"
-                stroke={mod.color}
-                strokeWidth="1.5"
-                strokeOpacity="0.6"
-                filter="url(#softGlow)"
-                animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
-                transition={{ duration: 3 + i * 0.3, repeat: Infinity, ease: "easeInOut" }}
-              />
+              <motion.polygon points={faces.top} fill="none"
+                stroke={mod.color} strokeWidth="2" strokeOpacity="0.7" filter="url(#softGlow)"
+                animate={{ strokeOpacity: [0.4, 0.85, 0.4] }}
+                transition={{ duration: 3 + i * 0.3, repeat: Infinity, ease: "easeInOut" }} />
+              <motion.polygon points={faces.left} fill="none"
+                stroke={mod.color} strokeWidth="1" strokeOpacity="0.3" filter="url(#softGlow)"
+                animate={{ strokeOpacity: [0.15, 0.35, 0.15] }}
+                transition={{ duration: 3.5 + i * 0.3, repeat: Infinity, ease: "easeInOut" }} />
+              <motion.polygon points={faces.right} fill="none"
+                stroke={mod.color} strokeWidth="1" strokeOpacity="0.3" filter="url(#softGlow)"
+                animate={{ strokeOpacity: [0.15, 0.35, 0.15] }}
+                transition={{ duration: 3.5 + i * 0.3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
 
               {/* ── UNIQUE INNER VISUALIZATION PER MODULE ── */}
               {i === 0 && /* AI CORTEX — Neural network sphere */
