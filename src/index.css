@@ -134,13 +134,14 @@
   .hero-bg {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(
-      165deg,
-      #EEF2F6 0%,
-      #E8EDF3 35%,
-      #E2E7EF 55%,
-      #D7DEE8 100%
-    );
+    background:
+      radial-gradient(
+        ellipse 80% 70% at 50% 50%,
+        #2A1050 0%,
+        #1A0630 35%,
+        #16002A 60%,
+        #0B0613 100%
+      );
   }
 
   /* Left-side warm brain aura — lavender + coral bloom */
