@@ -474,7 +474,7 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
       {modules.map((mod, i) => {
         const pos = positions[i];
         const leftPct = (pos.x / vbW) * 100;
-        const topPct = ((pos.y + cubeSize * 1.3) / vbH) * 100;
+        const topPct = ((pos.y + cubeSize * 1.45) / vbH) * 100;
 
         return (
           <motion.div
