@@ -31,24 +31,58 @@ const MobileParticleWave = () => {
 
       ctx.clearRect(0, 0, w, h);
 
-      const cx = w / 2;
-      // The terrain sits in the lower 55% of the canvas
-      const terrainTop = h * 0.45;
+      // --- Animated background gradient (shifts hue over time) ---
+      const gradShift = Math.sin(t * 0.15) * 8;
+      const bg = ctx.createLinearGradient(0, 0, w * 0.3, h);
+      bg.addColorStop(0, `hsl(${272 + gradShift}, 85%, 8%)`);    // #16002A region
+      bg.addColorStop(0.4, `hsl(${268 + gradShift}, 80%, 6%)`);  // deep purple
+      bg.addColorStop(0.7, `hsl(${265 + gradShift}, 75%, 5%)`);  // #0B0613 region
+      bg.addColorStop(1, `hsl(${260 + gradShift}, 70%, 4%)`);
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
 
-      // --- Terrain: dense dot-matrix field below a soft ridge ---
-      // Ridge line function - gentle undulation, not a sharp mountain
+      // Subtle radial warm bloom (coral accent, animated)
+      const bloomX = w * (0.65 + Math.sin(t * 0.1) * 0.05);
+      const bloomY = h * (0.35 + Math.cos(t * 0.08) * 0.03);
+      const bloomR = w * 0.5;
+      const bloom = ctx.createRadialGradient(bloomX, bloomY, 0, bloomX, bloomY, bloomR);
+      bloom.addColorStop(0, `rgba(212, 97, 107, ${0.04 + Math.sin(t * 0.2) * 0.015})`);
+      bloom.addColorStop(0.4, `rgba(232, 150, 124, ${0.02 + Math.sin(t * 0.25) * 0.01})`);
+      bloom.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = bloom;
+      ctx.fillRect(0, 0, w, h);
+
+      // Second violet bloom
+      const v2X = w * 0.3;
+      const v2Y = h * 0.6;
+      const v2R = w * 0.45;
+      const v2 = ctx.createRadialGradient(v2X, v2Y, 0, v2X, v2Y, v2R);
+      v2.addColorStop(0, `rgba(91, 31, 166, ${0.06 + Math.sin(t * 0.18) * 0.02})`);
+      v2.addColorStop(0.6, "rgba(26, 6, 48, 0.03)");
+      v2.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = v2;
+      ctx.fillRect(0, 0, w, h);
+
+      const cx = w / 2;
+      // Ridge sits at ~65% height — prominent terrain
+      const terrainTop = h * 0.55;
+
+      // --- Ridge line: tall central peak ---
       const ridge = (x: number): number => {
         const nx = x / w;
-        const base = terrainTop + h * 0.08;
-        // gentle central rise
-        const bell = Math.exp(-Math.pow((nx - 0.5) * 3.2, 2)) * h * 0.12;
-        // subtle undulation
-        const wave = Math.sin(nx * 4 + t * 0.12) * h * 0.008
-          + Math.sin(nx * 7 + t * 0.08) * h * 0.004;
-        return base - bell + wave;
+        const base = terrainTop + h * 0.05;
+        // Strong central mountain peak
+        const peak = Math.exp(-Math.pow((nx - 0.5) * 2.8, 2)) * h * 0.2;
+        // Secondary shoulders
+        const shoulder1 = Math.exp(-Math.pow((nx - 0.25) * 4, 2)) * h * 0.06;
+        const shoulder2 = Math.exp(-Math.pow((nx - 0.75) * 4, 2)) * h * 0.06;
+        // Animated undulation
+        const wave = Math.sin(nx * 5 + t * 0.2) * h * 0.008
+          + Math.sin(nx * 9 + t * 0.15) * h * 0.004;
+        return base - peak - shoulder1 - shoulder2 + wave;
       };
 
-      // Fill below ridge with deep gradient
+      // Fill terrain body
       ctx.beginPath();
       ctx.moveTo(0, h);
       for (let x = 0; x <= w; x += 2) {
@@ -57,54 +91,65 @@ const MobileParticleWave = () => {
       ctx.lineTo(w, h);
       ctx.closePath();
 
-      const terrainGrad = ctx.createLinearGradient(0, terrainTop, 0, h);
-      terrainGrad.addColorStop(0, "rgba(18, 8, 38, 0.92)");
-      terrainGrad.addColorStop(0.5, "rgba(14, 5, 30, 0.95)");
-      terrainGrad.addColorStop(1, "rgba(10, 3, 22, 0.9)");
+      const terrainGrad = ctx.createLinearGradient(0, terrainTop - h * 0.15, 0, h);
+      terrainGrad.addColorStop(0, "rgba(22, 0, 42, 0.95)");
+      terrainGrad.addColorStop(0.3, "rgba(14, 4, 32, 0.97)");
+      terrainGrad.addColorStop(0.7, "rgba(11, 6, 19, 0.95)");
+      terrainGrad.addColorStop(1, "rgba(8, 3, 16, 0.9)");
       ctx.fillStyle = terrainGrad;
       ctx.fill();
 
-      // Ridge edge - very subtle glow line
+      // Ridge glow line — animated purple-coral
       ctx.beginPath();
       for (let x = 0; x <= w; x += 2) {
         const y = ridge(x);
         if (x === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = "rgba(120, 80, 200, 0.12)";
-      ctx.lineWidth = 1.5 * dpr;
+      const glowAlpha = 0.15 + Math.sin(t * 0.4) * 0.05;
+      ctx.strokeStyle = `rgba(192, 132, 252, ${glowAlpha})`;
+      ctx.lineWidth = 1.8 * dpr;
       ctx.stroke();
 
-      // --- Dot-matrix particles on terrain surface ---
-      const spacing = 6 * dpr;
+      // Second glow line offset
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += 3) {
+        const y = ridge(x) + 2 * dpr;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(212, 97, 107, ${glowAlpha * 0.4})`;
+      ctx.lineWidth = 1 * dpr;
+      ctx.stroke();
+
+      // --- Dense dot-matrix particles on terrain ---
+      const spacing = 5 * dpr;
       const cols = Math.ceil(w / spacing);
-      const rows = Math.ceil((h - terrainTop) / spacing);
+      const rows = Math.ceil((h - (terrainTop - h * 0.15)) / spacing);
 
       for (let gx = 0; gx < cols; gx++) {
         const px = gx * spacing;
         const ridgeY = ridge(px);
 
         for (let gy = 0; gy < rows; gy++) {
-          const py = terrainTop + gy * spacing;
-          if (py < ridgeY) continue; // above terrain
+          const py = (terrainTop - h * 0.15) + gy * spacing;
+          if (py < ridgeY) continue;
 
           const depth = (py - ridgeY) / (h - ridgeY);
-          const nx = gx / cols;
-
-          // Proximity to ridge = brighter
-          const ridgeDist = (py - ridgeY) / (h * 0.3);
+          const ridgeDist = (py - ridgeY) / (h * 0.25);
           const ridgeFade = Math.max(0, 1 - ridgeDist);
 
-          // Subtle pulse
-          const pulse = 0.6 + Math.sin(t * 0.5 + gx * 0.4 + gy * 0.3) * 0.15;
-          const alpha = ridgeFade * ridgeFade * 0.18 * pulse;
-          if (alpha < 0.01) continue;
+          // Animated pulse
+          const pulse = 0.65 + Math.sin(t * 0.6 + gx * 0.35 + gy * 0.25) * 0.2;
+          const alpha = ridgeFade * ridgeFade * 0.25 * pulse;
+          if (alpha < 0.012) continue;
 
-          const r = 26 + depth * 10;
-          const g = 10 + ridgeFade * 40;
-          const b = 50 + ridgeFade * 80;
+          // Colors shift from lavender near ridge to deep purple below
+          const r = 40 + ridgeFade * 80;
+          const g = 15 + ridgeFade * 50;
+          const b = 80 + ridgeFade * 120;
 
-          const radius = (0.6 + ridgeFade * 0.6) * dpr;
+          const radius = (0.5 + ridgeFade * 0.9) * dpr;
           ctx.beginPath();
           ctx.arc(px, py, radius, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${alpha})`;
@@ -112,32 +157,32 @@ const MobileParticleWave = () => {
         }
       }
 
-      // --- Subtle radial glow at apex ---
-      const glowR = w * 0.3;
+      // --- Apex glow ---
+      const glowR = w * 0.35;
       const apexY = ridge(cx);
-      const glow = ctx.createRadialGradient(cx, apexY, 0, cx, apexY, glowR);
-      glow.addColorStop(0, "rgba(100, 60, 200, 0.06)");
-      glow.addColorStop(0.5, "rgba(60, 30, 140, 0.03)");
-      glow.addColorStop(1, "rgba(0, 0, 0, 0)");
-      ctx.fillStyle = glow;
+      const apexGlow = ctx.createRadialGradient(cx, apexY, 0, cx, apexY, glowR);
+      apexGlow.addColorStop(0, `rgba(123, 97, 255, ${0.08 + Math.sin(t * 0.3) * 0.03})`);
+      apexGlow.addColorStop(0.4, "rgba(91, 31, 166, 0.04)");
+      apexGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = apexGlow;
       ctx.fillRect(0, apexY - glowR, w, glowR * 2);
 
-      // --- Sparse signal particles drifting upward from ridge ---
-      const signals = 18;
+      // --- Rising signal particles ---
+      const signals = 24;
       for (let i = 0; i < signals; i++) {
         const seed = i * 97.31;
         const baseX = ((seed * 3.7) % 1) * w;
-        const drift = Math.sin(t * 0.3 + i * 1.7) * 15 * dpr;
+        const drift = Math.sin(t * 0.35 + i * 1.7) * 12 * dpr;
         const sx = baseX + drift;
-        const lifeT = ((t * 0.15 + seed * 0.01) % 1);
-        const sy = ridge(baseX) - lifeT * h * 0.15;
-        const sa = (1 - lifeT) * 0.15 * (0.5 + Math.sin(t + i) * 0.5);
+        const lifeT = ((t * 0.18 + seed * 0.01) % 1);
+        const sy = ridge(baseX) - lifeT * h * 0.2;
+        const sa = (1 - lifeT) * 0.2 * (0.5 + Math.sin(t + i) * 0.5);
 
         if (sa < 0.01) continue;
 
         ctx.beginPath();
-        ctx.arc(sx, sy, 1 * dpr, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(140, 100, 255, ${sa})`;
+        ctx.arc(sx, sy, 1.2 * dpr, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(192, 132, 252, ${sa})`;
         ctx.fill();
       }
 
