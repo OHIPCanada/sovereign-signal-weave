@@ -55,43 +55,48 @@ const MobileParticleWave = () => {
       ctx.lineTo(w, h);
       ctx.closePath();
 
-      // Base gradient matching Intelligence Layer: linear-gradient(135deg, #1A0630, #3A0B6E, #5B1FA6)
-      const gradShift = Math.sin(t * 0.15) * 5;
+      // Dominant #1A0630 base with #3A0B6E → #5B1FA6 and peach accents
+      const gradShift = Math.sin(t * 0.15) * 3;
       const terrainGrad = ctx.createLinearGradient(0, terrainTop - h * 0.1, w, h);
-      terrainGrad.addColorStop(0, `hsla(${268 + gradShift}, 78%, 13%, 1)`);   // #1A0630
-      terrainGrad.addColorStop(0.48, `hsla(${270 + gradShift}, 82%, 24%, 1)`); // #3A0B6E
+      terrainGrad.addColorStop(0, `hsla(${268 + gradShift}, 78%, 11%, 1)`);    // #1A0630 dominant
+      terrainGrad.addColorStop(0.35, `hsla(${268 + gradShift}, 78%, 13%, 1)`); // #1A0630 still
+      terrainGrad.addColorStop(0.6, `hsla(${270 + gradShift}, 82%, 24%, 1)`);  // #3A0B6E
       terrainGrad.addColorStop(1, `hsla(${264 + gradShift}, 68%, 38%, 1)`);    // #5B1FA6
       ctx.fillStyle = terrainGrad;
       ctx.fill();
 
-      // Radial blooms inside terrain (matching Intelligence Layer)
+      // Radial blooms inside terrain
       ctx.save();
       ctx.clip();
 
-      // Purple bloom at left (like radial-gradient at 18% 38%)
-      const b1X = w * (0.18 + Math.sin(t * 0.08) * 0.03);
-      const b1Y = h * (0.5 + Math.cos(t * 0.06) * 0.03);
-      const b1 = ctx.createRadialGradient(b1X, b1Y, 0, b1X, b1Y, w * 0.5);
-      b1.addColorStop(0, `rgba(143, 83, 255, ${0.4 + Math.sin(t * 0.2) * 0.05})`);
-      b1.addColorStop(0.6, "rgba(143, 83, 255, 0)");
+      // Large peach bloom — center-right, warm and dominant
+      const b1X = w * (0.55 + Math.sin(t * 0.08) * 0.04);
+      const b1Y = h * (0.55 + Math.cos(t * 0.06) * 0.03);
+      const b1 = ctx.createRadialGradient(b1X, b1Y, 0, b1X, b1Y, w * 0.55);
+      b1.addColorStop(0, `rgba(255, 200, 170, ${0.22 + Math.sin(t * 0.2) * 0.05})`);
+      b1.addColorStop(0.35, `rgba(242, 193, 174, ${0.12 + Math.sin(t * 0.18) * 0.03})`);
+      b1.addColorStop(0.7, "rgba(232, 150, 124, 0.04)");
+      b1.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = b1;
       ctx.fillRect(0, 0, w, h);
 
-      // Coral bloom at right-top (like radial-gradient at 78% 22%)
-      const b2X = w * (0.78 + Math.sin(t * 0.1) * 0.03);
-      const b2Y = h * (0.4 + Math.cos(t * 0.09) * 0.02);
-      const b2 = ctx.createRadialGradient(b2X, b2Y, 0, b2X, b2Y, w * 0.4);
-      b2.addColorStop(0, `rgba(255, 192, 174, ${0.16 + Math.sin(t * 0.22) * 0.04})`);
-      b2.addColorStop(0.6, "rgba(255, 192, 174, 0)");
+      // Secondary peach bloom — left side
+      const b2X = w * (0.2 + Math.cos(t * 0.1) * 0.03);
+      const b2Y = h * (0.65 + Math.sin(t * 0.09) * 0.02);
+      const b2 = ctx.createRadialGradient(b2X, b2Y, 0, b2X, b2Y, w * 0.35);
+      b2.addColorStop(0, `rgba(255, 220, 200, ${0.14 + Math.sin(t * 0.22) * 0.03})`);
+      b2.addColorStop(0.5, `rgba(242, 193, 174, ${0.06 + Math.sin(t * 0.15) * 0.02})`);
+      b2.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = b2;
       ctx.fillRect(0, 0, w, h);
 
-      // Coral-red bloom at bottom-right (like radial-gradient at 70% 75%)
-      const b3X = w * (0.7 + Math.cos(t * 0.07) * 0.03);
-      const b3Y = h * (0.75 + Math.sin(t * 0.12) * 0.02);
-      const b3 = ctx.createRadialGradient(b3X, b3Y, 0, b3X, b3Y, w * 0.45);
-      b3.addColorStop(0, `rgba(212, 97, 107, ${0.12 + Math.sin(t * 0.18) * 0.03})`);
-      b3.addColorStop(0.65, "rgba(212, 97, 107, 0)");
+      // Subtle violet bloom — bottom for depth
+      const b3X = w * (0.4 + Math.cos(t * 0.07) * 0.03);
+      const b3Y = h * (0.8 + Math.sin(t * 0.12) * 0.02);
+      const b3 = ctx.createRadialGradient(b3X, b3Y, 0, b3X, b3Y, w * 0.4);
+      b3.addColorStop(0, `rgba(91, 31, 166, ${0.15 + Math.sin(t * 0.18) * 0.04})`);
+      b3.addColorStop(0.6, "rgba(58, 11, 110, 0.06)");
+      b3.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = b3;
       ctx.fillRect(0, 0, w, h);
 
