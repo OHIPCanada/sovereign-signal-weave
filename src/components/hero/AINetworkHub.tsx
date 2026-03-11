@@ -177,74 +177,42 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
               y: mt * mt * from.y + 2 * mt * t * midY + t * t * to.y,
             };
           };
-          const steps = 8;
+          const steps = 20;
           const cxKeys = Array.from({ length: steps + 1 }, (_, s) => sampleBezier(s / steps).x);
           const cyKeys = Array.from({ length: steps + 1 }, (_, s) => sampleBezier(s / steps).y);
+          const opKeys = Array.from({ length: steps + 1 }, (_, s) => {
+            const t = s / steps;
+            if (t < 0.1) return t / 0.1;
+            if (t > 0.9) return (1 - t) / 0.1;
+            return 1;
+          });
 
           return (
             <g key={`stream-${i}`}>
-              {/* Wide energy field */}
               <motion.path
-                d={pathD}
-                fill="none"
-                stroke={mod.color}
-                strokeWidth="8"
-                strokeLinecap="round"
+                d={pathD} fill="none" stroke={mod.color} strokeWidth="8" strokeLinecap="round"
                 filter="url(#streamGlow)"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 0.06 }}
                 transition={{ duration: 1.5, delay: 1.8 + i * 0.5, ease: "easeOut" }}
               />
-
-              {/* Core energy line */}
               <motion.path
-                d={pathD}
-                fill="none"
-                stroke={mod.color}
-                strokeWidth="2"
-                strokeLinecap="round"
+                d={pathD} fill="none" stroke={mod.color} strokeWidth="2" strokeLinecap="round"
                 filter="url(#streamGlow)"
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 0.4 }}
                 transition={{ duration: 1.5, delay: 1.8 + i * 0.5, ease: "easeOut" }}
               />
 
-              {/* Flowing energy pulse — follows bezier via keyframes */}
               <motion.circle
-                r="5"
-                fill={mod.color}
-                filter="url(#particleGlow)"
-                animate={{
-                  cx: cxKeys,
-                  cy: cyKeys,
-                  opacity: [0, 1, 1, 1, 1, 1, 1, 1, 0],
-                }}
-                transition={{
-                  duration: 2,
-                  delay: 3 + i * 0.8,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                  ease: "easeInOut",
-                }}
+                r="5" fill={mod.color} filter="url(#particleGlow)"
+                animate={{ cx: cxKeys, cy: cyKeys, opacity: opKeys }}
+                transition={{ duration: 2.5, delay: 3 + i * 0.8, repeat: Infinity, repeatDelay: 1.5, ease: "linear" }}
               />
-
-              {/* Trailing smaller pulse */}
               <motion.circle
-                r="2.5"
-                fill="white"
-                filter="url(#particleGlow)"
-                animate={{
-                  cx: cxKeys,
-                  cy: cyKeys,
-                  opacity: [0, 0, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0],
-                }}
-                transition={{
-                  duration: 2,
-                  delay: 3.15 + i * 0.8,
-                  repeat: Infinity,
-                  repeatDelay: 2,
-                  ease: "easeInOut",
-                }}
+                r="2.5" fill="white" filter="url(#particleGlow)"
+                animate={{ cx: cxKeys, cy: cyKeys, opacity: opKeys.map(v => v * 0.8) }}
+                transition={{ duration: 2.5, delay: 3.2 + i * 0.8, repeat: Infinity, repeatDelay: 1.5, ease: "linear" }}
               />
             </g>
           );
