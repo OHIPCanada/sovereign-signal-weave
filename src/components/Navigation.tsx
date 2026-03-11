@@ -229,7 +229,7 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
             src={docgLogo}
             alt="DocG AI"
             className={`h-[22px] md:h-[26px] w-auto transition-all duration-300 ${
-              !isScrolled && darkMode ? "brightness-0 invert" : ""
+              !isScrolled && darkMode ? "brightness-0 invert drop-shadow-[0_0_1px_rgba(255,255,255,0.8)]" : ""
             }`}
           />
         </Link>
