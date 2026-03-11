@@ -335,61 +335,180 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
                 transition={{ duration: 3 + i * 0.3, repeat: Infinity, ease: "easeInOut" }}
               />
 
-              {/* ── INNER VISUALIZATION ── */}
-              {/* Central glow sphere */}
-              <motion.circle
-                cx={pos.x}
-                cy={pos.y - cubeSize * 0.15}
-                r={cubeSize * 0.25}
-                fill={mod.color}
-                filter="url(#cubeGlow)"
-                animate={{
-                  r: [cubeSize * 0.2, cubeSize * 0.3, cubeSize * 0.2],
-                  opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{ duration: 3, delay: i * 0.4, repeat: Infinity, ease: "easeInOut" }}
-              />
+              {/* ── UNIQUE INNER VISUALIZATION PER MODULE ── */}
+              {i === 0 && /* AI CORTEX — Neural network sphere */
+                (() => {
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, rr = cubeSize * 0.35;
+                  const nodes = Array.from({ length: 10 }, (_, j) => {
+                    const a = (j / 10) * Math.PI * 2;
+                    const d = rr * (0.5 + sr(j * 73) * 0.5);
+                    return { x: cx0 + Math.cos(a) * d, y: cy0 + Math.sin(a) * d * 0.7 };
+                  });
+                  return (
+                    <g>
+                      {nodes.map((n, j) => nodes.slice(j + 1).filter((_, k) => sr(j * 11 + k * 7) > 0.4).map((n2, k) => (
+                        <motion.line key={`nn-${j}-${k}`} x1={n.x} y1={n.y} x2={n2.x} y2={n2.y}
+                          stroke={mod.color} strokeWidth="0.6" strokeOpacity="0.3"
+                          animate={{ strokeOpacity: [0.15, 0.45, 0.15] }}
+                          transition={{ duration: 2 + sr(j + k) * 2, repeat: Infinity, ease: "easeInOut" }} />
+                      )))}
+                      {nodes.map((n, j) => (
+                        <motion.circle key={`nnd-${j}`} cx={n.x} cy={n.y} r={1.5 + sr(j * 19) * 1.5}
+                          fill={mod.color} filter="url(#particleGlow)"
+                          animate={{ opacity: [0.4, 1, 0.4], r: [1.5, 2.5, 1.5] }}
+                          transition={{ duration: 2 + sr(j * 23) * 1.5, delay: sr(j * 31) * 2, repeat: Infinity, ease: "easeInOut" }} />
+                      ))}
+                      <motion.circle cx={cx0} cy={cy0} r={cubeSize * 0.12} fill={mod.color} filter="url(#cubeGlow)"
+                        animate={{ opacity: [0.3, 0.7, 0.3], r: [cubeSize * 0.1, cubeSize * 0.15, cubeSize * 0.1] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
+                    </g>
+                  );
+                })()
+              }
 
-              {/* Inner neural connections */}
-              {innerConnections.map((c, j) => (
-                <motion.line
-                  key={`ic-${i}-${j}`}
-                  x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
-                  stroke={mod.color}
-                  strokeWidth="0.5"
-                  strokeLinecap="round"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 0.25, 0.1, 0.25] }}
-                  transition={{
-                    duration: 3 + sr(i * 300 + j) * 2,
-                    delay: 1.5 + i * 0.35 + j * 0.1,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
+              {i === 1 && /* SOVEREIGN DATA — Lock / encrypted vault */
+                (() => {
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.28;
+                  return (
+                    <g>
+                      {/* Lock body */}
+                      <motion.rect x={cx0 - s * 0.6} y={cy0 - s * 0.2} width={s * 1.2} height={s * 1}
+                        rx={s * 0.12} fill="none" stroke={mod.color} strokeWidth="1.2"
+                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
+                      {/* Lock shackle */}
+                      <motion.path d={`M ${cx0 - s * 0.35} ${cy0 - s * 0.2} V ${cy0 - s * 0.65} A ${s * 0.35} ${s * 0.35} 0 0 1 ${cx0 + s * 0.35} ${cy0 - s * 0.65} V ${cy0 - s * 0.2}`}
+                        fill="none" stroke={mod.color} strokeWidth="1.2" strokeLinecap="round"
+                        animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
+                        transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
+                      {/* Keyhole dot */}
+                      <motion.circle cx={cx0} cy={cy0 + s * 0.15} r={s * 0.12} fill={mod.color} filter="url(#particleGlow)"
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
+                      {/* Encrypted data particles orbiting */}
+                      {Array.from({ length: 6 }, (_, j) => {
+                        const a = (j / 6) * Math.PI * 2;
+                        const r2 = s * 1.3;
+                        return (
+                          <motion.circle key={`sd-${j}`} r={1.2} fill={mod.color} filter="url(#particleGlow)"
+                            animate={{ cx: [cx0 + Math.cos(a) * r2, cx0 + Math.cos(a + 1) * r2], cy: [cy0 + Math.sin(a) * r2 * 0.6, cy0 + Math.sin(a + 1) * r2 * 0.6], opacity: [0.3, 0.8, 0.3] }}
+                            transition={{ duration: 4 + sr(j * 11) * 2, delay: j * 0.3, repeat: Infinity, ease: "easeInOut" }} />
+                        );
+                      })}
+                    </g>
+                  );
+                })()
+              }
 
-              {/* Inner floating particles */}
-              {innerParticles.map((p, j) => (
-                <motion.circle
-                  key={`ip-${i}-${j}`}
-                  r={p.r}
-                  fill={mod.color}
-                  filter="url(#particleGlow)"
-                  initial={{ cx: pos.x, cy: pos.y, opacity: 0 }}
-                  animate={{
-                    cx: [pos.x, p.x, p.x + (sr(i * 400 + j) - 0.5) * 10, p.x],
-                    cy: [pos.y, p.y, p.y + (sr(i * 500 + j) - 0.5) * 8, p.y],
-                    opacity: [0, 0.8, 0.4, 0.8],
-                  }}
-                  transition={{
-                    duration: p.dur,
-                    delay: 0.8 + i * 0.35 + p.delay,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
+              {i === 2 && /* AUDIT INTEGRITY — Shield with checkmark */
+                (() => {
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.35;
+                  return (
+                    <g>
+                      {/* Shield outline */}
+                      <motion.path
+                        d={`M ${cx0} ${cy0 - s} L ${cx0 + s * 0.8} ${cy0 - s * 0.5} L ${cx0 + s * 0.7} ${cy0 + s * 0.4} Q ${cx0} ${cy0 + s * 1} ${cx0} ${cy0 + s * 1} Q ${cx0} ${cy0 + s * 1} ${cx0 - s * 0.7} ${cy0 + s * 0.4} L ${cx0 - s * 0.8} ${cy0 - s * 0.5} Z`}
+                        fill="none" stroke={mod.color} strokeWidth="1.2" strokeLinejoin="round"
+                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
+                      {/* Inner shield fill */}
+                      <motion.path
+                        d={`M ${cx0} ${cy0 - s} L ${cx0 + s * 0.8} ${cy0 - s * 0.5} L ${cx0 + s * 0.7} ${cy0 + s * 0.4} Q ${cx0} ${cy0 + s * 1} ${cx0} ${cy0 + s * 1} Q ${cx0} ${cy0 + s * 1} ${cx0 - s * 0.7} ${cy0 + s * 0.4} L ${cx0 - s * 0.8} ${cy0 - s * 0.5} Z`}
+                        fill={mod.color} fillOpacity="0.08"
+                        animate={{ fillOpacity: [0.05, 0.15, 0.05] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
+                      {/* Checkmark */}
+                      <motion.path
+                        d={`M ${cx0 - s * 0.3} ${cy0} L ${cx0 - s * 0.05} ${cy0 + s * 0.3} L ${cx0 + s * 0.35} ${cy0 - s * 0.2}`}
+                        fill="none" stroke={mod.color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                        filter="url(#particleGlow)"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: [0, 1, 1, 0] }}
+                        transition={{ duration: 4, delay: 1, repeat: Infinity, ease: "easeInOut" }} />
+                      {/* Scanning ring */}
+                      <motion.circle cx={cx0} cy={cy0} fill="none" stroke={mod.color} strokeWidth="0.6"
+                        initial={{ r: 3, opacity: 0.6 }} animate={{ r: s * 1.2, opacity: 0 }}
+                        transition={{ duration: 3, delay: 2, repeat: Infinity, ease: "easeOut" }} />
+                    </g>
+                  );
+                })()
+              }
+
+              {i === 3 && /* CLINIC OS — Dashboard grid */
+                (() => {
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.3;
+                  const bars = [0.6, 1, 0.75, 0.9, 0.5];
+                  return (
+                    <g>
+                      {/* Dashboard frame */}
+                      <motion.rect x={cx0 - s} y={cy0 - s * 0.8} width={s * 2} height={s * 1.6}
+                        rx={s * 0.1} fill="none" stroke={mod.color} strokeWidth="0.8"
+                        animate={{ strokeOpacity: [0.3, 0.6, 0.3] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
+                      {/* Activity bars */}
+                      {bars.map((h, j) => {
+                        const bw = (s * 1.6) / bars.length;
+                        const bx = cx0 - s * 0.8 + j * bw + bw * 0.15;
+                        const maxH = s * 1.1;
+                        const bh = maxH * h;
+                        return (
+                          <motion.rect key={`bar-${j}`} x={bx} width={bw * 0.7} rx={1}
+                            fill={mod.color} filter="url(#particleGlow)"
+                            initial={{ y: cy0 + s * 0.6, height: 0, opacity: 0 }}
+                            animate={{ y: cy0 + s * 0.6 - bh, height: bh, opacity: [0.3, 0.7, 0.3] }}
+                            transition={{ duration: 2, delay: 1.5 + j * 0.15, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }} />
+                        );
+                      })}
+                      {/* Top status dots */}
+                      {[0, 1, 2].map(j => (
+                        <motion.circle key={`dot-${j}`} cx={cx0 - s * 0.7 + j * s * 0.25} cy={cy0 - s * 0.55}
+                          r={1.5} fill={mod.color}
+                          animate={{ opacity: [0.3, 0.8, 0.3] }}
+                          transition={{ duration: 1.5, delay: j * 0.3, repeat: Infinity, ease: "easeInOut" }} />
+                      ))}
+                    </g>
+                  );
+                })()
+              }
+
+              {i === 4 && /* VIRTUAL CARE — Doctor-patient telehealth */
+                (() => {
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.3;
+                  return (
+                    <g>
+                      {/* Person 1 (doctor) */}
+                      <motion.circle cx={cx0 - s * 0.7} cy={cy0 - s * 0.3} r={s * 0.22} fill="none" stroke={mod.color} strokeWidth="1"
+                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
+                      <motion.path d={`M ${cx0 - s * 1.1} ${cy0 + s * 0.5} Q ${cx0 - s * 0.7} ${cy0 + s * 0.05} ${cx0 - s * 0.3} ${cy0 + s * 0.5}`}
+                        fill="none" stroke={mod.color} strokeWidth="1" strokeLinecap="round"
+                        animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
+                      {/* Person 2 (patient) */}
+                      <motion.circle cx={cx0 + s * 0.7} cy={cy0 - s * 0.3} r={s * 0.22} fill="none" stroke={mod.color} strokeWidth="1"
+                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                        transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
+                      <motion.path d={`M ${cx0 + s * 0.3} ${cy0 + s * 0.5} Q ${cx0 + s * 0.7} ${cy0 + s * 0.05} ${cx0 + s * 1.1} ${cy0 + s * 0.5}`}
+                        fill="none" stroke={mod.color} strokeWidth="1" strokeLinecap="round"
+                        animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
+                        transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
+                      {/* Connection wave between them */}
+                      {[0, 1, 2].map(j => (
+                        <motion.path key={`wave-${j}`}
+                          d={`M ${cx0 - s * 0.35} ${cy0 + (j - 1) * s * 0.15} Q ${cx0} ${cy0 - s * 0.2 + (j - 1) * s * 0.15} ${cx0 + s * 0.35} ${cy0 + (j - 1) * s * 0.15}`}
+                          fill="none" stroke={mod.color} strokeWidth="0.7" strokeLinecap="round"
+                          filter="url(#particleGlow)"
+                          animate={{ strokeOpacity: [0, 0.6, 0], pathLength: [0, 1, 0] }}
+                          transition={{ duration: 2.5, delay: 1.5 + j * 0.4, repeat: Infinity, ease: "easeInOut" }} />
+                      ))}
+                      {/* Signal pulse */}
+                      <motion.circle cx={cx0} cy={cy0} fill="none" stroke={mod.color} strokeWidth="0.5"
+                        initial={{ r: 2, opacity: 0.6 }} animate={{ r: s * 1.2, opacity: 0 }}
+                        transition={{ duration: 2.5, delay: 2, repeat: Infinity, ease: "easeOut" }} />
+                    </g>
+                  );
+                })()
+              }
 
               {/* Pulse ring inside cube */}
               <motion.circle
