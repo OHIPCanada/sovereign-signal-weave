@@ -49,23 +49,21 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
   const isMobile = size === "mobile";
 
   // Layout: horizontal pipeline
-  const vbW = isMobile ? 400 : 1200;
-  const vbH = isMobile ? 700 : 500;
-  const cubeSize = isMobile ? 38 : 62;
+  const vbW = isMobile ? 440 : 1400;
+  const vbH = isMobile ? 900 : 620;
+  const cubeSize = isMobile ? 52 : 95;
 
   // Cube positions
   const positions = useMemo(() => {
     if (isMobile) {
-      // Vertical stack for mobile
       return modules.map((_, i) => ({
-        x: 200 + (i % 2 === 0 ? -20 : 20),
-        y: 80 + i * 125,
+        x: 220 + (i % 2 === 0 ? -25 : 25),
+        y: 100 + i * 160,
       }));
     }
-    // Horizontal pipeline with slight vertical wave
     return modules.map((_, i) => ({
-      x: 130 + i * 235,
-      y: 250 + Math.sin(i * 0.8) * 30,
+      x: 155 + i * 272,
+      y: 310 + Math.sin(i * 0.8) * 35,
     }));
   }, [isMobile]);
 
@@ -115,20 +113,20 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
           {/* Cube face gradients per module */}
           {modules.map((mod, i) => (
             <linearGradient key={`gt-${i}`} id={`cubeTop${i}`} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor={mod.color} stopOpacity="0.25" />
-              <stop offset="100%" stopColor={mod.color} stopOpacity="0.08" />
+              <stop offset="0%" stopColor={mod.color} stopOpacity="0.35" />
+              <stop offset="100%" stopColor={mod.color} stopOpacity="0.12" />
             </linearGradient>
           ))}
           {modules.map((mod, i) => (
             <linearGradient key={`gl-${i}`} id={`cubeLeft${i}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={mod.color} stopOpacity="0.12" />
-              <stop offset="100%" stopColor={mod.color} stopOpacity="0.04" />
+              <stop offset="0%" stopColor={mod.color} stopOpacity="0.18" />
+              <stop offset="100%" stopColor={mod.color} stopOpacity="0.06" />
             </linearGradient>
           ))}
           {modules.map((mod, i) => (
             <linearGradient key={`gr-${i}`} id={`cubeRight${i}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={mod.color} stopOpacity="0.18" />
-              <stop offset="100%" stopColor={mod.color} stopOpacity="0.06" />
+              <stop offset="0%" stopColor={mod.color} stopOpacity="0.25" />
+              <stop offset="100%" stopColor={mod.color} stopOpacity="0.08" />
             </linearGradient>
           ))}
 
@@ -271,69 +269,52 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
               />
 
               {/* ── CUBE FACES (glass) ── */}
-              {/* Left face */}
-              <polygon
-                points={faces.left}
-                fill={`url(#cubeLeft${i})`}
-                stroke={mod.color}
-                strokeWidth="0.8"
-                strokeOpacity="0.3"
-              />
-              {/* Right face */}
-              <polygon
-                points={faces.right}
-                fill={`url(#cubeRight${i})`}
-                stroke={mod.color}
-                strokeWidth="0.8"
-                strokeOpacity="0.3"
-              />
-              {/* Top face */}
-              <polygon
-                points={faces.top}
-                fill={`url(#cubeTop${i})`}
-                stroke={mod.color}
-                strokeWidth="1"
-                strokeOpacity="0.5"
-              />
+              <polygon points={faces.left} fill={`url(#cubeLeft${i})`}
+                stroke={mod.color} strokeWidth="1.2" strokeOpacity="0.4" />
+              <polygon points={faces.right} fill={`url(#cubeRight${i})`}
+                stroke={mod.color} strokeWidth="1.2" strokeOpacity="0.4" />
+              <polygon points={faces.top} fill={`url(#cubeTop${i})`}
+                stroke={mod.color} strokeWidth="1.5" strokeOpacity="0.6" />
 
               {/* ── NEON EDGES ── */}
-              {/* Top diamond edges */}
-              <motion.polygon
-                points={faces.top}
-                fill="none"
-                stroke={mod.color}
-                strokeWidth="1.5"
-                strokeOpacity="0.6"
-                filter="url(#softGlow)"
-                animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
-                transition={{ duration: 3 + i * 0.3, repeat: Infinity, ease: "easeInOut" }}
-              />
+              <motion.polygon points={faces.top} fill="none"
+                stroke={mod.color} strokeWidth="2" strokeOpacity="0.7" filter="url(#softGlow)"
+                animate={{ strokeOpacity: [0.4, 0.85, 0.4] }}
+                transition={{ duration: 3 + i * 0.3, repeat: Infinity, ease: "easeInOut" }} />
+              <motion.polygon points={faces.left} fill="none"
+                stroke={mod.color} strokeWidth="1" strokeOpacity="0.3" filter="url(#softGlow)"
+                animate={{ strokeOpacity: [0.15, 0.35, 0.15] }}
+                transition={{ duration: 3.5 + i * 0.3, repeat: Infinity, ease: "easeInOut" }} />
+              <motion.polygon points={faces.right} fill="none"
+                stroke={mod.color} strokeWidth="1" strokeOpacity="0.3" filter="url(#softGlow)"
+                animate={{ strokeOpacity: [0.15, 0.35, 0.15] }}
+                transition={{ duration: 3.5 + i * 0.3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
 
               {/* ── UNIQUE INNER VISUALIZATION PER MODULE ── */}
               {i === 0 && /* AI CORTEX — Neural network sphere */
                 (() => {
-                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, rr = cubeSize * 0.35;
-                  const nodes = Array.from({ length: 10 }, (_, j) => {
-                    const a = (j / 10) * Math.PI * 2;
-                    const d = rr * (0.5 + sr(j * 73) * 0.5);
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, rr = cubeSize * 0.5;
+                  const nodes = Array.from({ length: 14 }, (_, j) => {
+                    const a = (j / 14) * Math.PI * 2;
+                    const d = rr * (0.4 + sr(j * 73) * 0.6);
                     return { x: cx0 + Math.cos(a) * d, y: cy0 + Math.sin(a) * d * 0.7 };
                   });
                   return (
                     <g>
-                      {nodes.map((n, j) => nodes.slice(j + 1).filter((_, k) => sr(j * 11 + k * 7) > 0.4).map((n2, k) => (
+                      {nodes.map((n, j) => nodes.slice(j + 1).filter((_, k) => sr(j * 11 + k * 7) > 0.35).map((n2, k) => (
                         <motion.line key={`nn-${j}-${k}`} x1={n.x} y1={n.y} x2={n2.x} y2={n2.y}
-                          stroke={mod.color} strokeWidth="0.6" strokeOpacity="0.3"
-                          animate={{ strokeOpacity: [0.15, 0.45, 0.15] }}
+                          stroke={mod.color} strokeWidth="1" strokeOpacity="0.35"
+                          animate={{ strokeOpacity: [0.15, 0.55, 0.15] }}
                           transition={{ duration: 2 + sr(j + k) * 2, repeat: Infinity, ease: "easeInOut" }} />
                       )))}
                       {nodes.map((n, j) => (
-                        <motion.circle key={`nnd-${j}`} cx={n.x} cy={n.y} r={1.5 + sr(j * 19) * 1.5}
+                        <motion.circle key={`nnd-${j}`} cx={n.x} cy={n.y} r={2 + sr(j * 19) * 2.5}
                           fill={mod.color} filter="url(#particleGlow)"
-                          animate={{ opacity: [0.4, 1, 0.4], r: [1.5, 2.5, 1.5] }}
+                          animate={{ opacity: [0.5, 1, 0.5], r: [2, 3.5, 2] }}
                           transition={{ duration: 2 + sr(j * 23) * 1.5, delay: sr(j * 31) * 2, repeat: Infinity, ease: "easeInOut" }} />
                       ))}
-                      <motion.circle cx={cx0} cy={cy0} r={cubeSize * 0.12} fill={mod.color} filter="url(#cubeGlow)"
-                        animate={{ opacity: [0.3, 0.7, 0.3], r: [cubeSize * 0.1, cubeSize * 0.15, cubeSize * 0.1] }}
+                      <motion.circle cx={cx0} cy={cy0} r={cubeSize * 0.18} fill={mod.color} filter="url(#cubeGlow)"
+                        animate={{ opacity: [0.4, 0.8, 0.4], r: [cubeSize * 0.14, cubeSize * 0.22, cubeSize * 0.14] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
                     </g>
                   );
@@ -342,29 +323,29 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
 
               {i === 1 && /* SOVEREIGN DATA — Lock / encrypted vault */
                 (() => {
-                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.28;
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.42;
                   return (
                     <g>
-                      {/* Lock body */}
-                      <motion.rect x={cx0 - s * 0.6} y={cy0 - s * 0.2} width={s * 1.2} height={s * 1}
-                        rx={s * 0.12} fill="none" stroke={mod.color} strokeWidth="1.2"
-                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                      <motion.rect x={cx0 - s * 0.7} y={cy0 - s * 0.25} width={s * 1.4} height={s * 1.15}
+                        rx={s * 0.12} fill="none" stroke={mod.color} strokeWidth="1.8"
+                        animate={{ strokeOpacity: [0.4, 0.85, 0.4] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Lock shackle */}
-                      <motion.path d={`M ${cx0 - s * 0.35} ${cy0 - s * 0.2} V ${cy0 - s * 0.65} A ${s * 0.35} ${s * 0.35} 0 0 1 ${cx0 + s * 0.35} ${cy0 - s * 0.65} V ${cy0 - s * 0.2}`}
-                        fill="none" stroke={mod.color} strokeWidth="1.2" strokeLinecap="round"
-                        animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
+                      <motion.rect x={cx0 - s * 0.7} y={cy0 - s * 0.25} width={s * 1.4} height={s * 1.15}
+                        rx={s * 0.12} fill={mod.color} fillOpacity="0.06"
+                        animate={{ fillOpacity: [0.04, 0.12, 0.04] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
+                      <motion.path d={`M ${cx0 - s * 0.4} ${cy0 - s * 0.25} V ${cy0 - s * 0.75} A ${s * 0.4} ${s * 0.4} 0 0 1 ${cx0 + s * 0.4} ${cy0 - s * 0.75} V ${cy0 - s * 0.25}`}
+                        fill="none" stroke={mod.color} strokeWidth="1.8" strokeLinecap="round"
+                        animate={{ strokeOpacity: [0.35, 0.8, 0.35] }}
                         transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Keyhole dot */}
-                      <motion.circle cx={cx0} cy={cy0 + s * 0.15} r={s * 0.12} fill={mod.color} filter="url(#particleGlow)"
+                      <motion.circle cx={cx0} cy={cy0 + s * 0.2} r={s * 0.15} fill={mod.color} filter="url(#particleGlow)"
                         animate={{ opacity: [0.5, 1, 0.5] }}
                         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Encrypted data particles orbiting */}
-                      {Array.from({ length: 6 }, (_, j) => {
-                        const a = (j / 6) * Math.PI * 2;
-                        const r2 = s * 1.3;
+                      {Array.from({ length: 8 }, (_, j) => {
+                        const a = (j / 8) * Math.PI * 2;
+                        const r2 = s * 1.4;
                         return (
-                          <motion.circle key={`sd-${j}`} r={1.2} fill={mod.color} filter="url(#particleGlow)"
+                          <motion.circle key={`sd-${j}`} r={2} fill={mod.color} filter="url(#particleGlow)"
                             animate={{ cx: [cx0 + Math.cos(a) * r2, cx0 + Math.cos(a + 1) * r2], cy: [cy0 + Math.sin(a) * r2 * 0.6, cy0 + Math.sin(a + 1) * r2 * 0.6], opacity: [0.3, 0.8, 0.3] }}
                             transition={{ duration: 4 + sr(j * 11) * 2, delay: j * 0.3, repeat: Infinity, ease: "easeInOut" }} />
                         );
@@ -376,32 +357,28 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
 
               {i === 2 && /* AUDIT INTEGRITY — Shield with checkmark */
                 (() => {
-                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.35;
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.5;
                   return (
                     <g>
-                      {/* Shield outline */}
                       <motion.path
-                        d={`M ${cx0} ${cy0 - s} L ${cx0 + s * 0.8} ${cy0 - s * 0.5} L ${cx0 + s * 0.7} ${cy0 + s * 0.4} Q ${cx0} ${cy0 + s * 1} ${cx0} ${cy0 + s * 1} Q ${cx0} ${cy0 + s * 1} ${cx0 - s * 0.7} ${cy0 + s * 0.4} L ${cx0 - s * 0.8} ${cy0 - s * 0.5} Z`}
-                        fill="none" stroke={mod.color} strokeWidth="1.2" strokeLinejoin="round"
-                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                        d={`M ${cx0} ${cy0 - s} L ${cx0 + s * 0.85} ${cy0 - s * 0.5} L ${cx0 + s * 0.75} ${cy0 + s * 0.45} Q ${cx0} ${cy0 + s * 1.05} ${cx0} ${cy0 + s * 1.05} Q ${cx0} ${cy0 + s * 1.05} ${cx0 - s * 0.75} ${cy0 + s * 0.45} L ${cx0 - s * 0.85} ${cy0 - s * 0.5} Z`}
+                        fill="none" stroke={mod.color} strokeWidth="1.8" strokeLinejoin="round"
+                        animate={{ strokeOpacity: [0.45, 0.9, 0.45] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Inner shield fill */}
                       <motion.path
-                        d={`M ${cx0} ${cy0 - s} L ${cx0 + s * 0.8} ${cy0 - s * 0.5} L ${cx0 + s * 0.7} ${cy0 + s * 0.4} Q ${cx0} ${cy0 + s * 1} ${cx0} ${cy0 + s * 1} Q ${cx0} ${cy0 + s * 1} ${cx0 - s * 0.7} ${cy0 + s * 0.4} L ${cx0 - s * 0.8} ${cy0 - s * 0.5} Z`}
-                        fill={mod.color} fillOpacity="0.08"
-                        animate={{ fillOpacity: [0.05, 0.15, 0.05] }}
+                        d={`M ${cx0} ${cy0 - s} L ${cx0 + s * 0.85} ${cy0 - s * 0.5} L ${cx0 + s * 0.75} ${cy0 + s * 0.45} Q ${cx0} ${cy0 + s * 1.05} ${cx0} ${cy0 + s * 1.05} Q ${cx0} ${cy0 + s * 1.05} ${cx0 - s * 0.75} ${cy0 + s * 0.45} L ${cx0 - s * 0.85} ${cy0 - s * 0.5} Z`}
+                        fill={mod.color} fillOpacity="0.1"
+                        animate={{ fillOpacity: [0.06, 0.18, 0.06] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Checkmark */}
                       <motion.path
-                        d={`M ${cx0 - s * 0.3} ${cy0} L ${cx0 - s * 0.05} ${cy0 + s * 0.3} L ${cx0 + s * 0.35} ${cy0 - s * 0.2}`}
-                        fill="none" stroke={mod.color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                        d={`M ${cx0 - s * 0.35} ${cy0} L ${cx0 - s * 0.05} ${cy0 + s * 0.35} L ${cx0 + s * 0.4} ${cy0 - s * 0.25}`}
+                        fill="none" stroke={mod.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                         filter="url(#particleGlow)"
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: [0, 1, 1, 0] }}
                         transition={{ duration: 4, delay: 1, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Scanning ring */}
-                      <motion.circle cx={cx0} cy={cy0} fill="none" stroke={mod.color} strokeWidth="0.6"
-                        initial={{ r: 3, opacity: 0.6 }} animate={{ r: s * 1.2, opacity: 0 }}
+                      <motion.circle cx={cx0} cy={cy0} fill="none" stroke={mod.color} strokeWidth="1"
+                        initial={{ r: 4, opacity: 0.6 }} animate={{ r: s * 1.3, opacity: 0 }}
                         transition={{ duration: 3, delay: 2, repeat: Infinity, ease: "easeOut" }} />
                     </g>
                   );
@@ -410,34 +387,35 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
 
               {i === 3 && /* CLINIC OS — Dashboard grid */
                 (() => {
-                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.3;
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.45;
                   const bars = [0.6, 1, 0.75, 0.9, 0.5];
                   return (
                     <g>
-                      {/* Dashboard frame */}
-                      <motion.rect x={cx0 - s} y={cy0 - s * 0.8} width={s * 2} height={s * 1.6}
-                        rx={s * 0.1} fill="none" stroke={mod.color} strokeWidth="0.8"
-                        animate={{ strokeOpacity: [0.3, 0.6, 0.3] }}
+                      <motion.rect x={cx0 - s * 1.1} y={cy0 - s * 0.9} width={s * 2.2} height={s * 1.8}
+                        rx={s * 0.1} fill="none" stroke={mod.color} strokeWidth="1.2"
+                        animate={{ strokeOpacity: [0.35, 0.7, 0.35] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Activity bars */}
+                      <motion.rect x={cx0 - s * 1.1} y={cy0 - s * 0.9} width={s * 2.2} height={s * 1.8}
+                        rx={s * 0.1} fill={mod.color} fillOpacity="0.04"
+                        animate={{ fillOpacity: [0.03, 0.08, 0.03] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
                       {bars.map((h, j) => {
-                        const bw = (s * 1.6) / bars.length;
-                        const bx = cx0 - s * 0.8 + j * bw + bw * 0.15;
-                        const maxH = s * 1.1;
+                        const bw = (s * 1.8) / bars.length;
+                        const bx = cx0 - s * 0.9 + j * bw + bw * 0.15;
+                        const maxH = s * 1.3;
                         const bh = maxH * h;
                         return (
-                          <motion.rect key={`bar-${j}`} x={bx} width={bw * 0.7} rx={1}
+                          <motion.rect key={`bar-${j}`} x={bx} width={bw * 0.7} rx={1.5}
                             fill={mod.color} filter="url(#particleGlow)"
-                            initial={{ y: cy0 + s * 0.6, height: 0, opacity: 0 }}
-                            animate={{ y: cy0 + s * 0.6 - bh, height: bh, opacity: [0.3, 0.7, 0.3] }}
+                            initial={{ y: cy0 + s * 0.7, height: 0, opacity: 0 }}
+                            animate={{ y: cy0 + s * 0.7 - bh, height: bh, opacity: [0.35, 0.75, 0.35] }}
                             transition={{ duration: 2, delay: 1.5 + j * 0.15, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }} />
                         );
                       })}
-                      {/* Top status dots */}
                       {[0, 1, 2].map(j => (
-                        <motion.circle key={`dot-${j}`} cx={cx0 - s * 0.7 + j * s * 0.25} cy={cy0 - s * 0.55}
-                          r={1.5} fill={mod.color}
-                          animate={{ opacity: [0.3, 0.8, 0.3] }}
+                        <motion.circle key={`dot-${j}`} cx={cx0 - s * 0.8 + j * s * 0.3} cy={cy0 - s * 0.65}
+                          r={2.5} fill={mod.color}
+                          animate={{ opacity: [0.35, 0.85, 0.35] }}
                           transition={{ duration: 1.5, delay: j * 0.3, repeat: Infinity, ease: "easeInOut" }} />
                       ))}
                     </g>
@@ -447,58 +425,45 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
 
               {i === 4 && /* VIRTUAL CARE — Doctor-patient telehealth */
                 (() => {
-                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.3;
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.45;
                   return (
                     <g>
-                      {/* Person 1 (doctor) */}
-                      <motion.circle cx={cx0 - s * 0.7} cy={cy0 - s * 0.3} r={s * 0.22} fill="none" stroke={mod.color} strokeWidth="1"
-                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                      <motion.circle cx={cx0 - s * 0.75} cy={cy0 - s * 0.35} r={s * 0.3} fill="none" stroke={mod.color} strokeWidth="1.5"
+                        animate={{ strokeOpacity: [0.45, 0.9, 0.45] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      <motion.path d={`M ${cx0 - s * 1.1} ${cy0 + s * 0.5} Q ${cx0 - s * 0.7} ${cy0 + s * 0.05} ${cx0 - s * 0.3} ${cy0 + s * 0.5}`}
-                        fill="none" stroke={mod.color} strokeWidth="1" strokeLinecap="round"
-                        animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
+                      <motion.path d={`M ${cx0 - s * 1.2} ${cy0 + s * 0.55} Q ${cx0 - s * 0.75} ${cy0 + s * 0.05} ${cx0 - s * 0.3} ${cy0 + s * 0.55}`}
+                        fill="none" stroke={mod.color} strokeWidth="1.5" strokeLinecap="round"
+                        animate={{ strokeOpacity: [0.35, 0.75, 0.35] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Person 2 (patient) */}
-                      <motion.circle cx={cx0 + s * 0.7} cy={cy0 - s * 0.3} r={s * 0.22} fill="none" stroke={mod.color} strokeWidth="1"
-                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                      <motion.circle cx={cx0 + s * 0.75} cy={cy0 - s * 0.35} r={s * 0.3} fill="none" stroke={mod.color} strokeWidth="1.5"
+                        animate={{ strokeOpacity: [0.45, 0.9, 0.45] }}
                         transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
-                      <motion.path d={`M ${cx0 + s * 0.3} ${cy0 + s * 0.5} Q ${cx0 + s * 0.7} ${cy0 + s * 0.05} ${cx0 + s * 1.1} ${cy0 + s * 0.5}`}
-                        fill="none" stroke={mod.color} strokeWidth="1" strokeLinecap="round"
-                        animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
+                      <motion.path d={`M ${cx0 + s * 0.3} ${cy0 + s * 0.55} Q ${cx0 + s * 0.75} ${cy0 + s * 0.05} ${cx0 + s * 1.2} ${cy0 + s * 0.55}`}
+                        fill="none" stroke={mod.color} strokeWidth="1.5" strokeLinecap="round"
+                        animate={{ strokeOpacity: [0.35, 0.75, 0.35] }}
                         transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Connection wave between them */}
                       {[0, 1, 2].map(j => (
                         <motion.path key={`wave-${j}`}
-                          d={`M ${cx0 - s * 0.35} ${cy0 + (j - 1) * s * 0.15} Q ${cx0} ${cy0 - s * 0.2 + (j - 1) * s * 0.15} ${cx0 + s * 0.35} ${cy0 + (j - 1) * s * 0.15}`}
-                          fill="none" stroke={mod.color} strokeWidth="0.7" strokeLinecap="round"
+                          d={`M ${cx0 - s * 0.4} ${cy0 + (j - 1) * s * 0.2} Q ${cx0} ${cy0 - s * 0.25 + (j - 1) * s * 0.2} ${cx0 + s * 0.4} ${cy0 + (j - 1) * s * 0.2}`}
+                          fill="none" stroke={mod.color} strokeWidth="1.2" strokeLinecap="round"
                           filter="url(#particleGlow)"
-                          animate={{ strokeOpacity: [0, 0.6, 0], pathLength: [0, 1, 0] }}
+                          animate={{ strokeOpacity: [0, 0.7, 0], pathLength: [0, 1, 0] }}
                           transition={{ duration: 2.5, delay: 1.5 + j * 0.4, repeat: Infinity, ease: "easeInOut" }} />
                       ))}
-                      {/* Signal pulse */}
-                      <motion.circle cx={cx0} cy={cy0} fill="none" stroke={mod.color} strokeWidth="0.5"
-                        initial={{ r: 2, opacity: 0.6 }} animate={{ r: s * 1.2, opacity: 0 }}
+                      <motion.circle cx={cx0} cy={cy0} fill="none" stroke={mod.color} strokeWidth="0.8"
+                        initial={{ r: 3, opacity: 0.6 }} animate={{ r: s * 1.4, opacity: 0 }}
                         transition={{ duration: 2.5, delay: 2, repeat: Infinity, ease: "easeOut" }} />
                     </g>
                   );
                 })()
               }
 
-              {/* Pulse ring inside cube */}
               <motion.circle
-                cx={pos.x}
-                cy={pos.y - cubeSize * 0.15}
-                fill="none"
-                stroke={mod.color}
-                strokeWidth="0.8"
-                initial={{ r: 5, opacity: 0.4 }}
-                animate={{ r: cubeSize * 0.5, opacity: 0, strokeWidth: 0.2 }}
-                transition={{
-                  duration: 3,
-                  delay: 2 + i * 0.7,
-                  repeat: Infinity,
-                  ease: "easeOut",
-                }}
+                cx={pos.x} cy={pos.y - cubeSize * 0.15} fill="none"
+                stroke={mod.color} strokeWidth="1.2"
+                initial={{ r: 8, opacity: 0.5 }}
+                animate={{ r: cubeSize * 0.65, opacity: 0, strokeWidth: 0.3 }}
+                transition={{ duration: 3, delay: 2 + i * 0.7, repeat: Infinity, ease: "easeOut" }}
               />
             </motion.g>
           );
@@ -509,7 +474,7 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
       {modules.map((mod, i) => {
         const pos = positions[i];
         const leftPct = (pos.x / vbW) * 100;
-        const topPct = ((pos.y + cubeSize * 1.3) / vbH) * 100;
+        const topPct = ((pos.y + cubeSize * 1.45) / vbH) * 100;
 
         return (
           <motion.div
@@ -525,13 +490,13 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
             transition={{ duration: 0.8, delay: 1.5 + i * 0.35 }}
           >
             <span
-              className={`font-bold tracking-[0.18em] uppercase whitespace-nowrap ${isMobile ? "text-[8px]" : "text-[11px]"}`}
-              style={{ color: mod.color, textShadow: `0 0 20px rgba(${mod.glowColor},0.5)` }}
+              className={`font-bold tracking-[0.18em] uppercase whitespace-nowrap ${isMobile ? "text-[10px]" : "text-[13px]"}`}
+              style={{ color: mod.color, textShadow: `0 0 24px rgba(${mod.glowColor},0.6)` }}
             >
               {mod.label}
             </span>
             <span
-              className={`tracking-[0.12em] uppercase whitespace-nowrap opacity-60 ${isMobile ? "text-[6px]" : "text-[8px]"}`}
+              className={`tracking-[0.12em] uppercase whitespace-nowrap opacity-65 ${isMobile ? "text-[7px]" : "text-[10px]"}`}
               style={{ color: mod.color }}
             >
               {mod.desc}
