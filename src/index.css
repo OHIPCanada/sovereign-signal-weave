@@ -355,12 +355,14 @@
 
 /* Mobile adjustments for hero */
 @media (max-width: 768px) {
+  .hero-bg {
+    background: linear-gradient(165deg, #16002A 0%, #0B0613 100%);
+  }
   .hero-bg::before {
-    width: 22px;
-    opacity: 0.75;
+    display: none;
   }
   .hero-bg::after {
-    opacity: 0.03;
+    display: none;
   }
 }
 
