@@ -357,32 +357,28 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
 
               {i === 2 && /* AUDIT INTEGRITY — Shield with checkmark */
                 (() => {
-                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.35;
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.5;
                   return (
                     <g>
-                      {/* Shield outline */}
                       <motion.path
-                        d={`M ${cx0} ${cy0 - s} L ${cx0 + s * 0.8} ${cy0 - s * 0.5} L ${cx0 + s * 0.7} ${cy0 + s * 0.4} Q ${cx0} ${cy0 + s * 1} ${cx0} ${cy0 + s * 1} Q ${cx0} ${cy0 + s * 1} ${cx0 - s * 0.7} ${cy0 + s * 0.4} L ${cx0 - s * 0.8} ${cy0 - s * 0.5} Z`}
-                        fill="none" stroke={mod.color} strokeWidth="1.2" strokeLinejoin="round"
-                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                        d={`M ${cx0} ${cy0 - s} L ${cx0 + s * 0.85} ${cy0 - s * 0.5} L ${cx0 + s * 0.75} ${cy0 + s * 0.45} Q ${cx0} ${cy0 + s * 1.05} ${cx0} ${cy0 + s * 1.05} Q ${cx0} ${cy0 + s * 1.05} ${cx0 - s * 0.75} ${cy0 + s * 0.45} L ${cx0 - s * 0.85} ${cy0 - s * 0.5} Z`}
+                        fill="none" stroke={mod.color} strokeWidth="1.8" strokeLinejoin="round"
+                        animate={{ strokeOpacity: [0.45, 0.9, 0.45] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Inner shield fill */}
                       <motion.path
-                        d={`M ${cx0} ${cy0 - s} L ${cx0 + s * 0.8} ${cy0 - s * 0.5} L ${cx0 + s * 0.7} ${cy0 + s * 0.4} Q ${cx0} ${cy0 + s * 1} ${cx0} ${cy0 + s * 1} Q ${cx0} ${cy0 + s * 1} ${cx0 - s * 0.7} ${cy0 + s * 0.4} L ${cx0 - s * 0.8} ${cy0 - s * 0.5} Z`}
-                        fill={mod.color} fillOpacity="0.08"
-                        animate={{ fillOpacity: [0.05, 0.15, 0.05] }}
+                        d={`M ${cx0} ${cy0 - s} L ${cx0 + s * 0.85} ${cy0 - s * 0.5} L ${cx0 + s * 0.75} ${cy0 + s * 0.45} Q ${cx0} ${cy0 + s * 1.05} ${cx0} ${cy0 + s * 1.05} Q ${cx0} ${cy0 + s * 1.05} ${cx0 - s * 0.75} ${cy0 + s * 0.45} L ${cx0 - s * 0.85} ${cy0 - s * 0.5} Z`}
+                        fill={mod.color} fillOpacity="0.1"
+                        animate={{ fillOpacity: [0.06, 0.18, 0.06] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Checkmark */}
                       <motion.path
-                        d={`M ${cx0 - s * 0.3} ${cy0} L ${cx0 - s * 0.05} ${cy0 + s * 0.3} L ${cx0 + s * 0.35} ${cy0 - s * 0.2}`}
-                        fill="none" stroke={mod.color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                        d={`M ${cx0 - s * 0.35} ${cy0} L ${cx0 - s * 0.05} ${cy0 + s * 0.35} L ${cx0 + s * 0.4} ${cy0 - s * 0.25}`}
+                        fill="none" stroke={mod.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
                         filter="url(#particleGlow)"
                         initial={{ pathLength: 0 }}
                         animate={{ pathLength: [0, 1, 1, 0] }}
                         transition={{ duration: 4, delay: 1, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Scanning ring */}
-                      <motion.circle cx={cx0} cy={cy0} fill="none" stroke={mod.color} strokeWidth="0.6"
-                        initial={{ r: 3, opacity: 0.6 }} animate={{ r: s * 1.2, opacity: 0 }}
+                      <motion.circle cx={cx0} cy={cy0} fill="none" stroke={mod.color} strokeWidth="1"
+                        initial={{ r: 4, opacity: 0.6 }} animate={{ r: s * 1.3, opacity: 0 }}
                         transition={{ duration: 3, delay: 2, repeat: Infinity, ease: "easeOut" }} />
                     </g>
                   );
