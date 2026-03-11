@@ -223,13 +223,22 @@ const MobileBrainWave = () => {
             0% { stroke-dashoffset: -800; }
             100% { stroke-dashoffset: 0; }
           }
-          @keyframes nodePulse {
-            0%, 100% { opacity: 0.25; }
-            50% { opacity: 0.85; }
+          @keyframes nodeCascade {
+            0%, 100% { opacity: 0.15; r: 1.2; }
+            30% { opacity: 1; r: 2.8; }
+            60% { opacity: 0.5; r: 1.8; }
           }
           @keyframes connPulse {
             0%, 100% { stroke-opacity: 0.08; }
             50% { stroke-opacity: 0.35; }
+          }
+          @keyframes orbitDash {
+            0% { stroke-dashoffset: 600; }
+            100% { stroke-dashoffset: 0; }
+          }
+          @keyframes orbitGlow {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.35; }
           }
           @keyframes travelPulse {
             0% { stroke-dashoffset: 40; opacity: 0; }
@@ -326,17 +335,21 @@ const MobileBrainWave = () => {
               );
             })}
             {/* Nodes */}
-            {leftNodes.map(([nx, ny], i) => (
-              <circle
-                key={`ln-${i}`} cx={nx} cy={ny}
-                r={i % 5 === 0 ? 2.2 : 1.5}
-                fill="#00ddff"
-                filter={i % 5 === 0 ? "url(#glow)" : undefined}
-                style={{
-                  animation: `nodePulse ${2 + (i % 5) * 0.4}s ease-in-out ${i * 0.2}s infinite`,
-                }}
-              />
-            ))}
+            {leftNodes.map(([nx, ny], i) => {
+              const dist = Math.sqrt(nx * nx + ny * ny);
+              const cascadeDelay = dist * 0.03;
+              return (
+                <circle
+                  key={`ln-${i}`} cx={nx} cy={ny}
+                  r={i % 5 === 0 ? 2.2 : 1.5}
+                  fill="#00ddff"
+                  filter={i % 5 === 0 ? "url(#glow)" : undefined}
+                  style={{
+                    animation: `nodeCascade ${2.5 + (i % 3) * 0.3}s ease-in-out ${cascadeDelay}s infinite`,
+                  }}
+                />
+              );
+            })}
           </g>
 
           {/* === RIGHT HEMISPHERE — Neural Network (warm orange/gold) === */}
@@ -367,17 +380,21 @@ const MobileBrainWave = () => {
                 />
               );
             })}
-            {rightNodes.map(([nx, ny], i) => (
-              <circle
-                key={`rn-${i}`} cx={nx} cy={ny}
-                r={i % 5 === 0 ? 2.2 : 1.5}
-                fill="#ffcc44"
-                filter={i % 5 === 0 ? "url(#glow)" : undefined}
-                style={{
-                  animation: `nodePulse ${2 + (i % 5) * 0.4}s ease-in-out ${i * 0.2 + 0.4}s infinite`,
-                }}
-              />
-            ))}
+            {rightNodes.map(([nx, ny], i) => {
+              const dist = Math.sqrt(nx * nx + ny * ny);
+              const cascadeDelay = dist * 0.03 + 0.2;
+              return (
+                <circle
+                  key={`rn-${i}`} cx={nx} cy={ny}
+                  r={i % 5 === 0 ? 2.2 : 1.5}
+                  fill="#ffcc44"
+                  filter={i % 5 === 0 ? "url(#glow)" : undefined}
+                  style={{
+                    animation: `nodeCascade ${2.5 + (i % 3) * 0.3}s ease-in-out ${cascadeDelay}s infinite`,
+                  }}
+                />
+              );
+            })}
           </g>
 
           {/* === BRIDGE CONNECTIONS (cross-hemisphere) === */}
@@ -408,6 +425,35 @@ const MobileBrainWave = () => {
               <line x1={-2 * s} y1="0" x2={2 * s} y2="0" stroke="rgba(255,255,255,0.6)" strokeWidth="0.3" />
             </g>
           ))}
+
+          {/* === ORBIT RING connecting modules === */}
+          <ellipse
+            cx="0" cy="0" rx="95" ry="80"
+            fill="none" stroke="url(#waveCool)" strokeWidth="0.5"
+            strokeDasharray="6 4"
+            style={{ animation: "orbitDash 12s linear infinite, orbitGlow 4s ease-in-out infinite" }}
+          />
+          <ellipse
+            cx="0" cy="0" rx="95" ry="80"
+            fill="none" stroke="url(#waveWarm)" strokeWidth="0.3"
+            strokeDasharray="3 8"
+            style={{ animation: "orbitDash 18s linear infinite reverse, orbitGlow 5s ease-in-out 1s infinite" }}
+          />
+          {/* Orbit node markers at module positions */}
+          {modules.map((mod, i) => {
+            const rad = (mod.angle * Math.PI) / 180;
+            const ox = Math.cos(rad) * 95;
+            const oy = Math.sin(rad) * 80;
+            return (
+              <circle
+                key={`orbit-node-${i}`}
+                cx={ox} cy={oy} r="2"
+                fill={`rgb(${mod.color})`}
+                filter="url(#glow)"
+                style={{ animation: `nodeCascade 3s ease-in-out ${mod.delay}s infinite` }}
+              />
+            );
+          })}
         </svg>
 
         {/* === MODULE CAPSULES — positioned around the brain === */}
