@@ -114,7 +114,7 @@ const MobileParticleWave = () => {
       ctx.stroke();
 
       // --- Dense dot-matrix particles on terrain ---
-      const spacing = 5 * dpr;
+      const spacing = 3.5 * dpr;
       const cols = Math.ceil(w / spacing);
       const rows = Math.ceil((h - (terrainTop - h * 0.15)) / spacing);
 
