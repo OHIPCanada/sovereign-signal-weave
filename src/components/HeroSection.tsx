@@ -9,6 +9,7 @@ import virtualCareOrb from "@/assets/virtual-care-orb.png";
 import sovereignDataOrb from "@/assets/sovereign-data-orb.png";
 import auditIntegrityOrb from "@/assets/audit-integrity-orb.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
+import MobilePipeline from "@/components/hero/MobilePipeline";
 
 const orbs = [
   { src: aiCortexOrb, alt: "AI Cortex", label: "AI CORTEX", delay: 1.8 },
@@ -44,7 +45,7 @@ const HeroSection = () => {
   const orbContainerWidth = isMobile ? 55 : isTablet ? 90 : 100;
 
   return (
-    <section className={`hero-bg relative overflow-hidden ${isMobile ? 'min-h-[50vh]' : isTablet ? 'min-h-[80vh]' : 'min-h-screen'}`}>
+    <section className={`hero-bg relative overflow-hidden ${isMobile ? 'min-h-[85vh]' : isTablet ? 'min-h-[80vh]' : 'min-h-screen'}`}>
       {/* INTELLIGENCE - Large Background Text */}
       <div className="absolute inset-0 flex items-start justify-center pt-[88px] md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-3 md:px-0">
         <motion.h1
@@ -57,90 +58,92 @@ const HeroSection = () => {
         </motion.h1>
       </div>
 
-      {/* Centered Brain Composition + Orbs */}
-      <div className="absolute inset-0 flex items-end justify-center">
-        <div
-          className="relative"
-          style={{ width: containerSize, height: containerSize, marginBottom: bottomMargin }}
-        >
-          {/* Human image + neural plexus — centered */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1, y: [0, -12, 0] }}
-            transition={{ 
-              opacity: { duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] },
-              scale: { duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] },
-              y: { duration: 7, repeat: Infinity, ease: "easeInOut" },
-            }}
-            className="absolute inset-0 flex items-center justify-center"
-            style={{
-              transform: `perspective(1200px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`,
-              transition: "transform 0.4s ease-out",
-            }}
+      {/* Mobile: Glass Cube Pipeline */}
+      {isMobile && (
+        <div className="absolute inset-0 top-[100px] bottom-[20px]">
+          <MobilePipeline />
+        </div>
+      )}
+
+      {/* Desktop/Tablet: Brain Composition + Orbs */}
+      {!isMobile && (
+        <div className="absolute inset-0 flex items-end justify-center">
+          <div
+            className="relative"
+            style={{ width: containerSize, height: containerSize, marginBottom: bottomMargin }}
           >
-            {/* Neural Plexus SVG — overlaid on brain area, no separate animation (inherits parent) */}
-            {!isMobile && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1, y: [0, -12, 0] }}
+              transition={{ 
+                opacity: { duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] },
+                scale: { duration: 1.5, delay: 0.5, ease: [0.16, 1, 0.3, 1] },
+                y: { duration: 7, repeat: Infinity, ease: "easeInOut" },
+              }}
+              className="absolute inset-0 flex items-center justify-center"
+              style={{
+                transform: `perspective(1200px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`,
+                transition: "transform 0.4s ease-out",
+              }}
+            >
               <div
                 className="absolute z-20 pointer-events-none"
                 style={{ top: "15%", left: "20%", width: "70%", height: "70%" }}
               >
                 <NeuralPlexus mouseX={mouseX} mouseY={mouseY} />
               </div>
-            )}
-
-            {/* Human profile image */}
-            <motion.img
-              src={neuralProfile}
-              alt="Neural Intelligence Profile"
-              className={isMobile ? "w-[320px] h-auto relative z-10" : isTablet ? "w-[750px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
-              style={{
-                filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
-              }}
-            />
-          </motion.div>
-
-          {/* Orbs — equidistant around the glow edge */}
-          {orbs.map((orb, i) => {
-            const angle = orbAngles[i] * (Math.PI / 180);
-            const r = orbRadiiSet[i];
-            const cx = center + Math.cos(angle) * r;
-            const cy = center + Math.sin(angle) * r;
-            const floatDelay = i * 0.5;
-
-            return (
-              <motion.div
-                key={orb.label}
-                className="absolute z-30 flex flex-col items-center"
+              <motion.img
+                src={neuralProfile}
+                alt="Neural Intelligence Profile"
+                className={isTablet ? "w-[750px] h-auto relative z-10" : "w-[900px] md:w-[1200px] lg:w-[1600px] h-auto relative z-10"}
                 style={{
-                  left: cx - orbContainerWidth / 2,
-                  top: cy - orbContainerWidth / 2,
-                  width: orbContainerWidth,
+                  filter: "drop-shadow(0 0 120px rgba(123, 97, 255, 0.35)) drop-shadow(0 0 200px rgba(180, 160, 230, 0.3)) drop-shadow(0 0 80px rgba(230, 230, 250, 0.25))",
                 }}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.2, delay: orb.delay, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <motion.img
-                  src={orb.src}
-                  alt={orb.alt}
-                  className={`${orbImgSize} h-auto`}
-                  style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3))" }}
-                  animate={{ y: [0, -6, 0], scale: [1, 1.02, 1] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: floatDelay }}
-                />
-                <motion.p
-                  className={`${isMobile ? "text-[9px]" : "text-[10px]"} font-bold tracking-[0.15em] uppercase text-foreground text-center mt-1 whitespace-nowrap leading-tight`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: orb.delay + 0.7 }}
+              />
+            </motion.div>
+
+            {orbs.map((orb, i) => {
+              const angle = orbAngles[i] * (Math.PI / 180);
+              const r = orbRadiiSet[i];
+              const cx = center + Math.cos(angle) * r;
+              const cy = center + Math.sin(angle) * r;
+              const floatDelay = i * 0.5;
+
+              return (
+                <motion.div
+                  key={orb.label}
+                  className="absolute z-30 flex flex-col items-center"
+                  style={{
+                    left: cx - orbContainerWidth / 2,
+                    top: cy - orbContainerWidth / 2,
+                    width: orbContainerWidth,
+                  }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 1.2, delay: orb.delay, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  {orb.label}
-                </motion.p>
-              </motion.div>
-            );
-          })}
+                  <motion.img
+                    src={orb.src}
+                    alt={orb.alt}
+                    className={`${orbImgSize} h-auto`}
+                    style={{ filter: "drop-shadow(0 0 30px rgba(123, 97, 255, 0.3))" }}
+                    animate={{ y: [0, -6, 0], scale: [1, 1.02, 1] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: floatDelay }}
+                  />
+                  <motion.p
+                    className="text-[10px] font-bold tracking-[0.15em] uppercase text-foreground text-center mt-1 whitespace-nowrap leading-tight"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: orb.delay + 0.7 }}
+                  >
+                    {orb.label}
+                  </motion.p>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
     </section>
   );
