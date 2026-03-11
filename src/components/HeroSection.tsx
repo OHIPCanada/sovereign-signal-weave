@@ -38,10 +38,10 @@ const HeroSection = () => {
   // Responsive dimensions
   const containerSize = isMobile ? 340 : isTablet ? 850 : 1200;
   const center = containerSize / 2;
-  const orbRadiiSet = isMobile ? [140, 140, 140, 120, 120] : isTablet ? [340, 340, 340, 280, 280] : [450, 450, 450, 370, 370];
+  const orbRadiiSet = isMobile ? [160, 160, 160, 140, 140] : isTablet ? [380, 380, 380, 320, 320] : [500, 500, 500, 420, 420];
   const bottomMargin = isMobile ? -80 : isTablet ? -240 : -320;
-  const orbImgSize = isMobile ? "w-[40px]" : isTablet ? "w-[80px]" : "w-[100px] lg:w-[130px]";
-  const orbContainerWidth = isMobile ? 50 : isTablet ? 90 : 100;
+  const orbImgSize = isMobile ? "w-[36px]" : isTablet ? "w-[75px]" : "w-[100px] lg:w-[130px]";
+  const orbContainerWidth = isMobile ? 70 : isTablet ? 110 : 140;
 
   return (
     <section className={`hero-bg relative overflow-hidden ${isMobile ? 'min-h-[55vh]' : isTablet ? 'min-h-[80vh]' : 'min-h-screen'}`}>
