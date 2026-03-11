@@ -425,37 +425,33 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
 
               {i === 4 && /* VIRTUAL CARE — Doctor-patient telehealth */
                 (() => {
-                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.3;
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.45;
                   return (
                     <g>
-                      {/* Person 1 (doctor) */}
-                      <motion.circle cx={cx0 - s * 0.7} cy={cy0 - s * 0.3} r={s * 0.22} fill="none" stroke={mod.color} strokeWidth="1"
-                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                      <motion.circle cx={cx0 - s * 0.75} cy={cy0 - s * 0.35} r={s * 0.3} fill="none" stroke={mod.color} strokeWidth="1.5"
+                        animate={{ strokeOpacity: [0.45, 0.9, 0.45] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      <motion.path d={`M ${cx0 - s * 1.1} ${cy0 + s * 0.5} Q ${cx0 - s * 0.7} ${cy0 + s * 0.05} ${cx0 - s * 0.3} ${cy0 + s * 0.5}`}
-                        fill="none" stroke={mod.color} strokeWidth="1" strokeLinecap="round"
-                        animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
+                      <motion.path d={`M ${cx0 - s * 1.2} ${cy0 + s * 0.55} Q ${cx0 - s * 0.75} ${cy0 + s * 0.05} ${cx0 - s * 0.3} ${cy0 + s * 0.55}`}
+                        fill="none" stroke={mod.color} strokeWidth="1.5" strokeLinecap="round"
+                        animate={{ strokeOpacity: [0.35, 0.75, 0.35] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Person 2 (patient) */}
-                      <motion.circle cx={cx0 + s * 0.7} cy={cy0 - s * 0.3} r={s * 0.22} fill="none" stroke={mod.color} strokeWidth="1"
-                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                      <motion.circle cx={cx0 + s * 0.75} cy={cy0 - s * 0.35} r={s * 0.3} fill="none" stroke={mod.color} strokeWidth="1.5"
+                        animate={{ strokeOpacity: [0.45, 0.9, 0.45] }}
                         transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
-                      <motion.path d={`M ${cx0 + s * 0.3} ${cy0 + s * 0.5} Q ${cx0 + s * 0.7} ${cy0 + s * 0.05} ${cx0 + s * 1.1} ${cy0 + s * 0.5}`}
-                        fill="none" stroke={mod.color} strokeWidth="1" strokeLinecap="round"
-                        animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
+                      <motion.path d={`M ${cx0 + s * 0.3} ${cy0 + s * 0.55} Q ${cx0 + s * 0.75} ${cy0 + s * 0.05} ${cx0 + s * 1.2} ${cy0 + s * 0.55}`}
+                        fill="none" stroke={mod.color} strokeWidth="1.5" strokeLinecap="round"
+                        animate={{ strokeOpacity: [0.35, 0.75, 0.35] }}
                         transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Connection wave between them */}
                       {[0, 1, 2].map(j => (
                         <motion.path key={`wave-${j}`}
-                          d={`M ${cx0 - s * 0.35} ${cy0 + (j - 1) * s * 0.15} Q ${cx0} ${cy0 - s * 0.2 + (j - 1) * s * 0.15} ${cx0 + s * 0.35} ${cy0 + (j - 1) * s * 0.15}`}
-                          fill="none" stroke={mod.color} strokeWidth="0.7" strokeLinecap="round"
+                          d={`M ${cx0 - s * 0.4} ${cy0 + (j - 1) * s * 0.2} Q ${cx0} ${cy0 - s * 0.25 + (j - 1) * s * 0.2} ${cx0 + s * 0.4} ${cy0 + (j - 1) * s * 0.2}`}
+                          fill="none" stroke={mod.color} strokeWidth="1.2" strokeLinecap="round"
                           filter="url(#particleGlow)"
-                          animate={{ strokeOpacity: [0, 0.6, 0], pathLength: [0, 1, 0] }}
+                          animate={{ strokeOpacity: [0, 0.7, 0], pathLength: [0, 1, 0] }}
                           transition={{ duration: 2.5, delay: 1.5 + j * 0.4, repeat: Infinity, ease: "easeInOut" }} />
                       ))}
-                      {/* Signal pulse */}
-                      <motion.circle cx={cx0} cy={cy0} fill="none" stroke={mod.color} strokeWidth="0.5"
-                        initial={{ r: 2, opacity: 0.6 }} animate={{ r: s * 1.2, opacity: 0 }}
+                      <motion.circle cx={cx0} cy={cy0} fill="none" stroke={mod.color} strokeWidth="0.8"
+                        initial={{ r: 3, opacity: 0.6 }} animate={{ r: s * 1.4, opacity: 0 }}
                         transition={{ duration: 2.5, delay: 2, repeat: Infinity, ease: "easeOut" }} />
                     </g>
                   );
