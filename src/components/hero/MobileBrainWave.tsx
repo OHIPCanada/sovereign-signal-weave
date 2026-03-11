@@ -2,12 +2,70 @@ import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 
 const modules = [
-  { label: "AI CORTEX", x: 50, y: 8, delay: 2.0, color: "0,200,255" },
-  { label: "SOVEREIGN DATA", x: 8, y: 38, delay: 2.6, color: "0,200,255" },
-  { label: "AUDIT INTEGRITY", x: 92, y: 38, delay: 3.2, color: "255,170,68" },
-  { label: "CLINIC OS", x: 12, y: 68, delay: 3.8, color: "123,97,255" },
-  { label: "VIRTUAL CARE", x: 88, y: 68, delay: 4.4, color: "255,170,68" },
+  { label: "AI CORTEX", angle: -90, radius: 0.42, delay: 2.0, color: "0,200,255" },
+  { label: "SOVEREIGN DATA", angle: -162, radius: 0.44, delay: 2.6, color: "123,97,255" },
+  { label: "AUDIT INTEGRITY", angle: -18, radius: 0.44, delay: 3.2, color: "255,170,68" },
+  { label: "CLINIC OS", angle: 210, radius: 0.40, delay: 3.8, color: "123,97,255" },
+  { label: "VIRTUAL CARE", angle: 330, radius: 0.40, delay: 4.4, color: "255,170,68" },
 ];
+
+// Neural network nodes forming a brain silhouette shape
+// Organized as left (cool) and right (warm) clusters
+const leftNodes: [number, number][] = [
+  // Frontal
+  [-12, -52], [-22, -48], [-30, -40], [-18, -38],
+  [-36, -30], [-26, -28], [-14, -26], [-42, -18],
+  [-32, -14], [-20, -10], [-8, -16],
+  // Temporal
+  [-48, -6], [-44, 6], [-38, 16], [-28, 4],
+  [-16, 2], [-6, -4],
+  // Parietal
+  [-34, 26], [-22, 20], [-10, 14],
+  [-26, 36], [-14, 32], [-6, 24],
+  // Occipital
+  [-18, 44], [-8, 40], [-24, 50],
+];
+
+const rightNodes: [number, number][] = [
+  // Frontal
+  [12, -52], [22, -48], [30, -40], [18, -38],
+  [36, -30], [26, -28], [14, -26], [42, -18],
+  [32, -14], [20, -10], [8, -16],
+  // Temporal
+  [48, -6], [44, 6], [38, 16], [28, 4],
+  [16, 2], [6, -4],
+  // Parietal
+  [34, 26], [22, 20], [10, 14],
+  [26, 36], [14, 32], [6, 24],
+  // Occipital
+  [18, 44], [8, 40], [24, 50],
+];
+
+// Generate connections between nearby nodes
+function generateConnections(nodes: [number, number][], maxDist = 22): [number, number][] {
+  const conns: [number, number][] = [];
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i][0] - nodes[j][0];
+      const dy = nodes[i][1] - nodes[j][1];
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < maxDist) conns.push([i, j]);
+    }
+  }
+  return conns;
+}
+
+// Cross-hemisphere connections (bridge)
+const bridgeConnections: [number, number, number, number][] = [
+  [-6, -4, 6, -4],
+  [-8, -16, 8, -16],
+  [-6, 24, 6, 24],
+  [-8, 40, 8, 40],
+  [-10, 14, 10, 14],
+];
+
+const leftConns = generateConnections(leftNodes);
+const rightConns = generateConnections(rightNodes);
 
 const MobileBrainWave = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -154,8 +212,8 @@ const MobileBrainWave = () => {
     <div className="absolute inset-0 w-full h-full overflow-hidden">
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
-      {/* SVG Brain + Waveform — centered in terrain */}
-      <div className="absolute left-0 right-0" style={{ top: "28%", height: "65%" }}>
+      {/* Neural Network Brain + Waveform — centered */}
+      <div className="absolute inset-0 flex items-center justify-center" style={{ top: "8%" }}>
         <style>{`
           @keyframes waveFlow {
             0% { stroke-dashoffset: 800; }
@@ -165,264 +223,241 @@ const MobileBrainWave = () => {
             0% { stroke-dashoffset: -800; }
             100% { stroke-dashoffset: 0; }
           }
-          @keyframes brainPulse {
-            0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 8px rgba(0,200,255,0.3)); }
-            50% { opacity: 1; filter: drop-shadow(0 0 24px rgba(0,200,255,0.6)); }
+          @keyframes nodePulse {
+            0%, 100% { opacity: 0.25; }
+            50% { opacity: 0.85; }
           }
-          @keyframes brainPulseWarm {
-            0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 8px rgba(255,180,80,0.3)); }
-            50% { opacity: 1; filter: drop-shadow(0 0 24px rgba(255,180,80,0.6)); }
+          @keyframes connPulse {
+            0%, 100% { stroke-opacity: 0.08; }
+            50% { stroke-opacity: 0.35; }
+          }
+          @keyframes travelPulse {
+            0% { stroke-dashoffset: 40; opacity: 0; }
+            20% { opacity: 0.7; }
+            80% { opacity: 0.7; }
+            100% { stroke-dashoffset: 0; opacity: 0; }
           }
           @keyframes sparkle {
             0%, 100% { opacity: 0; transform: scale(0.3); }
-            50% { opacity: 1; transform: scale(1.1); }
-          }
-          @keyframes nodeGlow {
-            0%, 100% { r: 1.5; opacity: 0.3; }
-            50% { r: 3.5; opacity: 1; }
-          }
-          @keyframes neuralPulse {
-            0%, 100% { stroke-opacity: 0.1; }
-            50% { stroke-opacity: 0.5; }
-          }
-          @keyframes neuralNodePulse {
-            0%, 100% { opacity: 0.3; r: 1.2; }
-            50% { opacity: 0.9; r: 2; }
+            50% { opacity: 0.8; transform: scale(1); }
           }
           .wave-line { stroke-dasharray: 12 6; animation: waveFlow 8s linear infinite; }
-          .wave-line-reverse { stroke-dasharray: 10 8; animation: waveFlowReverse 10s linear infinite; }
-          .brain-left { animation: brainPulse 3.5s ease-in-out infinite; }
-          .brain-right { animation: brainPulseWarm 3.5s ease-in-out 0.5s infinite; }
+          .wave-line-r { stroke-dasharray: 10 8; animation: waveFlowReverse 10s linear infinite; }
         `}</style>
 
         <svg
-          viewBox="0 0 400 280"
-          className="absolute inset-0 w-full h-full"
-          preserveAspectRatio="xMidYMid slice"
+          viewBox="-120 -80 240 160"
+          className="w-[92vw] max-w-[400px] h-auto"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
-            <radialGradient id="brainLeftGrad" cx="35%" cy="40%" r="60%">
-              <stop offset="0%" stopColor="#00e5ff" stopOpacity="0.95" />
-              <stop offset="35%" stopColor="#00aacc" stopOpacity="0.8" />
-              <stop offset="70%" stopColor="#006688" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#003344" stopOpacity="0.2" />
+            <radialGradient id="glowLeft" cx="30%" cy="40%" r="70%">
+              <stop offset="0%" stopColor="#00e5ff" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#00e5ff" stopOpacity="0" />
             </radialGradient>
-            <radialGradient id="brainRightGrad" cx="65%" cy="40%" r="60%">
-              <stop offset="0%" stopColor="#ffdd55" stopOpacity="0.95" />
-              <stop offset="35%" stopColor="#ee9922" stopOpacity="0.8" />
-              <stop offset="70%" stopColor="#aa6611" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#553300" stopOpacity="0.2" />
+            <radialGradient id="glowRight" cx="70%" cy="40%" r="70%">
+              <stop offset="0%" stopColor="#ffaa44" stopOpacity="0.10" />
+              <stop offset="100%" stopColor="#ffaa44" stopOpacity="0" />
             </radialGradient>
             <linearGradient id="waveCool" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#00ccff" stopOpacity="0.7" />
-              <stop offset="50%" stopColor="#7b61ff" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#ffaa44" stopOpacity="0.25" />
+              <stop offset="0%" stopColor="#00ccff" stopOpacity="0.6" />
+              <stop offset="50%" stopColor="#7b61ff" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#ffaa44" stopOpacity="0.2" />
             </linearGradient>
             <linearGradient id="waveWarm" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#7b61ff" stopOpacity="0.25" />
-              <stop offset="50%" stopColor="#dd8833" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#ffcc66" stopOpacity="0.7" />
+              <stop offset="0%" stopColor="#7b61ff" stopOpacity="0.2" />
+              <stop offset="50%" stopColor="#dd8833" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#ffcc66" stopOpacity="0.6" />
             </linearGradient>
-            <filter id="svgGlow">
-              <feGaussianBlur stdDeviation="2.5" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="b" />
+              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
-            <filter id="svgGlowStrong">
-              <feGaussianBlur stdDeviation="6" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-            <filter id="brainGlow">
-              <feGaussianBlur stdDeviation="10" result="blur" />
-              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            <filter id="softGlow">
+              <feGaussianBlur stdDeviation="6" result="b" />
+              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
           </defs>
 
-          {/* === WAVEFORM LINES === */}
+          {/* Ambient glow behind brain */}
+          <ellipse cx="-25" cy="0" rx="55" ry="60" fill="url(#glowLeft)" />
+          <ellipse cx="25" cy="0" rx="55" ry="60" fill="url(#glowRight)" />
+
+          {/* === WAVEFORM LINES through brain === */}
           <path
-            d="M -20 120 Q 40 90, 80 115 Q 120 138, 155 108 Q 175 95, 200 105 Q 225 115, 245 100 Q 280 78, 320 115 Q 360 140, 420 108"
-            fill="none" stroke="url(#waveCool)" strokeWidth="1.6"
-            className="wave-line" filter="url(#svgGlow)"
+            d="M -120 0 Q -80 -20, -50 -5 Q -20 10, 0 -2 Q 20 -14, 50 2 Q 80 18, 120 -5"
+            fill="none" stroke="url(#waveCool)" strokeWidth="1"
+            className="wave-line" filter="url(#glow)"
           />
           <path
-            d="M -30 132 Q 50 158, 90 125 Q 130 95, 170 125 Q 200 142, 230 118 Q 260 95, 300 128 Q 340 155, 430 120"
-            fill="none" stroke="url(#waveWarm)" strokeWidth="1.1"
-            className="wave-line-reverse" filter="url(#svgGlow)" opacity="0.5"
-          />
-          <path
-            d="M -10 115 Q 60 100, 100 118 Q 140 135, 180 110 Q 220 88, 260 118 Q 300 140, 350 105 Q 390 80, 420 115"
-            fill="none" stroke="url(#waveCool)" strokeWidth="0.7"
-            className="wave-line" opacity="0.2" style={{ animationDuration: "12s" }}
+            d="M -120 8 Q -70 25, -40 5 Q -10 -12, 20 8 Q 50 25, 80 5 Q 100 -8, 120 10"
+            fill="none" stroke="url(#waveWarm)" strokeWidth="0.7"
+            className="wave-line-r" filter="url(#glow)" opacity="0.4"
           />
 
-          {/* === LARGE BRAIN — centered, detailed with neural network === */}
-          <g transform="translate(200, 115)" filter="url(#brainGlow)">
-            {/* LEFT HEMISPHERE — cool teal/cyan, detailed brain shape */}
-            <g className="brain-left">
-              {/* Main shape — realistic brain contour */}
-              <path
-                d="M -3 -55 C -10 -62, -22 -68, -38 -65 C -52 -62, -62 -52, -66 -38 C -70 -24, -72 -8, -70 8 C -68 22, -64 36, -56 46 C -48 55, -36 62, -24 64 C -14 66, -6 60, -3 52 Z"
-                fill="url(#brainLeftGrad)" stroke="rgba(0,220,255,0.25)" strokeWidth="0.6"
+          {/* === LEFT HEMISPHERE — Neural Network (cool cyan/teal) === */}
+          <g>
+            {/* Connections */}
+            {leftConns.map(([i, j], idx) => (
+              <line
+                key={`lc-${idx}`}
+                x1={leftNodes[i][0]} y1={leftNodes[i][1]}
+                x2={leftNodes[j][0]} y2={leftNodes[j][1]}
+                stroke="#00ccff" strokeWidth="0.4"
+                style={{
+                  animation: `connPulse ${2.5 + (idx % 4) * 0.7}s ease-in-out ${idx * 0.15}s infinite`,
+                }}
               />
-              {/* Gyri/sulci folds — dense neural pattern */}
-              <path d="M -8 -48 Q -22 -50, -38 -45 Q -50 -40, -56 -30" fill="none" stroke="rgba(0,230,255,0.35)" strokeWidth="0.7" />
-              <path d="M -6 -38 Q -20 -36, -42 -28 Q -55 -22, -62 -12" fill="none" stroke="rgba(0,220,255,0.3)" strokeWidth="0.6" />
-              <path d="M -5 -26 Q -18 -22, -35 -14 Q -52 -6, -66 0" fill="none" stroke="rgba(0,210,255,0.28)" strokeWidth="0.6" />
-              <path d="M -5 -14 Q -22 -8, -40 0 Q -56 8, -68 14" fill="none" stroke="rgba(0,200,255,0.25)" strokeWidth="0.5" />
-              <path d="M -4 0 Q -18 6, -36 14 Q -50 22, -62 28" fill="none" stroke="rgba(0,200,255,0.22)" strokeWidth="0.5" />
-              <path d="M -4 14 Q -16 20, -32 28 Q -44 36, -54 42" fill="none" stroke="rgba(0,190,255,0.2)" strokeWidth="0.5" />
-              <path d="M -5 28 Q -14 34, -26 42 Q -36 48, -44 52" fill="none" stroke="rgba(0,180,255,0.18)" strokeWidth="0.4" />
-              <path d="M -6 42 Q -12 48, -20 54" fill="none" stroke="rgba(0,170,255,0.15)" strokeWidth="0.4" />
-              {/* Temporal lobe bump */}
-              <path d="M -58 -10 Q -66 -2, -70 8 Q -68 18, -64 28" fill="none" stroke="rgba(0,220,255,0.2)" strokeWidth="0.5" />
-              {/* Frontal lobe detail */}
-              <path d="M -15 -58 Q -30 -60, -45 -55 Q -55 -48, -60 -38" fill="none" stroke="rgba(0,240,255,0.2)" strokeWidth="0.4" />
-              
-              {/* Neural network nodes — left */}
-              {[
-                [-20, -45], [-40, -35], [-55, -18], [-48, 5], [-35, 22],
-                [-22, 38], [-42, -50], [-60, -5], [-50, 30], [-30, 50],
-                [-15, -30], [-32, -8], [-45, 15], [-25, 52], [-12, 10],
-                [-55, -35], [-38, 42], [-18, -15], [-50, -25], [-28, -42],
-              ].map(([nx, ny], i) => (
-                <circle key={`ln-${i}`} cx={nx} cy={ny} r="1.3"
-                  fill="#00ddff" opacity="0.5"
-                  style={{ animation: `neuralNodePulse ${2 + (i % 4) * 0.5}s ease-in-out ${i * 0.3}s infinite` }}
+            ))}
+            {/* Traveling pulse on select connections */}
+            {leftConns.filter((_, i) => i % 3 === 0).map(([i, j], idx) => {
+              const x1 = leftNodes[i][0], y1 = leftNodes[i][1];
+              const x2 = leftNodes[j][0], y2 = leftNodes[j][1];
+              return (
+                <line
+                  key={`lt-${idx}`}
+                  x1={x1} y1={y1} x2={x2} y2={y2}
+                  stroke="#00ffff" strokeWidth="0.8"
+                  strokeDasharray="4 36"
+                  style={{
+                    animation: `travelPulse ${3 + idx * 0.5}s ease-in-out ${idx * 0.8}s infinite`,
+                  }}
                 />
-              ))}
-              {/* Neural connections — left */}
-              {[
-                "M -20 -45 L -40 -35", "M -40 -35 L -55 -18", "M -55 -18 L -48 5",
-                "M -48 5 L -35 22", "M -35 22 L -22 38", "M -20 -45 L -15 -30",
-                "M -15 -30 L -32 -8", "M -32 -8 L -45 15", "M -42 -50 L -40 -35",
-                "M -60 -5 L -55 -18", "M -50 30 L -35 22", "M -30 50 L -22 38",
-                "M -12 10 L -32 -8", "M -55 -35 L -40 -35", "M -38 42 L -35 22",
-                "M -18 -15 L -32 -8", "M -50 -25 L -55 -18", "M -28 -42 L -20 -45",
-                "M -48 5 L -12 10", "M -25 52 L -30 50",
-              ].map((d, i) => (
-                <path key={`lc-${i}`} d={d} fill="none" stroke="rgba(0,220,255,0.2)"
-                  strokeWidth="0.4"
-                  style={{ animation: `neuralPulse ${3 + (i % 3)}s ease-in-out ${i * 0.2}s infinite` }}
-                />
-              ))}
-            </g>
-
-            {/* RIGHT HEMISPHERE — warm orange/gold */}
-            <g className="brain-right">
-              <path
-                d="M 3 -55 C 10 -62, 22 -68, 38 -65 C 52 -62, 62 -52, 66 -38 C 70 -24, 72 -8, 70 8 C 68 22, 64 36, 56 46 C 48 55, 36 62, 24 64 C 14 66, 6 60, 3 52 Z"
-                fill="url(#brainRightGrad)" stroke="rgba(255,200,80,0.25)" strokeWidth="0.6"
+              );
+            })}
+            {/* Nodes */}
+            {leftNodes.map(([nx, ny], i) => (
+              <circle
+                key={`ln-${i}`} cx={nx} cy={ny}
+                r={i % 5 === 0 ? 2.2 : 1.5}
+                fill="#00ddff"
+                filter={i % 5 === 0 ? "url(#glow)" : undefined}
+                style={{
+                  animation: `nodePulse ${2 + (i % 5) * 0.4}s ease-in-out ${i * 0.2}s infinite`,
+                }}
               />
-              {/* Gyri/sulci folds */}
-              <path d="M 8 -48 Q 22 -50, 38 -45 Q 50 -40, 56 -30" fill="none" stroke="rgba(255,220,100,0.35)" strokeWidth="0.7" />
-              <path d="M 6 -38 Q 20 -36, 42 -28 Q 55 -22, 62 -12" fill="none" stroke="rgba(255,210,90,0.3)" strokeWidth="0.6" />
-              <path d="M 5 -26 Q 18 -22, 35 -14 Q 52 -6, 66 0" fill="none" stroke="rgba(255,200,80,0.28)" strokeWidth="0.6" />
-              <path d="M 5 -14 Q 22 -8, 40 0 Q 56 8, 68 14" fill="none" stroke="rgba(255,190,70,0.25)" strokeWidth="0.5" />
-              <path d="M 4 0 Q 18 6, 36 14 Q 50 22, 62 28" fill="none" stroke="rgba(255,180,60,0.22)" strokeWidth="0.5" />
-              <path d="M 4 14 Q 16 20, 32 28 Q 44 36, 54 42" fill="none" stroke="rgba(255,170,50,0.2)" strokeWidth="0.5" />
-              <path d="M 5 28 Q 14 34, 26 42 Q 36 48, 44 52" fill="none" stroke="rgba(255,160,40,0.18)" strokeWidth="0.4" />
-              <path d="M 6 42 Q 12 48, 20 54" fill="none" stroke="rgba(255,150,30,0.15)" strokeWidth="0.4" />
-              <path d="M 58 -10 Q 66 -2, 70 8 Q 68 18, 64 28" fill="none" stroke="rgba(255,200,80,0.2)" strokeWidth="0.5" />
-              <path d="M 15 -58 Q 30 -60, 45 -55 Q 55 -48, 60 -38" fill="none" stroke="rgba(255,230,120,0.2)" strokeWidth="0.4" />
-
-              {/* Neural network nodes — right */}
-              {[
-                [20, -45], [40, -35], [55, -18], [48, 5], [35, 22],
-                [22, 38], [42, -50], [60, -5], [50, 30], [30, 50],
-                [15, -30], [32, -8], [45, 15], [25, 52], [12, 10],
-                [55, -35], [38, 42], [18, -15], [50, -25], [28, -42],
-              ].map(([nx, ny], i) => (
-                <circle key={`rn-${i}`} cx={nx} cy={ny} r="1.3"
-                  fill="#ffcc44" opacity="0.5"
-                  style={{ animation: `neuralNodePulse ${2 + (i % 4) * 0.5}s ease-in-out ${i * 0.25 + 0.5}s infinite` }}
-                />
-              ))}
-              {/* Neural connections — right */}
-              {[
-                "M 20 -45 L 40 -35", "M 40 -35 L 55 -18", "M 55 -18 L 48 5",
-                "M 48 5 L 35 22", "M 35 22 L 22 38", "M 20 -45 L 15 -30",
-                "M 15 -30 L 32 -8", "M 32 -8 L 45 15", "M 42 -50 L 40 -35",
-                "M 60 -5 L 55 -18", "M 50 30 L 35 22", "M 30 50 L 22 38",
-                "M 12 10 L 32 -8", "M 55 -35 L 40 -35", "M 38 42 L 35 22",
-                "M 18 -15 L 32 -8", "M 50 -25 L 55 -18", "M 28 -42 L 20 -45",
-                "M 48 5 L 12 10", "M 25 52 L 30 50",
-              ].map((d, i) => (
-                <path key={`rc-${i}`} d={d} fill="none" stroke="rgba(255,200,80,0.2)"
-                  strokeWidth="0.4"
-                  style={{ animation: `neuralPulse ${3 + (i % 3)}s ease-in-out ${i * 0.2 + 0.3}s infinite` }}
-                />
-              ))}
-            </g>
-
-            {/* Central fissure */}
-            <line x1="0" y1="-58" x2="0" y2="60" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
-            {/* Brain stem hint */}
-            <path d="M -6 58 Q 0 72, 6 58" fill="none" stroke="rgba(180,160,220,0.2)" strokeWidth="0.8" />
+            ))}
           </g>
 
-          {/* === WAVE NODES === */}
-          {[
-            { cx: 60, cy: 118, d: 0 }, { cx: 120, cy: 115, d: 0.4 },
-            { cx: 280, cy: 108, d: 0.8 }, { cx: 340, cy: 118, d: 1.2 },
-            { cx: 40, cy: 128, d: 1.6 }, { cx: 360, cy: 108, d: 2.0 },
-          ].map((n, i) => (
-            <circle key={`n-${i}`} cx={n.cx} cy={n.cy} r="2"
-              fill={n.cx < 200 ? "#00ccff" : "#ffaa44"} filter="url(#svgGlow)" opacity="0.5"
-              style={{ animation: `nodeGlow 2.5s ease-in-out ${n.d}s infinite` }}
+          {/* === RIGHT HEMISPHERE — Neural Network (warm orange/gold) === */}
+          <g>
+            {rightConns.map(([i, j], idx) => (
+              <line
+                key={`rc-${idx}`}
+                x1={rightNodes[i][0]} y1={rightNodes[i][1]}
+                x2={rightNodes[j][0]} y2={rightNodes[j][1]}
+                stroke="#ffaa44" strokeWidth="0.4"
+                style={{
+                  animation: `connPulse ${2.5 + (idx % 4) * 0.7}s ease-in-out ${idx * 0.15 + 0.3}s infinite`,
+                }}
+              />
+            ))}
+            {rightConns.filter((_, i) => i % 3 === 0).map(([i, j], idx) => {
+              const x1 = rightNodes[i][0], y1 = rightNodes[i][1];
+              const x2 = rightNodes[j][0], y2 = rightNodes[j][1];
+              return (
+                <line
+                  key={`rt-${idx}`}
+                  x1={x1} y1={y1} x2={x2} y2={y2}
+                  stroke="#ffcc66" strokeWidth="0.8"
+                  strokeDasharray="4 36"
+                  style={{
+                    animation: `travelPulse ${3 + idx * 0.5}s ease-in-out ${idx * 0.8 + 0.5}s infinite`,
+                  }}
+                />
+              );
+            })}
+            {rightNodes.map(([nx, ny], i) => (
+              <circle
+                key={`rn-${i}`} cx={nx} cy={ny}
+                r={i % 5 === 0 ? 2.2 : 1.5}
+                fill="#ffcc44"
+                filter={i % 5 === 0 ? "url(#glow)" : undefined}
+                style={{
+                  animation: `nodePulse ${2 + (i % 5) * 0.4}s ease-in-out ${i * 0.2 + 0.4}s infinite`,
+                }}
+              />
+            ))}
+          </g>
+
+          {/* === BRIDGE CONNECTIONS (cross-hemisphere) === */}
+          {bridgeConnections.map(([x1, y1, x2, y2], i) => (
+            <line
+              key={`br-${i}`}
+              x1={x1} y1={y1} x2={x2} y2={y2}
+              stroke="#c084fc" strokeWidth="0.5" opacity="0.3"
+              style={{
+                animation: `connPulse ${3}s ease-in-out ${i * 0.6}s infinite`,
+              }}
             />
           ))}
 
-          {/* === SPARKLES === */}
+          {/* Central axis */}
+          <line x1="0" y1="-56" x2="0" y2="54" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
+
+          {/* Sparkles */}
           {[
-            { x: 35, y: 95, s: 1.0, d: 0.3 }, { x: 85, y: 145, s: 0.7, d: 0.9 },
-            { x: 140, y: 78, s: 0.9, d: 1.5 }, { x: 255, y: 75, s: 0.8, d: 2.1 },
-            { x: 310, y: 140, s: 1.0, d: 2.7 }, { x: 360, y: 88, s: 0.7, d: 3.3 },
-            { x: 55, y: 155, s: 0.5, d: 1.0 }, { x: 330, y: 150, s: 0.7, d: 3.8 },
-            { x: 175, y: 68, s: 0.4, d: 0.6 }, { x: 370, y: 125, s: 0.8, d: 4.2 },
-            { x: 100, y: 65, s: 0.6, d: 1.8 }, { x: 290, y: 62, s: 0.5, d: 2.4 },
-          ].map((p, i) => (
-            <g key={`s-${i}`} transform={`translate(${p.x}, ${p.y})`}
-              style={{ animation: `sparkle ${2 + p.s}s ease-in-out ${p.d}s infinite` }}
+            [-60, -30, 0.8, 0.3], [-80, 10, 0.6, 1.2], [60, -25, 0.7, 0.8],
+            [75, 15, 0.9, 1.8], [-45, 40, 0.5, 2.3], [50, 38, 0.6, 2.8],
+            [-95, -10, 0.4, 1.5], [90, -5, 0.5, 3.2],
+          ].map(([x, y, s, d], i) => (
+            <g key={`sp-${i}`} transform={`translate(${x}, ${y})`}
+              style={{ animation: `sparkle ${2.5 + s}s ease-in-out ${d}s infinite` }}
             >
-              <line x1="0" y1={-2.5 * p.s} x2="0" y2={2.5 * p.s} stroke="rgba(255,255,255,0.7)" strokeWidth="0.4" />
-              <line x1={-2.5 * p.s} y1="0" x2={2.5 * p.s} y2="0" stroke="rgba(255,255,255,0.7)" strokeWidth="0.4" />
+              <line x1="0" y1={-2 * s} x2="0" y2={2 * s} stroke="rgba(255,255,255,0.6)" strokeWidth="0.3" />
+              <line x1={-2 * s} y1="0" x2={2 * s} y2="0" stroke="rgba(255,255,255,0.6)" strokeWidth="0.3" />
             </g>
           ))}
         </svg>
 
-        {/* === MODULE POP-UPS === */}
-        {modules.map((mod) => (
-          <motion.div
-            key={mod.label}
-            className="absolute pointer-events-none"
-            style={{ left: `${mod.x}%`, top: `${mod.y}%`, transform: "translate(-50%, -50%)" }}
-            initial={{ opacity: 0, scale: 0.4, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: mod.delay, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="absolute left-1/2 -translate-x-1/2"
-              style={{
-                bottom: -14, width: 1, height: 14,
-                background: `linear-gradient(to bottom, rgba(${mod.color},0.5), transparent)`,
-              }}
-            />
-            <div style={{
-              padding: "3px 9px", borderRadius: 18,
-              background: "rgba(255,255,255,0.07)",
-              backdropFilter: "blur(12px)",
-              border: "1px solid rgba(255,255,255,0.14)",
-              boxShadow: `0 0 10px rgba(${mod.color},0.12), inset 0 1px 0 rgba(255,255,255,0.08)`,
-              whiteSpace: "nowrap" as const,
-            }}>
-              <span style={{
-                fontSize: 7.5, fontWeight: 600, letterSpacing: "0.12em",
-                color: "rgba(255,255,255,0.85)", fontFamily: "monospace",
+        {/* === MODULE CAPSULES — positioned around the brain === */}
+        {modules.map((mod) => {
+          const rad = (mod.angle * Math.PI) / 180;
+          const px = 50 + Math.cos(rad) * mod.radius * 100;
+          const py = 50 + Math.sin(rad) * mod.radius * 100;
+          return (
+            <motion.div
+              key={mod.label}
+              className="absolute pointer-events-none flex flex-col items-center"
+              style={{ left: `${px}%`, top: `${py}%`, transform: "translate(-50%, -50%)" }}
+              initial={{ opacity: 0, scale: 0.3 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: mod.delay, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {/* Energy line to center */}
+              <div
+                className="absolute"
+                style={{
+                  left: "50%",
+                  top: "100%",
+                  width: 1,
+                  height: 12,
+                  marginLeft: -0.5,
+                  background: `linear-gradient(to bottom, rgba(${mod.color},0.4), transparent)`,
+                }}
+              />
+              <div style={{
+                padding: "3px 8px",
+                borderRadius: 14,
+                background: "rgba(255,255,255,0.06)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                boxShadow: `0 0 8px rgba(${mod.color},0.1), inset 0 1px 0 rgba(255,255,255,0.06)`,
               }}>
-                {mod.label}
-              </span>
-            </div>
-          </motion.div>
-        ))}
+                <span style={{
+                  fontSize: 7,
+                  fontWeight: 700,
+                  letterSpacing: "0.12em",
+                  color: "rgba(255,255,255,0.8)",
+                  fontFamily: "monospace",
+                  whiteSpace: "nowrap",
+                }}>
+                  {mod.label}
+                </span>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
