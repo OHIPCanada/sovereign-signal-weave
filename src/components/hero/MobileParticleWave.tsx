@@ -33,7 +33,7 @@ const MobileParticleWave = () => {
 
       const cx = w / 2;
       // Ridge sits at ~65% height — prominent terrain
-      const terrainTop = h * 0.55;
+      const terrainTop = h * 0.38;
 
       // --- Ridge line: tall central peak ---
       const ridge = (x: number): number => {
