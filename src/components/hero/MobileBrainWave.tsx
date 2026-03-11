@@ -223,13 +223,22 @@ const MobileBrainWave = () => {
             0% { stroke-dashoffset: -800; }
             100% { stroke-dashoffset: 0; }
           }
-          @keyframes nodePulse {
-            0%, 100% { opacity: 0.25; }
-            50% { opacity: 0.85; }
+          @keyframes nodeCascade {
+            0%, 100% { opacity: 0.15; r: 1.2; }
+            30% { opacity: 1; r: 2.8; }
+            60% { opacity: 0.5; r: 1.8; }
           }
           @keyframes connPulse {
             0%, 100% { stroke-opacity: 0.08; }
             50% { stroke-opacity: 0.35; }
+          }
+          @keyframes orbitDash {
+            0% { stroke-dashoffset: 600; }
+            100% { stroke-dashoffset: 0; }
+          }
+          @keyframes orbitGlow {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.35; }
           }
           @keyframes travelPulse {
             0% { stroke-dashoffset: 40; opacity: 0; }
