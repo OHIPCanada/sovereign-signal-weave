@@ -49,7 +49,7 @@ const HeroSection = () => {
       {/* Mobile: Particle Wave Background */}
       {isMobile && (
         <div className="absolute inset-0">
-          <MobileParticleWave />
+          <MobileBrainWave />
         </div>
       )}
 
