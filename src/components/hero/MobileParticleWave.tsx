@@ -31,38 +31,6 @@ const MobileParticleWave = () => {
 
       ctx.clearRect(0, 0, w, h);
 
-      // --- Animated background gradient (shifts hue over time) ---
-      const gradShift = Math.sin(t * 0.15) * 8;
-      const bg = ctx.createLinearGradient(0, 0, w * 0.3, h);
-      bg.addColorStop(0, `hsl(${272 + gradShift}, 85%, 8%)`);    // #16002A region
-      bg.addColorStop(0.4, `hsl(${268 + gradShift}, 80%, 6%)`);  // deep purple
-      bg.addColorStop(0.7, `hsl(${265 + gradShift}, 75%, 5%)`);  // #0B0613 region
-      bg.addColorStop(1, `hsl(${260 + gradShift}, 70%, 4%)`);
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, w, h);
-
-      // Subtle radial warm bloom (coral accent, animated)
-      const bloomX = w * (0.65 + Math.sin(t * 0.1) * 0.05);
-      const bloomY = h * (0.35 + Math.cos(t * 0.08) * 0.03);
-      const bloomR = w * 0.5;
-      const bloom = ctx.createRadialGradient(bloomX, bloomY, 0, bloomX, bloomY, bloomR);
-      bloom.addColorStop(0, `rgba(212, 97, 107, ${0.04 + Math.sin(t * 0.2) * 0.015})`);
-      bloom.addColorStop(0.4, `rgba(232, 150, 124, ${0.02 + Math.sin(t * 0.25) * 0.01})`);
-      bloom.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = bloom;
-      ctx.fillRect(0, 0, w, h);
-
-      // Second violet bloom
-      const v2X = w * 0.3;
-      const v2Y = h * 0.6;
-      const v2R = w * 0.45;
-      const v2 = ctx.createRadialGradient(v2X, v2Y, 0, v2X, v2Y, v2R);
-      v2.addColorStop(0, `rgba(91, 31, 166, ${0.06 + Math.sin(t * 0.18) * 0.02})`);
-      v2.addColorStop(0.6, "rgba(26, 6, 48, 0.03)");
-      v2.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = v2;
-      ctx.fillRect(0, 0, w, h);
-
       const cx = w / 2;
       // Ridge sits at ~65% height — prominent terrain
       const terrainTop = h * 0.55;
@@ -91,13 +59,36 @@ const MobileParticleWave = () => {
       ctx.lineTo(w, h);
       ctx.closePath();
 
+      const gradShift = Math.sin(t * 0.15) * 8;
       const terrainGrad = ctx.createLinearGradient(0, terrainTop - h * 0.15, 0, h);
-      terrainGrad.addColorStop(0, "rgba(22, 0, 42, 0.95)");
-      terrainGrad.addColorStop(0.3, "rgba(14, 4, 32, 0.97)");
-      terrainGrad.addColorStop(0.7, "rgba(11, 6, 19, 0.95)");
-      terrainGrad.addColorStop(1, "rgba(8, 3, 16, 0.9)");
+      terrainGrad.addColorStop(0, `hsla(${272 + gradShift}, 85%, 10%, 0.97)`);
+      terrainGrad.addColorStop(0.3, `hsla(${268 + gradShift}, 80%, 7%, 0.98)`);
+      terrainGrad.addColorStop(0.7, `hsla(${265 + gradShift}, 75%, 5%, 0.96)`);
+      terrainGrad.addColorStop(1, `hsla(${260 + gradShift}, 70%, 4%, 0.93)`);
       ctx.fillStyle = terrainGrad;
       ctx.fill();
+
+      // Coral bloom inside terrain
+      const bloomX = w * (0.6 + Math.sin(t * 0.1) * 0.05);
+      const bloomY = h * (0.7 + Math.cos(t * 0.08) * 0.03);
+      const bloomR = w * 0.4;
+      ctx.save();
+      ctx.clip(); // clip to terrain shape
+      const bloom = ctx.createRadialGradient(bloomX, bloomY, 0, bloomX, bloomY, bloomR);
+      bloom.addColorStop(0, `rgba(212, 97, 107, ${0.06 + Math.sin(t * 0.2) * 0.02})`);
+      bloom.addColorStop(0.5, `rgba(232, 150, 124, ${0.03 + Math.sin(t * 0.25) * 0.01})`);
+      bloom.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = bloom;
+      ctx.fillRect(0, 0, w, h);
+
+      // Violet bloom inside terrain
+      const v2 = ctx.createRadialGradient(w * 0.3, h * 0.65, 0, w * 0.3, h * 0.65, w * 0.35);
+      v2.addColorStop(0, `rgba(91, 31, 166, ${0.07 + Math.sin(t * 0.18) * 0.02})`);
+      v2.addColorStop(0.6, "rgba(26, 6, 48, 0.03)");
+      v2.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = v2;
+      ctx.fillRect(0, 0, w, h);
+      ctx.restore();
 
       // Ridge glow line — animated purple-coral
       ctx.beginPath();
