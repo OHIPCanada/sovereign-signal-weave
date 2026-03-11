@@ -245,32 +245,6 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
           const pos = positions[i];
           const faces = cubeFaces(pos.x, pos.y, cubeSize);
 
-          // Inner visualization particles unique to each module
-          const innerParticles = Array.from({ length: 12 }, (_, j) => {
-            const angle = sr(i * 100 + j * 31) * Math.PI * 2;
-            const dist = sr(i * 100 + j * 47) * cubeSize * 0.45;
-            return {
-              x: pos.x + Math.cos(angle) * dist,
-              y: pos.y + Math.sin(angle) * dist - cubeSize * 0.2,
-              r: 1 + sr(i * 100 + j * 59) * 2.5,
-              dur: 2 + sr(i * 100 + j * 67) * 3,
-              delay: sr(i * 100 + j * 71) * 2,
-            };
-          });
-
-          // Inner neural connections
-          const innerConnections = Array.from({ length: 8 }, (_, j) => {
-            const a1 = sr(i * 200 + j * 13) * Math.PI * 2;
-            const a2 = sr(i * 200 + j * 29) * Math.PI * 2;
-            const r1 = sr(i * 200 + j * 37) * cubeSize * 0.4;
-            const r2 = sr(i * 200 + j * 43) * cubeSize * 0.4;
-            return {
-              x1: pos.x + Math.cos(a1) * r1,
-              y1: pos.y + Math.sin(a1) * r1 - cubeSize * 0.2,
-              x2: pos.x + Math.cos(a2) * r2,
-              y2: pos.y + Math.sin(a2) * r2 - cubeSize * 0.2,
-            };
-          });
 
           return (
             <motion.g
