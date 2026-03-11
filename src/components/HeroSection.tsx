@@ -40,7 +40,7 @@ const HeroSection = () => {
   const center = containerSize / 2;
   const orbRadiiSet = isMobile ? [140, 140, 140, 120, 120] : isTablet ? [340, 340, 340, 280, 280] : [450, 450, 450, 370, 370];
   const bottomMargin = isMobile ? -80 : isTablet ? -240 : -320;
-  const orbImgSize = isMobile ? "w-[28px]" : isTablet ? "w-[60px]" : "w-[70px] lg:w-[90px]";
+  const orbImgSize = isMobile ? "w-[40px]" : isTablet ? "w-[80px]" : "w-[100px] lg:w-[130px]";
   const orbContainerWidth = isMobile ? 50 : isTablet ? 90 : 100;
 
   return (
