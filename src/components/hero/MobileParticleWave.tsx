@@ -132,7 +132,7 @@ const MobileParticleWave = () => {
 
           // Animated pulse
           const pulse = 0.65 + Math.sin(t * 0.6 + gx * 0.35 + gy * 0.25) * 0.2;
-          const alpha = ridgeFade * ridgeFade * 0.25 * pulse;
+          const alpha = ridgeFade * ridgeFade * 0.35 * pulse;
           if (alpha < 0.012) continue;
 
           // Colors shift from lavender near ridge to deep purple below
