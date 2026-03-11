@@ -140,7 +140,7 @@ const MobileParticleWave = () => {
           const g = 15 + ridgeFade * 50;
           const b = 80 + ridgeFade * 120;
 
-          const radius = (0.5 + ridgeFade * 0.9) * dpr;
+          const radius = (0.6 + ridgeFade * 1.1) * dpr;
           ctx.beginPath();
           ctx.arc(px, py, radius, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${alpha})`;
