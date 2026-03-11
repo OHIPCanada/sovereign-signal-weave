@@ -31,83 +31,112 @@ const MobileParticleWave = () => {
 
       ctx.clearRect(0, 0, w, h);
 
-      // Keep wave safely below header/title across all mobile heights
-      const minSafeTop = 190 * dpr;
-      const waveBase = Math.min(h * 0.78, Math.max(h * 0.62, minSafeTop));
+      const cx = w / 2;
+      // The terrain sits in the lower 55% of the canvas
+      const terrainTop = h * 0.45;
 
-      // Gentle wave line function
-      const waveLine = (x: number, offset: number, amp: number, freq: number, spd: number): number => {
+      // --- Terrain: dense dot-matrix field below a soft ridge ---
+      // Ridge line function - gentle undulation, not a sharp mountain
+      const ridge = (x: number): number => {
         const nx = x / w;
-        return waveBase + offset
-          + Math.sin(nx * freq + t * spd) * amp
-          + Math.sin(nx * freq * 1.6 + t * spd * 0.7 + 2) * amp * 0.4;
+        const base = terrainTop + h * 0.08;
+        // gentle central rise
+        const bell = Math.exp(-Math.pow((nx - 0.5) * 3.2, 2)) * h * 0.12;
+        // subtle undulation
+        const wave = Math.sin(nx * 4 + t * 0.12) * h * 0.008
+          + Math.sin(nx * 7 + t * 0.08) * h * 0.004;
+        return base - bell + wave;
       };
 
-      // --- Fill below wave with hero-matching gradient (#16002A → #0B0613) ---
-      // Draw 3 layered waves for depth
-      const waveLayers = [
-        { offset: -8 * dpr, amp: 10 * dpr, freq: 3.5, spd: 0.18, alpha: 0.3, color: "40, 20, 80" },
-        { offset: 0, amp: 14 * dpr, freq: 4, spd: 0.22, alpha: 1, color: "main" },
-        { offset: 6 * dpr, amp: 8 * dpr, freq: 5, spd: 0.15, alpha: 0.2, color: "60, 30, 100" },
-      ];
-
-      // Background subtle waves (behind main)
-      for (const layer of waveLayers) {
-        if (layer.color === "main") continue;
-        ctx.beginPath();
-        ctx.moveTo(0, h);
-        for (let x = 0; x <= w; x += 2) {
-          ctx.lineTo(x, waveLine(x, layer.offset, layer.amp, layer.freq, layer.spd));
-        }
-        ctx.lineTo(w, h);
-        ctx.closePath();
-        ctx.fillStyle = `rgba(${layer.color}, ${layer.alpha})`;
-        ctx.fill();
-      }
-
-      // Main wave fill — gradient matching hero-bg
+      // Fill below ridge with deep gradient
       ctx.beginPath();
       ctx.moveTo(0, h);
       for (let x = 0; x <= w; x += 2) {
-        ctx.lineTo(x, waveLine(x, 0, 14 * dpr, 4, 0.22));
+        ctx.lineTo(x, ridge(x));
       }
       ctx.lineTo(w, h);
       ctx.closePath();
 
-      const fillGrad = ctx.createLinearGradient(0, waveBase - 20 * dpr, 0, h);
-      // Match hero-bg: #16002A → #0B0613
-      fillGrad.addColorStop(0, "rgba(22, 0, 42, 0.95)");
-      fillGrad.addColorStop(0.4, "rgba(16, 4, 34, 0.97)");
-      fillGrad.addColorStop(1, "rgba(11, 6, 19, 0.98)");
-      ctx.fillStyle = fillGrad;
+      const terrainGrad = ctx.createLinearGradient(0, terrainTop, 0, h);
+      terrainGrad.addColorStop(0, "rgba(18, 8, 38, 0.92)");
+      terrainGrad.addColorStop(0.5, "rgba(14, 5, 30, 0.95)");
+      terrainGrad.addColorStop(1, "rgba(10, 3, 22, 0.9)");
+      ctx.fillStyle = terrainGrad;
       ctx.fill();
 
-      // Soft edge glow on wave crest
+      // Ridge edge - very subtle glow line
       ctx.beginPath();
       for (let x = 0; x <= w; x += 2) {
-        const y = waveLine(x, 0, 14 * dpr, 4, 0.22);
+        const y = ridge(x);
         if (x === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       }
-      ctx.strokeStyle = "rgba(100, 60, 200, 0.08)";
-      ctx.lineWidth = 2 * dpr;
+      ctx.strokeStyle = "rgba(120, 80, 200, 0.12)";
+      ctx.lineWidth = 1.5 * dpr;
       ctx.stroke();
 
-      // --- Sparse signal particles rising from crest ---
-      const signals = 14;
+      // --- Dot-matrix particles on terrain surface ---
+      const spacing = 6 * dpr;
+      const cols = Math.ceil(w / spacing);
+      const rows = Math.ceil((h - terrainTop) / spacing);
+
+      for (let gx = 0; gx < cols; gx++) {
+        const px = gx * spacing;
+        const ridgeY = ridge(px);
+
+        for (let gy = 0; gy < rows; gy++) {
+          const py = terrainTop + gy * spacing;
+          if (py < ridgeY) continue; // above terrain
+
+          const depth = (py - ridgeY) / (h - ridgeY);
+          const nx = gx / cols;
+
+          // Proximity to ridge = brighter
+          const ridgeDist = (py - ridgeY) / (h * 0.3);
+          const ridgeFade = Math.max(0, 1 - ridgeDist);
+
+          // Subtle pulse
+          const pulse = 0.6 + Math.sin(t * 0.5 + gx * 0.4 + gy * 0.3) * 0.15;
+          const alpha = ridgeFade * ridgeFade * 0.18 * pulse;
+          if (alpha < 0.01) continue;
+
+          const r = 26 + depth * 10;
+          const g = 10 + ridgeFade * 40;
+          const b = 50 + ridgeFade * 80;
+
+          const radius = (0.6 + ridgeFade * 0.6) * dpr;
+          ctx.beginPath();
+          ctx.arc(px, py, radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${alpha})`;
+          ctx.fill();
+        }
+      }
+
+      // --- Subtle radial glow at apex ---
+      const glowR = w * 0.3;
+      const apexY = ridge(cx);
+      const glow = ctx.createRadialGradient(cx, apexY, 0, cx, apexY, glowR);
+      glow.addColorStop(0, "rgba(100, 60, 200, 0.06)");
+      glow.addColorStop(0.5, "rgba(60, 30, 140, 0.03)");
+      glow.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, apexY - glowR, w, glowR * 2);
+
+      // --- Sparse signal particles drifting upward from ridge ---
+      const signals = 18;
       for (let i = 0; i < signals; i++) {
         const seed = i * 97.31;
         const baseX = ((seed * 3.7) % 1) * w;
-        const drift = Math.sin(t * 0.25 + i * 1.7) * 10 * dpr;
+        const drift = Math.sin(t * 0.3 + i * 1.7) * 15 * dpr;
         const sx = baseX + drift;
-        const lifeT = ((t * 0.12 + seed * 0.01) % 1);
-        const baseY = waveLine(baseX, 0, 14 * dpr, 4, 0.22);
-        const sy = baseY - lifeT * h * 0.1;
-        const sa = (1 - lifeT) * 0.12 * (0.5 + Math.sin(t + i) * 0.5);
+        const lifeT = ((t * 0.15 + seed * 0.01) % 1);
+        const sy = ridge(baseX) - lifeT * h * 0.15;
+        const sa = (1 - lifeT) * 0.15 * (0.5 + Math.sin(t + i) * 0.5);
 
         if (sa < 0.01) continue;
+
         ctx.beginPath();
-        ctx.arc(sx, sy, 0.8 * dpr, 0, Math.PI * 2);
+        ctx.arc(sx, sy, 1 * dpr, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(140, 100, 255, ${sa})`;
         ctx.fill();
       }
@@ -126,6 +155,7 @@ const MobileParticleWave = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full"
+      style={{ opacity: 1 }}
     />
   );
 };
