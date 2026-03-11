@@ -293,28 +293,28 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
               {/* ── UNIQUE INNER VISUALIZATION PER MODULE ── */}
               {i === 0 && /* AI CORTEX — Neural network sphere */
                 (() => {
-                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, rr = cubeSize * 0.35;
-                  const nodes = Array.from({ length: 10 }, (_, j) => {
-                    const a = (j / 10) * Math.PI * 2;
-                    const d = rr * (0.5 + sr(j * 73) * 0.5);
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, rr = cubeSize * 0.5;
+                  const nodes = Array.from({ length: 14 }, (_, j) => {
+                    const a = (j / 14) * Math.PI * 2;
+                    const d = rr * (0.4 + sr(j * 73) * 0.6);
                     return { x: cx0 + Math.cos(a) * d, y: cy0 + Math.sin(a) * d * 0.7 };
                   });
                   return (
                     <g>
-                      {nodes.map((n, j) => nodes.slice(j + 1).filter((_, k) => sr(j * 11 + k * 7) > 0.4).map((n2, k) => (
+                      {nodes.map((n, j) => nodes.slice(j + 1).filter((_, k) => sr(j * 11 + k * 7) > 0.35).map((n2, k) => (
                         <motion.line key={`nn-${j}-${k}`} x1={n.x} y1={n.y} x2={n2.x} y2={n2.y}
-                          stroke={mod.color} strokeWidth="0.6" strokeOpacity="0.3"
-                          animate={{ strokeOpacity: [0.15, 0.45, 0.15] }}
+                          stroke={mod.color} strokeWidth="1" strokeOpacity="0.35"
+                          animate={{ strokeOpacity: [0.15, 0.55, 0.15] }}
                           transition={{ duration: 2 + sr(j + k) * 2, repeat: Infinity, ease: "easeInOut" }} />
                       )))}
                       {nodes.map((n, j) => (
-                        <motion.circle key={`nnd-${j}`} cx={n.x} cy={n.y} r={1.5 + sr(j * 19) * 1.5}
+                        <motion.circle key={`nnd-${j}`} cx={n.x} cy={n.y} r={2 + sr(j * 19) * 2.5}
                           fill={mod.color} filter="url(#particleGlow)"
-                          animate={{ opacity: [0.4, 1, 0.4], r: [1.5, 2.5, 1.5] }}
+                          animate={{ opacity: [0.5, 1, 0.5], r: [2, 3.5, 2] }}
                           transition={{ duration: 2 + sr(j * 23) * 1.5, delay: sr(j * 31) * 2, repeat: Infinity, ease: "easeInOut" }} />
                       ))}
-                      <motion.circle cx={cx0} cy={cy0} r={cubeSize * 0.12} fill={mod.color} filter="url(#cubeGlow)"
-                        animate={{ opacity: [0.3, 0.7, 0.3], r: [cubeSize * 0.1, cubeSize * 0.15, cubeSize * 0.1] }}
+                      <motion.circle cx={cx0} cy={cy0} r={cubeSize * 0.18} fill={mod.color} filter="url(#cubeGlow)"
+                        animate={{ opacity: [0.4, 0.8, 0.4], r: [cubeSize * 0.14, cubeSize * 0.22, cubeSize * 0.14] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
                     </g>
                   );
