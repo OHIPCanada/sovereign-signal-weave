@@ -335,17 +335,21 @@ const MobileBrainWave = () => {
               );
             })}
             {/* Nodes */}
-            {leftNodes.map(([nx, ny], i) => (
-              <circle
-                key={`ln-${i}`} cx={nx} cy={ny}
-                r={i % 5 === 0 ? 2.2 : 1.5}
-                fill="#00ddff"
-                filter={i % 5 === 0 ? "url(#glow)" : undefined}
-                style={{
-                  animation: `nodePulse ${2 + (i % 5) * 0.4}s ease-in-out ${i * 0.2}s infinite`,
-                }}
-              />
-            ))}
+            {leftNodes.map(([nx, ny], i) => {
+              const dist = Math.sqrt(nx * nx + ny * ny);
+              const cascadeDelay = dist * 0.03;
+              return (
+                <circle
+                  key={`ln-${i}`} cx={nx} cy={ny}
+                  r={i % 5 === 0 ? 2.2 : 1.5}
+                  fill="#00ddff"
+                  filter={i % 5 === 0 ? "url(#glow)" : undefined}
+                  style={{
+                    animation: `nodeCascade ${2.5 + (i % 3) * 0.3}s ease-in-out ${cascadeDelay}s infinite`,
+                  }}
+                />
+              );
+            })}
           </g>
 
           {/* === RIGHT HEMISPHERE — Neural Network (warm orange/gold) === */}
