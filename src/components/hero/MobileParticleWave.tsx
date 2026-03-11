@@ -40,7 +40,7 @@ const MobileParticleWave = () => {
         const nx = x / w;
         const base = terrainTop + h * 0.05;
         // Strong central mountain peak
-        const peak = Math.exp(-Math.pow((nx - 0.5) * 2.8, 2)) * h * 0.2;
+        const peak = Math.exp(-Math.pow((nx - 0.5) * 2.4, 2)) * h * 0.28;
         // Secondary shoulders
         const shoulder1 = Math.exp(-Math.pow((nx - 0.25) * 4, 2)) * h * 0.06;
         const shoulder2 = Math.exp(-Math.pow((nx - 0.75) * 4, 2)) * h * 0.06;
