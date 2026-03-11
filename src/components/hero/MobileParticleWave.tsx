@@ -18,6 +18,18 @@ const MobileParticleWave = () => {
     resize();
     window.addEventListener("resize", resize);
 
+    // Sparkle particles
+    const sparkles: { x: number; y: number; phase: number; speed: number; size: number }[] = [];
+    for (let i = 0; i < 35; i++) {
+      sparkles.push({
+        x: Math.random(),
+        y: 0.3 + Math.random() * 0.6,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.5 + Math.random() * 1.5,
+        size: 1 + Math.random() * 2,
+      });
+    }
+
     const t0 = performance.now();
 
     const loop = (now: number) => {
@@ -31,68 +43,117 @@ const MobileParticleWave = () => {
 
       ctx.clearRect(0, 0, w, h);
 
-      // Particle terrain - multiple layers for depth
-      const layers = [
-        { yBase: 0.45, amplitude: 0.08, speed: 0.15, color1: [60, 20, 120], color2: [30, 80, 160], density: 1.2, size: 1.2 },
-        { yBase: 0.55, amplitude: 0.10, speed: 0.20, color1: [80, 40, 160], color2: [40, 100, 180], density: 1.0, size: 1.4 },
-        { yBase: 0.65, amplitude: 0.12, speed: 0.25, color1: [100, 60, 200], color2: [50, 120, 200], density: 0.8, size: 1.6 },
-        { yBase: 0.75, amplitude: 0.06, speed: 0.10, color1: [40, 15, 80], color2: [20, 50, 120], density: 1.4, size: 1.0 },
+      const cx = w / 2;
+      const peakY = h * 0.52; // mountain peak position
+
+      // --- Mountain / Peak shape (dark filled) ---
+      const mountainGrad = ctx.createLinearGradient(0, peakY - h * 0.15, 0, h);
+      mountainGrad.addColorStop(0, "rgba(30, 10, 60, 0.95)");
+      mountainGrad.addColorStop(0.3, "rgba(20, 5, 45, 0.9)");
+      mountainGrad.addColorStop(0.7, "rgba(12, 3, 30, 0.85)");
+      mountainGrad.addColorStop(1, "rgba(8, 2, 20, 0.7)");
+
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      // Left slope
+      ctx.quadraticCurveTo(cx * 0.3, h * 0.75, cx * 0.5, peakY + h * 0.08);
+      ctx.quadraticCurveTo(cx * 0.75, peakY - h * 0.02, cx, peakY);
+      // Right slope
+      ctx.quadraticCurveTo(cx * 1.25, peakY - h * 0.02, cx * 1.5, peakY + h * 0.08);
+      ctx.quadraticCurveTo(cx * 1.7, h * 0.75, w, h);
+      ctx.closePath();
+      ctx.fillStyle = mountainGrad;
+      ctx.fill();
+
+      // --- Glow at peak ---
+      const glowRad = w * 0.25;
+      const peakGlow = ctx.createRadialGradient(cx, peakY, 0, cx, peakY, glowRad);
+      peakGlow.addColorStop(0, "rgba(0, 200, 220, 0.15)");
+      peakGlow.addColorStop(0.4, "rgba(100, 60, 180, 0.08)");
+      peakGlow.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = peakGlow;
+      ctx.fillRect(cx - glowRad, peakY - glowRad, glowRad * 2, glowRad * 2);
+
+      // --- Wave lines emanating from peak ---
+      const waveColors = [
+        { r: 0, g: 180, b: 220, a: 0.5 },   // cyan
+        { r: 120, g: 80, b: 220, a: 0.35 },  // purple
+        { r: 200, g: 160, b: 60, a: 0.3 },   // gold
+        { r: 0, g: 140, b: 200, a: 0.25 },   // blue
+        { r: 160, g: 100, b: 240, a: 0.2 },  // lavender
       ];
 
-      const cols = Math.floor(w / (3 * dpr));
-      const rows = Math.floor(h / (3 * dpr));
+      for (let wi = 0; wi < waveColors.length; wi++) {
+        const wc = waveColors[wi];
+        const freq = 3 + wi * 1.5;
+        const amp = (12 + wi * 6) * dpr;
+        const speed = 0.6 + wi * 0.15;
+        const yOff = (wi - 2) * 8 * dpr;
 
-      for (const layer of layers) {
-        for (let gx = 0; gx < cols; gx++) {
-          for (let gy = 0; gy < rows; gy++) {
-            const nx = gx / cols;
-            const ny = gy / rows;
-            const px = (gx / cols) * w;
-            const py = (gy / rows) * h;
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(${wc.r}, ${wc.g}, ${wc.b}, ${wc.a})`;
+        ctx.lineWidth = (1.2 + wi * 0.3) * dpr;
 
-            // Wave terrain height
-            const wave1 = Math.sin(nx * 6 + t * layer.speed) * layer.amplitude;
-            const wave2 = Math.sin(nx * 10 + t * layer.speed * 1.3 + 1.5) * layer.amplitude * 0.5;
-            const wave3 = Math.sin(nx * 3 + t * layer.speed * 0.7 + 3.0) * layer.amplitude * 0.7;
-            const terrainY = layer.yBase + wave1 + wave2 + wave3;
-
-            // Only render particles near the terrain surface
-            const dist = Math.abs(ny - terrainY);
-            if (dist > 0.15) continue;
-
-            const falloff = 1 - dist / 0.15;
-            const alpha = falloff * falloff * (0.5 + Math.sin(t * 0.8 + gx * 0.3 + gy * 0.2) * 0.2);
-
-            if (alpha < 0.05) continue;
-
-            // Color interpolation based on position
-            const colorMix = nx;
-            const r = layer.color1[0] + (layer.color2[0] - layer.color1[0]) * colorMix;
-            const g = layer.color1[1] + (layer.color2[1] - layer.color1[1]) * colorMix;
-            const b = layer.color1[2] + (layer.color2[2] - layer.color1[2]) * colorMix;
-
-            const radius = layer.size * dpr * falloff;
-
-            ctx.beginPath();
-            ctx.arc(px, py, radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${alpha})`;
-            ctx.fill();
-          }
+        // Left wave (from peak going left)
+        for (let x = cx; x >= 0; x -= 2) {
+          const dist = (cx - x) / cx;
+          const envelope = Math.pow(dist, 0.5) * (1 - dist * 0.3);
+          const wave = Math.sin(dist * freq * Math.PI + t * speed) * amp * envelope;
+          const y = peakY + yOff + wave;
+          if (x === cx) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
         }
+        ctx.stroke();
+
+        // Right wave (from peak going right)
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(${wc.r}, ${wc.g}, ${wc.b}, ${wc.a})`;
+        for (let x = cx; x <= w; x += 2) {
+          const dist = (x - cx) / cx;
+          const envelope = Math.pow(dist, 0.5) * (1 - dist * 0.3);
+          const wave = Math.sin(dist * freq * Math.PI + t * speed) * amp * envelope;
+          const y = peakY + yOff + wave;
+          if (x === cx) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
       }
 
-      // Floating ambient particles
-      const floaters = 40;
-      for (let i = 0; i < floaters; i++) {
-        const seed = i * 137.508;
-        const fx = ((seed * 7.3 + t * 5 * (0.3 + (i % 4) * 0.15)) % w);
-        const fy = ((seed * 3.1 + Math.sin(t * 0.4 + i * 0.7) * 30) % h);
-        const fa = 0.12 + Math.sin(t * 1.2 + i * 2) * 0.08;
-        const fr = (0.6 + (i % 3) * 0.4) * dpr;
+      // --- Mountain edge glow line ---
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+      ctx.quadraticCurveTo(cx * 0.3, h * 0.75, cx * 0.5, peakY + h * 0.08);
+      ctx.quadraticCurveTo(cx * 0.75, peakY - h * 0.02, cx, peakY);
+      ctx.quadraticCurveTo(cx * 1.25, peakY - h * 0.02, cx * 1.5, peakY + h * 0.08);
+      ctx.quadraticCurveTo(cx * 1.7, h * 0.75, w, h);
+      ctx.strokeStyle = "rgba(100, 60, 200, 0.3)";
+      ctx.lineWidth = 1.5 * dpr;
+      ctx.stroke();
+
+      // --- Sparkle stars ---
+      for (const s of sparkles) {
+        const alpha = 0.3 + Math.sin(t * s.speed + s.phase) * 0.3;
+        if (alpha < 0.08) continue;
+        const sx = s.x * w;
+        const sy = s.y * h;
+        const sr = s.size * dpr;
+
+        // 4-point star
+        ctx.save();
+        ctx.translate(sx, sy);
+        ctx.fillStyle = `rgba(255, 240, 180, ${alpha})`;
         ctx.beginPath();
-        ctx.arc(fx, fy, fr, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(123, 97, 255, ${fa})`;
+        for (let p = 0; p < 4; p++) {
+          const angle = (p / 4) * Math.PI * 2 - Math.PI / 2;
+          const outerR = sr * 1.5;
+          const innerR = sr * 0.3;
+          ctx.lineTo(Math.cos(angle) * outerR, Math.sin(angle) * outerR);
+          const midAngle = angle + Math.PI / 4;
+          ctx.lineTo(Math.cos(midAngle) * innerR, Math.sin(midAngle) * innerR);
+        }
+        ctx.closePath();
         ctx.fill();
+        ctx.restore();
       }
 
       animRef.current = requestAnimationFrame(loop);
@@ -109,7 +170,7 @@ const MobileParticleWave = () => {
     <canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full"
-      style={{ opacity: 0.9 }}
+      style={{ opacity: 0.95 }}
     />
   );
 };
