@@ -323,29 +323,29 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
 
               {i === 1 && /* SOVEREIGN DATA — Lock / encrypted vault */
                 (() => {
-                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.28;
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.42;
                   return (
                     <g>
-                      {/* Lock body */}
-                      <motion.rect x={cx0 - s * 0.6} y={cy0 - s * 0.2} width={s * 1.2} height={s * 1}
-                        rx={s * 0.12} fill="none" stroke={mod.color} strokeWidth="1.2"
-                        animate={{ strokeOpacity: [0.4, 0.8, 0.4] }}
+                      <motion.rect x={cx0 - s * 0.7} y={cy0 - s * 0.25} width={s * 1.4} height={s * 1.15}
+                        rx={s * 0.12} fill="none" stroke={mod.color} strokeWidth="1.8"
+                        animate={{ strokeOpacity: [0.4, 0.85, 0.4] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Lock shackle */}
-                      <motion.path d={`M ${cx0 - s * 0.35} ${cy0 - s * 0.2} V ${cy0 - s * 0.65} A ${s * 0.35} ${s * 0.35} 0 0 1 ${cx0 + s * 0.35} ${cy0 - s * 0.65} V ${cy0 - s * 0.2}`}
-                        fill="none" stroke={mod.color} strokeWidth="1.2" strokeLinecap="round"
-                        animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
+                      <motion.rect x={cx0 - s * 0.7} y={cy0 - s * 0.25} width={s * 1.4} height={s * 1.15}
+                        rx={s * 0.12} fill={mod.color} fillOpacity="0.06"
+                        animate={{ fillOpacity: [0.04, 0.12, 0.04] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
+                      <motion.path d={`M ${cx0 - s * 0.4} ${cy0 - s * 0.25} V ${cy0 - s * 0.75} A ${s * 0.4} ${s * 0.4} 0 0 1 ${cx0 + s * 0.4} ${cy0 - s * 0.75} V ${cy0 - s * 0.25}`}
+                        fill="none" stroke={mod.color} strokeWidth="1.8" strokeLinecap="round"
+                        animate={{ strokeOpacity: [0.35, 0.8, 0.35] }}
                         transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Keyhole dot */}
-                      <motion.circle cx={cx0} cy={cy0 + s * 0.15} r={s * 0.12} fill={mod.color} filter="url(#particleGlow)"
+                      <motion.circle cx={cx0} cy={cy0 + s * 0.2} r={s * 0.15} fill={mod.color} filter="url(#particleGlow)"
                         animate={{ opacity: [0.5, 1, 0.5] }}
                         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Encrypted data particles orbiting */}
-                      {Array.from({ length: 6 }, (_, j) => {
-                        const a = (j / 6) * Math.PI * 2;
-                        const r2 = s * 1.3;
+                      {Array.from({ length: 8 }, (_, j) => {
+                        const a = (j / 8) * Math.PI * 2;
+                        const r2 = s * 1.4;
                         return (
-                          <motion.circle key={`sd-${j}`} r={1.2} fill={mod.color} filter="url(#particleGlow)"
+                          <motion.circle key={`sd-${j}`} r={2} fill={mod.color} filter="url(#particleGlow)"
                             animate={{ cx: [cx0 + Math.cos(a) * r2, cx0 + Math.cos(a + 1) * r2], cy: [cy0 + Math.sin(a) * r2 * 0.6, cy0 + Math.sin(a + 1) * r2 * 0.6], opacity: [0.3, 0.8, 0.3] }}
                             transition={{ duration: 4 + sr(j * 11) * 2, delay: j * 0.3, repeat: Infinity, ease: "easeInOut" }} />
                         );
