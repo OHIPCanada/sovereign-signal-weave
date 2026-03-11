@@ -9,7 +9,7 @@ import virtualCareOrb from "@/assets/virtual-care-orb.png";
 import sovereignDataOrb from "@/assets/sovereign-data-orb.png";
 import auditIntegrityOrb from "@/assets/audit-integrity-orb.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
-import MobilePipeline from "@/components/hero/MobilePipeline";
+import MobileParticleWave from "@/components/hero/MobileParticleWave";
 
 const orbs = [
   { src: aiCortexOrb, alt: "AI Cortex", label: "AI CORTEX", delay: 1.8 },
