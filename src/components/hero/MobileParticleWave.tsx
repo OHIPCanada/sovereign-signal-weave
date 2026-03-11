@@ -33,17 +33,17 @@ const MobileParticleWave = () => {
 
       const cx = w / 2;
       // Ridge sits at ~65% height — prominent terrain
-      const terrainTop = h * 0.55;
+      const terrainTop = h * 0.38;
 
       // --- Ridge line: tall central peak ---
       const ridge = (x: number): number => {
         const nx = x / w;
         const base = terrainTop + h * 0.05;
         // Strong central mountain peak
-        const peak = Math.exp(-Math.pow((nx - 0.5) * 2.8, 2)) * h * 0.2;
+        const peak = Math.exp(-Math.pow((nx - 0.5) * 2.4, 2)) * h * 0.28;
         // Secondary shoulders
-        const shoulder1 = Math.exp(-Math.pow((nx - 0.25) * 4, 2)) * h * 0.06;
-        const shoulder2 = Math.exp(-Math.pow((nx - 0.75) * 4, 2)) * h * 0.06;
+        const shoulder1 = Math.exp(-Math.pow((nx - 0.2) * 3.5, 2)) * h * 0.1;
+        const shoulder2 = Math.exp(-Math.pow((nx - 0.8) * 3.5, 2)) * h * 0.1;
         // Animated undulation
         const wave = Math.sin(nx * 5 + t * 0.2) * h * 0.008
           + Math.sin(nx * 9 + t * 0.15) * h * 0.004;
@@ -114,7 +114,7 @@ const MobileParticleWave = () => {
       ctx.stroke();
 
       // --- Dense dot-matrix particles on terrain ---
-      const spacing = 5 * dpr;
+      const spacing = 3.5 * dpr;
       const cols = Math.ceil(w / spacing);
       const rows = Math.ceil((h - (terrainTop - h * 0.15)) / spacing);
 
@@ -132,7 +132,7 @@ const MobileParticleWave = () => {
 
           // Animated pulse
           const pulse = 0.65 + Math.sin(t * 0.6 + gx * 0.35 + gy * 0.25) * 0.2;
-          const alpha = ridgeFade * ridgeFade * 0.25 * pulse;
+          const alpha = ridgeFade * ridgeFade * 0.35 * pulse;
           if (alpha < 0.012) continue;
 
           // Colors shift from lavender near ridge to deep purple below
@@ -140,7 +140,7 @@ const MobileParticleWave = () => {
           const g = 15 + ridgeFade * 50;
           const b = 80 + ridgeFade * 120;
 
-          const radius = (0.5 + ridgeFade * 0.9) * dpr;
+          const radius = (0.6 + ridgeFade * 1.1) * dpr;
           ctx.beginPath();
           ctx.arc(px, py, radius, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${alpha})`;
