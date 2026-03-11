@@ -490,13 +490,13 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
             transition={{ duration: 0.8, delay: 1.5 + i * 0.35 }}
           >
             <span
-              className={`font-bold tracking-[0.18em] uppercase whitespace-nowrap ${isMobile ? "text-[8px]" : "text-[11px]"}`}
-              style={{ color: mod.color, textShadow: `0 0 20px rgba(${mod.glowColor},0.5)` }}
+              className={`font-bold tracking-[0.18em] uppercase whitespace-nowrap ${isMobile ? "text-[10px]" : "text-[13px]"}`}
+              style={{ color: mod.color, textShadow: `0 0 24px rgba(${mod.glowColor},0.6)` }}
             >
               {mod.label}
             </span>
             <span
-              className={`tracking-[0.12em] uppercase whitespace-nowrap opacity-60 ${isMobile ? "text-[6px]" : "text-[8px]"}`}
+              className={`tracking-[0.12em] uppercase whitespace-nowrap opacity-65 ${isMobile ? "text-[7px]" : "text-[10px]"}`}
               style={{ color: mod.color }}
             >
               {mod.desc}
