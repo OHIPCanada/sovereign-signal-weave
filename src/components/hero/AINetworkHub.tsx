@@ -49,23 +49,21 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
   const isMobile = size === "mobile";
 
   // Layout: horizontal pipeline
-  const vbW = isMobile ? 400 : 1200;
-  const vbH = isMobile ? 700 : 500;
-  const cubeSize = isMobile ? 38 : 62;
+  const vbW = isMobile ? 440 : 1400;
+  const vbH = isMobile ? 900 : 620;
+  const cubeSize = isMobile ? 52 : 95;
 
   // Cube positions
   const positions = useMemo(() => {
     if (isMobile) {
-      // Vertical stack for mobile
       return modules.map((_, i) => ({
-        x: 200 + (i % 2 === 0 ? -20 : 20),
-        y: 80 + i * 125,
+        x: 220 + (i % 2 === 0 ? -25 : 25),
+        y: 100 + i * 160,
       }));
     }
-    // Horizontal pipeline with slight vertical wave
     return modules.map((_, i) => ({
-      x: 130 + i * 235,
-      y: 250 + Math.sin(i * 0.8) * 30,
+      x: 155 + i * 272,
+      y: 310 + Math.sin(i * 0.8) * 35,
     }));
   }, [isMobile]);
 
