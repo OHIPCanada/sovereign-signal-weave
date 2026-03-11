@@ -9,7 +9,7 @@ import virtualCareOrb from "@/assets/virtual-care-orb.png";
 import sovereignDataOrb from "@/assets/sovereign-data-orb.png";
 import auditIntegrityOrb from "@/assets/audit-integrity-orb.png";
 import NeuralPlexus from "@/components/hero/NeuralPlexus";
-import MobilePipeline from "@/components/hero/MobilePipeline";
+import MobileParticleWave from "@/components/hero/MobileParticleWave";
 
 const orbs = [
   { src: aiCortexOrb, alt: "AI Cortex", label: "AI CORTEX", delay: 1.8 },
@@ -45,9 +45,16 @@ const HeroSection = () => {
   const orbContainerWidth = isMobile ? 55 : isTablet ? 90 : 100;
 
   return (
-    <section className={`hero-bg relative overflow-hidden ${isMobile ? 'min-h-[85vh]' : isTablet ? 'min-h-[80vh]' : 'min-h-screen'}`}>
+    <section className={`hero-bg relative overflow-hidden ${isMobile ? 'min-h-[55vh]' : isTablet ? 'min-h-[80vh]' : 'min-h-screen'}`}>
+      {/* Mobile: Particle Wave Background */}
+      {isMobile && (
+        <div className="absolute inset-0">
+          <MobileParticleWave />
+        </div>
+      )}
+
       {/* INTELLIGENCE - Large Background Text */}
-      <div className="absolute inset-0 flex items-start justify-center pt-[88px] md:pt-24 lg:pt-32 pointer-events-none select-none overflow-hidden px-3 md:px-0">
+      <div className={`absolute inset-0 flex items-start justify-center pointer-events-none select-none overflow-hidden px-3 md:px-0 ${isMobile ? 'pt-[100px]' : 'pt-[88px] md:pt-24 lg:pt-32'}`}>
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -57,13 +64,6 @@ const HeroSection = () => {
           INTELLIGENCE
         </motion.h1>
       </div>
-
-      {/* Mobile: Glass Cube Pipeline */}
-      {isMobile && (
-        <div className="absolute inset-0 top-[100px] bottom-[20px]">
-          <MobilePipeline />
-        </div>
-      )}
 
       {/* Desktop/Tablet: Brain Composition + Orbs */}
       {!isMobile && (
