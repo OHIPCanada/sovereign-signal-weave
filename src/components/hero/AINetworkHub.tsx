@@ -3,11 +3,11 @@ import { useMemo } from "react";
 
 /* ───── MODULE DATA ───── */
 const modules = [
-  { label: "AI CORTEX",       icon: "⬡", color: "#A78BFA", angle: -90,  desc: "Neural Engine" },
-  { label: "VIRTUAL CARE",    icon: "◈", color: "#60A5FA", angle: -18,  desc: "Telehealth Layer" },
-  { label: "CLINIC OS",       icon: "⬢", color: "#818CF8", angle: 54,   desc: "Operations Core" },
-  { label: "AUDIT INTEGRITY", icon: "△", color: "#F472B6", angle: 126,  desc: "Compliance Shield" },
-  { label: "SOVEREIGN DATA",  icon: "◇", color: "#6366F1", angle: 198,  desc: "Data Vault" },
+  { label: "AI CORTEX",       desc: "Neural Engine",       color: "#A78BFA", glowColor: "139,92,246" },
+  { label: "SOVEREIGN DATA",  desc: "Data Vault",          color: "#6366F1", glowColor: "99,102,241" },
+  { label: "AUDIT INTEGRITY", desc: "Compliance Shield",   color: "#F472B6", glowColor: "244,114,182" },
+  { label: "CLINIC OS",       desc: "Operations Core",     color: "#818CF8", glowColor: "129,140,248" },
+  { label: "VIRTUAL CARE",    desc: "Telehealth Layer",    color: "#60A5FA", glowColor: "96,165,250" },
 ];
 
 /* ───── SEEDED RANDOM ───── */
@@ -16,243 +16,192 @@ function sr(seed: number) {
   return x - Math.floor(x);
 }
 
-/* ───── PARTICLE GENERATION ───── */
-function generateParticles(count: number) {
-  return Array.from({ length: count }, (_, i) => {
-    const layer = i < count * 0.3 ? 0 : i < count * 0.65 ? 1 : 2;
-    const maxR = layer === 0 ? 60 : layer === 1 ? 120 : 180;
-    const minR = layer === 0 ? 5 : layer === 1 ? 50 : 110;
-    const angle = sr(i * 37) * Math.PI * 2;
-    const dist = minR + sr(i * 53) * (maxR - minR);
-    return {
-      x: Math.cos(angle) * dist,
-      y: Math.sin(angle) * dist,
-      r: layer === 0 ? 1.5 + sr(i * 71) * 1.5 : 0.6 + sr(i * 71) * 1.2,
-      layer,
-      phase: sr(i * 91) * Math.PI * 2,
-      speed: 4 + sr(i * 113) * 6,
-      drift: (sr(i * 131) - 0.5) * 40,
-    };
-  });
-}
-
 interface AINetworkHubProps {
   size?: "mobile" | "desktop";
 }
 
+/* ─── CUBE FACE BUILDER (isometric-ish 3D cube) ─── */
+function cubeFaces(cx: number, cy: number, s: number) {
+  // s = half-size of cube face
+  const top = [
+    [cx, cy - s * 1.15],
+    [cx + s, cy - s * 0.4],
+    [cx, cy + s * 0.35],
+    [cx - s, cy - s * 0.4],
+  ];
+  const left = [
+    [cx - s, cy - s * 0.4],
+    [cx, cy + s * 0.35],
+    [cx, cy + s * 1.1],
+    [cx - s, cy + s * 0.35],
+  ];
+  const right = [
+    [cx + s, cy - s * 0.4],
+    [cx, cy + s * 0.35],
+    [cx, cy + s * 1.1],
+    [cx + s, cy + s * 0.35],
+  ];
+  const toStr = (pts: number[][]) => pts.map(p => p.join(",")).join(" ");
+  return { top: toStr(top), left: toStr(left), right: toStr(right) };
+}
+
 const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
   const isMobile = size === "mobile";
-  const particles = useMemo(() => generateParticles(isMobile ? 80 : 160), [isMobile]);
 
-  const containerSize = isMobile ? 380 : 700;
-  const cx = 350, cy = 350;
-  const moduleRadius = isMobile ? 240 : 260;
-  const vb = "0 0 700 700";
+  // Layout: horizontal pipeline
+  const vbW = isMobile ? 400 : 1200;
+  const vbH = isMobile ? 700 : 500;
+  const cubeSize = isMobile ? 38 : 62;
+
+  // Cube positions
+  const positions = useMemo(() => {
+    if (isMobile) {
+      // Vertical stack for mobile
+      return modules.map((_, i) => ({
+        x: 200 + (i % 2 === 0 ? -20 : 20),
+        y: 80 + i * 125,
+      }));
+    }
+    // Horizontal pipeline with slight vertical wave
+    return modules.map((_, i) => ({
+      x: 130 + i * 235,
+      y: 250 + Math.sin(i * 0.8) * 30,
+    }));
+  }, [isMobile]);
+
+  // Background particles
+  const bgParticles = useMemo(() =>
+    Array.from({ length: isMobile ? 40 : 80 }, (_, i) => ({
+      x: sr(i * 13) * vbW,
+      y: sr(i * 17) * vbH,
+      r: 0.5 + sr(i * 23) * 1.5,
+      dur: 3 + sr(i * 31) * 5,
+      delay: sr(i * 37) * 4,
+      drift: (sr(i * 41) - 0.5) * 30,
+    })),
+  [isMobile, vbW, vbH]);
 
   return (
-    <div className="relative" style={{ width: "100%", maxWidth: containerSize }}>
-      <svg viewBox={vb} className="w-full h-auto" style={{ overflow: "visible" }}>
+    <div className="relative w-full" style={{ maxWidth: isMobile ? 420 : 1200 }}>
+      <svg
+        viewBox={`0 0 ${vbW} ${vbH}`}
+        className="w-full h-auto"
+        style={{ overflow: "visible" }}
+      >
         <defs>
-          {/* ── CORE GRADIENTS ── */}
-          <radialGradient id="coreAura" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(139,92,246,0.35)" />
-            <stop offset="35%" stopColor="rgba(99,102,241,0.15)" />
-            <stop offset="70%" stopColor="rgba(96,165,250,0.05)" />
-            <stop offset="100%" stopColor="transparent" />
-          </radialGradient>
-          <radialGradient id="coreInner" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.9)" />
-            <stop offset="25%" stopColor="rgba(196,181,253,0.6)" />
-            <stop offset="50%" stopColor="rgba(139,92,246,0.25)" />
-            <stop offset="100%" stopColor="transparent" />
-          </radialGradient>
-          <radialGradient id="coreMid" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(167,139,250,0.5)" />
-            <stop offset="40%" stopColor="rgba(129,140,248,0.2)" />
-            <stop offset="100%" stopColor="transparent" />
-          </radialGradient>
-          <radialGradient id="ambientBg" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(139,92,246,0.08)" />
-            <stop offset="60%" stopColor="rgba(99,102,241,0.03)" />
-            <stop offset="100%" stopColor="transparent" />
-          </radialGradient>
-
-          {/* ── FILTERS ── */}
-          <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="8" result="b" />
-            <feComposite in="b" in2="SourceGraphic" operator="over" />
+          {/* Glow filters */}
+          <filter id="cubeGlow" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="12" result="b1" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b2" />
+            <feMerge>
+              <feMergeNode in="b1" />
+              <feMergeNode in="b2" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
           </filter>
-          <filter id="intenseGlow" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="15" result="b1" />
-            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b2" />
-            <feMerge><feMergeNode in="b1" /><feMergeNode in="b2" /><feMergeNode in="SourceGraphic" /></feMerge>
+          <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="6" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <filter id="particleGlow" x="-300%" y="-300%" width="700%" height="700%">
             <feGaussianBlur stdDeviation="3" result="b" />
             <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          <filter id="connectionGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="b" />
+          <filter id="streamGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="5" result="b" />
             <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
+
+          {/* Cube face gradients per module */}
+          {modules.map((mod, i) => (
+            <linearGradient key={`gt-${i}`} id={`cubeTop${i}`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor={mod.color} stopOpacity="0.25" />
+              <stop offset="100%" stopColor={mod.color} stopOpacity="0.08" />
+            </linearGradient>
+          ))}
+          {modules.map((mod, i) => (
+            <linearGradient key={`gl-${i}`} id={`cubeLeft${i}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={mod.color} stopOpacity="0.12" />
+              <stop offset="100%" stopColor={mod.color} stopOpacity="0.04" />
+            </linearGradient>
+          ))}
+          {modules.map((mod, i) => (
+            <linearGradient key={`gr-${i}`} id={`cubeRight${i}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={mod.color} stopOpacity="0.18" />
+              <stop offset="100%" stopColor={mod.color} stopOpacity="0.06" />
+            </linearGradient>
+          ))}
+
+          {/* Inner content radial glows */}
+          {modules.map((mod, i) => (
+            <radialGradient key={`rg-${i}`} id={`innerGlow${i}`} cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor={mod.color} stopOpacity="0.5" />
+              <stop offset="60%" stopColor={mod.color} stopOpacity="0.15" />
+              <stop offset="100%" stopColor={mod.color} stopOpacity="0" />
+            </radialGradient>
+          ))}
         </defs>
 
-        {/* ── AMBIENT BACKGROUND ── */}
-        <circle cx={cx} cy={cy} r="340" fill="url(#ambientBg)" />
-
-        {/* ── OUTER ENERGY AURA ── */}
-        <motion.circle
-          cx={cx} cy={cy} r="180"
-          fill="url(#coreAura)"
-          animate={{ r: [170, 195, 170], opacity: [0.6, 0.9, 0.6] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* ── MIDDLE LAYER ── */}
-        <motion.circle
-          cx={cx} cy={cy} r="110"
-          fill="url(#coreMid)"
-          filter="url(#softGlow)"
-          animate={{ r: [100, 120, 100], opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* ── PARTICLES (NEURAL FIELD) ── */}
-        {particles.map((p, i) => (
+        {/* ── AMBIENT BACKGROUND PARTICLES ── */}
+        {bgParticles.map((p, i) => (
           <motion.circle
-            key={`p-${i}`}
+            key={`bg-${i}`}
             r={p.r}
-            fill={p.layer === 0 ? "rgba(255,255,255,0.9)" : p.layer === 1 ? "rgba(196,181,253,0.7)" : "rgba(139,92,246,0.5)"}
-            filter={p.layer === 0 ? "url(#particleGlow)" : undefined}
-            initial={{ cx: cx, cy: cy, opacity: 0 }}
+            fill="rgba(167,139,250,0.4)"
+            initial={{ cx: p.x, cy: p.y, opacity: 0 }}
             animate={{
-              cx: [cx, cx + p.x + p.drift, cx + p.x - p.drift * 0.5, cx + p.x + p.drift * 0.3, cx + p.x],
-              cy: [cy, cy + p.y + p.drift * 0.7, cy + p.y - p.drift * 0.4, cy + p.y + p.drift * 0.6, cy + p.y],
-              opacity: [0, p.layer === 0 ? 0.95 : 0.6, p.layer === 0 ? 0.7 : 0.4, p.layer === 0 ? 0.95 : 0.6],
+              cx: [p.x, p.x + p.drift, p.x - p.drift * 0.5, p.x],
+              cy: [p.y, p.y - 15, p.y + 10, p.y],
+              opacity: [0, 0.6, 0.3, 0],
             }}
             transition={{
-              cx: { duration: p.speed * 1.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.015 },
-              cy: { duration: p.speed * 1.3, repeat: Infinity, ease: "easeInOut", delay: i * 0.015 },
-              opacity: { duration: 1.5, delay: i * 0.01, ease: "easeOut" },
+              duration: p.dur,
+              delay: p.delay,
+              repeat: Infinity,
+              ease: "easeInOut",
             }}
           />
         ))}
 
-        {/* ── INNER NEURAL WEB (organic curves, not straight lines) ── */}
-        {Array.from({ length: isMobile ? 12 : 24 }).map((_, i) => {
-          const a1 = sr(i * 17) * Math.PI * 2;
-          const a2 = a1 + (sr(i * 29) - 0.3) * 1.5;
-          const r1 = 20 + sr(i * 37) * 80;
-          const r2 = 30 + sr(i * 43) * 90;
-          const x1 = cx + Math.cos(a1) * r1;
-          const y1 = cy + Math.sin(a1) * r1;
-          const x2 = cx + Math.cos(a2) * r2;
-          const y2 = cy + Math.sin(a2) * r2;
-          const ctrlAngle = (a1 + a2) / 2 + (sr(i * 53) - 0.5) * 0.8;
-          const ctrlR = (r1 + r2) / 2 + sr(i * 67) * 30;
-          const ctrlX = cx + Math.cos(ctrlAngle) * ctrlR;
-          const ctrlY = cy + Math.sin(ctrlAngle) * ctrlR;
-          return (
-            <motion.path
-              key={`web-${i}`}
-              d={`M ${x1} ${y1} Q ${ctrlX} ${ctrlY} ${x2} ${y2}`}
-              fill="none"
-              stroke="rgba(196,181,253,0.15)"
-              strokeWidth={0.5 + sr(i * 71) * 0.8}
-              strokeLinecap="round"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: [0, 0.3, 0.15] }}
-              transition={{
-                pathLength: { duration: 2, delay: 0.5 + i * 0.08, ease: "easeOut" },
-                opacity: { duration: 4, delay: 0.5 + i * 0.08, repeat: Infinity, ease: "easeInOut" },
-              }}
-            />
-          );
-        })}
-
-        {/* ── BRIGHT INNER CORE ── */}
-        <motion.circle
-          cx={cx} cy={cy} r="55"
-          fill="url(#coreInner)"
-          filter="url(#intenseGlow)"
-          animate={{ r: [50, 62, 50], opacity: [0.7, 1, 0.7] }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* ── CENTER STAR ── */}
-        <motion.circle
-          cx={cx} cy={cy} r="8"
-          fill="white"
-          filter="url(#intenseGlow)"
-          animate={{ r: [6, 10, 6], opacity: [0.85, 1, 0.85] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* ── PULSE RINGS ── */}
-        {[0, 1, 2].map((i) => (
-          <motion.circle
-            key={`pulse-${i}`}
-            cx={cx} cy={cy}
-            fill="none"
-            stroke="rgba(167,139,250,0.2)"
-            strokeWidth="1.5"
-            initial={{ r: 30, opacity: 0.5 }}
-            animate={{ r: 200, opacity: 0, strokeWidth: 0.3 }}
-            transition={{ duration: 5, delay: i * 1.7, repeat: Infinity, ease: "easeOut" }}
-          />
-        ))}
-
-        {/* ── ENERGY PATHS TO MODULES ── */}
-        {modules.map((mod, i) => {
-          const angle = mod.angle * (Math.PI / 180);
-          const startR = 90;
-          const sx = cx + Math.cos(angle) * startR;
-          const sy = cy + Math.sin(angle) * startR;
-          const ex = cx + Math.cos(angle) * moduleRadius;
-          const ey = cy + Math.sin(angle) * moduleRadius;
-
-          // Organic curved path with two control points
-          const perpAngle = angle + Math.PI / 2;
-          const spread = 25 + sr(i * 333) * 20;
-          const mid1R = startR + (moduleRadius - startR) * 0.35;
-          const mid2R = startR + (moduleRadius - startR) * 0.65;
-          const c1x = cx + Math.cos(angle) * mid1R + Math.cos(perpAngle) * spread * (sr(i * 77) > 0.5 ? 1 : -1);
-          const c1y = cy + Math.sin(angle) * mid1R + Math.sin(perpAngle) * spread * (sr(i * 77) > 0.5 ? 1 : -1);
-          const c2x = cx + Math.cos(angle) * mid2R + Math.cos(perpAngle) * spread * 0.5 * (sr(i * 99) > 0.5 ? -1 : 1);
-          const c2y = cy + Math.sin(angle) * mid2R + Math.sin(perpAngle) * spread * 0.5 * (sr(i * 99) > 0.5 ? -1 : 1);
-          const pathD = `M ${sx} ${sy} C ${c1x} ${c1y} ${c2x} ${c2y} ${ex} ${ey}`;
+        {/* ── ENERGY STREAMS BETWEEN CUBES ── */}
+        {positions.slice(0, -1).map((from, i) => {
+          const to = positions[i + 1];
+          const midX = (from.x + to.x) / 2;
+          const midY = (from.y + to.y) / 2 - 40;
+          const pathD = `M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`;
+          const mod = modules[i];
 
           return (
-            <g key={`energy-${i}`}>
-              {/* Flowing energy path */}
+            <g key={`stream-${i}`}>
+              {/* Wide energy field */}
+              <motion.path
+                d={pathD}
+                fill="none"
+                stroke={mod.color}
+                strokeWidth="8"
+                strokeLinecap="round"
+                filter="url(#streamGlow)"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 0.06 }}
+                transition={{ duration: 1.5, delay: 1.8 + i * 0.5, ease: "easeOut" }}
+              />
+
+              {/* Core energy line */}
               <motion.path
                 d={pathD}
                 fill="none"
                 stroke={mod.color}
                 strokeWidth="2"
                 strokeLinecap="round"
-                filter="url(#connectionGlow)"
+                filter="url(#streamGlow)"
                 initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.35 }}
-                transition={{ duration: 1.8, delay: 1.5 + i * 0.25, ease: "easeOut" }}
+                animate={{ pathLength: 1, opacity: 0.4 }}
+                transition={{ duration: 1.5, delay: 1.8 + i * 0.5, ease: "easeOut" }}
               />
 
-              {/* Secondary faint trail */}
-              <motion.path
-                d={pathD}
-                fill="none"
-                stroke={mod.color}
-                strokeWidth="6"
-                strokeLinecap="round"
-                filter="url(#connectionGlow)"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.08 }}
-                transition={{ duration: 2, delay: 1.7 + i * 0.25, ease: "easeOut" }}
-              />
-
-              {/* Traveling energy pulse */}
+              {/* Flowing energy pulse */}
               <motion.circle
-                r="4"
+                r="5"
                 fill={mod.color}
                 filter="url(#particleGlow)"
                 animate={{
@@ -260,29 +209,29 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
                   offsetDistance: ["0%", "100%"],
                 }}
                 transition={{
-                  duration: 2.5,
-                  delay: 3 + i * 0.6,
+                  duration: 2,
+                  delay: 3 + i * 0.8,
                   repeat: Infinity,
-                  repeatDelay: 3 + sr(i * 777) * 2,
+                  repeatDelay: 2,
                   ease: "easeInOut",
                 }}
                 style={{ offsetPath: `path("${pathD}")` }}
               />
 
-              {/* Second trailing pulse */}
+              {/* Trailing smaller pulse */}
               <motion.circle
-                r="2"
+                r="2.5"
                 fill="white"
                 filter="url(#particleGlow)"
                 animate={{
-                  opacity: [0, 0.7, 0.7, 0],
+                  opacity: [0, 0.8, 0.8, 0],
                   offsetDistance: ["0%", "100%"],
                 }}
                 transition={{
-                  duration: 2.5,
-                  delay: 3.3 + i * 0.6,
+                  duration: 2,
+                  delay: 3.2 + i * 0.8,
                   repeat: Infinity,
-                  repeatDelay: 3 + sr(i * 777) * 2,
+                  repeatDelay: 2,
                   ease: "easeInOut",
                 }}
                 style={{ offsetPath: `path("${pathD}")` }}
@@ -291,53 +240,172 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
           );
         })}
 
-        {/* ── MODULE HEXAGON NODES ── */}
+        {/* ── GLASS CUBES WITH INNER VISUALIZATIONS ── */}
         {modules.map((mod, i) => {
-          const angle = mod.angle * (Math.PI / 180);
-          const mx = cx + Math.cos(angle) * moduleRadius;
-          const my = cy + Math.sin(angle) * moduleRadius;
-          // Hexagon path (pointy-top)
-          const hexR = isMobile ? 26 : 30;
-          const hex = Array.from({ length: 6 }, (_, j) => {
-            const a = (Math.PI / 3) * j - Math.PI / 6;
-            return `${mx + hexR * Math.cos(a)},${my + hexR * Math.sin(a)}`;
-          }).join(" ");
+          const pos = positions[i];
+          const faces = cubeFaces(pos.x, pos.y, cubeSize);
+
+          // Inner visualization particles unique to each module
+          const innerParticles = Array.from({ length: 12 }, (_, j) => {
+            const angle = sr(i * 100 + j * 31) * Math.PI * 2;
+            const dist = sr(i * 100 + j * 47) * cubeSize * 0.45;
+            return {
+              x: pos.x + Math.cos(angle) * dist,
+              y: pos.y + Math.sin(angle) * dist - cubeSize * 0.2,
+              r: 1 + sr(i * 100 + j * 59) * 2.5,
+              dur: 2 + sr(i * 100 + j * 67) * 3,
+              delay: sr(i * 100 + j * 71) * 2,
+            };
+          });
+
+          // Inner neural connections
+          const innerConnections = Array.from({ length: 8 }, (_, j) => {
+            const a1 = sr(i * 200 + j * 13) * Math.PI * 2;
+            const a2 = sr(i * 200 + j * 29) * Math.PI * 2;
+            const r1 = sr(i * 200 + j * 37) * cubeSize * 0.4;
+            const r2 = sr(i * 200 + j * 43) * cubeSize * 0.4;
+            return {
+              x1: pos.x + Math.cos(a1) * r1,
+              y1: pos.y + Math.sin(a1) * r1 - cubeSize * 0.2,
+              x2: pos.x + Math.cos(a2) * r2,
+              y2: pos.y + Math.sin(a2) * r2 - cubeSize * 0.2,
+            };
+          });
 
           return (
             <motion.g
-              key={`mod-${i}`}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 2.5 + i * 0.2, ease: [0.16, 1, 0.3, 1] }}
+              key={`cube-${i}`}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 1.2,
+                delay: 0.3 + i * 0.35,
+                ease: [0.16, 1, 0.3, 1],
+              }}
             >
-              {/* Outer glow hex */}
-              <motion.polygon
-                points={hex}
-                fill="none"
-                stroke={mod.color}
-                strokeWidth="1"
-                filter="url(#connectionGlow)"
-                style={{ opacity: 0.25 }}
-                animate={{ opacity: [0.15, 0.35, 0.15] }}
-                transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut" }}
+              {/* Ambient glow behind cube */}
+              <motion.circle
+                cx={pos.x}
+                cy={pos.y}
+                r={cubeSize * 1.8}
+                fill={`url(#innerGlow${i})`}
+                animate={{
+                  r: [cubeSize * 1.6, cubeSize * 2, cubeSize * 1.6],
+                  opacity: [0.4, 0.7, 0.4],
+                }}
+                transition={{ duration: 4 + i * 0.5, repeat: Infinity, ease: "easeInOut" }}
               />
 
-              {/* Glass fill hex */}
+              {/* ── CUBE FACES (glass) ── */}
+              {/* Left face */}
               <polygon
-                points={hex}
-                fill="rgba(15,8,30,0.65)"
+                points={faces.left}
+                fill={`url(#cubeLeft${i})`}
                 stroke={mod.color}
                 strokeWidth="0.8"
-                style={{ opacity: 0.9 }}
+                strokeOpacity="0.3"
+              />
+              {/* Right face */}
+              <polygon
+                points={faces.right}
+                fill={`url(#cubeRight${i})`}
+                stroke={mod.color}
+                strokeWidth="0.8"
+                strokeOpacity="0.3"
+              />
+              {/* Top face */}
+              <polygon
+                points={faces.top}
+                fill={`url(#cubeTop${i})`}
+                stroke={mod.color}
+                strokeWidth="1"
+                strokeOpacity="0.5"
               />
 
-              {/* Inner icon glow */}
+              {/* ── NEON EDGES ── */}
+              {/* Top diamond edges */}
+              <motion.polygon
+                points={faces.top}
+                fill="none"
+                stroke={mod.color}
+                strokeWidth="1.5"
+                strokeOpacity="0.6"
+                filter="url(#softGlow)"
+                animate={{ strokeOpacity: [0.3, 0.7, 0.3] }}
+                transition={{ duration: 3 + i * 0.3, repeat: Infinity, ease: "easeInOut" }}
+              />
+
+              {/* ── INNER VISUALIZATION ── */}
+              {/* Central glow sphere */}
               <motion.circle
-                cx={mx} cy={my} r="10"
+                cx={pos.x}
+                cy={pos.y - cubeSize * 0.15}
+                r={cubeSize * 0.25}
                 fill={mod.color}
-                style={{ opacity: 0.08 }}
-                animate={{ r: [8, 12, 8], opacity: [0.05, 0.12, 0.05] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                filter="url(#cubeGlow)"
+                animate={{
+                  r: [cubeSize * 0.2, cubeSize * 0.3, cubeSize * 0.2],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{ duration: 3, delay: i * 0.4, repeat: Infinity, ease: "easeInOut" }}
+              />
+
+              {/* Inner neural connections */}
+              {innerConnections.map((c, j) => (
+                <motion.line
+                  key={`ic-${i}-${j}`}
+                  x1={c.x1} y1={c.y1} x2={c.x2} y2={c.y2}
+                  stroke={mod.color}
+                  strokeWidth="0.5"
+                  strokeLinecap="round"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [0, 0.25, 0.1, 0.25] }}
+                  transition={{
+                    duration: 3 + sr(i * 300 + j) * 2,
+                    delay: 1.5 + i * 0.35 + j * 0.1,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+
+              {/* Inner floating particles */}
+              {innerParticles.map((p, j) => (
+                <motion.circle
+                  key={`ip-${i}-${j}`}
+                  r={p.r}
+                  fill={mod.color}
+                  filter="url(#particleGlow)"
+                  initial={{ cx: pos.x, cy: pos.y, opacity: 0 }}
+                  animate={{
+                    cx: [pos.x, p.x, p.x + (sr(i * 400 + j) - 0.5) * 10, p.x],
+                    cy: [pos.y, p.y, p.y + (sr(i * 500 + j) - 0.5) * 8, p.y],
+                    opacity: [0, 0.8, 0.4, 0.8],
+                  }}
+                  transition={{
+                    duration: p.dur,
+                    delay: 0.8 + i * 0.35 + p.delay,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+
+              {/* Pulse ring inside cube */}
+              <motion.circle
+                cx={pos.x}
+                cy={pos.y - cubeSize * 0.15}
+                fill="none"
+                stroke={mod.color}
+                strokeWidth="0.8"
+                initial={{ r: 5, opacity: 0.4 }}
+                animate={{ r: cubeSize * 0.5, opacity: 0, strokeWidth: 0.2 }}
+                transition={{
+                  duration: 3,
+                  delay: 2 + i * 0.7,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                }}
               />
             </motion.g>
           );
@@ -346,36 +414,32 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
 
       {/* ── MODULE LABELS (HTML overlay) ── */}
       {modules.map((mod, i) => {
-        const angle = mod.angle * (Math.PI / 180);
-        const labelDist = isMobile ? 40 : 42;
-        const nudge = isMobile ? 20 : 28;
-        const left = 50 + Math.cos(angle) * labelDist;
-        const top = 50 + Math.sin(angle) * labelDist;
-        const nx = Math.cos(angle) * nudge;
-        const ny = Math.sin(angle) * nudge;
+        const pos = positions[i];
+        const leftPct = (pos.x / vbW) * 100;
+        const topPct = ((pos.y + cubeSize * 1.3) / vbH) * 100;
 
         return (
           <motion.div
             key={mod.label}
             className="absolute z-10 pointer-events-none flex flex-col items-center gap-0.5"
             style={{
-              left: `calc(${left}% + ${nx}px)`,
-              top: `calc(${top}% + ${ny}px)`,
-              transform: "translate(-50%, -50%)",
+              left: `${leftPct}%`,
+              top: `${topPct}%`,
+              transform: "translate(-50%, 0)",
             }}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 3 + i * 0.2 }}
+            transition={{ duration: 0.8, delay: 1.5 + i * 0.35 }}
           >
             <span
-              className={`font-bold tracking-[0.2em] uppercase whitespace-nowrap ${isMobile ? "text-[7px]" : "text-[10px]"}`}
-              style={{ color: mod.color, textShadow: `0 0 20px ${mod.color}50` }}
+              className={`font-bold tracking-[0.18em] uppercase whitespace-nowrap ${isMobile ? "text-[8px]" : "text-[11px]"}`}
+              style={{ color: mod.color, textShadow: `0 0 20px rgba(${mod.glowColor},0.5)` }}
             >
               {mod.label}
             </span>
             <span
-              className={`tracking-[0.15em] uppercase whitespace-nowrap ${isMobile ? "text-[5px]" : "text-[7px]"}`}
-              style={{ color: `${mod.color}80` }}
+              className={`tracking-[0.12em] uppercase whitespace-nowrap opacity-60 ${isMobile ? "text-[6px]" : "text-[8px]"}`}
+              style={{ color: mod.color }}
             >
               {mod.desc}
             </span>
