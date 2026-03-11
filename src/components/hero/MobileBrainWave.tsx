@@ -380,17 +380,21 @@ const MobileBrainWave = () => {
                 />
               );
             })}
-            {rightNodes.map(([nx, ny], i) => (
-              <circle
-                key={`rn-${i}`} cx={nx} cy={ny}
-                r={i % 5 === 0 ? 2.2 : 1.5}
-                fill="#ffcc44"
-                filter={i % 5 === 0 ? "url(#glow)" : undefined}
-                style={{
-                  animation: `nodePulse ${2 + (i % 5) * 0.4}s ease-in-out ${i * 0.2 + 0.4}s infinite`,
-                }}
-              />
-            ))}
+            {rightNodes.map(([nx, ny], i) => {
+              const dist = Math.sqrt(nx * nx + ny * ny);
+              const cascadeDelay = dist * 0.03 + 0.2;
+              return (
+                <circle
+                  key={`rn-${i}`} cx={nx} cy={ny}
+                  r={i % 5 === 0 ? 2.2 : 1.5}
+                  fill="#ffcc44"
+                  filter={i % 5 === 0 ? "url(#glow)" : undefined}
+                  style={{
+                    animation: `nodeCascade ${2.5 + (i % 3) * 0.3}s ease-in-out ${cascadeDelay}s infinite`,
+                  }}
+                />
+              );
+            })}
           </g>
 
           {/* === BRIDGE CONNECTIONS (cross-hemisphere) === */}
