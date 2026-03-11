@@ -113,20 +113,20 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
           {/* Cube face gradients per module */}
           {modules.map((mod, i) => (
             <linearGradient key={`gt-${i}`} id={`cubeTop${i}`} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor={mod.color} stopOpacity="0.25" />
-              <stop offset="100%" stopColor={mod.color} stopOpacity="0.08" />
+              <stop offset="0%" stopColor={mod.color} stopOpacity="0.35" />
+              <stop offset="100%" stopColor={mod.color} stopOpacity="0.12" />
             </linearGradient>
           ))}
           {modules.map((mod, i) => (
             <linearGradient key={`gl-${i}`} id={`cubeLeft${i}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={mod.color} stopOpacity="0.12" />
-              <stop offset="100%" stopColor={mod.color} stopOpacity="0.04" />
+              <stop offset="0%" stopColor={mod.color} stopOpacity="0.18" />
+              <stop offset="100%" stopColor={mod.color} stopOpacity="0.06" />
             </linearGradient>
           ))}
           {modules.map((mod, i) => (
             <linearGradient key={`gr-${i}`} id={`cubeRight${i}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={mod.color} stopOpacity="0.18" />
-              <stop offset="100%" stopColor={mod.color} stopOpacity="0.06" />
+              <stop offset="0%" stopColor={mod.color} stopOpacity="0.25" />
+              <stop offset="100%" stopColor={mod.color} stopOpacity="0.08" />
             </linearGradient>
           ))}
 
