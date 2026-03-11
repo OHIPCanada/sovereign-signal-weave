@@ -31,8 +31,8 @@ const MobileParticleWave = () => {
 
       ctx.clearRect(0, 0, w, h);
 
-      // Wave crest sits at 45% of canvas height — close below INTELLIGENCE but never touching
-      const waveBase = h * 0.45;
+      // Wave crest sits at 55% of canvas height — well below INTELLIGENCE, never touching
+      const waveBase = h * 0.55;
 
       // Gentle wave line function
       const waveLine = (x: number, offset: number, amp: number, freq: number, spd: number): number => {
