@@ -35,19 +35,15 @@ const MobileParticleWave = () => {
       // Ridge sits at ~65% height — prominent terrain
       const terrainTop = h * 0.38;
 
-      // --- Ridge line: tall central peak ---
+      // --- Ridge line: gentle subtle wave ---
       const ridge = (x: number): number => {
         const nx = x / w;
-        const base = terrainTop + h * 0.05;
-        // Strong central mountain peak
-        const peak = Math.exp(-Math.pow((nx - 0.5) * 2.4, 2)) * h * 0.28;
-        // Secondary shoulders
-        const shoulder1 = Math.exp(-Math.pow((nx - 0.2) * 3.5, 2)) * h * 0.1;
-        const shoulder2 = Math.exp(-Math.pow((nx - 0.8) * 3.5, 2)) * h * 0.1;
-        // Animated undulation
-        const wave = Math.sin(nx * 5 + t * 0.2) * h * 0.008
-          + Math.sin(nx * 9 + t * 0.15) * h * 0.004;
-        return base - peak - shoulder1 - shoulder2 + wave;
+        const base = terrainTop;
+        // Very gentle undulation — no peak
+        const wave1 = Math.sin(nx * Math.PI * 2 + t * 0.15) * h * 0.025;
+        const wave2 = Math.sin(nx * Math.PI * 3.5 + t * 0.1) * h * 0.015;
+        const wave3 = Math.sin(nx * Math.PI * 6 + t * 0.2) * h * 0.006;
+        return base + wave1 + wave2 + wave3;
       };
 
       // Fill terrain body
