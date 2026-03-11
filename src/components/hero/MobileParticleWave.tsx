@@ -55,35 +55,46 @@ const MobileParticleWave = () => {
       ctx.lineTo(w, h);
       ctx.closePath();
 
-      const gradShift = Math.sin(t * 0.15) * 8;
-      const terrainGrad = ctx.createLinearGradient(0, terrainTop - h * 0.15, 0, h);
-      terrainGrad.addColorStop(0, `hsla(${272 + gradShift}, 85%, 10%, 0.97)`);
-      terrainGrad.addColorStop(0.3, `hsla(${268 + gradShift}, 80%, 7%, 0.98)`);
-      terrainGrad.addColorStop(0.7, `hsla(${265 + gradShift}, 75%, 5%, 0.96)`);
-      terrainGrad.addColorStop(1, `hsla(${260 + gradShift}, 70%, 4%, 0.93)`);
+      // Base gradient matching Intelligence Layer: linear-gradient(135deg, #1A0630, #3A0B6E, #5B1FA6)
+      const gradShift = Math.sin(t * 0.15) * 5;
+      const terrainGrad = ctx.createLinearGradient(0, terrainTop - h * 0.1, w, h);
+      terrainGrad.addColorStop(0, `hsla(${268 + gradShift}, 78%, 13%, 1)`);   // #1A0630
+      terrainGrad.addColorStop(0.48, `hsla(${270 + gradShift}, 82%, 24%, 1)`); // #3A0B6E
+      terrainGrad.addColorStop(1, `hsla(${264 + gradShift}, 68%, 38%, 1)`);    // #5B1FA6
       ctx.fillStyle = terrainGrad;
       ctx.fill();
 
-      // Coral bloom inside terrain
-      const bloomX = w * (0.6 + Math.sin(t * 0.1) * 0.05);
-      const bloomY = h * (0.7 + Math.cos(t * 0.08) * 0.03);
-      const bloomR = w * 0.4;
+      // Radial blooms inside terrain (matching Intelligence Layer)
       ctx.save();
-      ctx.clip(); // clip to terrain shape
-      const bloom = ctx.createRadialGradient(bloomX, bloomY, 0, bloomX, bloomY, bloomR);
-      bloom.addColorStop(0, `rgba(212, 97, 107, ${0.06 + Math.sin(t * 0.2) * 0.02})`);
-      bloom.addColorStop(0.5, `rgba(232, 150, 124, ${0.03 + Math.sin(t * 0.25) * 0.01})`);
-      bloom.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = bloom;
+      ctx.clip();
+
+      // Purple bloom at left (like radial-gradient at 18% 38%)
+      const b1X = w * (0.18 + Math.sin(t * 0.08) * 0.03);
+      const b1Y = h * (0.5 + Math.cos(t * 0.06) * 0.03);
+      const b1 = ctx.createRadialGradient(b1X, b1Y, 0, b1X, b1Y, w * 0.5);
+      b1.addColorStop(0, `rgba(143, 83, 255, ${0.4 + Math.sin(t * 0.2) * 0.05})`);
+      b1.addColorStop(0.6, "rgba(143, 83, 255, 0)");
+      ctx.fillStyle = b1;
       ctx.fillRect(0, 0, w, h);
 
-      // Violet bloom inside terrain
-      const v2 = ctx.createRadialGradient(w * 0.3, h * 0.65, 0, w * 0.3, h * 0.65, w * 0.35);
-      v2.addColorStop(0, `rgba(91, 31, 166, ${0.07 + Math.sin(t * 0.18) * 0.02})`);
-      v2.addColorStop(0.6, "rgba(26, 6, 48, 0.03)");
-      v2.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = v2;
+      // Coral bloom at right-top (like radial-gradient at 78% 22%)
+      const b2X = w * (0.78 + Math.sin(t * 0.1) * 0.03);
+      const b2Y = h * (0.4 + Math.cos(t * 0.09) * 0.02);
+      const b2 = ctx.createRadialGradient(b2X, b2Y, 0, b2X, b2Y, w * 0.4);
+      b2.addColorStop(0, `rgba(255, 192, 174, ${0.16 + Math.sin(t * 0.22) * 0.04})`);
+      b2.addColorStop(0.6, "rgba(255, 192, 174, 0)");
+      ctx.fillStyle = b2;
       ctx.fillRect(0, 0, w, h);
+
+      // Coral-red bloom at bottom-right (like radial-gradient at 70% 75%)
+      const b3X = w * (0.7 + Math.cos(t * 0.07) * 0.03);
+      const b3Y = h * (0.75 + Math.sin(t * 0.12) * 0.02);
+      const b3 = ctx.createRadialGradient(b3X, b3Y, 0, b3X, b3Y, w * 0.45);
+      b3.addColorStop(0, `rgba(212, 97, 107, ${0.12 + Math.sin(t * 0.18) * 0.03})`);
+      b3.addColorStop(0.65, "rgba(212, 97, 107, 0)");
+      ctx.fillStyle = b3;
+      ctx.fillRect(0, 0, w, h);
+
       ctx.restore();
 
       // Ridge glow line — animated purple-coral
