@@ -458,21 +458,12 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
                 })()
               }
 
-              {/* Pulse ring inside cube */}
               <motion.circle
-                cx={pos.x}
-                cy={pos.y - cubeSize * 0.15}
-                fill="none"
-                stroke={mod.color}
-                strokeWidth="0.8"
-                initial={{ r: 5, opacity: 0.4 }}
-                animate={{ r: cubeSize * 0.5, opacity: 0, strokeWidth: 0.2 }}
-                transition={{
-                  duration: 3,
-                  delay: 2 + i * 0.7,
-                  repeat: Infinity,
-                  ease: "easeOut",
-                }}
+                cx={pos.x} cy={pos.y - cubeSize * 0.15} fill="none"
+                stroke={mod.color} strokeWidth="1.2"
+                initial={{ r: 8, opacity: 0.5 }}
+                animate={{ r: cubeSize * 0.65, opacity: 0, strokeWidth: 0.3 }}
+                transition={{ duration: 3, delay: 2 + i * 0.7, repeat: Infinity, ease: "easeOut" }}
               />
             </motion.g>
           );
