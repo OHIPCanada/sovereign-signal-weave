@@ -169,6 +169,18 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
           const pathD = `M ${from.x} ${from.y} Q ${midX} ${midY} ${to.x} ${to.y}`;
           const mod = modules[i];
 
+          // Sample points along quadratic bezier for dot animation
+          const sampleBezier = (t: number) => {
+            const mt = 1 - t;
+            return {
+              x: mt * mt * from.x + 2 * mt * t * midX + t * t * to.x,
+              y: mt * mt * from.y + 2 * mt * t * midY + t * t * to.y,
+            };
+          };
+          const steps = 8;
+          const cxKeys = Array.from({ length: steps + 1 }, (_, s) => sampleBezier(s / steps).x);
+          const cyKeys = Array.from({ length: steps + 1 }, (_, s) => sampleBezier(s / steps).y);
+
           return (
             <g key={`stream-${i}`}>
               {/* Wide energy field */}
@@ -197,14 +209,15 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
                 transition={{ duration: 1.5, delay: 1.8 + i * 0.5, ease: "easeOut" }}
               />
 
-              {/* Flowing energy pulse */}
+              {/* Flowing energy pulse — follows bezier via keyframes */}
               <motion.circle
                 r="5"
                 fill={mod.color}
                 filter="url(#particleGlow)"
                 animate={{
-                  opacity: [0, 1, 1, 0],
-                  offsetDistance: ["0%", "100%"],
+                  cx: cxKeys,
+                  cy: cyKeys,
+                  opacity: [0, 1, 1, 1, 1, 1, 1, 1, 0],
                 }}
                 transition={{
                   duration: 2,
@@ -213,7 +226,6 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
                   repeatDelay: 2,
                   ease: "easeInOut",
                 }}
-                style={{ offsetPath: `path("${pathD}")` }}
               />
 
               {/* Trailing smaller pulse */}
@@ -222,17 +234,17 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
                 fill="white"
                 filter="url(#particleGlow)"
                 animate={{
-                  opacity: [0, 0.8, 0.8, 0],
-                  offsetDistance: ["0%", "100%"],
+                  cx: cxKeys,
+                  cy: cyKeys,
+                  opacity: [0, 0, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0],
                 }}
                 transition={{
                   duration: 2,
-                  delay: 3.2 + i * 0.8,
+                  delay: 3.15 + i * 0.8,
                   repeat: Infinity,
                   repeatDelay: 2,
                   ease: "easeInOut",
                 }}
-                style={{ offsetPath: `path("${pathD}")` }}
               />
             </g>
           );
