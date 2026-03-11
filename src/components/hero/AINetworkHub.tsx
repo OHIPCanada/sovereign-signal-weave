@@ -387,34 +387,35 @@ const AINetworkHub = ({ size = "desktop" }: AINetworkHubProps) => {
 
               {i === 3 && /* CLINIC OS — Dashboard grid */
                 (() => {
-                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.3;
+                  const cx0 = pos.x, cy0 = pos.y - cubeSize * 0.15, s = cubeSize * 0.45;
                   const bars = [0.6, 1, 0.75, 0.9, 0.5];
                   return (
                     <g>
-                      {/* Dashboard frame */}
-                      <motion.rect x={cx0 - s} y={cy0 - s * 0.8} width={s * 2} height={s * 1.6}
-                        rx={s * 0.1} fill="none" stroke={mod.color} strokeWidth="0.8"
-                        animate={{ strokeOpacity: [0.3, 0.6, 0.3] }}
+                      <motion.rect x={cx0 - s * 1.1} y={cy0 - s * 0.9} width={s * 2.2} height={s * 1.8}
+                        rx={s * 0.1} fill="none" stroke={mod.color} strokeWidth="1.2"
+                        animate={{ strokeOpacity: [0.35, 0.7, 0.35] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-                      {/* Activity bars */}
+                      <motion.rect x={cx0 - s * 1.1} y={cy0 - s * 0.9} width={s * 2.2} height={s * 1.8}
+                        rx={s * 0.1} fill={mod.color} fillOpacity="0.04"
+                        animate={{ fillOpacity: [0.03, 0.08, 0.03] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
                       {bars.map((h, j) => {
-                        const bw = (s * 1.6) / bars.length;
-                        const bx = cx0 - s * 0.8 + j * bw + bw * 0.15;
-                        const maxH = s * 1.1;
+                        const bw = (s * 1.8) / bars.length;
+                        const bx = cx0 - s * 0.9 + j * bw + bw * 0.15;
+                        const maxH = s * 1.3;
                         const bh = maxH * h;
                         return (
-                          <motion.rect key={`bar-${j}`} x={bx} width={bw * 0.7} rx={1}
+                          <motion.rect key={`bar-${j}`} x={bx} width={bw * 0.7} rx={1.5}
                             fill={mod.color} filter="url(#particleGlow)"
-                            initial={{ y: cy0 + s * 0.6, height: 0, opacity: 0 }}
-                            animate={{ y: cy0 + s * 0.6 - bh, height: bh, opacity: [0.3, 0.7, 0.3] }}
+                            initial={{ y: cy0 + s * 0.7, height: 0, opacity: 0 }}
+                            animate={{ y: cy0 + s * 0.7 - bh, height: bh, opacity: [0.35, 0.75, 0.35] }}
                             transition={{ duration: 2, delay: 1.5 + j * 0.15, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }} />
                         );
                       })}
-                      {/* Top status dots */}
                       {[0, 1, 2].map(j => (
-                        <motion.circle key={`dot-${j}`} cx={cx0 - s * 0.7 + j * s * 0.25} cy={cy0 - s * 0.55}
-                          r={1.5} fill={mod.color}
-                          animate={{ opacity: [0.3, 0.8, 0.3] }}
+                        <motion.circle key={`dot-${j}`} cx={cx0 - s * 0.8 + j * s * 0.3} cy={cy0 - s * 0.65}
+                          r={2.5} fill={mod.color}
+                          animate={{ opacity: [0.35, 0.85, 0.35] }}
                           transition={{ duration: 1.5, delay: j * 0.3, repeat: Infinity, ease: "easeInOut" }} />
                       ))}
                     </g>
