@@ -225,26 +225,13 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
       >
         {/* Logo */}
         <Link to="/" className="flex items-center px-3">
-          <div className="relative inline-block">
-            <img
-              src={docgLogo}
-              alt="DocG AI"
-              className="block w-auto h-[22px] md:h-[26px] transition-all duration-300"
-            />
-            {!isScrolled && darkMode && (
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 left-0 overflow-hidden"
-                style={{ width: "72%" }}
-              >
-                <img
-                  src={docgLogo}
-                  alt=""
-                  className="block h-full w-auto max-w-none invert"
-                />
-              </span>
-            )}
-          </div>
+          <img
+            src={docgLogo}
+            alt="DocG AI"
+            className={`h-[22px] md:h-[26px] w-auto transition-all duration-300 ${
+              !isScrolled && darkMode ? "brightness-0 invert" : ""
+            }`}
+          />
         </Link>
 
         {/* Divider - only in island mode */}
