@@ -232,13 +232,17 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
               className="block w-auto h-[22px] md:h-[26px] transition-all duration-300"
             />
             {!isScrolled && darkMode && (
-              <img
-                src={docgLogo}
-                alt=""
+              <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 block h-full w-full invert"
-                style={{ clipPath: "inset(0 24% 0 0)" }}
-              />
+                className="pointer-events-none absolute inset-y-0 left-0 overflow-hidden"
+                style={{ width: "72%" }}
+              >
+                <img
+                  src={docgLogo}
+                  alt=""
+                  className="block h-full w-auto max-w-none invert"
+                />
+              </span>
             )}
           </div>
         </Link>
