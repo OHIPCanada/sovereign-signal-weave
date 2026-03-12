@@ -227,11 +227,9 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
         {/* Logo */}
         <Link to="/" className="flex items-center px-3">
           <img
-            src={docgLogo}
+            src={!isScrolled && darkMode ? docgLogoWhite : docgLogo}
             alt="DocG AI"
-            className={`h-[22px] md:h-[26px] w-auto transition-all duration-300 ${
-              !isScrolled && darkMode ? "brightness-0 invert" : ""
-            }`}
+            className="h-[22px] md:h-[26px] w-auto transition-all duration-300"
           />
         </Link>
 
