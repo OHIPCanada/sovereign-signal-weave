@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import docgLogo from "@/assets/docg-logo.png";
+import docgLogoWhite from "@/assets/docg-logo-white.png";
 
 interface SubLink {
   label: string;
