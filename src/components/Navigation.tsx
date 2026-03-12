@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import docgLogo from "@/assets/docg-logo.png";
+import docgLogoWhite from "@/assets/docg-logo-white.png";
 
 interface SubLink {
   label: string;
@@ -226,11 +227,9 @@ const Navigation = ({ darkMode = false }: { darkMode?: boolean }) => {
         {/* Logo */}
         <Link to="/" className="flex items-center px-3">
           <img
-            src={docgLogo}
+            src={!isScrolled && darkMode ? docgLogoWhite : docgLogo}
             alt="DocG AI"
-            className={`h-[22px] md:h-[26px] w-auto transition-all duration-300 ${
-              !isScrolled && darkMode ? "brightness-0 invert" : ""
-            }`}
+            className="h-[22px] md:h-[26px] w-auto transition-all duration-300"
           />
         </Link>
 
