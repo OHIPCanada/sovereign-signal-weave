@@ -168,9 +168,6 @@ const ManifestoSection = () => {
     offset: ["start end", "end start"],
   });
 
-  const headlineOpacity = useTransform(scrollYProgress, [0.06, 0.22], [0, 1]);
-  const headlineY = useTransform(scrollYProgress, [0.06, 0.22], [36, 0]);
-
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!containerRef.current) return;
     const r = containerRef.current.getBoundingClientRect();
