@@ -1,5 +1,5 @@
 import { useRef, useCallback, useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 
 /* ─── AI CORTEX ─── Rotating particle ring (from Section 4) */
 const CortexViz = () => {
