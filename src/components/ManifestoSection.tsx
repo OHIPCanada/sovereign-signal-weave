@@ -163,10 +163,6 @@ const ManifestoSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [cardTransforms, setCardTransforms] = useState<string[]>(["", "", ""]);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!containerRef.current) return;
