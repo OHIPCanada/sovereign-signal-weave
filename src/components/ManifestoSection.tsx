@@ -220,7 +220,13 @@ const ManifestoSection = () => {
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ width: "min(1400px, 94vw)" }}>
         <div className="grid grid-cols-1 md:grid-cols-[0.45fr_1.55fr] lg:grid-cols-[0.55fr_1.45fr] items-center split-layout-gap">
           {/* Left — Copy */}
-          <motion.div className="flex flex-col gap-5" style={{ opacity: headlineOpacity, y: headlineY }}>
+          <motion.div
+            className="flex flex-col gap-5"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
             <p className="font-mono uppercase" style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, letterSpacing: "0.22em" }}>
               [ THE INTELLIGENCE LAYER ]
             </p>
