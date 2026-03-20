@@ -266,7 +266,7 @@ export default function ProofSection() {
                   textShadow: "0 10px 40px rgba(0,0,0,0.08)",
                 }}
               >
-                Intelligence you can{" "}
+                Results you can actually{" "}
                 <span
                   style={{
                     background: "linear-gradient(90deg, #D4616B, #E8967C)",
@@ -274,7 +274,7 @@ export default function ProofSection() {
                     WebkitTextFillColor: "transparent",
                   }}
                 >
-                  measure.
+                  track.
                 </span>
               </h2>
             </Reveal>
