@@ -249,7 +249,7 @@ const InterfaceSection = () => {
               textShadow: "0 10px 40px rgba(0,0,0,0.08)",
             }}
           >
-            Where intelligence meets real-world care delivery.
+            Real-world care delivery.
           </h2>
           <p
             style={{
