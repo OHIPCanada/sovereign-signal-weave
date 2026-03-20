@@ -329,9 +329,9 @@ const SovereigntySection = () => {
                 maxWidth: "46ch",
               }}
             >
-              Every decision, signal, and action remains jurisdictionally anchored.
-              Policy enforcement, auditability, and storage governance operate
-              natively — not as overlays.
+              Every decision and action stays exactly where it's supposed to be.
+              We built security, auditing, and data storage into the foundation,
+              not as an afterthought.
             </p>
 
             <div className="flex flex-wrap gap-3" style={{ marginTop: 4 }}>
