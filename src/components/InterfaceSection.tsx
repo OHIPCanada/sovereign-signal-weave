@@ -292,9 +292,9 @@ const InterfaceSection = () => {
               opacity: 0.55,
             }}
           >
-            <span>FRAGMENTED</span>
-            <span>CONVERGENCE</span>
-            <span>HARMONIZED</span>
+            <span>FROM FRAGMENTED</span>
+            <span>TO ORGANIZED</span>
+            <span>TO DONE</span>
           </div>
 
           {/* SVG Stage */}
