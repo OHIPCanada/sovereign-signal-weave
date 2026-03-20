@@ -249,7 +249,7 @@ const InterfaceSection = () => {
               textShadow: "0 10px 40px rgba(0,0,0,0.08)",
             }}
           >
-            Where intelligence meets real-world care delivery.
+            Real-world care delivery.
           </h2>
           <p
             style={{
@@ -292,9 +292,9 @@ const InterfaceSection = () => {
               opacity: 0.55,
             }}
           >
-            <span>FRAGMENTED</span>
-            <span>CONVERGENCE</span>
-            <span>HARMONIZED</span>
+            <span>FROM FRAGMENTED</span>
+            <span>TO ORGANIZED</span>
+            <span>TO DONE</span>
           </div>
 
           {/* SVG Stage */}
