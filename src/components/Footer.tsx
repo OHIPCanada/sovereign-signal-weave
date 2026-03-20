@@ -72,9 +72,9 @@ const Footer = () => {
               fontWeight: 800,
             }}
           >
-            Build the next layer of
+            The next layer of
             <br />
-            healthcare intelligence.
+            healthcare.
           </h3>
           <p
             style={{
