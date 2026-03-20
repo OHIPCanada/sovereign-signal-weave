@@ -395,9 +395,9 @@ const Section9_DeploymentSurfaces = () => {
               textShadow: "0 10px 40px rgba(0,0,0,0.22)",
             }}
           >
-            Start anywhere.
+            Start small.
             <br />
-            Coordinate everywhere.
+            Scale everywhere.
           </h2>
 
           <p
