@@ -5,9 +5,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const PILLARS = [
-  "Jurisdiction Control",
-  "Cryptographic Audit Trails",
-  "Deployment Flexibility",
+  "Local Control",
+  "Clear Trails",
+  "Flexible Setup",
 ];
 
 const PARTICLE_COUNT = 16;

@@ -85,8 +85,8 @@ const Footer = () => {
               margin: "0 0 22px",
             }}
           >
-            DocG AI is Canada-first infrastructure that turns fragmented clinical
-            signals into verified, coordinated action — across the entire system.
+            DocG AI is Canada-first infrastructure. We turn messy clinical
+            signals into verified, coordinated action for the whole healthcare system.
           </p>
 
           {/* Buttons */}

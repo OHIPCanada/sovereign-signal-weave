@@ -409,9 +409,9 @@ const Section9_DeploymentSurfaces = () => {
               margin: "0 auto",
             }}
           >
-            DocG enters through a single surface — then spreads routing,
-            orchestration, and governance across the system without ripping or
-            replacing.
+            You can start using DocG AI in one department. From there, it
+            spreads its routing and governance across your whole system. You
+            don't need to "rip and replace" anything.
           </p>
 
           {/* Surface tiles — segmented tab bar */}

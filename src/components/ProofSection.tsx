@@ -288,7 +288,7 @@ export default function ProofSection() {
                   color: "rgba(27, 15, 46, 0.72)",
                 }}
               >
-                DocG AI turns fragmented clinical signals into coordinated actions—at system scale.
+                DocG AI turns messy clinical data into organized action. Here's what the numbers look like at scale.
               </p>
             </Reveal>
           </div>

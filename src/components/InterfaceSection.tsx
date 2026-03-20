@@ -249,7 +249,7 @@ const InterfaceSection = () => {
               textShadow: "0 10px 40px rgba(0,0,0,0.08)",
             }}
           >
-            Where intelligence meets care delivery.
+            Where intelligence meets real-world care delivery.
           </h2>
           <p
             style={{
@@ -260,9 +260,9 @@ const InterfaceSection = () => {
               margin: "0 auto",
             }}
           >
-            DocG AI integrates directly into clinical operations — without
-            replacing systems, without adding friction. It turns fragmented
-            signals into coordinated action.
+            DocG AI plugs right into your current clinical operations. You
+            don't have to replace your current software or change how you
+            work. It just takes fragmented data and makes it make sense.
           </p>
         </div>
 

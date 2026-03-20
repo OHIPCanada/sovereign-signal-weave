@@ -369,7 +369,7 @@ export default function Section4SystemTransformation() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              {["National routing fabric", "Unified policy enforcement", "Continuous audit visibility"].map((label) => (
+              {["National routing", "Automatic rules", "Full visibility"].map((label) => (
                 <span
                   key={label}
                   style={{
