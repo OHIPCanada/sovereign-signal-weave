@@ -11,11 +11,11 @@ const SEEDS: Record<string, { x: number; y: number; accent: "lav" | "warm" }> = 
 };
 
 const SURFACES = [
-  { key: "emr",      title: "EMR Events",    desc: "Signals in / actions out" },
-  { key: "pathways", title: "Care Pathways",  desc: "Decisions & escalation" },
-  { key: "ops",      title: "Clinical Ops",   desc: "Handoffs & staffing" },
-  { key: "audit",    title: "Policy + Audit", desc: "Traceability by default" },
-  { key: "access",   title: "Patient Access", desc: "Triage & scheduling" },
+  { key: "emr",      title: "EMR Events",    desc: "Data comes in, actions go out" },
+  { key: "pathways", title: "Care Pathways",  desc: "Managing decisions & escalations" },
+  { key: "ops",      title: "Clinical Ops",   desc: "Handling staffing & handoffs" },
+  { key: "audit",    title: "Policy + Audit", desc: "Tracking everything by default" },
+  { key: "access",   title: "Patient Access", desc: "Better triage & scheduling" },
 ];
 
 const COLS = 18;
