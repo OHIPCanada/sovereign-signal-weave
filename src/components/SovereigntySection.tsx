@@ -319,7 +319,7 @@ const SovereigntySection = () => {
                 textShadow: "0 10px 40px rgba(0,0,0,0.22)",
               }}
             >
-              Sovereign by design.
+              Built for security.
             </h2>
 
             <p
