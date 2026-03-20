@@ -21,10 +21,10 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 
 /* ── Proof Tiles ── */
 const proofTiles = [
-  { num: "4.3×", suffix: "faster", label: "Decision latency", desc: "From hours to minutes" },
-  { num: "27%", suffix: "more", label: "Coordination rate", desc: "Tasks resolved per pathway" },
-  { num: "38%", suffix: "fewer", label: "Workflow leakage", desc: "Dropped handoffs reduced" },
-  { num: "100%", suffix: "traceable", label: "Audit readiness", desc: "Continuous system memory" },
+  { num: "4.3×", suffix: "faster", label: "Decision latency", desc: "Get answers in minutes instead of hours" },
+  { num: "27%", suffix: "more", label: "Coordination rate", desc: "More tasks get finished in every care pathway" },
+  { num: "38%", suffix: "fewer", label: "Workflow leakage", desc: "Fewer patients and handoffs get lost in the system" },
+  { num: "100%", suffix: "traceable", label: "Audit readiness", desc: "Your system remembers every step for easy auditing" },
 ];
 
 /* ── Orbit System Field ── */
