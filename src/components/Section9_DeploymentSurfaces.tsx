@@ -11,11 +11,11 @@ const SEEDS: Record<string, { x: number; y: number; accent: "lav" | "warm" }> = 
 };
 
 const SURFACES = [
-  { key: "emr",      title: "EMR Events",    desc: "Signals in / actions out" },
-  { key: "pathways", title: "Care Pathways",  desc: "Decisions & escalation" },
-  { key: "ops",      title: "Clinical Ops",   desc: "Handoffs & staffing" },
-  { key: "audit",    title: "Policy + Audit", desc: "Traceability by default" },
-  { key: "access",   title: "Patient Access", desc: "Triage & scheduling" },
+  { key: "emr",      title: "EMR Events",    desc: "Data comes in, actions go out" },
+  { key: "pathways", title: "Care Pathways",  desc: "Managing decisions & escalations" },
+  { key: "ops",      title: "Clinical Ops",   desc: "Handling staffing & handoffs" },
+  { key: "audit",    title: "Policy + Audit", desc: "Tracking everything by default" },
+  { key: "access",   title: "Patient Access", desc: "Better triage & scheduling" },
 ];
 
 const COLS = 18;
@@ -395,9 +395,9 @@ const Section9_DeploymentSurfaces = () => {
               textShadow: "0 10px 40px rgba(0,0,0,0.22)",
             }}
           >
-            Start anywhere.
+            Start small.
             <br />
-            Coordinate everywhere.
+            Scale everywhere.
           </h2>
 
           <p
@@ -409,9 +409,9 @@ const Section9_DeploymentSurfaces = () => {
               margin: "0 auto",
             }}
           >
-            DocG enters through a single surface — then spreads routing,
-            orchestration, and governance across the system without ripping or
-            replacing.
+            You can start using DocG AI in one department. From there, it
+            spreads its routing and governance across your whole system. You
+            don't need to "rip and replace" anything.
           </p>
 
           {/* Surface tiles — segmented tab bar */}

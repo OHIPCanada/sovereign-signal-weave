@@ -21,10 +21,10 @@ function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
 
 /* ── Proof Tiles ── */
 const proofTiles = [
-  { num: "4.3×", suffix: "faster", label: "Decision latency", desc: "From hours to minutes" },
-  { num: "27%", suffix: "more", label: "Coordination rate", desc: "Tasks resolved per pathway" },
-  { num: "38%", suffix: "fewer", label: "Workflow leakage", desc: "Dropped handoffs reduced" },
-  { num: "100%", suffix: "traceable", label: "Audit readiness", desc: "Continuous system memory" },
+  { num: "4.3×", suffix: "faster", label: "Decision latency", desc: "Get answers in minutes instead of hours" },
+  { num: "27%", suffix: "more", label: "Coordination rate", desc: "More tasks get finished in every care pathway" },
+  { num: "38%", suffix: "fewer", label: "Workflow leakage", desc: "Fewer patients and handoffs get lost in the system" },
+  { num: "100%", suffix: "traceable", label: "Audit readiness", desc: "Your system remembers every step for easy auditing" },
 ];
 
 /* ── Orbit System Field ── */
@@ -266,7 +266,7 @@ export default function ProofSection() {
                   textShadow: "0 10px 40px rgba(0,0,0,0.08)",
                 }}
               >
-                Intelligence you can{" "}
+                Results you can actually{" "}
                 <span
                   style={{
                     background: "linear-gradient(90deg, #D4616B, #E8967C)",
@@ -274,7 +274,7 @@ export default function ProofSection() {
                     WebkitTextFillColor: "transparent",
                   }}
                 >
-                  measure.
+                  track.
                 </span>
               </h2>
             </Reveal>
@@ -288,7 +288,7 @@ export default function ProofSection() {
                   color: "rgba(27, 15, 46, 0.72)",
                 }}
               >
-                DocG AI turns fragmented clinical signals into coordinated actions—at system scale.
+                DocG AI turns messy clinical data into organized action. Here's what the numbers look like at scale.
               </p>
             </Reveal>
           </div>

@@ -343,7 +343,7 @@ export default function Section4SystemTransformation() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              When intelligence becomes infrastructure.
+              Making intelligence part of your infrastructure.
             </motion.h2>
 
             <motion.p
@@ -356,8 +356,9 @@ export default function Section4SystemTransformation() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              Signals stop fragmenting. Workflows coordinate. Governance becomes automatic.
-              Care becomes continuous — across the entire system.
+              When your data talks to itself, things stop falling through the cracks.
+              Your workflows stay coordinated, rules are followed automatically, and care
+              stays consistent across your entire network.
             </motion.p>
 
             <motion.div
@@ -368,7 +369,7 @@ export default function Section4SystemTransformation() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              {["National routing fabric", "Unified policy enforcement", "Continuous audit visibility"].map((label) => (
+              {["National routing", "Automatic rules", "Full visibility"].map((label) => (
                 <span
                   key={label}
                   style={{

@@ -268,9 +268,8 @@ const PlatformSection = () => {
               letterSpacing: "-0.02em",
               textShadow: "0 10px 40px rgba(0,0,0,0.10)",
             }}>
-              How intelligence
-              <br />moves through
-              <br />healthcare.
+              How clinical data
+              <br />actually moves.
             </h2>
 
             <p style={{
@@ -280,9 +279,10 @@ const PlatformSection = () => {
               lineHeight: 1.55,
               maxWidth: "46ch",
             }}>
-              DocG AI sits above clinical systems, routes signals through
-              workflows, and enforces sovereign governance — without adding
-              friction to care delivery.
+              DocG AI connects your existing clinical systems. It routes data
+              through your workflows and handles security and rules
+              automatically. It works in the background so it doesn't slow
+              down patient care.
             </p>
 
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
