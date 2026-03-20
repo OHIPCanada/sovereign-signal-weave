@@ -343,7 +343,7 @@ export default function Section4SystemTransformation() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              When intelligence becomes infrastructure.
+              Making intelligence part of your infrastructure.
             </motion.h2>
 
             <motion.p
