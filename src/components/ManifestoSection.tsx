@@ -231,10 +231,10 @@ const ManifestoSection = () => {
               letterSpacing: "-0.02em",
               textShadow: "0 10px 40px rgba(0,0,0,0.22)",
             }}>
-              Healthcare<br />runs on<br />intelligence<br />now.
+              Healthcare<br />runs on<br />data now.
             </h2>
             <p style={{ color: "rgba(255,255,255,0.72)", fontWeight: 400, fontSize: "clamp(15px, 1.25vw, 18px)", lineHeight: 1.55, maxWidth: "46ch" }}>
-              Three system planes running beneath every clinical workflow — reasoning, orchestration, and sovereign data governance — engineered as infrastructure, not features.
+              We built three layers that sit underneath your clinical workflows. They handle the thinking, the organizing, and the data security. It's built-in infrastructure, not just a set of extra features.
             </p>
           </motion.div>
 
