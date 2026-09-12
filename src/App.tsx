@@ -30,6 +30,7 @@ import PatientAccess from "./pages/platform/PatientAccess";
 // Legal
 import PrivacyPolicy from "./pages/legal/PrivacyPolicy";
 import TermsOfService from "./pages/legal/TermsOfService";
+import Presentation from "./pages/presentation/Presentation";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +65,9 @@ const App = () => (
             {/* Legal */}
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
+
+            {/* Presentation */}
+            <Route path="/presentation" element={<Presentation />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
