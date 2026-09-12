@@ -140,3 +140,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
+@media print {
+  .presentation-print .slide-content:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+}
