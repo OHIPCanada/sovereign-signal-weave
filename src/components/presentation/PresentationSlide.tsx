@@ -14,7 +14,8 @@ import {
   Stethoscope,
   Workflow,
 } from "lucide-react";
-import logo from "@/assets/docg-logo-white.png";
+import logoDark from "@/assets/docg-logo.png";
+import logoLight from "@/assets/docg-logo-white.png";
 import brain from "@/assets/hero-brain.png";
 
 export interface SlideDefinition {
@@ -42,7 +43,7 @@ export const slides: SlideDefinition[] = [
 
 const Header = ({ slide }: { slide: SlideDefinition }) => (
   <header className="slide-header">
-    <img src={logo} alt="DocG AI" className="slide-logo" />
+    <img src={slide.tone === "dark" ? logoLight : logoDark} alt="DocG AI" className="slide-logo" />
     <div className="slide-page">{slide.number} / 10</div>
   </header>
 );
@@ -62,12 +63,12 @@ const Lead = ({ slide }: { slide: SlideDefinition }) => (
   </div>
 );
 
-const Thesis = () => (
+const Thesis = ({ slide }: { slide: SlideDefinition }) => (
   <div className="thesis-layout">
     <div className="thesis-copy">
       <div className="slide-kicker">Business case · Canada 2026</div>
-      <h1 className="slide-title-lg">Canada’s intelligence layer for coordinated healthcare.</h1>
-      <p className="slide-body-lg">Turn fragmented clinical signals into verified, coordinated action — without replacing the systems clinicians already use.</p>
+      <h1 className="slide-title-lg">{slide.title}</h1>
+      <p className="slide-body-lg">{slide.subtitle}</p>
       <div className="thesis-pillars">
         <span>Canada-first</span><span>AI-native overlay</span><span>Sovereign by design</span>
       </div>
@@ -203,7 +204,7 @@ const Gtm = () => {
   return <>
     <Lead slide={slides[9]} />
     <div className="gtm-roadmap">{steps.map(([time, phase, body], index) => <div className="gtm-step" key={phase}><span>{time}</span><div className="gtm-dot">{index + 1}</div><h2>{phase}</h2><p>{body}</p></div>)}</div>
-    <div className="gtm-close"><img src={logo} alt="DocG AI" /><span>Start anywhere. Coordinate everywhere.</span></div>
+    <div className="gtm-close"><img src={logoLight} alt="DocG AI" /><span>Start anywhere. Coordinate everywhere.</span></div>
   </>;
 };
 
@@ -217,7 +218,7 @@ const PresentationSlide = ({ slide, index }: { slide: SlideDefinition; index: nu
     <article className={`slide-content slide-${slide.tone} slide-${slide.id}`}>
       <div className="slide-atmosphere" aria-hidden="true" />
       <Header slide={slide} />
-      <main className="slide-main"><Body /></main>
+      <main className="slide-main">{index === 0 ? <Thesis slide={slide} /> : <Body />}</main>
       <Footer slide={slide} />
     </article>
   );

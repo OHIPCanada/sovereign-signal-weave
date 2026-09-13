@@ -60,6 +60,18 @@ const Presentation = () => {
     document.title = `${current + 1}/${slides.length} — ${slides[current]?.title ?? "DocG AI Presentation"}`;
   }, [current]);
 
+  useEffect(() => {
+    if (!printMode) return;
+    const images = Array.from(document.images);
+    const ready = Promise.all(images.map(image => image.complete
+      ? Promise.resolve()
+      : new Promise<void>(resolve => {
+          image.addEventListener("load", () => resolve(), { once: true });
+          image.addEventListener("error", () => resolve(), { once: true });
+        })));
+    void ready.then(() => window.setTimeout(() => window.print(), 500));
+  }, [printMode]);
+
   const printDeck = () => {
     const params = new URLSearchParams(searchParams);
     params.delete("slide");
@@ -71,7 +83,7 @@ const Presentation = () => {
   if (!activeSlide) return null;
 
   if (printMode) {
-    return <div className="presentation-print" onLoad={() => window.setTimeout(() => window.print(), 350)}>{slides.map((slide, index) => <PresentationSlide key={slide.id} slide={slide} index={index} />)}</div>;
+    return <div className="presentation-print">{slides.map((slide, index) => <PresentationSlide key={slide.id} slide={slide} index={index} />)}</div>;
   }
 
   return (
