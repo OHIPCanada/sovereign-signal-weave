@@ -132,10 +132,10 @@
 }
 
 @media print {
-  @page { size: 16in 9in landscape; margin: 0; }
-  html, body, #root { margin: 0; padding: 0; width: 16in; background: transparent; }
-  .presentation-print { width: 16in; }
-  .presentation-print .slide-content { width: 1920px; height: 1080px; transform: scale(.8); transform-origin: top left; margin-bottom: -216px; break-after: page; page-break-after: always; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  @page { size: 20in 11.25in landscape; margin: 0; }
+  html, body, #root { margin: 0; padding: 0; width: 1920px; background: transparent; }
+  .presentation-print { width: 1920px; }
+  .presentation-print .slide-content { width: 1920px; height: 1080px; break-after: page; page-break-after: always; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
