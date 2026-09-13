@@ -5,3 +5,5 @@
 - [x] Rebrand and verify the 10-slide business-case presentation.
 - [x] Rebrand and verify the 5-slide platform presentation.
 - [x] Export revised full decks and separate slide PDFs.
+- [ ] Rebuild all 10 business-case slides with collision-safe light and dark layouts.
+- [ ] Render, inspect, and export the rebuilt 10-slide PDF.
